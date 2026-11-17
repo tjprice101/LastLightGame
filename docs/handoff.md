@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 Step 2b batch 4: signatures (2026-11-17)
+
+**Implemented on branch `battle-flurry-phase3`, not released (D-478).**
+`main` and `overhaul/radiant-foundation` are unchanged. Spec:
+[combat spec](combat.md#signature-mechanics-batch-4-d-478-battle-flurry-phase-3-step-2b).
+- Signatures and Passives now run for Maerion (Unreturned), Caevren (Load,
+  Cover), Vespera (Signal, Burn boost), Ilyss (Severance), Asteriel (Path,
+  Promise) and Serapha (Interval). Step 2b is complete: all 32 bearers.
+- Refactor: the Burn boost is a shared per-bearer `burnUp` field (Caldrex and
+  Vespera); Cover accepts Bruno or Caevren. Schema stays 8.
+- Implementation rules for points the approved text left open are listed in
+  D-478 for owner review.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Full `npx vitest run`: 304 files, 10,619 tests passed.
+- New `src/game/combat-signatures-batch4.test.ts` (20 tests) covers each
+  mechanic, caps, redirected and fallen-owner cases, the shared Burn boost,
+  validation and presentation replay of every new event op. Caldrex tests now
+  read `burnUp`; the old "inert batches" test became a coverage check.
+- `npx vite build`: passed (existing chunk advisory).
+- `node tools/bundle_server_game.mjs`: bundle changed; **not deployed**.
+- Pressure smoke (temporary test, deleted): 5 Moon trios at level 60, 6
+  anchors, 2 seeds, `authored-control`: all 60 encounters ran to an outcome
+  with valid state at every step (20 victories, 40 defeats; untuned, Step 4).
+  No Flares fired, as in batch 2; check this during the retune.
+- **Not verified:** in-game play (no skill UI yet); hosted or online battle.
+
+**Next:**
+- Step 3 (skill grid, kit text, Skill stats and signature counters display) on
+  Sonnet or Opus, after `/clear`, on branch `battle-flurry-phase3`.
+- Then Step 4 (retune on Opus; the owner approves numbers) and one release
+  with the authority deploy (owner approval).
+
 ## Battle Flurry Phase 3 Step 2b batch 3: signatures (2026-11-17)
 
 **Implemented on branch `battle-flurry-phase3`, not released (D-477).**

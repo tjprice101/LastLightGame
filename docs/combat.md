@@ -1,5 +1,76 @@
 # Combat specification
 
+## Signature mechanics, batch 4 (D-478, Battle Flurry Phase 3 Step 2b)
+
+**Status:** implemented on branch `battle-flurry-phase3`, not released (ships
+with the rest of Phase 3). Kit text: [phase3-kit-drafts.md](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#batch-4-moon-6-owner-approved-2026-11-16).
+Batch 1-3 shared rules apply (conditions and signature stacks read once before
+the cast; signature clauses right after the cast's damage; a Passive works only
+while its bearer lives).
+
+**Scope.** `radiantSignatureBearers` now lists all 32 kit bearers: batch 4 adds
+Maerion, Caevren, Vespera, Ilyss, Asteriel and Serapha. Their Leaders already
+ran as Conduit pairs (D-456) and are unchanged. Moon banners and events stay
+inactive until launch approval.
+
+**State (schema stays 8; unreleased).**
+- **Shared Burn boost.** Each bearer has `burnUp`: `null` or `{ value,
+  remaining }`, next to `seed` and `cover`. Only Caldrex and Vespera may hold
+  one (their Flares create it). Caldrex's `heat` is now a plain counter. Every
+  active boost adds to each Burn tick from an ally, so Caldrex's and Vespera's
+  boosts add together; each caster keeps one boost (the stronger value, the
+  longer clock). A boost lasts its turns even if its caster falls.
+- **Cover casters** are Bruno and Caevren. Only Bruno's Faultbound Resolve
+  reduces the share he takes.
+- New `signature` kinds, each validated:
+  - Counters `{ kind, count, latch }`: `load` (Caevren, 0-3), `severance`
+    (Ilyss, 0-3), `interval` (Serapha, 0-3). Latches reopen at the start of the
+    player turn.
+  - `unreturned` (Maerion): `stored`, whole Health, at most `round(45%)` of her
+    max Health.
+  - `signal` (Vespera): `signals`, at most one `{ holderId, value, remaining }`
+    per other ally; `remaining` is 1-2.
+  - `path` (Asteriel): `path` (`null`, `shelter` or `flourish`) and Promise
+    `count` 0-3; `count` is 0 while `path` is `null`.
+- New `signature` event ops: `unreturned`, `load`, `signal`, `severance`,
+  `path` (amount 1 Shelter, 2 Flourish), `promise`, `interval`.
+
+**Per bearer.**
+- **Maerion.** While she lives, Health an ally (Maerion included) loses to a
+  direct enemy hit is added to Unreturned, up to its cap. The share Cover
+  redirects adds none; the rest of that hit counts. A Place on the Ferry adds
+  all Unreturned to its heal on the ally with the lowest Health; Bring Every
+  Name Home splits it evenly across its heal on all living allies. Both spend
+  all Unreturned. The added Health is not scaled by Skill Power or Flare tier
+  (Conduit healing boosts still apply to the whole heal).
+- **Caevren.** The first enemy hit each enemy phase that damages his Health or
+  Shield adds 1 Load (max 3); hits Cover redirects to him count. Counterweight
+  Covenant and his Flare place Cover on the other allies (he takes 30%, 2
+  turns). The Flare's Shield on him adds +12% of max Health per Load, then
+  spends all.
+- **Vespera.** Keep the Last Beacon gives Signal to each other living ally
+  (+35% x Skill Power); her Flare gives an Empowered Signal (+50% x Skill Power
+  x tier effect scale) and a Burn boost (+20% x Skill Power x tier effect
+  scale, 2 turns). Reapplying keeps the stronger value and refreshes the clock.
+  The holder's next skill or Flare that deals damage spends the Signal, which
+  adds its value to that cast's damage bonus. A Signal lasts through the end of
+  the next player turn (2 ticks; Skill Duration does not extend it) and stays
+  if Vespera falls.
+- **Ilyss.** When her skill or Flare removes a Weaken from at least one ally, she
+  gains 1 Severance (max 3), once per player turn. Her Flare adds +10% heal
+  per Severance and spends all before it cleanses, so its own cleanse can earn
+  1 back. Nothing applies Weaken to bearers yet, so this cannot happen in
+  ordinary play until enemies do.
+- **Asteriel.** Skill 1 enters Shelter and Skill 2 enters Flourish. Changing
+  from one path to the other adds 1 Promise (max 3); the first skill and a
+  repeated skill add none. Her Flare grants Shields (45%, +8% per Promise) in
+  Shelter or with no path, or Attack Up (+50%, +10% per Promise, 2 turns) in
+  Flourish, then spends all Promise and keeps the path.
+- **Serapha.** While she lives, an enemy that attacks while carrying a Weaken
+  from Serapha gives her 1 Interval (max 3), once per enemy phase. A Weaken
+  from another ally does not count (the strongest Weaken replaces a weaker
+  one). Her Flare adds +5% Damage Reduction per Interval and spends all.
+
 ## Signature mechanics, batch 3 (D-477, Battle Flurry Phase 3 Step 2b)
 
 **Status:** implemented on branch `battle-flurry-phase3`, not released (ships
@@ -10,7 +81,7 @@ its bearer lives; signature strikes use normal mitigation unless stated).
 
 **Scope.** `radiantSignatureBearers` now also lists Nerithe, Orvella, Vaelor,
 Caldrex, Solenne, Myrthen, Neralis, Varkhel, Seravelle and Velmira. Batch 4
-signature data stays inert. Batch 3 Leaders already ran as Conduit pairs
+signature data was inert until D-478. Batch 3 Leaders already ran as Conduit pairs
 (D-456) and are unchanged.
 
 **State (schema stays 8; unreleased).** New `signature` kinds, each validated:
@@ -19,8 +90,8 @@ signature data stays inert. Batch 3 Leaders already ran as Conduit pairs
   `tension` (Varkhel, 0-4), `cadence` (Seravelle, 0-3), `crosscut` (Velmira,
   0-3). `latch` records a once-per-enemy-phase (Tension) or once-per-turn
   (Cadence) gain; every latch reopens at the start of the player turn.
-- `heat` (Caldrex): a counter (0-3) plus `burnUp` (`value`, `remaining`) or
-  `null`.
+- `heat` (Caldrex): a counter (0-3). His Burn boost moved to the shared
+  `burnUp` field in D-478.
 - `survey` (Nerithe): `targetId` (a living enemy or `null`) and `count` 0-3;
   `count` is 0 exactly when `targetId` is `null`.
 - `foundation` (Orvella): `null` or `durability`, `max` (the created

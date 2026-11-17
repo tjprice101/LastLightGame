@@ -5,8 +5,8 @@
   revised O5 role traits (Attacker +50% Skill Power only), and batches 1-4.
 - Recorded as D-473. Step 2a (engine framework) implemented on branch
   `battle-flurry-phase3` (D-474, not released); signature clauses below run
-  from Step 2b. Batch 1-3 signatures implemented (D-475, D-476, D-477; not
-  released). Next: Step 2b batch 4.
+  from Step 2b. All four batches implemented (D-475 to D-478; not released).
+  Next: Step 3 (UI).
 
 Plan: [battle-flurry-overhaul.md](../battle-flurry-overhaul.md), section D and
 "Skill language".

@@ -1,5 +1,39 @@
 # Decision log
 
+## Battle Flurry Phase 3 Step 2b batch 4: signature mechanics (D-478, 2026-11-17)
+
+Implements the approved batch 4 kits (D-473) on branch `battle-flurry-phase3`.
+**Not released.** Spec: [combat spec](combat.md#signature-mechanics-batch-4-d-478-battle-flurry-phase-3-step-2b).
+
+- **Implemented:** Unreturned (Maerion), Load and shared Cover (Caevren),
+  Signal and the shared Burn boost (Vespera), Severance (Ilyss), Path and
+  Promise (Asteriel) and Interval (Serapha), with their Passives. All 32 kit
+  bearers now run their signatures.
+- **Refactor:** the Burn boost moved from Caldrex's Heat state to a shared
+  per-bearer `burnUp` field, used by Caldrex and Vespera. Cover accepts Bruno
+  or Caevren as caster.
+- **Implementation rules, chosen where the approved text was silent (owner
+  may revise during the retune):**
+  - Burn boosts from Caldrex and Vespera add together (the Burn boost is not
+    one of the N6 categories).
+  - Maerion's own Health loss counts. Unreturned Health is added as stored:
+    no Skill Power or Flare tier scaling.
+  - Caevren's Cover keeps the full 30% (Faultbound Resolve is Bruno's).
+  - Signal scales with Skill Power (and tier for Empowered Signal), adds to the
+    damage bonus, is spent only by a damaging skill or Flare, lasts 2 ticks
+    regardless of Skill Duration, and stays if Vespera falls.
+  - Ilyss's Flare spends Severance before its cleanse, so it can earn 1 back
+    (as Neralis's Current does).
+  - Asteriel's first skill and repeated skills give no Promise.
+  - Serapha's Interval checks the attacker's Weaken before the attack; only a
+    Weaken whose source is Serapha counts.
+- **State:** schema stays 8 (unreleased): new `burnUp` bearer field, new
+  `signature` kinds (`load`, `severance`, `interval`, `unreturned`, `signal`,
+  `path`) and seven new event ops.
+- **Open:** Step 3 (UI and kit text, including the new counters, Signal and
+  Path), Step 4 retune, the release deploy (owner approves). Nothing applies
+  Weaken to bearers yet, so Ilyss's Severance has no ordinary trigger.
+
 ## Battle Flurry Phase 3 Step 2b batch 3: signature mechanics (D-477, 2026-11-17)
 
 Implements the approved batch 3 kits (D-473) on branch `battle-flurry-phase3`.

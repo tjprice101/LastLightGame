@@ -51,6 +51,10 @@ const enemyCategories: readonly RadiantEnemyCategory[] = ['weaken', 'expose', 'b
 export interface RadiantSeed { casterId: string; value: number }
 /** Bruno's Cover on its holder: the caster takes `share` of the holder's direct enemy damage. */
 export interface RadiantCover { casterId: string; share: number; remaining: number }
+/** A Burn boost owned by its caster (Caldrex's and Vespera's Flares): Burn ticks from every ally deal +`value`. */
+export interface RadiantBurnBoost { value: number; remaining: number }
+/** Vespera's Signal on one other ally: that ally's next damaging skill or Flare deals +`value`. */
+export interface RadiantSignal { holderId: string; value: number; remaining: number }
 /** A bearer's own signature counters (Step 2b). Coefficients already include the creating skill's Skill Power. */
 export type RadiantOwnSignature =
   | { kind: 'cyclone'; gusts: number; cyclone: { coefficient: number; perGust: number; remaining: number } | null }
@@ -70,14 +74,19 @@ export type RadiantOwnSignature =
   | { kind: 'incisions'; incisions: { enemyId: string; stacks: number }[] }
   /** Batch 3 counters: `count` within its cap; `latch` marks a once-per-enemy-phase or once-per-turn gain already taken. */
   | { kind: RadiantCounterKind; count: number; latch: boolean }
-  /** Caldrex: Heat, its once-per-enemy-phase latch and the Burn boost from his Flare. */
-  | { kind: 'heat'; count: number; latch: boolean; burnUp: { value: number; remaining: number } | null }
+  /** Maerion: Health allies lost to direct enemy hits, stored as Unreturned (whole Health, capped). */
+  | { kind: 'unreturned'; stored: number }
+  /** Vespera: at most one Signal per other ally. */
+  | { kind: 'signal'; signals: RadiantSignal[] }
+  /** Asteriel: Promise 0-3 and the current path (none until her first skill). */
+  | { kind: 'path'; count: number; path: 'shelter' | 'flourish' | null }
   /** Nerithe: the one enemy holding Survey (or none) and its points. */
   | { kind: 'survey'; targetId: string | null; count: number }
   /** Orvella: her single Foundation, or none. */
   | { kind: 'foundation'; foundation: RadiantFoundation | null };
-/** Batch 3 counters with no extra state. Myrthen's `season` counts Sprout 0, Bloom 1, Harvest 2. */
-export type RadiantCounterKind = 'stillness' | 'season' | 'current' | 'tension' | 'cadence' | 'crosscut';
+/** Counters with no extra state (batches 3-4). Myrthen's `season` counts Sprout 0, Bloom 1, Harvest 2. */
+export type RadiantCounterKind = 'heat' | 'stillness' | 'season' | 'current' | 'tension' | 'cadence' | 'crosscut' |
+  'load' | 'severance' | 'interval';
 /** Orvella's Foundation: whole-number durability, the durability it was created with, and its clock. */
 export interface RadiantFoundation { durability: number; max: number; remaining: number }
 /** Thornia's trap on one enemy; `value` is the strike coefficient, already scaled by Skill Power and Flare tier. */
@@ -90,6 +99,8 @@ export interface RadiantBearer {
   buffs: RadiantCategoryEffect<RadiantAllyCategory>[];
   seed: RadiantSeed | null;
   cover: RadiantCover | null;
+  /** The Burn boost this bearer cast, if active (shared by Caldrex and Vespera). */
+  burnUp: RadiantBurnBoost | null;
   signature: RadiantOwnSignature | null;
 }
 export interface RadiantCurrencyLedger {
@@ -128,7 +139,7 @@ export type RadiantSignatureOp = 'seed' | 'seed-wither' | 'cover' | 'cyclone' | 
   'lodge' | 'recall' | 'return' | 'wounds' | 'detonate' | 'refund' |
   'quarry' | 'contributor' | 'trap' | 'trap-strike' | 'combo' | 'refusal' | 'mark' | 'incision' |
   'survey' | 'foundation' | 'foundation-absorb' | 'beat' | 'heat' | 'burn-up' | 'stillness' | 'season' | 'current' |
-  'tension' | 'cadence' | 'crosscut';
+  'tension' | 'cadence' | 'crosscut' | 'unreturned' | 'load' | 'signal' | 'severance' | 'path' | 'promise' | 'interval';
 export type RadiantCombatAction =
   | { type: 'normal'; bearerId: string; targetId: string }
   | { type: 'skill'; bearerId: string; slot: RadiantSkillSlot; targetId?: string }
@@ -340,27 +351,34 @@ export const radiantSignatureBearers: ReadonlySet<RadiantBearerId> = new Set<Rad
   'ember', 'tide', 'sprout', 'atmoso', 'aurora', 'bliss', 'bruno', 'disciple', 'elise', 'razor',
   'rosetta', 'thornia', 'crinso', 'ozriel', 'ilvaris', 'kaelith',
   'nerithe', 'orvella', 'vaelor', 'caldrex', 'solenne', 'myrthen', 'neralis', 'varkhel', 'seravelle', 'velmira',
+  'maerion', 'caevren', 'vespera', 'ilyss', 'asteriel', 'serapha',
 ]);
+/** Bearers whose kits place Cover, and whose kits create a Burn boost. */
+const coverCasters: readonly RadiantBearerId[] = ['bruno', 'caevren'];
+const burnBoostCasters: readonly RadiantBearerId[] = ['caldrex', 'vespera'];
 /** Elise's Shuriken count (Stormwheel Rhythm). */
 export const radiantShurikenCount = 2;
 /** Atmoso's Cyclone holds at most this many Gusts (Gale Cadence). */
 export const radiantGustCap = 5;
-/** Signature caps for batches 2 and 3 (D-473). */
+/** Signature caps for batches 2-4 (D-473). */
 export const radiantSignatureCaps = {
   combo: 5, marks: 5, incisions: 3,
   survey: 3, heat: 3, stillness: 4, season: 2, current: 3, tension: 4, cadence: 3, crosscut: 3,
+  load: 3, severance: 3, interval: 3, promise: 3,
 } as const;
-/** Passive values for batches 1-3 (D-473). */
+/** Passive values for batches 1-4 (D-473). */
 export const radiantPassiveValues = {
   emberBurn: .3, tideRefund: 8, brunoRedirect: .25, discipleFill: 5, auroraWeakenTurns: 1,
   markTaken: .1, markTurns: 2, incisionTaken: .1,
   surveyFill: 5, foundationShare: .2, stillnessReduction: .2, harvestBonus: .35, harvestIgnore: .2,
+  unreturnedCap: .45, signalTurns: 2,
 } as const;
 /** Vaelor's Beat for a round: 0 Tune, 1 Rise, 2 Crescendo; one step per player turn, starting on Tune. */
 export function radiantBeat(round: number): 0 | 1 | 2 {
   return ((round - 1) % 3) as 0 | 1 | 2;
 }
-const counterKinds: readonly RadiantCounterKind[] = ['stillness', 'season', 'current', 'tension', 'cadence', 'crosscut'];
+const counterKinds: readonly RadiantCounterKind[] = ['heat', 'stillness', 'season', 'current', 'tension', 'cadence', 'crosscut',
+  'load', 'severance', 'interval'];
 function startingSignature(starter: RadiantBearerId): RadiantOwnSignature | null {
   if (!radiantSignatureBearers.has(starter)) return null;
   if (starter === 'atmoso') return { kind: 'cyclone', gusts: 0, cyclone: null };
@@ -374,22 +392,24 @@ function startingSignature(starter: RadiantBearerId): RadiantOwnSignature | null
   if (starter === 'kaelith') return { kind: 'incisions', incisions: [] };
   if (starter === 'nerithe') return { kind: 'survey', targetId: null, count: 0 };
   if (starter === 'orvella') return { kind: 'foundation', foundation: null };
-  if (starter === 'caldrex') return { kind: 'heat', count: 0, latch: false, burnUp: null };
+  if (starter === 'caldrex') return { kind: 'heat', count: 0, latch: false };
   if (starter === 'solenne') return { kind: 'stillness', count: 0, latch: false };
   if (starter === 'myrthen') return { kind: 'season', count: 0, latch: false };
   if (starter === 'neralis') return { kind: 'current', count: 0, latch: false };
   if (starter === 'varkhel') return { kind: 'tension', count: 0, latch: false };
   if (starter === 'seravelle') return { kind: 'cadence', count: 0, latch: false };
   if (starter === 'velmira') return { kind: 'crosscut', count: 0, latch: false };
+  if (starter === 'maerion') return { kind: 'unreturned', stored: 0 };
+  if (starter === 'caevren') return { kind: 'load', count: 0, latch: false };
+  if (starter === 'vespera') return { kind: 'signal', signals: [] };
+  if (starter === 'ilyss') return { kind: 'severance', count: 0, latch: false };
+  if (starter === 'asteriel') return { kind: 'path', count: 0, path: null };
+  if (starter === 'serapha') return { kind: 'interval', count: 0, latch: false };
   return null;
 }
 function validateSignatures(state: RadiantCombatState, member: RadiantBearer): void {
-  if (!('seed' in member) || !('cover' in member) || !('signature' in member)) throw new Error('Invalid radiant signature state.');
-  const casterOf = (id: string, starter: RadiantBearerId): RadiantBearer => {
-    const caster = bearer(state, id);
-    if (caster.loadout.starter !== starter || caster === member) throw new Error('Invalid radiant signature caster.');
-    return caster;
-  };
+  if (!('seed' in member) || !('cover' in member) || !('burnUp' in member) || !('signature' in member))
+    throw new Error('Invalid radiant signature state.');
   if (member.seed !== null) {
     if (!member.seed || Object.keys(member.seed).length !== 2) throw new Error('Invalid radiant Seed.');
     const caster = bearer(state, member.seed.casterId);
@@ -398,11 +418,19 @@ function validateSignatures(state: RadiantCombatState, member: RadiantBearer): v
   }
   if (member.cover !== null) {
     if (!member.cover || Object.keys(member.cover).length !== 3) throw new Error('Invalid radiant Cover.');
-    casterOf(member.cover.casterId, 'bruno');
+    const caster = bearer(state, member.cover.casterId);
+    if (caster === member || !coverCasters.includes(caster.loadout.starter)) throw new Error('Invalid radiant signature caster.');
     finite(member.cover.share, 'Cover share', Number.MIN_VALUE);
     if (member.cover.share >= 1) throw new Error('Invalid radiant Cover share.');
     safe(member.cover.remaining, 'Cover clock', 1);
     if (member.cover.remaining > radiantMaximumDuration) throw new Error('Radiant effect exceeds its maximum duration.');
+  }
+  if (member.burnUp !== null) {
+    if (!member.burnUp || typeof member.burnUp !== 'object' || Object.keys(member.burnUp).length !== 2 ||
+      !burnBoostCasters.includes(member.loadout.starter)) throw new Error('Invalid radiant Burn boost.');
+    finite(member.burnUp.value, 'Burn boost', Number.MIN_VALUE);
+    safe(member.burnUp.remaining, 'Burn boost clock', 1);
+    if (member.burnUp.remaining > radiantMaximumDuration) throw new Error('Radiant effect exceeds its maximum duration.');
   }
   const own = member.signature, expected = startingSignature(member.loadout.starter);
   if ((own === null) !== (expected === null) || (own && own.kind !== expected?.kind)) throw new Error('Invalid radiant signature state.');
@@ -423,10 +451,11 @@ function validateSignatures(state: RadiantCombatState, member: RadiantBearer): v
   } else if (own?.kind === 'wounds') {
     safe(own.wounds, 'Wounds');
     if (Object.keys(own).length !== 2) throw new Error('Invalid radiant Wounds.');
-  } else if (own && !validateCounters(state, own)) validateEnemyLedger(state, member, own);
+  } else if (own && !validateCounters(state, member, own)) validateEnemyLedger(state, member, own);
 }
-/** Batch 3 state: counters within their caps, Survey on one living enemy, a bounded Foundation. */
-function validateCounters(state: RadiantCombatState, own: RadiantOwnSignature): boolean {
+/** Batch 3-4 state: counters within their caps, Survey on one living enemy, a bounded Foundation, Unreturned within
+ * its cap, at most one Signal per other ally, and a Path that holds no Promise before its first skill. */
+function validateCounters(state: RadiantCombatState, member: RadiantBearer, own: RadiantOwnSignature): boolean {
   const capped = (value: number, cap: number, name: string) => {
     safe(value, name);
     if (value > cap) throw new Error(`Invalid radiant ${name}.`);
@@ -453,17 +482,35 @@ function validateCounters(state: RadiantCombatState, own: RadiantOwnSignature): 
     clock(foundation.remaining, 'Foundation clock');
     return true;
   }
-  if (own.kind === 'heat' || counterKinds.includes(own.kind as RadiantCounterKind)) {
+  if (own.kind === 'unreturned') {
+    if (Object.keys(own).length !== 2) throw new Error('Invalid radiant Unreturned.');
+    capped(own.stored, rounded(radiantPassiveValues.unreturnedCap * member.stats.hp), 'Unreturned');
+    return true;
+  }
+  if (own.kind === 'signal') {
+    if (Object.keys(own).length !== 2 || !Array.isArray(own.signals)) throw new Error('Invalid radiant Signal.');
+    const holders = own.signals.map(signal => signal?.holderId);
+    if (new Set(holders).size !== holders.length) throw new Error('Invalid radiant Signal.');
+    for (const signal of own.signals) {
+      if (!signal || typeof signal !== 'object' || Object.keys(signal).length !== 3 || typeof signal.holderId !== 'string' ||
+        bearer(state, signal.holderId) === member) throw new Error('Invalid radiant Signal.');
+      finite(signal.value, 'Signal', Number.MIN_VALUE);
+      safe(signal.remaining, 'Signal clock', 1);
+      if (signal.remaining > radiantPassiveValues.signalTurns) throw new Error('Invalid radiant Signal clock.');
+    }
+    return true;
+  }
+  if (own.kind === 'path') {
+    if (Object.keys(own).length !== 3 || (own.path !== null && own.path !== 'shelter' && own.path !== 'flourish') ||
+      (own.path === null && own.count !== 0)) throw new Error('Invalid radiant Path.');
+    capped(own.count, radiantSignatureCaps.promise, 'Promise');
+    return true;
+  }
+  if (counterKinds.includes(own.kind as RadiantCounterKind)) {
     const counter = own as Extract<RadiantOwnSignature, { latch: boolean }>;
-    if (Object.keys(counter).length !== (counter.kind === 'heat' ? 4 : 3) || typeof counter.latch !== 'boolean')
+    if (Object.keys(counter).length !== 3 || typeof counter.latch !== 'boolean')
       throw new Error(`Invalid radiant ${counter.kind}.`);
     capped(counter.count, radiantSignatureCaps[counter.kind], counter.kind);
-    if (counter.kind === 'heat' && counter.burnUp !== null) {
-      if (!counter.burnUp || typeof counter.burnUp !== 'object' || Object.keys(counter.burnUp).length !== 2)
-        throw new Error('Invalid radiant Burn boost.');
-      finite(counter.burnUp.value, 'Burn boost', Number.MIN_VALUE);
-      clock(counter.burnUp.remaining, 'Burn boost clock');
-    }
     return true;
   }
   return false;
@@ -624,7 +671,7 @@ export function createRadiantCombat(
     bearers: loadouts.map(loadout => {
       const stats = resolveRadiantStarterStats(loadout);
       return { loadout: structuredClone(loadout), stats, hp: rounded(stats.hp), shields: [], buffs: [],
-        seed: null, cover: null, signature: startingSignature(loadout.starter) };
+        seed: null, cover: null, burnUp: null, signature: startingSignature(loadout.starter) };
     }),
     enemies: enemies.map(input => {
       validateRadiantStats(input.stats);
@@ -796,12 +843,13 @@ function nextAlly(state: RadiantCombatState, actor: RadiantBearer): RadiantBeare
   const ordered = [...state.bearers.slice(start + 1), ...state.bearers.slice(0, start)];
   return ordered.find(member => member.hp > 0 && !state.acted.includes(member.loadout.id));
 }
-function cleanse(events: RadiantCombatEvent[], target: RadiantBearer): void {
+function cleanse(events: RadiantCombatEvent[], target: RadiantBearer): boolean {
   const weaken = target.buffs.find(effect => effect.category === 'weaken');
-  if (!weaken) return;
+  if (!weaken) return false;
   target.buffs.splice(target.buffs.indexOf(weaken), 1);
   events.push({ type: 'status', targetId: target.loadout.id, status: 'weaken-removed',
     source: weaken.source, magnitude: weaken.magnitude, remaining: 0 });
+  return true;
 }
 // ---------------------------------------------------------------------------------------------
 // Step 2b signature mechanics (batch 1: Opening and Flagships). A Passive works only while its
@@ -830,6 +878,8 @@ function condition(state: RadiantCombatState, actor: RadiantBearer, when: string
     case 'rise': return radiantBeat(state.round) === 1;
     case 'crescendo': return radiantBeat(state.round) === 2;
     case 'crosscut-2': return actor.signature?.kind === 'crosscut' && actor.signature.count >= 2;
+    case 'shelter-or-no-path': return actor.signature?.kind === 'path' && actor.signature.path !== 'flourish';
+    case 'flourish': return actor.signature?.kind === 'path' && actor.signature.path === 'flourish';
     default: return false;
   }
 }
@@ -889,6 +939,7 @@ function signatureStacks(actor: RadiantBearer, primary: RadiantEnemy | undefined
   if (own?.kind === 'quarry') return own.contributors.length;
   if (own?.kind === 'combo') return own.combo;
   if (own?.kind === 'incisions') return own.incisions.find(entry => entry.enemyId === primary?.id)?.stacks ?? 0;
+  if (own?.kind === 'path') return own.count;
   return counterOf(own)?.count ?? 0;
 }
 /** Spend one Thorn Trap charge; an empty trap is removed. */
@@ -942,9 +993,9 @@ function releaseCyclone(
   if (actor.hp === 0) return;
   for (const target of state.enemies.filter(member => member.hp > 0)) strike(state, events, actor, target, source, coefficient);
 }
-/** A batch 3 counter signature (Heat, Stillness, Season, Current, Tension, Cadence, Crosscut), if any. */
+/** A counter signature (Heat, Stillness, Season, Current, Tension, Cadence, Crosscut, Load, Severance, Interval), if any. */
 function counterOf(own: RadiantOwnSignature | null): Extract<RadiantOwnSignature, { latch: boolean }> | undefined {
-  return own && (own.kind === 'heat' || counterKinds.includes(own.kind as RadiantCounterKind))
+  return own && counterKinds.includes(own.kind as RadiantCounterKind)
     ? own as Extract<RadiantOwnSignature, { latch: boolean }> : undefined;
 }
 /** Pre-damage signature modifiers: Survey that Nerithe's skill will spend ignores part of its enemy's Defense;
@@ -987,19 +1038,51 @@ function holdStillness(events: RadiantCombatEvent[], target: RadiantBearer, amou
   events.push({ type: 'signature', bearerId: target.loadout.id, op: 'stillness', amount: own.count });
   return amount - Math.round(amount * radiantPassiveValues.stillnessReduction);
 }
-/** Banked Heat / Tension Held: +1 the first time each enemy phase an enemy hit damages the holder's Health or Shield. */
+/** Banked Heat / Tension Held / Weight of the Watch: +1 the first time each enemy phase an enemy hit damages the
+ * holder's Health or Shield. */
 function hitGain(events: RadiantCombatEvent[], holder: RadiantBearer): void {
   const own = holder.signature;
-  if ((own?.kind !== 'heat' && own?.kind !== 'tension') || own.latch) return;
+  if ((own?.kind !== 'heat' && own?.kind !== 'tension' && own?.kind !== 'load') || own.latch) return;
   own.latch = true;
   own.count = Math.min(radiantSignatureCaps[own.kind], own.count + 1);
   events.push({ type: 'signature', bearerId: holder.loadout.id, op: own.kind, amount: own.count });
 }
-/** Nothing Beyond These Gates: active Burn boosts add to Burn ticks from allies. */
+/** Nothing Beyond These Gates / None Left in the Dark: active Burn boosts (one per caster) add to Burn ticks from allies. */
 function burnBoost(state: RadiantCombatState, source: RadiantSource): number {
   if (source.kind === 'enemy') return 0;
-  return state.bearers.reduce((sum, member) =>
-    sum + (member.signature?.kind === 'heat' ? member.signature.burnUp?.value ?? 0 : 0), 0);
+  return state.bearers.reduce((sum, member) => sum + (member.burnUp?.value ?? 0), 0);
+}
+/** Names Still Carried: while Maerion lives, Health an ally loses to a direct enemy hit is stored as Unreturned. */
+function carryUnreturned(state: RadiantCombatState, events: RadiantCombatEvent[], healthLoss: number): void {
+  const maerion = livingStarter(state, 'maerion'), own = maerion?.signature;
+  if (!maerion || own?.kind !== 'unreturned' || healthLoss <= 0) return;
+  const stored = Math.min(rounded(radiantPassiveValues.unreturnedCap * maerion.stats.hp), own.stored + healthLoss);
+  if (stored === own.stored) return;
+  own.stored = stored;
+  events.push({ type: 'signature', bearerId: maerion.loadout.id, op: 'unreturned', amount: stored });
+}
+/** An Interval Without Surrender: an attacking enemy still Weakened by Serapha's skill or Flare gives her 1 Interval,
+ * once per enemy phase, while she lives. */
+function intervalGain(state: RadiantCombatState, events: RadiantCombatEvent[], attacker: RadiantEnemy): void {
+  const serapha = livingStarter(state, 'serapha'), own = serapha?.signature;
+  if (!serapha || own?.kind !== 'interval' || own.latch) return;
+  const weaken = attacker.debuffs.find(effect => effect.category === 'weaken');
+  if (!weaken || weaken.source.kind === 'enemy' || weaken.source.bearerId !== serapha.loadout.id) return;
+  own.latch = true;
+  gainCounter(events, serapha);
+}
+/** Someone Still Beyond the Walls: the holder's damaging skill or Flare spends its Signal for +value damage. */
+function spendSignal(state: RadiantCombatState, events: RadiantCombatEvent[], holder: RadiantBearer): number {
+  for (const member of state.bearers) {
+    const own = member.signature;
+    if (own?.kind !== 'signal') continue;
+    const signal = own.signals.find(entry => entry.holderId === holder.loadout.id);
+    if (!signal) continue;
+    own.signals = own.signals.filter(entry => entry !== signal);
+    events.push({ type: 'signature', bearerId: member.loadout.id, op: 'signal', holderId: holder.loadout.id, amount: 0 });
+    return signal.value;
+  }
+  return 0;
 }
 /** +1 to a bearer's counter, within its cap. */
 function gainCounter(events: RadiantCombatEvent[], holder: RadiantBearer): void {
@@ -1150,6 +1233,11 @@ function signatureClauses(
           own.combo = 0;
           events.push({ type: 'signature', bearerId: id, op: 'combo', amount: 0 });
         }
+        // Every Orbit Bears a Future spends all Promise and keeps the current path.
+        if (own?.kind === 'path' && own.count > 0) {
+          own.count = 0;
+          events.push({ type: 'signature', bearerId: id, op: 'promise', amount: 0 });
+        }
         const counter = counterOf(own);
         if (!counter || counter.count === 0) break;
         counter.count = 0;
@@ -1208,12 +1296,44 @@ function signatureClauses(
         break;
       }
       case 'burn-up': {
-        // Nothing Beyond These Gates: Burn ticks from all allies deal +value; the stronger value and longer clock are kept.
-        if (own?.kind !== 'heat') break;
+        // Nothing Beyond These Gates / None Left in the Dark: Burn ticks from all allies deal +value; the caster keeps one
+        // boost, with the stronger value and the longer clock.
         const boost = value * input.effectScale * input.skill.skillPower;
         const remaining = Math.min(radiantMaximumDuration, (clause.turns ?? 1) + input.skill.skillDuration);
-        own.burnUp = { value: Math.max(boost, own.burnUp?.value ?? 0), remaining: Math.max(remaining, own.burnUp?.remaining ?? 0) };
-        events.push({ type: 'signature', bearerId: id, op: 'burn-up', amount: own.burnUp.value });
+        actor.burnUp = { value: Math.max(boost, actor.burnUp?.value ?? 0), remaining: Math.max(remaining, actor.burnUp?.remaining ?? 0) };
+        events.push({ type: 'signature', bearerId: id, op: 'burn-up', amount: actor.burnUp.value });
+        break;
+      }
+      case 'signal':
+        // Keep the Last Beacon / None Left in the Dark: one Signal per other ally; reapplying keeps the stronger value and
+        // refreshes the clock (through the end of the next player turn).
+        if (own?.kind !== 'signal') break;
+        for (const ally of allies(clause.to)) {
+          if (ally === actor) continue;
+          const strength = value * input.effectScale * input.skill.skillPower;
+          const previous = own.signals.find(entry => entry.holderId === ally.loadout.id);
+          const signal = { holderId: ally.loadout.id, value: Math.max(strength, previous?.value ?? 0),
+            remaining: radiantPassiveValues.signalTurns };
+          own.signals = [...own.signals.filter(entry => entry !== previous), signal];
+          events.push({ type: 'signature', bearerId: id, op: 'signal', holderId: ally.loadout.id, amount: signal.value });
+        }
+        break;
+      case 'spend-unreturned':
+        // A Place on the Ferry / Bring Every Name Home: the heal already carried Unreturned (read before the cast).
+        if (own?.kind !== 'unreturned' || own.stored === 0) break;
+        own.stored = 0;
+        events.push({ type: 'signature', bearerId: id, op: 'unreturned', amount: 0 });
+        break;
+      case 'path': {
+        // Futures Given Freely: Skill 1 enters Shelter (1), Skill 2 Flourish (2); switching paths grants 1 Promise.
+        if (own?.kind !== 'path') break;
+        const next = value === 1 ? 'shelter' : 'flourish';
+        if (own.path !== null && own.path !== next) {
+          own.count = Math.min(radiantSignatureCaps.promise, own.count + 1);
+          events.push({ type: 'signature', bearerId: id, op: 'promise', amount: own.count });
+        }
+        own.path = next;
+        events.push({ type: 'signature', bearerId: id, op: 'path', amount: value });
         break;
       }
       case 'fate-mark': {
@@ -1260,15 +1380,17 @@ function bloomSeeds(state: RadiantCombatState, events: RadiantCombatEvent[]): vo
     heal(state, events, holder, { kind: 'passive', bearerId: seed.casterId }, seed.value * holder.stats.hp);
   }
 }
-/** End of the enemy phase: Cover, Thorn Trap and Fate-seared Mark clocks tick; Cyclones count down and release at 0. */
+/** End of the enemy phase: Cover, Burn boost, Signal, Thorn Trap and Fate-seared Mark clocks tick; Cyclones count down
+ * and release at 0. */
 function tickSignatures(state: RadiantCombatState, events: RadiantCombatEvent[]): void {
   for (const member of state.bearers) {
     if (member.cover && --member.cover.remaining <= 0) member.cover = null;
+    if (member.burnUp && --member.burnUp.remaining <= 0) member.burnUp = null;
     const own = member.signature;
+    if (own?.kind === 'signal') own.signals = own.signals.filter(signal => --signal.remaining > 0);
     if (own?.kind === 'thorns') own.traps = own.traps.filter(trap => --trap.remaining > 0);
     if (own?.kind === 'marks') own.marks = own.marks.filter(mark => --mark.remaining > 0);
     if (own?.kind === 'foundation' && own.foundation && --own.foundation.remaining <= 0) own.foundation = null;
-    if (own?.kind === 'heat' && own.burnUp && --own.burnUp.remaining <= 0) own.burnUp = null;
     if (own?.kind === 'cyclone' && own.cyclone && --own.cyclone.remaining <= 0)
       releaseCyclone(state, events, member, 1, { kind: 'skill', bearerId: member.loadout.id });
   }
@@ -1327,8 +1449,13 @@ function cast(
   const valueOf = (effect: { value: number; perStack?: number }) => effect.value + (effect.perStack ?? 0) * stacks;
   const power = (def.alt && holds(def.alt.when) ? def.alt.power : def.power) + (def.perStack ?? 0) * stacks;
   const surge = signed(actor) ? signatureSurge(actor, clauses, primary) : { ignore: 0, bonus: 0 };
+  // Vespera's Signal: the holder's next damaging skill or Flare spends it for its bonus.
+  const signal = def.target !== 'none' ? spendSignal(state, events, actor) : 0;
+  // Names Still Carried: Unreturned spent by this cast joins its matching heal, split evenly among the recipients.
+  const ferry = clauses.find(clause => clause.op === 'spend-unreturned');
+  const unreturned = ferry && own?.kind === 'unreturned' ? own.stored : 0;
   const ignore = surge.ignore + effects.reduce((sum, effect) => sum + (effect.kind === 'ignore-defense' ? effect.value : 0), 0);
-  const bonus = surge.bonus + effects.reduce((sum, effect) => sum + (effect.kind === 'damage-bonus' ? effect.value : 0), 0);
+  const bonus = surge.bonus + signal + effects.reduce((sum, effect) => sum + (effect.kind === 'damage-bonus' ? effect.value : 0), 0);
   const enemyTargets = def.target === 'all-enemies' ? state.enemies.filter(member => member.hp > 0) : primary ? [primary] : [];
   const struck = new Set<RadiantEnemy>();
   // Alternating Edge reads Weaken before the hit, so a skill's own Weaken never counts for that cast.
@@ -1380,8 +1507,10 @@ function cast(
   for (const effect of effects) {
     if (effect.kind !== 'heal' && effect.kind !== 'shield') continue;
     // N7: kit heals and Shields are a % of the recipient's max Health x the caster's Skill Power.
-    for (const ally of alliesFor(effect.to)) {
-      const magnitude = valueOf(effect) * input.effectScale * skill.skillPower * ally.stats.hp;
+    const recipients = alliesFor(effect.to);
+    const carried = effect.kind === 'heal' && ferry?.to === effect.to && recipients.length ? unreturned / recipients.length : 0;
+    for (const ally of recipients) {
+      const magnitude = valueOf(effect) * input.effectScale * skill.skillPower * ally.stats.hp + carried;
       if (effect.kind === 'heal') restored = heal(state, events, ally, source, magnitude) > 0 || restored;
       else shield(state, events, ally, source, magnitude);
     }
@@ -1389,7 +1518,13 @@ function cast(
   // Returning Current: a skill or Flare heal that restores Health adds 1 Current, once per action (after any spend).
   if (restored && own?.kind === 'current') gainCounter(events, actor);
   for (const effect of effects) {
-    if (effect.kind === 'cleanse') { for (const ally of alliesFor(effect.to)) cleanse(events, ally); continue; }
+    if (effect.kind === 'cleanse') {
+      let removed = false;
+      for (const ally of alliesFor(effect.to)) removed = cleanse(events, ally) || removed;
+      // What Need Not Remain: removing a Weaken gives Ilyss 1 Severance, once per player turn.
+      if (removed && own?.kind === 'severance' && !own.latch) { own.latch = true; gainCounter(events, actor); }
+      continue;
+    }
     if (effect.kind !== 'attack-up' && effect.kind !== 'defense-up' && effect.kind !== 'reduction' &&
       effect.kind !== 'gain-up' && effect.kind !== 'hot') continue;
     for (const ally of alliesFor(effect.to)) {
@@ -1470,6 +1605,7 @@ function enemyAttack(
   const targets = action.targetIds.map(id => { const target = bearer(state, id); living(target.hp); return target; });
   const source: RadiantSource = { kind: 'enemy', enemyId: actor.id };
   let damaged = false;
+  intervalGain(state, events, actor);
   if (action.healBefore !== undefined) heal(state, events, actor, source, action.healBefore);
   if (action.refreshShieldBefore !== undefined) {
     const amount = rounded(action.refreshShieldBefore);
@@ -1507,6 +1643,8 @@ function enemyAttack(
         if (taken > 0) {
           const redirected = packet(state, events, coverer, source, 'direct', taken, undefined, true);
           refundFullBlock(state, events, coverer, redirected, taken);
+          // Weight of the Watch counts redirected hits; Names Still Carried does not.
+          if (coverer.hp > 0 && redirected.healthLoss + redirected.absorbed > 0) hitGain(events, coverer);
           damaged = true;
         }
       }
@@ -1516,6 +1654,7 @@ function enemyAttack(
       // Every landed hit counts as damage for Thorn Traps, including a lethal hit Ozriel's Refusal turned to 0 loss.
       damaged = true;
       refundFullBlock(state, events, target, part, taken);
+      carryUnreturned(state, events, part.healthLoss);
       if (target.signature?.kind === 'wounds' && part.healthLoss > 0 && target.hp > 0) {
         target.signature.wounds += part.healthLoss;
         safe(target.signature.wounds, 'Wounds');

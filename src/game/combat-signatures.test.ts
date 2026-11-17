@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { RadiantBearerId, RadiantLoadout } from '../content/combat-kits';
+import { radiantKits } from '../content/radiant-kits';
 import { radiantImpactFrames } from '../presentation/battle-impact-frames';
-import { applyRadiantCombatAction, createRadiantCombat, radiantDirectDamage, validateRadiantCombat,
+import { applyRadiantCombatAction, createRadiantCombat, radiantDirectDamage, radiantSignatureBearers, validateRadiantCombat,
   type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState } from './combat-engine';
 
 /** Battle Flurry Phase 3 Step 2b batch 1 (D-473 kits): Opening and Flagship signatures and Passives. */
@@ -235,12 +236,9 @@ describe('Razor: Wounds', () => {
   });
 });
 
-describe('Later batches stay inert', () => {
-  it('gives no signature state or conditional bonus to bearers outside batches 1-3', () => {
-    const state = battle(['maerion', 'vespera']);
-    expect(state.bearers.map(entry => entry.signature)).toEqual([null, null]);
-    const result = act(charge(state, 'maerion', 25), { type: 'skill', bearerId: 'maerion', slot: 1, targetId: 'enemy-0' });
-    expect(of(result.events, 'signature')).toEqual([]);
+describe('Signature coverage', () => {
+  it('runs the signature clauses and Passives of every bearer with a kit', () => {
+    expect(Object.keys(radiantKits).filter(id => !radiantSignatureBearers.has(id as RadiantBearerId))).toEqual([]);
   });
   it('rejects a Shuriken ledger that does not hold exactly 2', () => {
     const state = battle(['elise']);

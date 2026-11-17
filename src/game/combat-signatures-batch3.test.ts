@@ -195,7 +195,7 @@ describe('Caldrex: Heat', () => {
   it('gains 1 Heat once per enemy phase when an enemy damages him, up to 3', () => {
     let state = battle(['tide', 'caldrex'], 2);
     let phase = enemyPhase(state, ['caldrex'], 2, 2);
-    expect(member(phase.state, 'caldrex').signature).toEqual({ kind: 'heat', count: 1, latch: true, burnUp: null });
+    expect(member(phase.state, 'caldrex').signature).toEqual({ kind: 'heat', count: 1, latch: true });
     state = act(phase.state, { type: 'finish-enemy-phase' }).state;
     expect(member(state, 'caldrex').signature).toMatchObject({ count: 1, latch: false });
     for (let turn = 0; turn < 3; turn++) {
@@ -206,7 +206,7 @@ describe('Caldrex: Heat', () => {
   });
   it('spends all Heat on Cinder Discharge (+25% each) and its Flare (+5% Shield each)', () => {
     const state = charge(battle(['tide', 'caldrex']), 'caldrex', 100);
-    member(state, 'caldrex').signature = { kind: 'heat', count: 2, latch: false, burnUp: null };
+    member(state, 'caldrex').signature = { kind: 'heat', count: 2, latch: false };
     const attack = member(state, 'caldrex').stats.attack;
     const discharge = act(state, { type: 'skill', bearerId: 'caldrex', slot: 2 });
     expect(total(discharge.events, 'skill')).toBe(radiantDirectDamage(attack, 0, 2.2 + .5));
@@ -216,7 +216,8 @@ describe('Caldrex: Heat', () => {
     const tide = member(state, 'tide');
     expect(of(gates.events, 'shield').find(event => event.targetId === 'tide')!.amount)
       .toBe(Math.round((.5 + .1) * effect * tide.stats.hp));
-    expect(member(gates.state, 'caldrex').signature).toMatchObject({ count: 0, burnUp: { value: .25 * effect, remaining: 2 } });
+    expect(member(gates.state, 'caldrex').signature).toMatchObject({ count: 0 });
+    expect(member(gates.state, 'caldrex').burnUp).toEqual({ value: .25 * effect, remaining: 2 });
   });
   it('boosts Burn ticks from allies while Nothing Beyond These Gates lasts', () => {
     let state = charge(battle(['tide', 'caldrex']), 'caldrex', 40);
@@ -224,12 +225,12 @@ describe('Caldrex: Heat', () => {
     const burn = state.enemies[0].debuffs.find(effect => effect.category === 'burn')!.magnitude;
     state = nextTurn(state).state;
     state = act(charge(state, 'caldrex', 100), { type: 'flare', bearerId: 'caldrex' }).state;
-    const boost = (member(state, 'caldrex').signature as { burnUp: { value: number } }).burnUp.value;
+    const boost = member(state, 'caldrex').burnUp!.value;
     const ticks = (events: RadiantCombatEvent[]) => of(events, 'damage').filter(event => event.origin === 'periodic');
     const first = nextTurn(state);
     expect(ticks(first.events).map(event => event.offered)).toEqual([Math.round(burn * (1 + boost))]);
     const second = nextTurn(first.state);
-    expect(member(second.state, 'caldrex').signature).toMatchObject({ burnUp: null });
+    expect(member(second.state, 'caldrex').burnUp).toBeNull();
   });
 });
 
@@ -386,7 +387,7 @@ describe('Batch 3 state and presentation', () => {
       ['nerithe', { kind: 'survey', targetId: 'enemy-0', count: 4 }, 'Survey'],
       ['nerithe', { kind: 'survey', targetId: null, count: 1 }, 'Survey'],
       ['orvella', { kind: 'foundation', foundation: { durability: 11, max: 10, remaining: 2 } }, 'Foundation'],
-      ['caldrex', { kind: 'heat', count: 1, latch: 'no', burnUp: null }, 'heat'],
+      ['caldrex', { kind: 'heat', count: 1, latch: 'no' }, 'heat'],
       ['solenne', { kind: 'stillness', count: 5, latch: false }, 'stillness'],
       ['myrthen', { kind: 'season', count: 3, latch: false }, 'season'],
       ['seravelle', { kind: 'cadence', count: 4, latch: false }, 'cadence'],

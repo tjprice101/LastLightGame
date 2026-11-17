@@ -17733,8 +17733,16 @@ var radiantSignatureBearers = /* @__PURE__ */ new Set([
   "neralis",
   "varkhel",
   "seravelle",
-  "velmira"
+  "velmira",
+  "maerion",
+  "caevren",
+  "vespera",
+  "ilyss",
+  "asteriel",
+  "serapha"
 ]);
+var coverCasters = ["bruno", "caevren"];
+var burnBoostCasters = ["caldrex", "vespera"];
 var radiantShurikenCount = 2;
 var radiantGustCap = 5;
 var radiantSignatureCaps = {
@@ -17748,7 +17756,11 @@ var radiantSignatureCaps = {
   current: 3,
   tension: 4,
   cadence: 3,
-  crosscut: 3
+  crosscut: 3,
+  load: 3,
+  severance: 3,
+  interval: 3,
+  promise: 3
 };
 var radiantPassiveValues = {
   emberBurn: 0.3,
@@ -17763,12 +17775,25 @@ var radiantPassiveValues = {
   foundationShare: 0.2,
   stillnessReduction: 0.2,
   harvestBonus: 0.35,
-  harvestIgnore: 0.2
+  harvestIgnore: 0.2,
+  unreturnedCap: 0.45,
+  signalTurns: 2
 };
 function radiantBeat(round) {
   return (round - 1) % 3;
 }
-var counterKinds = ["stillness", "season", "current", "tension", "cadence", "crosscut"];
+var counterKinds = [
+  "heat",
+  "stillness",
+  "season",
+  "current",
+  "tension",
+  "cadence",
+  "crosscut",
+  "load",
+  "severance",
+  "interval"
+];
 function startingSignature(starter) {
   if (!radiantSignatureBearers.has(starter)) return null;
   if (starter === "atmoso") return { kind: "cyclone", gusts: 0, cyclone: null };
@@ -17782,22 +17807,24 @@ function startingSignature(starter) {
   if (starter === "kaelith") return { kind: "incisions", incisions: [] };
   if (starter === "nerithe") return { kind: "survey", targetId: null, count: 0 };
   if (starter === "orvella") return { kind: "foundation", foundation: null };
-  if (starter === "caldrex") return { kind: "heat", count: 0, latch: false, burnUp: null };
+  if (starter === "caldrex") return { kind: "heat", count: 0, latch: false };
   if (starter === "solenne") return { kind: "stillness", count: 0, latch: false };
   if (starter === "myrthen") return { kind: "season", count: 0, latch: false };
   if (starter === "neralis") return { kind: "current", count: 0, latch: false };
   if (starter === "varkhel") return { kind: "tension", count: 0, latch: false };
   if (starter === "seravelle") return { kind: "cadence", count: 0, latch: false };
   if (starter === "velmira") return { kind: "crosscut", count: 0, latch: false };
+  if (starter === "maerion") return { kind: "unreturned", stored: 0 };
+  if (starter === "caevren") return { kind: "load", count: 0, latch: false };
+  if (starter === "vespera") return { kind: "signal", signals: [] };
+  if (starter === "ilyss") return { kind: "severance", count: 0, latch: false };
+  if (starter === "asteriel") return { kind: "path", count: 0, path: null };
+  if (starter === "serapha") return { kind: "interval", count: 0, latch: false };
   return null;
 }
 function validateSignatures(state, member) {
-  if (!("seed" in member) || !("cover" in member) || !("signature" in member)) throw new Error("Invalid radiant signature state.");
-  const casterOf = (id, starter) => {
-    const caster = bearer(state, id);
-    if (caster.loadout.starter !== starter || caster === member) throw new Error("Invalid radiant signature caster.");
-    return caster;
-  };
+  if (!("seed" in member) || !("cover" in member) || !("burnUp" in member) || !("signature" in member))
+    throw new Error("Invalid radiant signature state.");
   if (member.seed !== null) {
     if (!member.seed || Object.keys(member.seed).length !== 2) throw new Error("Invalid radiant Seed.");
     const caster = bearer(state, member.seed.casterId);
@@ -17806,11 +17833,18 @@ function validateSignatures(state, member) {
   }
   if (member.cover !== null) {
     if (!member.cover || Object.keys(member.cover).length !== 3) throw new Error("Invalid radiant Cover.");
-    casterOf(member.cover.casterId, "bruno");
+    const caster = bearer(state, member.cover.casterId);
+    if (caster === member || !coverCasters.includes(caster.loadout.starter)) throw new Error("Invalid radiant signature caster.");
     finite(member.cover.share, "Cover share", Number.MIN_VALUE);
     if (member.cover.share >= 1) throw new Error("Invalid radiant Cover share.");
     safe(member.cover.remaining, "Cover clock", 1);
     if (member.cover.remaining > radiantMaximumDuration) throw new Error("Radiant effect exceeds its maximum duration.");
+  }
+  if (member.burnUp !== null) {
+    if (!member.burnUp || typeof member.burnUp !== "object" || Object.keys(member.burnUp).length !== 2 || !burnBoostCasters.includes(member.loadout.starter)) throw new Error("Invalid radiant Burn boost.");
+    finite(member.burnUp.value, "Burn boost", Number.MIN_VALUE);
+    safe(member.burnUp.remaining, "Burn boost clock", 1);
+    if (member.burnUp.remaining > radiantMaximumDuration) throw new Error("Radiant effect exceeds its maximum duration.");
   }
   const own = member.signature, expected = startingSignature(member.loadout.starter);
   if (own === null !== (expected === null) || own && own.kind !== expected?.kind) throw new Error("Invalid radiant signature state.");
@@ -17830,9 +17864,9 @@ function validateSignatures(state, member) {
   } else if (own?.kind === "wounds") {
     safe(own.wounds, "Wounds");
     if (Object.keys(own).length !== 2) throw new Error("Invalid radiant Wounds.");
-  } else if (own && !validateCounters(state, own)) validateEnemyLedger(state, member, own);
+  } else if (own && !validateCounters(state, member, own)) validateEnemyLedger(state, member, own);
 }
-function validateCounters(state, own) {
+function validateCounters(state, member, own) {
   const capped = (value2, cap, name) => {
     safe(value2, name);
     if (value2 > cap) throw new Error(`Invalid radiant ${name}.`);
@@ -17859,17 +17893,33 @@ function validateCounters(state, own) {
     clock(foundation.remaining, "Foundation clock");
     return true;
   }
-  if (own.kind === "heat" || counterKinds.includes(own.kind)) {
+  if (own.kind === "unreturned") {
+    if (Object.keys(own).length !== 2) throw new Error("Invalid radiant Unreturned.");
+    capped(own.stored, rounded(radiantPassiveValues.unreturnedCap * member.stats.hp), "Unreturned");
+    return true;
+  }
+  if (own.kind === "signal") {
+    if (Object.keys(own).length !== 2 || !Array.isArray(own.signals)) throw new Error("Invalid radiant Signal.");
+    const holders = own.signals.map((signal) => signal?.holderId);
+    if (new Set(holders).size !== holders.length) throw new Error("Invalid radiant Signal.");
+    for (const signal of own.signals) {
+      if (!signal || typeof signal !== "object" || Object.keys(signal).length !== 3 || typeof signal.holderId !== "string" || bearer(state, signal.holderId) === member) throw new Error("Invalid radiant Signal.");
+      finite(signal.value, "Signal", Number.MIN_VALUE);
+      safe(signal.remaining, "Signal clock", 1);
+      if (signal.remaining > radiantPassiveValues.signalTurns) throw new Error("Invalid radiant Signal clock.");
+    }
+    return true;
+  }
+  if (own.kind === "path") {
+    if (Object.keys(own).length !== 3 || own.path !== null && own.path !== "shelter" && own.path !== "flourish" || own.path === null && own.count !== 0) throw new Error("Invalid radiant Path.");
+    capped(own.count, radiantSignatureCaps.promise, "Promise");
+    return true;
+  }
+  if (counterKinds.includes(own.kind)) {
     const counter = own;
-    if (Object.keys(counter).length !== (counter.kind === "heat" ? 4 : 3) || typeof counter.latch !== "boolean")
+    if (Object.keys(counter).length !== 3 || typeof counter.latch !== "boolean")
       throw new Error(`Invalid radiant ${counter.kind}.`);
     capped(counter.count, radiantSignatureCaps[counter.kind], counter.kind);
-    if (counter.kind === "heat" && counter.burnUp !== null) {
-      if (!counter.burnUp || typeof counter.burnUp !== "object" || Object.keys(counter.burnUp).length !== 2)
-        throw new Error("Invalid radiant Burn boost.");
-      finite(counter.burnUp.value, "Burn boost", Number.MIN_VALUE);
-      clock(counter.burnUp.remaining, "Burn boost clock");
-    }
     return true;
   }
   return false;
@@ -18025,6 +18075,7 @@ function createRadiantCombat(loadouts, enemies2, chargeSeed) {
         buffs: [],
         seed: null,
         cover: null,
+        burnUp: null,
         signature: startingSignature(loadout.starter)
       };
     }),
@@ -18237,7 +18288,7 @@ function nextAlly(state, actor2) {
 }
 function cleanse2(events, target) {
   const weaken2 = target.buffs.find((effect2) => effect2.category === "weaken");
-  if (!weaken2) return;
+  if (!weaken2) return false;
   target.buffs.splice(target.buffs.indexOf(weaken2), 1);
   events.push({
     type: "status",
@@ -18247,6 +18298,7 @@ function cleanse2(events, target) {
     magnitude: weaken2.magnitude,
     remaining: 0
   });
+  return true;
 }
 function signed(member) {
   return radiantSignatureBearers.has(member.loadout.starter);
@@ -18281,6 +18333,10 @@ function condition(state, actor2, when) {
       return radiantBeat(state.round) === 2;
     case "crosscut-2":
       return actor2.signature?.kind === "crosscut" && actor2.signature.count >= 2;
+    case "shelter-or-no-path":
+      return actor2.signature?.kind === "path" && actor2.signature.path !== "flourish";
+    case "flourish":
+      return actor2.signature?.kind === "path" && actor2.signature.path === "flourish";
     default:
       return false;
   }
@@ -18333,6 +18389,7 @@ function signatureStacks(actor2, primary) {
   if (own?.kind === "quarry") return own.contributors.length;
   if (own?.kind === "combo") return own.combo;
   if (own?.kind === "incisions") return own.incisions.find((entry) => entry.enemyId === primary?.id)?.stacks ?? 0;
+  if (own?.kind === "path") return own.count;
   return counterOf(own)?.count ?? 0;
 }
 function spendTrap(events, owner, trap) {
@@ -18377,7 +18434,7 @@ function releaseCyclone2(state, events, actor2, multiplier, source) {
   for (const target of state.enemies.filter((member) => member.hp > 0)) strike(state, events, actor2, target, source, coefficient);
 }
 function counterOf(own) {
-  return own && (own.kind === "heat" || counterKinds.includes(own.kind)) ? own : void 0;
+  return own && counterKinds.includes(own.kind) ? own : void 0;
 }
 function signatureSurge(actor2, clauses, primary) {
   const own = actor2.signature;
@@ -18417,14 +18474,42 @@ function holdStillness(events, target, amount) {
 }
 function hitGain(events, holder) {
   const own = holder.signature;
-  if (own?.kind !== "heat" && own?.kind !== "tension" || own.latch) return;
+  if (own?.kind !== "heat" && own?.kind !== "tension" && own?.kind !== "load" || own.latch) return;
   own.latch = true;
   own.count = Math.min(radiantSignatureCaps[own.kind], own.count + 1);
   events.push({ type: "signature", bearerId: holder.loadout.id, op: own.kind, amount: own.count });
 }
 function burnBoost(state, source) {
   if (source.kind === "enemy") return 0;
-  return state.bearers.reduce((sum, member) => sum + (member.signature?.kind === "heat" ? member.signature.burnUp?.value ?? 0 : 0), 0);
+  return state.bearers.reduce((sum, member) => sum + (member.burnUp?.value ?? 0), 0);
+}
+function carryUnreturned(state, events, healthLoss) {
+  const maerion = livingStarter(state, "maerion"), own = maerion?.signature;
+  if (!maerion || own?.kind !== "unreturned" || healthLoss <= 0) return;
+  const stored = Math.min(rounded(radiantPassiveValues.unreturnedCap * maerion.stats.hp), own.stored + healthLoss);
+  if (stored === own.stored) return;
+  own.stored = stored;
+  events.push({ type: "signature", bearerId: maerion.loadout.id, op: "unreturned", amount: stored });
+}
+function intervalGain(state, events, attacker) {
+  const serapha = livingStarter(state, "serapha"), own = serapha?.signature;
+  if (!serapha || own?.kind !== "interval" || own.latch) return;
+  const weaken2 = attacker.debuffs.find((effect2) => effect2.category === "weaken");
+  if (!weaken2 || weaken2.source.kind === "enemy" || weaken2.source.bearerId !== serapha.loadout.id) return;
+  own.latch = true;
+  gainCounter(events, serapha);
+}
+function spendSignal(state, events, holder) {
+  for (const member of state.bearers) {
+    const own = member.signature;
+    if (own?.kind !== "signal") continue;
+    const signal = own.signals.find((entry) => entry.holderId === holder.loadout.id);
+    if (!signal) continue;
+    own.signals = own.signals.filter((entry) => entry !== signal);
+    events.push({ type: "signature", bearerId: member.loadout.id, op: "signal", holderId: holder.loadout.id, amount: 0 });
+    return signal.value;
+  }
+  return 0;
 }
 function gainCounter(events, holder) {
   const counter = counterOf(holder.signature);
@@ -18572,6 +18657,10 @@ function signatureClauses(state, events, actor2, input, clauses, primary, enemyT
           own.combo = 0;
           events.push({ type: "signature", bearerId: id, op: "combo", amount: 0 });
         }
+        if (own?.kind === "path" && own.count > 0) {
+          own.count = 0;
+          events.push({ type: "signature", bearerId: id, op: "promise", amount: 0 });
+        }
         const counter = counterOf(own);
         if (!counter || counter.count === 0) break;
         counter.count = 0;
@@ -18629,11 +18718,41 @@ function signatureClauses(state, events, actor2, input, clauses, primary, enemyT
         break;
       }
       case "burn-up": {
-        if (own?.kind !== "heat") break;
         const boost = value2 * input.effectScale * input.skill.skillPower;
         const remaining = Math.min(radiantMaximumDuration, (clause.turns ?? 1) + input.skill.skillDuration);
-        own.burnUp = { value: Math.max(boost, own.burnUp?.value ?? 0), remaining: Math.max(remaining, own.burnUp?.remaining ?? 0) };
-        events.push({ type: "signature", bearerId: id, op: "burn-up", amount: own.burnUp.value });
+        actor2.burnUp = { value: Math.max(boost, actor2.burnUp?.value ?? 0), remaining: Math.max(remaining, actor2.burnUp?.remaining ?? 0) };
+        events.push({ type: "signature", bearerId: id, op: "burn-up", amount: actor2.burnUp.value });
+        break;
+      }
+      case "signal":
+        if (own?.kind !== "signal") break;
+        for (const ally of allies(clause.to)) {
+          if (ally === actor2) continue;
+          const strength = value2 * input.effectScale * input.skill.skillPower;
+          const previous = own.signals.find((entry) => entry.holderId === ally.loadout.id);
+          const signal = {
+            holderId: ally.loadout.id,
+            value: Math.max(strength, previous?.value ?? 0),
+            remaining: radiantPassiveValues.signalTurns
+          };
+          own.signals = [...own.signals.filter((entry) => entry !== previous), signal];
+          events.push({ type: "signature", bearerId: id, op: "signal", holderId: ally.loadout.id, amount: signal.value });
+        }
+        break;
+      case "spend-unreturned":
+        if (own?.kind !== "unreturned" || own.stored === 0) break;
+        own.stored = 0;
+        events.push({ type: "signature", bearerId: id, op: "unreturned", amount: 0 });
+        break;
+      case "path": {
+        if (own?.kind !== "path") break;
+        const next = value2 === 1 ? "shelter" : "flourish";
+        if (own.path !== null && own.path !== next) {
+          own.count = Math.min(radiantSignatureCaps.promise, own.count + 1);
+          events.push({ type: "signature", bearerId: id, op: "promise", amount: own.count });
+        }
+        own.path = next;
+        events.push({ type: "signature", bearerId: id, op: "path", amount: value2 });
         break;
       }
       case "fate-mark": {
@@ -18679,11 +18798,12 @@ function bloomSeeds(state, events) {
 function tickSignatures(state, events) {
   for (const member of state.bearers) {
     if (member.cover && --member.cover.remaining <= 0) member.cover = null;
+    if (member.burnUp && --member.burnUp.remaining <= 0) member.burnUp = null;
     const own = member.signature;
+    if (own?.kind === "signal") own.signals = own.signals.filter((signal) => --signal.remaining > 0);
     if (own?.kind === "thorns") own.traps = own.traps.filter((trap) => --trap.remaining > 0);
     if (own?.kind === "marks") own.marks = own.marks.filter((mark) => --mark.remaining > 0);
     if (own?.kind === "foundation" && own.foundation && --own.foundation.remaining <= 0) own.foundation = null;
-    if (own?.kind === "heat" && own.burnUp && --own.burnUp.remaining <= 0) own.burnUp = null;
     if (own?.kind === "cyclone" && own.cyclone && --own.cyclone.remaining <= 0)
       releaseCyclone2(state, events, member, 1, { kind: "skill", bearerId: member.loadout.id });
   }
@@ -18732,8 +18852,11 @@ function cast(state, events, actor2, input, hitCharge) {
   const valueOf = (effect2) => effect2.value + (effect2.perStack ?? 0) * stacks;
   const power2 = (def.alt && holds(def.alt.when) ? def.alt.power : def.power) + (def.perStack ?? 0) * stacks;
   const surge = signed(actor2) ? signatureSurge(actor2, clauses, primary) : { ignore: 0, bonus: 0 };
+  const signal = def.target !== "none" ? spendSignal(state, events, actor2) : 0;
+  const ferry = clauses.find((clause) => clause.op === "spend-unreturned");
+  const unreturned = ferry && own?.kind === "unreturned" ? own.stored : 0;
   const ignore2 = surge.ignore + effects.reduce((sum, effect2) => sum + (effect2.kind === "ignore-defense" ? effect2.value : 0), 0);
-  const bonus2 = surge.bonus + effects.reduce((sum, effect2) => sum + (effect2.kind === "damage-bonus" ? effect2.value : 0), 0);
+  const bonus2 = surge.bonus + signal + effects.reduce((sum, effect2) => sum + (effect2.kind === "damage-bonus" ? effect2.value : 0), 0);
   const enemyTargets = def.target === "all-enemies" ? state.enemies.filter((member) => member.hp > 0) : primary ? [primary] : [];
   const struck = /* @__PURE__ */ new Set();
   const weakened = new Set(enemyTargets.filter((target) => target.debuffs.some((effect2) => effect2.category === "weaken")));
@@ -18782,8 +18905,10 @@ function cast(state, events, actor2, input, hitCharge) {
   let restored = false;
   for (const effect2 of effects) {
     if (effect2.kind !== "heal" && effect2.kind !== "shield") continue;
-    for (const ally of alliesFor(effect2.to)) {
-      const magnitude2 = valueOf(effect2) * input.effectScale * skill2.skillPower * ally.stats.hp;
+    const recipients = alliesFor(effect2.to);
+    const carried = effect2.kind === "heal" && ferry?.to === effect2.to && recipients.length ? unreturned / recipients.length : 0;
+    for (const ally of recipients) {
+      const magnitude2 = valueOf(effect2) * input.effectScale * skill2.skillPower * ally.stats.hp + carried;
       if (effect2.kind === "heal") restored = heal2(state, events, ally, source, magnitude2) > 0 || restored;
       else shield2(state, events, ally, source, magnitude2);
     }
@@ -18791,7 +18916,12 @@ function cast(state, events, actor2, input, hitCharge) {
   if (restored && own?.kind === "current") gainCounter(events, actor2);
   for (const effect2 of effects) {
     if (effect2.kind === "cleanse") {
-      for (const ally of alliesFor(effect2.to)) cleanse2(events, ally);
+      let removed = false;
+      for (const ally of alliesFor(effect2.to)) removed = cleanse2(events, ally) || removed;
+      if (removed && own?.kind === "severance" && !own.latch) {
+        own.latch = true;
+        gainCounter(events, actor2);
+      }
       continue;
     }
     if (effect2.kind !== "attack-up" && effect2.kind !== "defense-up" && effect2.kind !== "reduction" && effect2.kind !== "gain-up" && effect2.kind !== "hot") continue;
@@ -18886,6 +19016,7 @@ function enemyAttack(state, events, action) {
   });
   const source = { kind: "enemy", enemyId: actor2.id };
   let damaged = false;
+  intervalGain(state, events, actor2);
   if (action.healBefore !== void 0) heal2(state, events, actor2, source, action.healBefore);
   if (action.refreshShieldBefore !== void 0) {
     const amount = rounded(action.refreshShieldBefore);
@@ -18924,6 +19055,7 @@ function enemyAttack(state, events, action) {
         if (taken2 > 0) {
           const redirected = packet(state, events, coverer, source, "direct", taken2, void 0, true);
           refundFullBlock(state, events, coverer, redirected, taken2);
+          if (coverer.hp > 0 && redirected.healthLoss + redirected.absorbed > 0) hitGain(events, coverer);
           damaged = true;
         }
       }
@@ -18932,6 +19064,7 @@ function enemyAttack(state, events, action) {
       const part = packet(state, events, target, source, "direct", taken);
       damaged = true;
       refundFullBlock(state, events, target, part, taken);
+      carryUnreturned(state, events, part.healthLoss);
       if (target.signature?.kind === "wounds" && part.healthLoss > 0 && target.hp > 0) {
         target.signature.wounds += part.healthLoss;
         safe(target.signature.wounds, "Wounds");
