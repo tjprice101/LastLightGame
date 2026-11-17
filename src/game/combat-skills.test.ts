@@ -47,7 +47,8 @@ describe('Skill 1 / Skill 2 action (D-473 N2, N8)', () => {
     const burnPower = radiantLeaderEffects(state.bearers[0].loadout).find(effect => effect.kind === 'burn-power')!.amount;
     const burn = result.state.enemies[0].debuffs.find(effect => effect.category === 'burn')!;
     expect(burn).toMatchObject({ source: { kind: 'skill', bearerId: 'ember' }, remaining: 3 });
-    expect(burn.magnitude).toBeCloseTo(.25 * 1.5 * state.bearers[0].stats.attack * (1 + burnPower));
+    // Unbroken Ember: +30% Burn while Infernis lives.
+    expect(burn.magnitude).toBeCloseTo(.25 * 1.5 * state.bearers[0].stats.attack * (1 + burnPower) * 1.3);
   });
   it('rejects a missing or extra target and an unaffordable skill without mutating the input', () => {
     const state = charge(battle([loadout('ember'), loadout('tide')]), 'ember', 24);

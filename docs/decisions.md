@@ -1,5 +1,34 @@
 # Decision log
 
+## Battle Flurry Phase 3 Step 2b batch 1: signature mechanics (D-475, 2026-11-17)
+
+Implements the approved batch 1 kits (D-473) on branch `battle-flurry-phase3`.
+**Not released.** Spec: [combat spec](combat.md#signature-mechanics-batch-1-d-475-battle-flurry-phase-3-step-2b).
+
+- **Implemented:** Seeds, Cover, Cyclone and Gusts, Shuriken, Wounds, Burn
+  detonation, Tempo, and the Passives of all 10 batch 1 bearers (Unbroken
+  Ember, Stillwater Guard, Lens of Diminishment, Shared Mindflame, Faultbound
+  Resolve). Later batches stay inert (`radiantSignatureBearers`).
+- **Implementation rules, chosen where the approved text was silent (owner
+  may revise during the retune):**
+  - A Passive works only while its bearer lives unless the text says
+    otherwise.
+  - Unbroken Ember boosts kit Burn only, when it is applied.
+  - Detonated Burn is Burn damage and removes the turns it deals.
+  - Gusts accrue only while a Cyclone exists; a Cyclone dissipates if Atmoso
+    falls; the Flare's x3 release scales with the Flare tier.
+  - Lens of Diminishment also lengthens Conduit Weaken.
+  - Stillwater Guard counts Shields from Tizu's skills and Flares only.
+  - Cover share is fixed; the moved part skips Bruno's Defense and reductions,
+    keeps his Shields and gives him no incoming Luminosity.
+  - Shuriken lodge only in a surviving target.
+  - Wounds strikes are exact (no mitigation).
+  - Disciple's fill includes herself.
+- **State:** schema stays 8 (unreleased) with new per-bearer `seed`, `cover`
+  and `signature` fields, a `signature` event and a `redirected` damage flag.
+- **Open:** batches 2-4, Step 3 (UI and kit text, including signature
+  counters), Step 4 retune, the release deploy (owner approves).
+
 ## Battle Flurry Phase 3 Step 2a: engine framework (D-474, 2026-11-17)
 
 Implements the D-473 framework on branch `battle-flurry-phase3`. **Not

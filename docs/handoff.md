@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 Step 2b batch 1: signatures (2026-11-17)
+
+**Implemented on branch `battle-flurry-phase3`, not released (D-475).**
+`main` and `overhaul/radiant-foundation` are unchanged. Spec:
+[combat spec](combat.md#signature-mechanics-batch-1-d-475-battle-flurry-phase-3-step-2b).
+- Signatures and Passives now run for Infernis, Tizu, Flora, Atmoso, Aurora,
+  Bliss, Bruno, Disciple, Elise and Razor: Burn detonation, full-block
+  refunds, Seeds, Cyclone and Gusts, Weaken +1 turn, Tempo, Cover, Attack Up
+  fills, Shuriken and Wounds.
+- New per-bearer state (`seed`, `cover`, `signature`), a `signature` event and
+  a `redirected` damage flag. Schema stays 8 (unreleased).
+- Implementation rules for points the approved text left open are listed in
+  D-475 for owner review.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Full `npx vitest run`: 301 files, 10,557 tests passed.
+- New `src/game/combat-signatures.test.ts` (19 tests) covers each mechanic,
+  the inert later batches, Shuriken validation and presentation replay of the
+  new events.
+- Updated expectations where the new Passives now apply (Tizu refunds,
+  Infernis Burn +30%, Disciple fills).
+- `npx vite build`: passed (existing chunk advisory).
+- `node tools/bundle_server_game.mjs`: bundle changed; **not deployed**.
+- Pressure smoke (temporary test, deleted): 5 batch 1 trios at level 60,
+  6 anchors, 2 seeds: all 60 encounters ran to an outcome with valid state at
+  every step. Win rates are untuned (Step 4).
+- **Not verified:** in-game play (no skill UI yet); hosted or online battle.
+
+**Next:**
+- Step 2b batch 2 (Rose and Calamitic: Rosetta, Thornia, Crinso, Ozriel,
+  Ilvaris, Kaelith) on Opus, after `/clear`, on branch `battle-flurry-phase3`.
+- Then batches 3-4, Step 3, Step 4 and one release with the authority deploy
+  (owner approval).
+
 ## Battle Flurry Phase 3 Step 2a: engine framework (2026-11-17)
 
 **Implemented on branch `battle-flurry-phase3`, not released (D-474).**

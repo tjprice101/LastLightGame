@@ -502,7 +502,8 @@ describe('progressive signatures and layered shared readiness', () => {
     const supported = applyRadiantCombatAction(support, { type: 'flare', bearerId: 'disciple' });
     expect(supported.events.some(event => event.type === 'damage')).toBe(false);
     expect(supported.events.find(event => event.type === 'status' && event.status === 'attack-up')).toBeDefined();
-    expect(supported.state.gauge.members[0].charge).toBe(0);
+    // Shared Mindflame: Disciple's own Attack Up fills her 5.
+    expect(supported.state.gauge.members[0].charge).toBe(5);
     expect(supported.state.chargeSeed).toBe(0);
   });
   it('does not detonate existing Burn before an Ultimate Convergent Light combo', () => {
@@ -581,13 +582,13 @@ describe('kit Shields, Damage Reduction and incoming Luminosity', () => {
     expect(result.events.filter(event => event.type === 'shield').map(event => event.type === 'shield' && event.amount))
       .toEqual(state.bearers.map(member => Math.round(.35 * member.stats.hp)));
   });
-  it('grants incoming charge to each blocked target without extra Shield-owner charge', () => {
+  it('grants incoming charge and the Stillwater Guard refund to each blocked target, not the Shield owner', () => {
     let state = apply(charged(fixture(['tide', 'sprout']), 'sparkling'), { type: 'flare', bearerId: 'ally-0' });
     state = passPlayers(state);
     const result = applyRadiantCombatAction(state, { type: 'enemy-attack', enemyId: 'enemy',
       targetIds: ['ally-0', 'ally-1'], coefficient: .1 });
     expect(result.state.bearers.map(member => member.hp)).toEqual(state.bearers.map(member => member.hp));
-    expect(result.state.gauge.members.map(member => member.charge)).toEqual([10, 10]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([18, 18]);
     expect(result.events.filter(event => event.type === 'damage').every(event => event.healthLoss === 0)).toBe(true);
   });
   it('grants each direct incoming hit without funding a different Shield owner', () => {
@@ -597,11 +598,12 @@ describe('kit Shields, Damage Reduction and incoming Luminosity', () => {
       loadout('sprout', { id: 'ally-1', form: 6 })], enemies, 0), 'sparkling');
     state = passPlayers(apply(state, { type: 'flare', bearerId: 'ally-0' }));
     state = apply(state, { type: 'enemy-attack', enemyId: 'first', targetIds: ['ally-1'], coefficient: 1 });
-    expect(state.gauge.members.map(member => member.charge)).toEqual([0, 10]);
+    // +10 incoming and +8 Stillwater Guard for the fully blocked hit; Tizu (the Shield owner) gains nothing.
+    expect(state.gauge.members.map(member => member.charge)).toEqual([0, 18]);
     state = apply(state, { type: 'enemy-attack', enemyId: 'second', targetIds: ['ally-1'], coefficient: 1 });
-    expect(state.gauge.members.map(member => member.charge)).toEqual([0, 20]);
+    expect(state.gauge.members.map(member => member.charge)).toEqual([0, 36]);
     state = apply(state, { type: 'finish-enemy-phase' });
-    expect(state.gauge.members.map(member => member.charge)).toEqual([0, 20]);
+    expect(state.gauge.members.map(member => member.charge)).toEqual([0, 36]);
   });
   it('applies Damage Reduction without a Defend base and expires it on its clock', () => {
     const state = fixture(['tide']);

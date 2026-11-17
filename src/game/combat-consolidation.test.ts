@@ -70,7 +70,7 @@ describe('consolidated live combat contract', () => {
     expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
   });
 
-  it('grants 10 per surviving incoming direct hit through Shields, without sharing', () => {
+  it('grants 10 per surviving incoming direct hit through Shields, plus the Tizu full-block refund, without sharing', () => {
     const state = fixture(['ember', 'tide']);
     state.phase = 'enemy';
     state.acted = ['ember', 'tide'];
@@ -78,9 +78,10 @@ describe('consolidated live combat contract', () => {
     const next = applyRadiantCombatAction(state, {
       type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 1, hits: 3,
     });
-    expect(next.state.gauge.members.map(member => member.charge)).toEqual([30, 0]);
+    // Each fully blocked hit: +10 incoming and +8 from Stillwater Guard (Tizu's Shield).
+    expect(next.state.gauge.members.map(member => member.charge)).toEqual([54, 0]);
     expect(next.state.bearers[0].hp).toBe(state.bearers[0].hp);
-    expect(next.events.filter(event => event.type === 'charge')).toHaveLength(3);
+    expect(next.events.filter(event => event.type === 'charge')).toHaveLength(6);
   });
 
   it.each([['sparkling', 1, 1, 100, 4], ['glimmering', 4, 6, 200, 8], ['ultimate', 6, 11, 200, 12]] as const)(
@@ -195,9 +196,9 @@ describe('consolidated live combat contract', () => {
     state.gauge.members[0].charge = 100;
     const offer = radiantFinalFlare(state.bearers[0].loadout, 'sparkling');
     const cast = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ember' });
-    // Burn = value x tier/form scale x Skill Power (Attacker 1.5) x caster Attack x Burn power x element.
+    // Burn = value x tier/form scale x Skill Power (Attacker 1.5) x caster Attack x Burn power x element x Unbroken Ember.
     const magnitude = offer.burn * 1.5 * effectiveRadiantStats(state, 'ember').attack *
-      (1 + radiantLeaderEffects(state.bearers[0].loadout).find(effect => effect.kind === 'burn-power')!.amount) * .75;
+      (1 + radiantLeaderEffects(state.bearers[0].loadout).find(effect => effect.kind === 'burn-power')!.amount) * .75 * 1.3;
     expect(cast.state.enemies[0].debuffs.find(effect => effect.category === 'burn')!.magnitude).toBeCloseTo(magnitude);
     cast.state.bearers[0].hp = 0;
     cast.state.gauge.members[0].living = false;
@@ -232,8 +233,9 @@ describe('consolidated live combat contract', () => {
         const result = applyRadiantCombatAction(state, {
           type: 'flare', bearerId: id, ...(offer.target === 'one-enemy' ? { targetId: 'enemy' } : {}),
         });
-        // A Flare that fills "all allies" refills its own caster; every other Flare spends to zero.
-        const selfFill = radiantBearerKits[id].kit.flare.effects.some(effect => effect.kind === 'fill' && effect.to === 'all-allies');
+        // A Flare that fills "all allies" refills its own caster (as does Disciple's Shared Mindflame); every other Flare spends to zero.
+        const selfFill = id === 'disciple' ||
+          radiantBearerKits[id].kit.flare.effects.some(effect => effect.kind === 'fill' && effect.to === 'all-allies');
         if (selfFill) expect(result.state.gauge.members[0].charge).toBeGreaterThan(0);
         else expect(result.state.gauge.members[0].charge).toBe(0);
         // State validation enforces the N6 category caps on every applied effect.

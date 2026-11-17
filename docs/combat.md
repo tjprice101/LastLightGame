@@ -1,5 +1,81 @@
 # Combat specification
 
+## Signature mechanics, batch 1 (D-475, Battle Flurry Phase 3 Step 2b)
+
+**Status:** implemented on branch `battle-flurry-phase3`, not released (ships
+with the rest of Phase 3). Kit text: [phase3-kit-drafts.md](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#batch-1-opening-and-flagships-10).
+
+**Scope.** `radiantSignatureBearers` lists the bearers whose signature clauses,
+`when` conditions, `alt` powers and Passive rules run: Infernis, Tizu, Flora,
+Atmoso, Aurora, Bliss, Bruno, Disciple, Elise and Razor. Every other bearer's
+signature data stays inert until its batch. Batch 1 Leaders already ran as
+Conduit pairs (D-456), so they are unchanged.
+
+**State (schema stays 8; unreleased).** Each bearer gains three fields:
+- `seed`: Flora's Seed on that holder (`casterId`, `value` as a fraction of
+  max Health, already scaled by Skill Power and Flare tier), or `null`.
+- `cover`: Bruno's Cover on that holder (`casterId`, `share`, `remaining`), or
+  `null`.
+- `signature`: the bearer's own counters: Atmoso `cyclone` (Gusts 0-5 and the
+  Cyclone), Elise `shuriken` (held + lodged = 2), Razor `wounds`; `null` for
+  everyone else. Validation enforces each shape.
+- New `signature` event (`op`, `bearerId`, optional `holderId`, `amount`) for
+  presentation; damage events moved by Cover carry `redirected: true`.
+
+**Shared rules.**
+- Conditions are read once, before the cast changes anything.
+- Signature clauses resolve right after the cast's damage, before enemy
+  debuffs, heals, buffs and fills.
+- A Passive works only while its bearer lives, unless its text says otherwise.
+- Signature damage in a Flare scales with the tier damage scale (N3).
+- Signature strikes (Cyclone, Shuriken) use the normal mitigation and damage
+  multipliers (Expose, conditional Conduits, element).
+
+**Per bearer.**
+- **Infernis.** Unbroken Ember: Burn from any ally's skill or Flare is +30%,
+  snapshot when applied, while Infernis lives (Conduit Burn keeps its basis).
+  Flame Arc detonation: each target whose Burn came from Infernis takes
+  `min(2, remaining)` ticks at once as Burn damage (no mitigation; a defeat
+  sends the Health mote to Infernis), and those turns are removed.
+- **Tizu.** Stillwater Guard: an enemy hit fully absorbed by Shields, at least
+  one of them from Tizu's skill or Flare, gives its holder 8 Luminosity
+  (x Gauge Gain), while Tizu lives. Redirected hits count.
+- **Flora.** Root of Hope: Seeds (one per ally; a stronger Seed replaces a
+  weaker one) heal their holder `value` x max Health at the start of the next
+  player turn, after the round event. If Flora or the holder has fallen, the
+  Seed withers. The heal's source is Flora's Passive, so her `healing`
+  Conduits and Leader apply.
+- **Atmoso.** Gale Cadence: while a Cyclone exists, each other living ally's
+  Normal Attack adds 1 Gust (max 5). Cyclone Weave releases any old Cyclone,
+  then creates one (2 turns, 60% + 20% per Gust, both x the Skill 2's Skill
+  Power). At 0 turns, at the end of the enemy phase after Burn, it releases on
+  all enemies. Razor Gale releases it now (x1); Sky Without End releases it at
+  x3 (x tier damage scale). A release clears Gusts. A Cyclone whose Atmoso has
+  fallen dissipates without damage.
+- **Aurora.** Lens of Diminishment: every ally-applied Weaken (kit or
+  Conduit) lasts 1 more turn while Aurora lives (6-turn maximum).
+- **Bliss.** Tempo: Opening when no other living ally has acted this turn;
+  Closing when every other living ally has acted. Alone, only Opening applies.
+- **Bruno.** Cover: one Cover per ally; the same caster keeps the larger share
+  and the longer clock. Each enemy hit on a covered ally moves
+  `round(hit x share)` to Bruno while he lives. Faultbound Resolve reduces the
+  moved part by 25%; Bruno's Defense and reductions do not apply to it, his
+  Shields do. The moved part gives Bruno no incoming Luminosity. The share is
+  fixed (not scaled by Skill Power or Flare tier). Cover clocks tick at the
+  end of the enemy phase.
+- **Disciple.** Shared Mindflame: each ally (Disciple included) that her
+  skill or Flare Attack Up reaches gains 5 Luminosity (x Gauge Gain).
+- **Elise.** Stormwheel Rhythm: Voltstar Cut lodges a held Shuriken in the
+  target if it survives the hits; with none held it hits for 280%. A lodged
+  Shuriken returns, without damage, when its enemy is defeated. A recall
+  strikes each lodged Shuriken's enemy for `value` x Attack x Skill Power, then
+  both return.
+- **Razor.** Unbroken Night: Health lost to enemy hits (not Shield-absorbed,
+  not redirected, not Burn) adds Wounds; healing does not remove them. A spend
+  strikes the target for exactly Wounds x value (x tier damage scale for the
+  Flare), with no mitigation, then Wounds reset. With no living target, Wounds
+  are kept.
+
 ## Skill 1 / Skill 2 engine framework (D-474, Battle Flurry Phase 3 Step 2a)
 
 **Status:** implemented on branch `battle-flurry-phase3`. Not released: the
