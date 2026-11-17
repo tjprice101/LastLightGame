@@ -1,7 +1,7 @@
 import { ACCOUNT_KEY, loadAccount, saveAccount } from '../game/account';
 import type { ProfileStorage } from '../game/profile';
 import type { StarterId } from '../content/starters';
-import { RadiantRunError, resolveRadiantRun, retiredRadiantRunNotice, validateFrozenRadiantRun, validateRadiantRunRequest,
+import { RadiantRunError, resolveRadiantRun, retiredRadiantRunNotice, retiredRunVersion, validateFrozenRadiantRun, validateRadiantRunRequest,
   type FrozenRadiantRun, type RadiantCheckpoint, type RadiantRunAuthority, type RadiantRunRequest,
   type RadiantRunResponse, type RadiantStudyGame } from './battle-run';
 
@@ -29,7 +29,7 @@ export class LocalRadiantTransport {
       const value = JSON.parse(raw) as LocalRadiantRecord;
       if (!Number.isSafeInteger(value.revision) || value.revision < 0) throw new Error();
       const version: unknown = value.run?.version;
-      if (version === 3 || version === 4 || version === 5)
+      if (retiredRunVersion(version))
         return { revision: value.revision, run: null, notice: retiredRadiantRunNotice };
       return { revision: value.revision, run: value.run === null ? null : validateFrozenRadiantRun(value.run) };
     } catch {

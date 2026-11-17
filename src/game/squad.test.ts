@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ACCOUNT_KEY, emptyAccount, equippedSquad, loadAccount, ownedCharacters, ownedProgress, saveAccount, setSquad,
+import { ACCOUNT_KEY, characterProtection, effectiveSquad, emptyAccount, equippedSquad, loadAccount, ownedCharacters, ownedProgress, saveAccount, setSquad,
   summonCharacter, upgradeCharacter, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { levelCost } from '../content/progression';
@@ -78,24 +78,42 @@ describe('owned roster, summoning and saved squads', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     expect(equippedSquad(loadAccount(saved))).toEqual(['ember']);
   });
-  it('saves all six owned members, rejects seven and preserves the wallet on rejection', () => {
+  it('saves all three owned members, rejects four and preserves the wallet on rejection', () => {
     const saved = storage();
     const account = fund(saved);
-    const ids: StarterId[] = ['ember', 'tide', 'sprout', 'atmoso', 'elise', 'bruno'];
+    const ids: StarterId[] = ['ember', 'tide', 'sprout'];
     for (const id of [...ids, 'aurora'] as StarterId[]) account.characters[id] = { level: 0, evolution: 1 };
     saveAccount(saved, account);
     setSquad(saved, ids);
     expect(equippedSquad(loadAccount(saved))).toEqual(ids);
     const before = saved.getItem(ACCOUNT_KEY);
-    expect(() => setSquad(saved, [...ids, 'aurora'])).toThrow('one to six');
+    expect(() => setSquad(saved, [...ids, 'aurora'])).toThrow('one to three');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+  });
+  it('loads a stored pre-D-471 six-member squad unchanged, plays its first three and trims only on a squad save', () => {
+    const saved = storage();
+    const account = fund(saved);
+    const ids: StarterId[] = ['ember', 'tide', 'sprout', 'atmoso', 'elise', 'bruno'];
+    for (const id of ids) account.characters[id] = { level: 0, evolution: 1 };
+    account.squad = ids;
+    saved.setItem(ACCOUNT_KEY, JSON.stringify(account));
+    const loaded = loadAccount(saved);
+    expect(loaded.squad).toEqual(ids);
+    expect(effectiveSquad(loaded)).toEqual(['ember', 'tide', 'sprout']);
+    expect(equippedSquad(loaded)).toEqual(['ember', 'tide', 'sprout']);
+    expect(characterProtection(loaded, 'bruno').inSquad).toBe(true);
+    // An unrelated save keeps the stored squad exactly.
+    saveAccount(saved, { ...loaded, fractalis: loaded.fractalis + 1 });
+    expect(loadAccount(saved).squad).toEqual(ids);
+    setSquad(saved, ['ember', 'tide', 'sprout']);
+    expect(loadAccount(saved).squad).toEqual(['ember', 'tide', 'sprout']);
   });
   it('rejects empty, duplicate, over-cap, unowned and malformed squads without changing saves', () => {
     const saved = storage();
     fund(saved);
     const before = saved.getItem(ACCOUNT_KEY);
     const invalid: [StarterId[], string][] = [
-      [[], 'one to six'], [['ember', 'ember'], 'distinct'],
+      [[], 'one to three'], [['ember', 'ember'], 'distinct'],
       [['tide'], 'no longer owned'], [['ember', 'tide', 'sprout', 'ember'], 'distinct'],
     ];
     for (const [ids, message] of invalid) {
@@ -131,16 +149,16 @@ describe('owned roster, summoning and saved squads', () => {
 });
 
 describe('full-team battle snapshots', () => {
-  it('freezes all six members through waves and rejects a seventh combatant', () => {
-    const roster: StarterId[] = ['ember', 'tide', 'sprout', 'atmoso', 'elise', 'bruno'];
+  it('freezes all three members through waves and rejects a fourth combatant', () => {
+    const roster: StarterId[] = ['ember', 'tide', 'sprout'];
     const battle = createBattle(42, roster);
     roster.reverse();
-    expect(battle.allies.map(ally => ally.definitionId)).toEqual(['ember', 'tide', 'sprout', 'atmoso', 'elise', 'bruno']);
+    expect(battle.allies.map(ally => ally.definitionId)).toEqual(['ember', 'tide', 'sprout']);
     battle.phase = 'cleared';
     battle.allies.forEach((ally, index) => { ally.shatter = index * 10; });
     const continued = nextWave(battle).state;
     expect(continued.allies.map(ally => ally.definitionId)).toEqual(battle.allies.map(ally => ally.definitionId));
-    expect(continued.allies.map(ally => ally.shatter)).toEqual([0, 10, 20, 30, 40, 50]);
+    expect(continued.allies.map(ally => ally.shatter)).toEqual([0, 10, 20]);
     expect(() => createBattle(42, [...roster, 'aurora'])).toThrow('Battle roster');
   });
   const ids: StarterId[] = ['sprout', 'tide', 'ember'];

@@ -35,7 +35,7 @@ describe('saved squad and Conduit configurations', () => {
     saveConduitConfiguration(saved, 'ember', 0, 'First config');
     expect(parseSaveFile(JSON.stringify(offlineSave(saved))).account).toEqual(loadAccount(saved));
   });
-  it.each([1, 2, 3, 6])('snapshots %i ordered members and restores exact ordinary/Master equipment in one write', count => {
+  it.each([1, 2, 3])('snapshots %i ordered members and restores exact ordinary/Master equipment in one write', count => {
     const saved = storage();
     const account = loadAccount(saved);
     for (const member of releasedRadiantIds.slice(0, 6)) account.characters[member] = { level: 0, evolution: 1 };

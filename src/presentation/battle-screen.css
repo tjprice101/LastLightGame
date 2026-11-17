@@ -154,7 +154,7 @@ html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-li
   .radiant-member button { font-size: 13px; }
 }
 
-/* Desktop presentation polish: free-standing field sprites, nameplates and a compact six-card squad dock. */
+/* Desktop presentation polish: free-standing field sprites, nameplates and a compact three-card squad dock. */
 .radiant-member { --accent: #c9ccd4; }
 .radiant-member[data-element="infernic"] { --accent: #ff8a5c; }
 .radiant-member[data-element="oceanic"] { --accent: #6cc4ff; }
@@ -678,3 +678,11 @@ html[data-motion="reduced"] .radiant-result-aura { display: none; }
   .radiant-result-actions { flex-direction: column; gap: 8px; }
   .radiant-result-actions button { flex: 0 0 auto; width: 100%; }
 }
+
+/* D-471 Haul: Prismatica gathered this encounter, saved at its end. Exact numbers, never abbreviated. */
+.radiant-haul { display: flex; align-items: baseline; gap: 4px; font-size: 11px; line-height: 1.3; color: var(--text-secondary); white-space: nowrap; }
+.radiant-haul-label { color: var(--gild-light); letter-spacing: .06em; text-transform: uppercase; font-size: 10px; }
+.radiant-haul-amount { position: relative; display: inline-block; min-width: 1ch; font-variant-numeric: tabular-nums; color: #fff; font-weight: 700; }
+.radiant-haul-state { color: var(--text-muted); font-size: 10px; }
+.radiant-haul-state:empty { display: none; }
+.radiant-actions .radiant-end-turn { min-height: 44px; border-color: var(--gild-line); }

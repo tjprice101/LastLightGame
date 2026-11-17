@@ -1,5 +1,11 @@
 # Battle Flurry overhaul: specification and phased plan (2026-11-16)
 
+**Phase 1 implemented (D-471, 2026-11-16):** device-run encounters with
+`settle` replay, End Turn, per-encounter Haul and squad cap 3 are live in code;
+see [combat spec](../combat.md#device-run-encounters-settle-replay-and-squad-cap-3-d-471-battle-flurry-phase-1).
+Owner chose to keep current enemy tuning until Phase 3. Phases 2-4 remain
+planned below.
+
 **Status:** owner-approved direction (D-470, seven decisions below). Exact
 numbers, kit batches, the Conduit remap and later depth systems still need
 per-phase approval. No code has changed. Filing this plan does not authorize implementation, deploys

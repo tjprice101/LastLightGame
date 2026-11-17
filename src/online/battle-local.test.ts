@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { emptyAccount, loadAccount, saveAccount, type Account } from '../game/account';
 import { releasedRadiantIds } from '../content/combat-kits';
 import { LOCAL_RADIANT_KEY, LocalRadiantTransport } from './battle-local';
-import { retiredRadiantRunNotice, validateRadiantRunSnapshot,
-  type RadiantRunOperation, type RadiantRunRequest } from './battle-run';
+import { applyRadiantTurn, retiredRadiantRunNotice, validateRadiantRunSnapshot,
+  type FrozenRadiantRun, type RadiantRunOperation, type RadiantRunRequest, type RadiantTurnAction } from './battle-run';
 
 class MemoryStorage {
   values = new Map<string, string>();
@@ -25,7 +25,17 @@ function seeded(): MemoryStorage {
   return storage;
 }
 
-let next = 0;
+/** Device play on a copy of the saved run until the encounter ends (D-471). */
+function play(saved: FrozenRadiantRun): { run: FrozenRadiantRun; actions: RadiantTurnAction[] } {
+  const run = structuredClone(saved), actions: RadiantTurnAction[] = [];
+  while (run.state.phase === 'player' && actions.length < 1000) {
+    const action: RadiantTurnAction = { type: 'normal',
+      bearerId: run.state.bearers.find(unit => unit.hp > 0 && !run.state.acted.includes(unit.loadout.id))!.loadout.id,
+      targetId: run.state.enemies.find(unit => unit.hp > 0)!.id };
+    applyRadiantTurn(run, action); actions.push(action);
+  }
+  return { run, actions };
+}
 async function send(transport: LocalRadiantTransport, operation: RadiantRunOperation, requestId: string = crypto.randomUUID()) {
   const checkpoint = await transport.read();
   const request: RadiantRunRequest = { requestId, expectedRevision: checkpoint.revision,
@@ -35,7 +45,7 @@ async function send(transport: LocalRadiantTransport, operation: RadiantRunOpera
 }
 
 describe('local Radiant authority', () => {
-  it.each([3, 4, 5])('retires rules %s without changing storage, revision, holdings or saved rewards on read', async version => {
+  it.each([3, 4, 5, 6])('retires rules %s without changing storage, revision, holdings or saved rewards on read', async version => {
     const storage = seeded();
     const transport = new LocalRadiantTransport(storage, () => 'ember');
     const started = await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
@@ -49,7 +59,7 @@ describe('local Radiant authority', () => {
     expect(storage.values).toEqual(before);
     const fresh = await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
     expect(fresh.revision).toBe(started.revision + 1);
-    expect(fresh.run.version).toBe(6);
+    expect(fresh.run.version).toBe(7);
     expect((await transport.read()).notice).toBeUndefined();
   });
 
@@ -65,7 +75,7 @@ describe('local Radiant authority', () => {
     expect(result.state.radiantStudy).toBeUndefined();
     expect(result.state.account).toEqual(started.account);
     expect(snapshot).toEqual(before);
-    snapshot.state.radiantStudy.version = 6;
+    snapshot.state.radiantStudy.version = 7;
     snapshot.state.radiantStudy.state.enemies[0].elementId = null;
     expect(() => validateRadiantRunSnapshot(snapshot)).toThrow('Invalid saved Radiant account');
   });
@@ -105,23 +115,48 @@ describe('local Radiant authority', () => {
     saveAccount(storage, unequipped);
     const reloaded = new LocalRadiantTransport(storage, () => 'ember');
     expect((await reloaded.read()).run!.state.bearers[0].stats.hp).toBe(288);
-    const result = await send(reloaded, { kind: 'action', action: {
-      type: 'normal', bearerId: 'ember', targetId: started.run.state.enemies[0].id,
-    } });
-    expect(result.run.state.gauge.members[0].charge).toBe(12);
-    expect(result.events).toContainEqual(expect.objectContaining({
+    const device = structuredClone((await reloaded.read()).run!);
+    const events = applyRadiantTurn(device, { type: 'normal', bearerId: 'ember', targetId: started.run.state.enemies[0].id });
+    expect(device.state.gauge.members[0].charge).toBe(12);
+    expect(events).toContainEqual(expect.objectContaining({
       type: 'charge', gearSource: { kind: 'gear', bearerId: 'ember', conduitId: 'reserve-torque-crank' },
     }));
   });
 
-  it('commits actions and exits while keeping the saved account', async () => {
+  it('device play writes nothing until the settle saves the replayed encounter and its Haul', async () => {
+    const storage = seeded();
+    const transport = new LocalRadiantTransport(storage, () => 'ember');
+    await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
+    const saved = (await transport.read()).run!, before = new Map(storage.values);
+    const wallet = loadAccount(storage).fractalis;
+    const local = play(saved);
+    expect(['victory', 'defeat']).toContain(local.run.state.phase);
+    expect(storage.values).toEqual(before);
+    const settled = await send(transport, { kind: 'settle', actions: local.actions });
+    expect(settled.revision).toBe(2);
+    expect(settled.run.state).toEqual(local.run.state);
+    expect(loadAccount(storage).fractalis).toBe(settled.account.fractalis);
+    expect(settled.account.fractalis - wallet).toBeGreaterThanOrEqual(local.run.state.currencyEarned);
+    expect((await transport.read()).run!.state).toEqual(local.run.state);
+  });
+
+  it('rejects an unfinished settle without writing', async () => {
+    const storage = seeded();
+    const transport = new LocalRadiantTransport(storage, () => 'ember');
+    await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
+    const saved = (await transport.read()).run!, before = new Map(storage.values);
+    const local = play(saved);
+    await expect(send(transport, { kind: 'settle', actions: local.actions.slice(0, 1) }))
+      .rejects.toMatchObject({ code: 'invalid-input' });
+    expect(storage.values).toEqual(before);
+  });
+
+  it('commits a settled encounter and exits while keeping the saved account', async () => {
     const storage = seeded();
     const transport = new LocalRadiantTransport(storage, () => 'ember');
     await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
     const run = (await transport.read()).run!;
-    const bearer = run.state.bearers.find(unit => unit.hp > 0)!;
-    const enemy = run.state.enemies.find(unit => unit.hp > 0)!;
-    const acted = await send(transport, { kind: 'action', action: { type: 'normal', bearerId: bearer.loadout.id, targetId: enemy.id } });
+    const acted = await send(transport, { kind: 'settle', actions: play(run).actions });
     expect(acted.revision).toBe(2);
     expect(acted.events.length).toBeGreaterThan(0);
     await send(transport, { kind: 'exit' });

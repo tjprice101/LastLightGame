@@ -48,7 +48,7 @@ describe('saved ordered Radiant impact ledger', () => {
     expect(before).toEqual(original);
   });
   it('replays Normal drops only to matching elements at impact without a defeat refund', () => {
-    const before = battle(['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso']);
+    const before = battle(['ember', 'tide', 'rosetta']);
     const target = before.enemies[0];
     target.hp = 1;
     target.currency.lowestHP = 1;

@@ -57,13 +57,13 @@ export function resolveRadiantPreparation(value: RadiantRunSnapshot, input: Radi
   if ('character' in op && !capturedCleanup) acquired(op.character);
   if (op.kind === 'setSquad') {
     if (!op.ids.length || op.ids.length > squadMemberLimit || new Set(op.ids).size !== op.ids.length)
-      throw new RadiantRunError('manual-squad', 'Choose one to six distinct acquired Element-Bearers.');
+      throw new RadiantRunError('manual-squad', 'Choose one to three distinct acquired Element-Bearers.');
     op.ids.forEach(acquired);
   }
   if (op.kind === 'equipSquadLoadout') {
     const entry = raw.squadLoadouts?.find(entry => entry.id === op.id);
     if (!entry) throw new RadiantRunError('invalid-input', 'Choose a saved squad loadout.');
-    entry.members.forEach(member => acquired(member.character));
+    entry.members.slice(0, squadMemberLimit).forEach(member => acquired(member.character));
   }
   const data = new Map([[ACCOUNT_KEY, JSON.stringify(raw)],
     [SAVE_KEY, JSON.stringify({ version: 1, starterId: state.starterId })]]);

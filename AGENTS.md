@@ -29,7 +29,8 @@ Per-decision history lives in docs/decisions.md (see D-460), the system docs and
   side-by-side pages unless the owner explicitly asks.
 - **Radiant is THE live battle system.** All activities, online and local
   (`src/online/battle-local.ts`), use Radiant; calibration `authored-control`; squads
-  1-6 acquired Element-Bearers, no captures. UIs present Radiant kits, attunement
+  1-3 acquired Element-Bearers (D-471; stored 4-6 read-only until resaved), no captures;
+  encounters run on the device and one `settle` replay saves the Haul. UIs present Radiant kits, attunement
   subtypes (Equinox/Corona/Aegis/Solstice/Prism) and Radiant Conduit effects. Legacy
   battle ops are rejected server-side. Never reintroduce a preview/demo gate or route
   battles to the legacy engine. `VITE_RADIANT_STUDY_UI` and `RADIANT_STUDY_ENABLED` are

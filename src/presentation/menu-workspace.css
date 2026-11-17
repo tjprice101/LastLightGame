@@ -51,7 +51,7 @@ html[data-menu-workspace] body #app .home-dashboard:not(#_) { display: flex !imp
 html[data-menu-workspace] body #app .home-section-heading { max-width: 1060px; margin: auto; }
 html[data-menu-workspace] body #app .home-section-heading > div { display: none; }
 html[data-menu-workspace] body #app .home-squad-grid:not(#_) {
-  display: grid !important; grid-template-columns: repeat(6, minmax(0, 156px)) !important;
+  display: grid !important; grid-template-columns: repeat(3, minmax(0, 156px)) !important;
   justify-content: center !important; gap: 8px !important; margin: 0 auto !important;
 }
 html[data-menu-workspace] body #app .home-squad-member:not(#_) {
@@ -195,7 +195,7 @@ html[data-menu-workspace] body #app .home-menu-header .sanctuary-wordmark:not(#_
 
 html[data-menu-workspace] body #app .home-dashboard:not(#_):not(#_) { max-width: 1380px; gap: 10px !important; }
 html[data-menu-workspace] body #app .home-section-heading { display: none !important; }
-html[data-menu-workspace] body #app .home-squad-grid:not(#_):not(#_) { grid-template-columns: repeat(6, minmax(0, 170px)) !important; gap: 10px !important; }
+html[data-menu-workspace] body #app .home-squad-grid:not(#_):not(#_) { grid-template-columns: repeat(3, minmax(0, 170px)) !important; gap: 10px !important; }
 html[data-menu-workspace] body #app .home-squad-member:not(#_):not(#_) {
   height: clamp(190px, 28vh, 290px) !important; min-height: 0 !important; border-radius: 5px !important;
   background: linear-gradient(160deg, #17191c, #080a0d) !important; isolation: isolate;
@@ -305,7 +305,7 @@ html[data-menu-workspace] body #app .ref-growth-detail .currency-reward { font-s
 html[data-menu-workspace] body #app .ref-formation:not(#_) { padding: 10px !important; overflow: visible !important; }
 html[data-menu-workspace] body #app .squad-heading { margin: 0 0 8px !important; }
 html[data-menu-workspace] body #app .squad-heading h2 { font-size: 22px !important; }
-html[data-menu-workspace] body #app .squad-slots:not(#_):not(#_) { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; grid-template-rows: auto auto !important; gap: 10px !important; }
+html[data-menu-workspace] body #app .squad-slots:not(#_):not(#_) { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; grid-template-rows: auto !important; gap: 10px !important; }
 html[data-menu-workspace] body #app .squad-slot:not(#_):not(#_) { padding: 8px !important; min-height: 0 !important; gap: 4px !important; }
 html[data-menu-workspace] body #app .squad-slot h3 { font-size: 13px !important; margin: 0 !important; }
 html[data-menu-workspace] body #app .squad-member-preview:not(#_) { min-height: 0 !important; padding: 6px !important; gap: 4px !important; }

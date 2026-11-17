@@ -1,4 +1,5 @@
 import { getStarter } from '../content/starters';
+import { squadMemberLimit } from '../content/squad-rules';
 import { releasedRadiantIds, radiantBearerKits, type RadiantBearerId } from '../content/combat-kits';
 import { liveRadiantCalibrationId } from '../content/enemy-calibration';
 import { radiantPressureAnchors, assertRadiantPressureAccess, isRadiantAccessError,
@@ -6,7 +7,7 @@ import { radiantPressureAnchors, assertRadiantPressureAccess, isRadiantAccessErr
 import { capturedProgress } from '../game/character-instances';
 import { ownedCompanion } from './owned-companion';
 import { RadiantRunError, type RadiantCheckpoint } from '../online/battle-run';
-import { RadiantSession } from '../online/battle-session';
+import { RadiantSession, radiantLogStorage } from '../online/battle-session';
 import { readRadiantStudy } from '../online/battle-transport';
 import { onlineClient } from '../online/account-client';
 import { RadiantBattleView } from './battle-screen';
@@ -30,7 +31,7 @@ const authenticatedDependencies: RadiantClientDependencies = {
     if (error || !data.user) throw new Error('Sign in to load Radiant encounters.');
   },
   read: readRadiantStudy,
-  createSession: checkpoint => new RadiantSession(checkpoint),
+  createSession: checkpoint => new RadiantSession(checkpoint, undefined, undefined, radiantLogStorage()),
 };
 
 function activityName(anchor: RadiantPressureAnchor): string {
@@ -266,8 +267,9 @@ export class RadiantClient {
     const state = session.view();
     const candidates = availableAnchors(checkpoint.account, this.now());
     const bearerIds = releasedRadiantIds.filter(id => !!checkpoint.account.characters[id]);
-    const squad = checkpoint.account.squad ?? [];
-    const squadReady = squad.length > 0 && squad.length <= 6 && new Set(squad).size === squad.length &&
+    // Pre-D-471 squads of four to six play as their first three members (read-only).
+    const squad = (checkpoint.account.squad ?? []).slice(0, squadMemberLimit);
+    const squadReady = squad.length > 0 && squad.length <= squadMemberLimit && new Set(squad).size === squad.length &&
       squad.every(id => releasedRadiantIds.includes(id as RadiantBearerId) && !!checkpoint.account.characters[id as RadiantBearerId]);
     const activeTab = this.tab;
     const captured = checkpoint.account.capturedCharacters ?? [];
@@ -289,8 +291,8 @@ export class RadiantClient {
         ${squadReady ? '' : '<p role="status">Prepare a released Element-Bearer squad before entering.</p>'}
         ${state.pending || state.preparationPending ? '<button type="button" data-radiant-retry>Retry the same saved request</button>' : ''}
       </section>` : activeTab === 'prepare' ? `<section class="radiant-client-panel"><h3>Prepare acquired Element-Bearers</h3>
-        <p>Select one to six distinct released Element-Bearers in leader-first order. Captured Elemental-Devourers remain holdings and fodder; they cannot enter this squad.</p>
-        <form data-radiant-squad-form>${Array.from({ length: 6 }, (_, index) => {
+        <p>Select one to three distinct released Element-Bearers in leader-first order. Captured Elemental-Devourers remain holdings and fodder; they cannot enter this squad.</p>
+        <form data-radiant-squad-form>${Array.from({ length: squadMemberLimit }, (_, index) => {
           const current = checkpoint.account.squad?.[index] ?? '';
           const selected = bearerIds.includes(current as RadiantBearerId) ? current : '';
           return `<label>${index === 0 ? 'Leader' : `Member ${index + 1}`}<select data-radiant-squad-slot aria-label="${index === 0 ? 'Leader' : `Member ${index + 1}`}">

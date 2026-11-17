@@ -31,7 +31,7 @@ function action(kind: string): HTMLButtonElement {
 }
 describe('saved loadout controls', () => {
   beforeEach(() => { document.body.innerHTML = ''; vi.mocked(gameConfirm).mockReset(); });
-  it('renders every member and shared six-member capacity for current and saved squads', () => {
+  it('renders a stored pre-D-471 six-member squad and loadout as their first three members', () => {
     const saved = account(), ids = releasedRadiantIds.slice(0, 6);
     for (const member of ids) saved.characters[member] = { level: 0, evolution: 1 };
     saved.squad = ids;
@@ -43,10 +43,13 @@ describe('saved loadout controls', () => {
     expect(document.querySelector('.saved-loadout-member .compact-portrait img')?.getAttribute('src'))
       .toContain(`character-faces/${characterArt(ids[0], 1).art}.png`);
     for (const card of Array.from(document.querySelectorAll('[data-saved-entry]'))) {
-      expect(card.querySelector('.saved-loadout-card-heading')?.textContent).toContain('6 / 6 members');
-      expect(card.querySelectorAll('.saved-loadout-member')).toHaveLength(6);
+      expect(card.querySelector('.saved-loadout-card-heading')?.textContent).toContain('3 / 3 members');
+      expect(card.querySelectorAll('.saved-loadout-member')).toHaveLength(3);
     }
-    expect(document.querySelectorAll('.saved-loadout-slots li')).toHaveLength(96);
+    expect(document.querySelectorAll('.saved-loadout-slots li')).toHaveLength(48);
+    expect(document.body.textContent).toContain('Saved before squads held at most 3 members.');
+    expect(saved.squad).toEqual(ids);
+    expect(saved.squadLoadouts![0].members).toHaveLength(6);
   });
   it('omits empty member cards while retaining every ordinary slot for the shown member', () => {
     const saved = account();
@@ -55,7 +58,7 @@ describe('saved loadout controls', () => {
     expect(current.querySelectorAll('.saved-loadout-member')).toHaveLength(1);
     expect(current.querySelectorAll('.saved-loadout-slots li')).toHaveLength(8);
     expect(current.querySelector('.saved-loadout-member.is-vacant')).toBeNull();
-    expect(current.querySelector('.saved-loadout-card-heading')?.textContent).toContain('1 / 6 members');
+    expect(current.querySelector('.saved-loadout-card-heading')?.textContent).toContain('1 / 3 members');
   });
   it('provides a Team destination, named current squad, saved equipment and unlimited list semantics without HTML injection', () => {
     document.body.innerHTML = referenceTeam(account(), { view: 'loadouts', selected: 'ember', element: '', sort: 'name' });

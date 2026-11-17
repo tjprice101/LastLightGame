@@ -51,7 +51,7 @@ export function personalChargeMaximum(member: RadiantGaugeMember): number {
 }
 export function validateRadiantGauge(state: RadiantGaugeState): void {
   if (!Array.isArray(state.members) || !state.members.length || state.members.length > squadMemberLimit)
-    throw new Error('Radiant charge requires one to six squad members.');
+    throw new Error('Radiant charge requires one to three squad members.');
   const ids = new Set<string>();
   for (const member of state.members) {
     if (typeof member.id !== 'string' || !member.id || ids.has(member.id) || typeof member.living !== 'boolean' || !isCombatElement(member.elementId))

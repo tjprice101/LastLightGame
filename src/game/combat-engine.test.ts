@@ -234,14 +234,14 @@ describe('deterministic diminishing direct damage', () => {
 });
 
 describe('saved enemy Gauge drops', () => {
-  const squad = ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'] as const;
+  const squad = ['ember', 'tide', 'sprout'] as const;
   it('grants Normal Luminosity without cross-element sharing', () => {
     const state = fixture([...squad], 6), before = structuredClone(state);
     const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([
       { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'hit', amount: 10 },
     ]);
-    expect(result.state.gauge.members.map(member => member.charge)).toEqual([10, 0, 0, 0, 0, 0]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([10, 0, 0]);
     expect(Object.keys(result.state.gauge)).toEqual(['members']);
     expect(result.state.chargeSeed).toBe(0);
     expect(state).toEqual(before);
@@ -261,7 +261,7 @@ describe('saved enemy Gauge drops', () => {
     expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([
       { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'hit', amount: 10 },
     ]);
-    expect(result.state.gauge.members.map(member => member.charge)).toEqual([10, 0, 0, 0, 0, 0]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([10, 0, 0]);
     expect(result.state.chargeSeed).toBe(0);
     expect(result.state.currencyEarned).toBe(101);
   });
@@ -273,7 +273,7 @@ describe('saved enemy Gauge drops', () => {
       { type: 'flare', bearerId: 'ally-0' });
     expect(result.events.filter(event => event.type === 'damage')).toHaveLength(48);
     expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([]);
-    expect(result.state.gauge.members.map(member => member.charge)).toEqual([0, 0, 0, 0, 0, 0]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([0, 0, 0]);
     expect(result.events.find(event => event.type === 'charge')).toMatchObject({ bonusRolls: 0, bonusOffered: 0 });
     expect(result.state.chargeSeed).toBe(0);
   });
@@ -303,9 +303,9 @@ describe('saved enemy Gauge drops', () => {
   });
 });
 
-describe('six-member action rounds, fixed leader and state isolation', () => {
-  it('accepts a frozen six-distinct owned-bearer party and never promotes a dead first leader', () => {
-    const ids = ['ember', 'rosetta', 'tide', 'sprout', 'bliss', 'ozriel'] as const;
+describe('three-member action rounds, fixed leader and state isolation', () => {
+  it('accepts a frozen three-distinct owned-bearer party and never promotes a dead first leader', () => {
+    const ids = ['ember', 'rosetta', 'tide'] as const;
     const loadouts = ids.map((starter, index) => loadout(starter, {
       id: `owned-instance-${index}`, level: 30, form: 2,
     }));
@@ -328,7 +328,22 @@ describe('six-member action rounds, fixed leader and state isolation', () => {
     expect(state).toEqual(input);
     expect(resolved.state.bearers[0].hp).toBe(0);
   });
-  it.each([1, 2, 3, 4, 5, 6])('requires each of %i members to act once and preserves normalized round charge', size => {
+  it('End Turn skips members who have not acted and starts the enemy phase', () => {
+    let state = fixture(['ember', 'tide', 'sprout'], 6);
+    state = apply(state, { type: 'defense', bearerId: 'ally-1' });
+    const ended = applyRadiantCombatAction(state, { type: 'end-turn' });
+    expect(ended.events).toEqual([]);
+    expect(ended.state.phase).toBe('enemy');
+    expect(ended.state.acted).toEqual(['ally-1', 'ally-0', 'ally-2']);
+    expect(ended.state.gauge).toEqual(state.gauge);
+    expect(() => applyRadiantCombatAction(ended.state, { type: 'end-turn' })).toThrow('player phase');
+    state.bearers[2].hp = 0; state.gauge.members[2].living = false;
+    expect(applyRadiantCombatAction(state, { type: 'end-turn' }).state.acted).toEqual(['ally-1', 'ally-0']);
+  });
+  it('rejects a fourth squad member', () => {
+    expect(() => fixture(['ember', 'tide', 'sprout', 'ember'])).toThrow();
+  });
+  it.each([1, 2, 3])('requires each of %i members to act once and preserves normalized round charge', size => {
     let state = fixture(Array.from({ length: size }, () => 'ember'), 6);
     for (let index = 0; index < size; index++) {
       state = apply(state, { type: 'defense', bearerId: `ally-${index}` });
@@ -346,20 +361,21 @@ describe('six-member action rounds, fixed leader and state isolation', () => {
     expect(Object.keys(state.gauge)).toEqual(['members']);
   });
   it('does not promote a surviving leader when first member dies and lets all survivors act next round', () => {
-    let state = fixture(['ember', 'tide', 'sprout', 'tide', 'sprout', 'ember']);
-    expect(effectiveRadiantStats(state, 'ally-1').attack).toBeCloseTo(44 * 1.15);
-    expect(effectiveRadiantStats(state, 'ally-2').recovery).toBeCloseTo(65 * 1.15);
+    let state = fixture(['ember', 'tide', 'sprout']);
+    const leaderAttack = effectiveRadiantStats(state, 'ally-1').attack;
+    expect(leaderAttack).toBeCloseTo(44 * 1.075);
+    expect(effectiveRadiantStats(state, 'ally-2').recovery).toBeCloseTo(65 * 1.075);
     state = passPlayers(state);
     state = apply(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ally-0'], coefficient: 1000 });
     expect(state.bearers[0].hp).toBe(0);
-    expect(effectiveRadiantStats(state, 'ally-1').attack).toBeCloseTo(44 * 1.075);
-    expect(effectiveRadiantStats(state, 'ally-1').defense).toBeCloseTo(22 * 1.2);
+    expect(effectiveRadiantStats(state, 'ally-1').attack).toBeCloseTo(44);
+    expect(effectiveRadiantStats(state, 'ally-1').defense).toBeCloseTo(22 * 1.1);
     state = apply(state, { type: 'finish-enemy-phase' });
     expect(state.gauge.members[0].charge).toBe(0);
     expect(() => apply(state, { type: 'defense', bearerId: 'ally-0' })).toThrow('Defeated');
     state = passPlayers(state);
     expect(state.phase).toBe('enemy');
-    expect(state.acted).toEqual(['ally-1', 'ally-2', 'ally-3', 'ally-4', 'ally-5']);
+    expect(state.acted).toEqual(['ally-1', 'ally-2']);
   });
   it('keeps input, returned state, events and frozen loadouts independent', () => {
     const inputLoadout = loadout();
@@ -379,7 +395,7 @@ describe('six-member action rounds, fixed leader and state isolation', () => {
     expect(shieldResult.state.bearers[0].shields[0].source).toEqual({ kind: 'flare', bearerId: 'ally-0' });
   });
   it('rejects duplicate/oversized squads, forged frozen stats and inconsistent gauges', () => {
-    expect(() => fixture(Array.from({ length: 7 }, () => 'sprout'))).toThrow('roster');
+    expect(() => fixture(Array.from({ length: 4 }, () => 'sprout'))).toThrow('roster');
     expect(() => createRadiantCombat([loadout(), loadout()],
       [{ elementId: null, id: 'enemy', stats: { hp: 10, attack: 1, defense: 0, recovery: 0 }, currencyBudget: 1 }], 0))
       .toThrow('distinct');
@@ -390,16 +406,15 @@ describe('six-member action rounds, fixed leader and state isolation', () => {
     state.gauge.members[0].form = 2;
     expect(() => validateRadiantCombat(state)).toThrow('Gauge member mismatch');
   });
-  it('round-trips an in-progress six-member frozen run with charge seeds, snapshots and paid ledgers', () => {
-    let state = charged(fixture(['tide', 'sprout', 'ember', 'tide', 'sprout', 'ember'], 6), 'sparkling');
+  it('round-trips an in-progress three-member frozen run with charge seeds, snapshots and paid ledgers', () => {
+    let state = charged(fixture(['tide', 'sprout', 'ember'], 6), 'sparkling');
     state.bearers[1].hp -= 100;
     state = apply(state, { type: 'flare', bearerId: 'ally-0' });
     state = charged(state, 'sparkling', 'ally-1');
     state = apply(state, { type: 'flare', bearerId: 'ally-1' });
-    state = apply(state, { type: 'normal', bearerId: 'ally-2', targetId: 'enemy' });
     const restored = JSON.parse(JSON.stringify(state)) as RadiantCombatState;
     validateRadiantCombat(restored);
-    const action = { type: 'normal', bearerId: 'ally-3', targetId: 'enemy' } as const;
+    const action = { type: 'normal', bearerId: 'ally-2', targetId: 'enemy' } as const;
     expect(applyRadiantCombatAction(restored, action)).toEqual(applyRadiantCombatAction(state, action));
   });
   it('rejects a repeated player action, wrong phase and malformed inputs without mutation', () => {
@@ -450,7 +465,7 @@ describe('progressive signatures and layered shared readiness', () => {
     expect(records[1]).toBeGreaterThan(records[0]);
     expect(records[2]).toBeGreaterThan(records[1]);
   });
-  it('retains partial charge and spends each bearer’s saved Convergent Light rank independently', () => {
+  it('retains partial charge and spends each bearer窶冱 saved Convergent Light rank independently', () => {
     let state = fixture(['tide', 'sprout', 'ember'], 6);
     state.gauge.members[0].charge = 137;
     const partial = apply(state, { type: 'flare', bearerId: 'ally-0' });

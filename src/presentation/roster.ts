@@ -134,12 +134,15 @@ export function squadHub(account: Account | null): string {
   const savedSquad = account.squad ?? [];
   const valid = savedSquad.filter((id) => owned.includes(id)).slice(0, squadMemberLimit);
   const squad = valid.length ? valid : owned.slice(0, 1);
-  const replaced = savedSquad.length !== valid.length;
+  const eligible = savedSquad.filter((id) => owned.includes(id));
+  // D-471: squads hold at most three; a longer saved squad shows its first three until saved.
+  const overCap = eligible.length > squadMemberLimit;
+  const replaced = !overCap && savedSquad.length !== valid.length;
   const matchesSaved = savedSquad.length === squad.length && savedSquad.every((id, index) => id === squad[index]);
   return `<section class="squad-hub squad-formation"><header class="squad-heading"><div><h2>Squad formation</h2>
     <p>Select a slot to choose who fills it.</p>${information('squad-information', 'Squad', `<p>Pick one to ${squadMemberLimit} distinct acquired Element-Bearers; slot one leads and grants its leader skill while alive. Captured Elemental-Devourers stay in your holdings and cannot join the squad. Picking a member from another slot swaps them. Changes apply when you Save squad.</p>`)}</div>
     <div class="squad-save"><span data-squad-count>${squad.length} / ${squadMemberLimit} slots filled</span><button class="text-button" type="button" data-squad-cancel ${matchesSaved ? 'disabled' : ''}>Cancel changes</button><button class="primary-button" type="submit" form="squad-form" data-squad-save ${owned.length && !matchesSaved ? '' : 'disabled'}>Save squad</button></div></header>
-    ${replaced ? '<p class="squad-replaced" role="note">Your saved squad included captured Elemental-Devourers or unavailable members. They were left out of this draft; Save squad to confirm the Element-Bearer lineup.</p>' : ''}<form id="squad-form"><div class="squad-slots">${squadSlotNames.map((_, index) => {
+    ${overCap ? `<p class="squad-replaced" role="note">Squads now hold up to ${squadMemberLimit} members. Your saved squad's first ${squadMemberLimit} are shown and play in battle; Save squad to confirm this lineup.</p>` : ''}${replaced ? '<p class="squad-replaced" role="note">Your saved squad included captured Elemental-Devourers or unavailable members. They were left out of this draft; Save squad to confirm the Element-Bearer lineup.</p>' : ''}<form id="squad-form"><div class="squad-slots">${squadSlotNames.map((_, index) => {
       const id = squad[index];
       return `<section class="squad-slot${index === 0 ? ' squad-slot-leader' : ''}"><h3>${squadSlotNames[index]}</h3>
         <button type="button" class="squad-member-preview" data-squad-assign="${index}" aria-haspopup="dialog" aria-label="${index === 0 ? 'Choose leader' : `Choose squad member ${index + 1}`}">${squadMemberPreview(account, id, index)}</button>
@@ -295,7 +298,7 @@ export function bindSquadPreview(host: HTMLElement, account: Account | null): vo
 }
 
 export function assignSquadSlot(slots: readonly string[], index: number, id: string, owned: readonly string[]): string[] {
-  if (slots.length !== squadMemberLimit || !Number.isInteger(index) || index < 0 || index >= squadMemberLimit) throw new Error('Choose one of the six squad slots.');
+  if (slots.length !== squadMemberLimit || !Number.isInteger(index) || index < 0 || index >= squadMemberLimit) throw new Error('Choose one of the three squad slots.');
   if (id && !owned.includes(id)) throw new Error('Choose an owned squad member.');
   if (!id && index === 0) throw new Error('A squad requires a leader.');
   const next = [...slots];

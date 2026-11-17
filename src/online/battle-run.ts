@@ -1,4 +1,4 @@
-import { ACCOUNT_KEY, saveAccount, validateAccount, type Account } from '../game/account';
+import { ACCOUNT_KEY, effectiveSquad, saveAccount, validateAccount, type Account } from '../game/account';
 import { dungeonStageCount, storyStageLayout, warStageCount, infusionStageCount } from '../content/activities';
 import { isPlayableDungeon } from '../content/dungeons';
 import { isInfusionMode } from '../content/infusions';
@@ -21,7 +21,8 @@ import { radiantPressureEnemyAction } from '../game/enemy-pressure';
 import { applyRadiantCombatAction, createRadiantCombat, validateRadiantCombat, validateRadiantDropEvents,
   type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState } from '../game/combat-engine';
 
-export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v2+json';
+/** v3: device-run encounters settled by one authority replay per encounter (D-471). */
+export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v3+json';
 export const radiantClientAccept = `application/json, ${radiantContinuationMediaType}`;
 
 export type RadiantRunErrorCode = 'manual-squad' | 'invalid-input' | 'stale-revision' |
@@ -40,7 +41,7 @@ export interface RadiantContinuation {
   state: RadiantCombatState;
 }
 export interface FrozenRadiantRun {
-  version: 6;
+  version: 7;
   id: string;
   encounter: number;
   anchor: RadiantPressureAnchor;
@@ -60,9 +61,14 @@ export interface FrozenRadiantRun {
 /** The existing commit_game_operation RPC locks and commits this account/run aggregate. */
 export type RadiantStudyGame = DurableGame & { radiantStudy?: FrozenRadiantRun };
 export type RadiantPlayerAction = Extract<RadiantCombatAction, { type: 'normal' | 'defense' | 'flare' }>;
+/** One player input in an encounter's action log: a bearer action or End Turn. */
+export type RadiantTurnAction = RadiantPlayerAction | { type: 'end-turn' };
+/** Largest action log one settle may replay. */
+export const radiantSettleActionLimit = 1000;
 export type RadiantRunOperation =
   | { kind: 'start'; activity: Activity; calibration: FrozenRadiantRun['calibration'] }
-  | { kind: 'action'; action: RadiantPlayerAction }
+  /** End of encounter: the authority replays the device's ordered action log (D-471). */
+  | { kind: 'settle'; actions: RadiantTurnAction[] }
   | { kind: 'retry' | 'quit' | 'continue' | 'exit' };
 export interface RadiantRunRequest {
   requestId: string;
@@ -92,7 +98,7 @@ export function validateRadiantCheckpoint(value: unknown): RadiantCheckpoint {
       !Number.isSafeInteger(value.revision) || value.revision < 0) throw new Error();
     validateAccount(value.account);
     if (value.notice !== undefined && typeof value.notice !== 'string') throw new Error();
-    const retired = value.run !== null && record(value.run) && (value.run.version === 3 || value.run.version === 4 || value.run.version === 5);
+    const retired = value.run !== null && record(value.run) && retiredRunVersion(value.run.version);
     if (value.run !== null && !retired) validateFrozenRadiantRun(value.run);
     return { ...structuredClone(value), ...(retired ? { run: null, notice: retiredRadiantRunNotice } : {}) } as unknown as RadiantCheckpoint;
   } catch {
@@ -119,6 +125,10 @@ export interface RadiantRunAuthority {
    * authority owns this namespace, including retries of denied writes. */
   entry(requestId: string): { runId: string; encounterSeed: number; chargeSeed: number; targetSeed: number };
 }
+/** Frozen runs from earlier combat rules end read-only; their saved rewards were already kept. */
+export function retiredRunVersion(version: unknown): boolean {
+  return version === 3 || version === 4 || version === 5 || version === 6;
+}
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function invalid(message: string): never { throw new RadiantRunError('invalid-input', message); }
 function seed(value: number): void {
@@ -135,9 +145,12 @@ function assertRunAccess(anchor: RadiantPressureAnchor, account: Account, now: n
 }
 
 export function radiantAccountLoadouts(account: Account): RadiantLoadout[] {
-  const ids = account.squad;
-  if (!Array.isArray(ids) || ids.length < 1 || ids.length > squadMemberLimit || new Set(ids).size !== ids.length)
-    throw new RadiantRunError('manual-squad', 'Manually select one to six distinct acquired Element-Bearers.');
+  if (!Array.isArray(account.squad))
+    throw new RadiantRunError('manual-squad', 'Manually select one to three distinct acquired Element-Bearers.');
+  // Pre-D-471 squads of four to six play as their first three members (read-only).
+  const ids = effectiveSquad(account);
+  if (ids.length < 1 || ids.length > squadMemberLimit || new Set(ids).size !== ids.length)
+    throw new RadiantRunError('manual-squad', 'Manually select one to three distinct acquired Element-Bearers.');
   const members = ids.map(id => {
     if (typeof id !== 'string' || !Object.hasOwn(radiantBearerKits, id) || !account.characters[id as RadiantBearerId])
       throw new RadiantRunError('manual-squad', 'Your squad includes a captured Elemental-Devourer or unavailable member. Open Team › Squad and choose acquired Element-Bearers only.');
@@ -173,7 +186,7 @@ function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun
     }
     validateRadiantCombat(initial);
   }
-  return { version: 6, id: entropy.runId, encounter, anchor, calibration,
+  return { version: 7, id: entropy.runId, encounter, anchor, calibration,
     encounterSeed: entropy.encounterSeed, initialChargeSeed: entropy.chargeSeed,
     initialTargetSeed: entropy.targetSeed, targetSeed: entropy.targetSeed, enemies,
     initial: structuredClone(initial), state: initial,
@@ -241,20 +254,52 @@ export function validateRadiantRunRequest(request: unknown): RadiantRunRequest {
     if (typeof request.runId !== 'string' || !uuid.test(request.runId) ||
       typeof request.encounter !== 'number' || !Number.isSafeInteger(request.encounter) ||
       request.encounter < 1) invalid('Missing prior Radiant encounter.');
-    if (op.kind === 'action') {
-      exactKeys(op, ['kind', 'action']);
-      if (!record(op.action) || typeof op.action.type !== 'string' ||
-        !['normal', 'defense', 'flare'].includes(op.action.type)) invalid('Only player choices are accepted.');
-      exactKeys(op.action, op.action.type === 'defense' ? ['type', 'bearerId'] : ['type', 'bearerId', 'targetId']);
-      if (!validId(op.action.bearerId) || op.action.type === 'normal' && !validId(op.action.targetId) ||
-        'targetId' in op.action && !validId(op.action.targetId))
-        invalid('Invalid player choice.');
+    if (op.kind === 'action') invalid('Update the game to continue this battle.');
+    if (op.kind === 'settle') {
+      exactKeys(op, ['kind', 'actions']);
+      if (!Array.isArray(op.actions) || op.actions.length < 1 || op.actions.length > radiantSettleActionLimit)
+        invalid('Invalid encounter action log.');
+      op.actions.forEach(validateTurnAction);
     } else {
       if (typeof op.kind !== 'string' || !['retry', 'quit', 'continue', 'exit'].includes(op.kind)) invalid('Unknown Radiant operation.');
       exactKeys(op, ['kind']);
     }
   }
   return structuredClone(request) as unknown as RadiantRunRequest;
+}
+function validateTurnAction(action: unknown): void {
+  if (!record(action) || typeof action.type !== 'string' ||
+    !['normal', 'defense', 'flare', 'end-turn'].includes(action.type)) invalid('Only player choices are accepted.');
+  if (action.type === 'end-turn') { exactKeys(action, ['type']); return; }
+  exactKeys(action, action.type === 'defense' ? ['type', 'bearerId'] : ['type', 'bearerId', 'targetId']);
+  if (!validId(action.bearerId) || action.type === 'normal' && !validId(action.targetId) ||
+    'targetId' in action && !validId(action.targetId))
+    invalid('Invalid player choice.');
+}
+/**
+ * One player input plus, when it completes the player phase, the full enemy phase on the
+ * run's `targetSeed` stream. Mutates `run` in place; shared by the device and the authority
+ * replay so both resolve identically (D-471).
+ */
+export function applyRadiantTurn(run: FrozenRadiantRun, action: RadiantTurnAction): RadiantCombatEvent[] {
+  if (run.quit || run.state.phase !== 'player') invalid('Run cannot accept a player action.');
+  const events: RadiantCombatEvent[] = [];
+  const apply = (next: RadiantCombatAction) => {
+    const result = applyRadiantCombatAction(run.state, next);
+    run.state = result.state; events.push(...result.events);
+  };
+  apply(action);
+  if ((run.state as RadiantCombatState).phase === 'enemy') {
+    for (const enemy of run.enemies) {
+      if ((run.state as RadiantCombatState).phase !== 'enemy') break;
+      if (run.state.enemies.find(unit => unit.id === enemy.id)!.hp <= 0) continue;
+      apply(radiantPressureEnemyAction(run.state, enemy, () => {
+        run.targetSeed = nextSeed(run.targetSeed); return run.targetSeed / 0x100000000;
+      }));
+    }
+    if ((run.state as RadiantCombatState).phase === 'enemy') apply({ type: 'finish-enemy-phase' });
+  }
+  return events;
 }
 function saveCurrency(game: RadiantStudyGame, amount: number, receipt: string): void {
   if (!Number.isSafeInteger(amount) || amount < 0 ||
@@ -302,7 +347,7 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
     discover = true;
   } else {
     const run = game.radiantStudy;
-    if (!run || run.version !== 6 || run.id !== request.runId || run.encounter !== request.encounter)
+    if (!run || run.version !== 7 || run.id !== request.runId || run.encounter !== request.encounter)
       throw new RadiantRunError('stale-run', 'The saved Radiant encounter does not match.');
     validateFrozenRadiantRun(run);
     if (run.enemies.length !== run.state.enemies.length ||
@@ -310,23 +355,19 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
         enemy.currencyBudget !== run.state.enemies[i].currency.budget ||
         enemy.currencyBudget !== run.initial.enemies[i]?.currency.budget))
       invalid('Frozen encounter budget does not match its authored snapshot.');
-    if (op.kind === 'action') {
+    if (op.kind === 'settle') {
+      // Authority replay of the device-run encounter: same frozen state, seeds and resolver.
       if (run.quit || run.state.phase !== 'player') invalid('Run cannot accept a player action.');
-      const apply = (action: RadiantCombatAction) => {
-        const result = applyRadiantCombatAction(run.state, action);
-        run.state = result.state; events.push(...result.events);
-      };
-      apply(op.action);
-      if ((run.state as RadiantCombatState).phase === 'enemy') {
-        for (const enemy of run.enemies) {
-          if ((run.state as RadiantCombatState).phase !== 'enemy') break;
-          if (run.state.enemies.find(unit => unit.id === enemy.id)!.hp <= 0) continue;
-          apply(radiantPressureEnemyAction(run.state, enemy, () => {
-            run.targetSeed = nextSeed(run.targetSeed); return run.targetSeed / 0x100000000;
-          }));
+      try {
+        for (const action of op.actions) {
+          if ((run.state as RadiantCombatState).phase !== 'player') invalid('Encounter actions continue after the encounter ended.');
+          events.push(...applyRadiantTurn(run, action));
         }
-        if ((run.state as RadiantCombatState).phase === 'enemy') apply({ type: 'finish-enemy-phase' });
+      } catch (error) {
+        if (error instanceof RadiantRunError) throw error;
+        invalid('The encounter replay was rejected; nothing was saved.');
       }
+      if (!['victory', 'defeat'].includes(run.state.phase)) invalid('Settle requires a finished encounter.');
     } else if (op.kind === 'quit' || op.kind === 'exit') run.quit = true;
     else if (op.kind === 'retry') {
       if (!run.quit && !['defeat', 'victory'].includes(run.state.phase)) invalid('Retry requires a finished or quit encounter.');
@@ -353,7 +394,9 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
   const run = game.radiantStudy!;
   validateRadiantCombat(run.state);
   const amount = events.reduce((sum, event) => sum + (event.type === 'currency' ? event.amount : 0), 0);
-  saveCurrency(game, amount, `radiant-study:v1:${run.id}:${run.encounter}:${request.requestId}`);
+  // One Haul receipt per settled encounter; other operations pay nothing and add no receipt.
+  if (op.kind === 'settle' || amount > 0)
+    saveCurrency(game, amount, `radiant-study:v2:${run.id}:${run.encounter}:${request.requestId}`);
   const settled = resolveRadiantRewards(game.account, run.anchor, run.encounterSeed, run.rewards,
     run.state, `radiant-study:v1:${run.id}:${run.encounter}:loot`, discover, enemyId => {
       const index = run.enemies.findIndex(enemy => enemy.id === enemyId);
@@ -378,7 +421,7 @@ function canonical(value: unknown): string {
 }
 export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
   try {
-    if (!record(value) || value.version !== 6 || typeof value.id !== 'string' || !uuid.test(value.id) ||
+    if (!record(value) || value.version !== 7 || typeof value.id !== 'string' || !uuid.test(value.id) ||
       typeof value.encounter !== 'number' || !Number.isSafeInteger(value.encounter) || value.encounter < 1 ||
       typeof value.quit !== 'boolean' || !record(value.anchor) ||
       !['authored-control', 'radiant-pressure-v2'].includes(String(value.calibration)) ||
@@ -456,7 +499,7 @@ export function validateRadiantRunSnapshot(value: unknown): RadiantRunSnapshot {
       throw new Error();
     validateAccount(value.state.account);
     const state = structuredClone(value.state);
-    const retired = record(state.radiantStudy) && (state.radiantStudy.version === 3 || state.radiantStudy.version === 4 || state.radiantStudy.version === 5);
+    const retired = record(state.radiantStudy) && retiredRunVersion(state.radiantStudy.version);
     if (retired) delete state.radiantStudy;
     else if (state.radiantStudy !== undefined) validateFrozenRadiantRun(state.radiantStudy);
     return { ...structuredClone(value), state, ...(retired ? { notice: retiredRadiantRunNotice } : {}) } as unknown as RadiantRunSnapshot;

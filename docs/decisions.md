@@ -1,5 +1,29 @@
 # Decision log
 
+## Battle Flurry Phase 1: device-run encounters, settle replay, squad cap 3 (D-471, 2026-11-16)
+
+Implements the D-470 Phase 1 scope with the owner-approved plan. Details:
+[combat spec](combat.md#device-run-encounters-settle-replay-and-squad-cap-3-d-471-battle-flurry-phase-1).
+
+- **Implemented:** encounter inputs resolve on the device with the shared pure
+  `applyRadiantTurn`; one `settle` per finished encounter is replayed by the
+  authority, which saves outcome, Haul and loot atomically with one receipt
+  before any celebration. The per-action `action` operation is retired.
+- **Implemented:** End Turn; taps in any order (tap order = replay order);
+  visible Haul; quitting mid-encounter forfeits only that encounter's unsaved
+  Haul; defeat saves the Haul earned so far.
+- **Implemented:** squads capped at 3 everywhere. Stored 4–6 member squads and
+  loadouts load unchanged, play as their first three and are trimmed only on
+  the player's next save of that squad/loadout (rename keeps members).
+- **Implemented:** schemas 7 (3–6 retire read-only), media type
+  `radiant-continuation-v3`; settle bodies up to 128 KB.
+- **Owner choice:** ship difficulty as-is. Enemies are not retuned for
+  three-member squads until Phase 3; Calamity (tuned for six) is harder meanwhile.
+- **Verified fact:** Radiant never had Flare next-turn recovery after
+  2026-11-08, so D-470's removal needed no engine change.
+- **Open:** Phase 2 presentation (overlapping animations, VFX, drop pour,
+  speed setting) and later phases need their own approvals.
+
 ## Battle Flurry overhaul direction (D-470, 2026-11-16)
 
 The owner finds the Radiant battle loop clunky (stutter, breakage, slow

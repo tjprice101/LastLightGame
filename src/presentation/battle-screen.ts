@@ -5,7 +5,8 @@ import { grantRadiantDrop, personalChargeMaximum, personalChargeUnit, radiantCha
   readyFlare } from '../game/combat-gauge';
 import type { RadiantCombatState } from '../game/combat-engine';
 import { RadiantSession } from '../online/battle-session';
-import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun } from '../online/battle-run';
+import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun, type RadiantTurnAction } from '../online/battle-run';
+import { lusterSheen } from './luster';
 import { compactPortrait } from './compact-portrait';
 import { escapeDialogText as escape, gameConfirm } from './game-dialog';
 import { reducedMotion } from './settings';
@@ -35,7 +36,7 @@ export interface RadiantBattleEffects {
 interface QueuedRadiantPresentation {
   before: RadiantCombatState;
   response: RadiantRunResponse;
-  action: RadiantPlayerAction;
+  action: RadiantTurnAction;
   focusedTarget: string | null;
   resolve(): void;
   reject(error: unknown): void;
@@ -111,18 +112,25 @@ export class RadiantBattleView {
   private celebratedKey: string | null = null;
   private leaderMarkup: string | null = null;
   private gestures: ReturnType<typeof bindRadiantPortraitGestures>;
+  /** Haul shown so far: follows presented frames, never ahead of what the player has seen. */
+  private shownHaul = 0;
+  private haulSheen: (() => void) | null = null;
+  private settling: Promise<void> | null = null;
+  /** Haul submitted by the last settle, kept on screen with the saved result. */
+  private finalHaul: number | null = null;
   constructor(private readonly host: HTMLElement, private readonly session: RadiantSession,
     private readonly openSettings: () => void, private readonly effects?: RadiantBattleEffects,
     private readonly onExit?: () => void) {
-    const run = session.view().saved.run;
+    const run = session.view().run;
     if (!run) throw new Error('A saved Radiant encounter is required.');
+    this.shownHaul = session.view().haul;
     this.displayed = radiantReadout(run.state);
     this.statuses = radiantStatusSnapshot(run.state);
     this.target = run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     this.mount(run);
     this.gestures = bindRadiantPortraitGestures(host, {
       ready: id => {
-        const gauge = this.session.view().saved.run?.state.gauge;
+        const gauge = this.session.view().run?.state.gauge;
         const member = gauge?.members.find(member => member.id === id);
         const button = this.host.querySelector<HTMLButtonElement>(`[data-radiant-actor="${id}"]`);
         const tier = member?.living && button && !button.disabled && gauge ? readyFlare(gauge, id) : null;
@@ -148,7 +156,10 @@ export class RadiantBattleView {
         <div class="radiant-arena">${radiantArenaArt(run.anchor.activity)}</div>
         <div class="radiant-hud">
           <div class="radiant-hud-title"><h2><small class="radiant-eyebrow">${escape(heading.eyebrow)}</small> ${escape(heading.title)}</h2>
-            <span class="radiant-hud-progress"><span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></span></div>
+            <span class="radiant-hud-progress"><span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></span>
+            <span class="radiant-haul" data-radiant-haul title="Prismatica gathered this encounter. It is saved when the encounter ends; leaving early forfeits it.">
+              <span class="radiant-haul-label">Haul</span> <strong class="radiant-haul-amount" data-radiant-haul-amount>0</strong> <span>Prismatica</span>
+              <span class="radiant-haul-state" data-radiant-haul-state></span></span></div>
           <div class="radiant-hud-tools"><button type="button" data-radiant-skip aria-label="Skip presentation" title="Skip presentation" disabled><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 5v14l11-7zM17 5h3v14h-3z"/></svg></button>
           <button type="button" data-radiant-settings aria-label="Settings"><span aria-hidden="true">⚙</span></button>
           ${this.onExit ? '<button type="button" data-radiant-leave aria-label="Exit battle, keeping saved rewards">Exit</button>' : ''}</div>
@@ -206,7 +217,9 @@ export class RadiantBattleView {
       <p id="radiant-gesture-help">Left click a card to attack · Right click to defend · Hold, then swipe up to release Convergent Light.
         <span class="radiant-visually-hidden">Hold for 350ms and drag upward 32px. Keyboard: Enter attacks, D or the context-menu key defends, F or Up Arrow releases ready Convergent Light.</span></p>
       <p class="radiant-visually-hidden" data-radiant-gesture-status role="status" aria-live="polite"></p>
-      <div class="radiant-actions"><button type="button" data-radiant-retry hidden>Retry pending request</button>
+      <div class="radiant-actions"><button type="button" class="radiant-end-turn" data-radiant-end-turn
+        aria-keyshortcuts="E" title="End Turn: members who have not acted skip this round (E)">End Turn</button>
+        <button type="button" data-radiant-retry hidden>Retry pending request</button>
         <button type="button" data-radiant-results-show hidden>View saved results</button></div>
       <p class="radiant-visually-hidden" data-radiant-status role="status" aria-live="polite"></p>
       <p data-radiant-error role="alert"></p>
@@ -216,6 +229,8 @@ export class RadiantBattleView {
           <h3>${escape(characterName(unit.loadout.starter, unit.loadout.form))}</h3>
           <ul class="radiant-shield-layers" data-radiant-layers></ul><ul class="radiant-status-list" data-radiant-effects></ul>
           <p data-radiant-no-effects>No active effects.</p></section>`).join('')}</div>
+        <p>Tap members in any order: each action resolves at once on this device. End Turn skips members who have not acted; the enemy phase follows once every living member has acted.
+        Prismatica gathered during the encounter fills the Haul, which is saved with your rewards when the encounter ends (victory or defeat). Leaving mid-encounter forfeits that encounter’s unsaved Haul; rewards saved from earlier encounters are kept.</p>
         <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
         A damaging Normal hit generates ${radiantChargeRules.normal} Luminosity for its attacker and a separate 1 for each other living same-element ally.
         Surviving each direct incoming hit on Health or Shields grants ${radiantChargeRules.incomingAttack} Luminosity to the recipient only.
@@ -251,6 +266,7 @@ export class RadiantBattleView {
     if (!button || !this.host.contains(button) || button.disabled) return;
     if (button.hasAttribute('data-radiant-settings')) { this.session.setSettings(true); this.render(); this.openSettings(); return; }
     if (button.hasAttribute('data-radiant-skip')) { this.skip(); return; }
+    if (button.hasAttribute('data-radiant-end-turn')) { this.endTurn(); return; }
     if (button.hasAttribute('data-radiant-leave')) { void this.confirmExit().catch(error => this.report(error)); return; }
     if (button.hasAttribute('data-radiant-result-dismiss') || button.hasAttribute('data-radiant-results-show')) {
       if (button.hasAttribute('data-radiant-result-dismiss')) { this.resultCelebration?.(); this.resultCelebration = null; }
@@ -306,6 +322,11 @@ export class RadiantBattleView {
       }
       return;
     }
+    if (event.key.toLowerCase() === 'e' && !event.shiftKey && !(event.target instanceof HTMLInputElement)) {
+      const end = this.host.querySelector<HTMLButtonElement>('[data-radiant-end-turn]');
+      if (end && !end.disabled) { event.preventDefault(); this.endTurn(); }
+      return;
+    }
     const id = event.target.dataset.radiantActor;
     if (!id || event.target.hasAttribute('disabled')) return;
     const key = event.key.toLowerCase();
@@ -331,11 +352,13 @@ export class RadiantBattleView {
   }
   render(): void {
     if (this.disposed) return;
-    const view = this.session.view(), run = view.saved.run;
-    if (!run) { this.host.setAttribute('aria-busy', 'false'); return; }
+    const view = this.session.view(), run = view.run, saved = view.saved.run;
+    if (!run || !saved) { this.host.setAttribute('aria-busy', 'false'); return; }
     this.syncTarget(run);
     const interactionBlocked = view.settingsOpen || view.entrancePending;
-    const actionUnavailable = interactionBlocked || run.quit || run.state.phase !== 'player';
+    // The next round opens only after the enemy phase has been presented.
+    const roundPending = this.displayed.round !== run.state.round;
+    const actionUnavailable = interactionBlocked || run.quit || run.state.phase !== 'player' || roundPending;
     const operationBlocked = view.busy || !!view.pending || !!view.preparationPending || !!view.presentation ||
       !!view.preparationPresentation;
     const blocked = actionUnavailable || operationBlocked && !this.actionQueueRunning;
@@ -413,19 +436,24 @@ export class RadiantBattleView {
         `${member.charge} / ${personalChargeMaximum(member)} Luminosity`;
     }
     this.element<HTMLElement>('[data-radiant-round]').textContent = `Round ${this.displayed.round}`;
+    const endTurn = this.element<HTMLButtonElement>('[data-radiant-end-turn]');
+    endTurn.disabled = blocked || this.actionQueue.length > 0;
+    endTurn.hidden = run.state.phase === 'victory' || run.state.phase === 'defeat' || run.quit;
+    this.renderHaul(view.busy && view.settleDue, view.settleDue && !view.busy && !!view.pending);
     const leader = this.element<HTMLElement>('[data-radiant-leader-reference]');
     const leaderMarkup = radiantLeaderReference(run.state, this.displayed.units[run.state.bearers[0].loadout.id].hp > 0);
     if (this.leaderMarkup !== leaderMarkup) { leader.innerHTML = leaderMarkup; this.leaderMarkup = leaderMarkup; }
     this.element<HTMLButtonElement>('[data-radiant-retry]').hidden = !view.pending || view.busy;
     this.element<HTMLButtonElement>('[data-radiant-skip]').disabled = !this.presenting || view.settingsOpen;
     const resultBlocked = operationBlocked || interactionBlocked || this.actionQueueRunning || this.presenting;
-    const terminal = run.quit || run.state.phase === 'victory' || run.state.phase === 'defeat';
+    // Results follow the saved (settled) run only: rewards are celebrated after the authority save.
+    const terminal = saved.quit || saved.state.phase === 'victory' || saved.state.phase === 'defeat';
     const leave = this.host.querySelector<HTMLButtonElement>('[data-radiant-leave]');
-    if (leave) { leave.disabled = resultBlocked; leave.hidden = terminal; }
+    if (leave) { leave.disabled = resultBlocked && !view.settleDue || view.busy; leave.hidden = terminal; }
     const results = this.element<HTMLElement>('[data-radiant-results]');
     if (terminal && !resultBlocked) {
-      const key = `${run.id}:${run.encounter}:${view.saved.revision}`;
-      if (this.resultKey !== key) { results.innerHTML = radiantResultsMarkup(run, !!this.onExit); this.resultKey = key; }
+      const key = `${saved.id}:${saved.encounter}:${view.saved.revision}`;
+      if (this.resultKey !== key) { results.innerHTML = radiantResultsMarkup(saved, !!this.onExit); this.resultKey = key; }
     }
     const wasHidden = results.hidden;
     results.hidden = !terminal || resultBlocked || view.resultsDismissed;
@@ -434,14 +462,68 @@ export class RadiantBattleView {
     this.element<HTMLButtonElement>('[data-radiant-results-show]').hidden = !terminal || resultBlocked || !view.resultsDismissed;
     for (const button of Array.from(results.querySelectorAll<HTMLButtonElement>('button'))) button.disabled = resultBlocked;
     this.element<HTMLElement>('[data-radiant-error]').textContent = view.error?.message ?? this.presentationError ?? '';
-    this.element<HTMLElement>('[data-radiant-status]').textContent = view.busy || this.presenting ? '' :
-      run.state.phase === 'victory' ? 'Victory · rewards saved.' :
-      run.state.phase === 'defeat' ? 'Defeat · earned rewards retained.' : '';
+    this.element<HTMLElement>('[data-radiant-status]').textContent = view.busy && view.settleDue ? 'Saving encounter…' :
+      view.busy || this.presenting ? '' :
+      saved.state.phase === 'victory' ? 'Victory · rewards saved.' :
+      saved.state.phase === 'defeat' ? 'Defeat · Haul and earned rewards saved.' : '';
+  }
+  private targetHaul(): number {
+    const view = this.session.view();
+    return view.settleDue || view.run?.state.phase === 'player' ? view.haul : this.finalHaul ?? this.shownHaul;
+  }
+  /** Exact Haul count; a finite sheen marks each gain, static under Reduce motion. */
+  private renderHaul(saving: boolean, unsaved: boolean): void {
+    const amount = this.element<HTMLElement>('[data-radiant-haul-amount]');
+    const text = this.shownHaul.toLocaleString('en-US');
+    if (amount.textContent !== text) {
+      const gained = Number(amount.textContent?.replace(/,/g, '') ?? 0) < this.shownHaul;
+      amount.textContent = text;
+      if (gained && !reducedMotion()) { this.haulSheen?.(); this.haulSheen = lusterSheen(amount, 600); }
+    }
+    const saved = this.session.view().saved.run;
+    const settled = !!saved && (saved.state.phase === 'victory' || saved.state.phase === 'defeat');
+    this.element<HTMLElement>('[data-radiant-haul-state]').textContent =
+      saving ? 'Saving…' : unsaved ? 'Not saved yet' : settled && this.shownHaul > 0 ? 'Saved' : '';
   }
   async finishEntrance(): Promise<void> {
     this.skipped = false;
     await this.animate(this.element('.radiant-squad'), [{ opacity: .3, transform: 'translateY(16px)' }, { opacity: 1, transform: 'translateY(0)' }], 500);
-    if (!this.disposed) { this.session.finishEntrance(); this.render(); }
+    if (!this.disposed) {
+      this.session.finishEntrance(); this.render();
+      // A resumed log may already have finished the encounter on this device.
+      if (this.session.view().settleDue) void this.settleEncounter();
+    }
+  }
+  /** Saves the finished device-run encounter through one authority replay (D-471). */
+  private settleEncounter(): Promise<void> {
+    if (this.settling) return this.settling;
+    this.settling = (async () => {
+      try {
+        this.finalHaul = this.session.view().haul;
+        const response = await this.session.settle();
+        this.finishSettle(response);
+      } catch (error) {
+        this.report(error);
+        // A rejected replay saved nothing; the session restarted play from the saved start.
+        const view = this.session.view();
+        if (!view.pending && !view.settleDue && view.run && view.run.state.phase === 'player') await this.remount(view.run);
+      } finally {
+        this.settling = null;
+        this.render();
+      }
+    })();
+    return this.settling;
+  }
+  private finishSettle(response: RadiantRunResponse): void {
+    if (this.disposed) return;
+    const receipt = this.session.view().presentation;
+    if (receipt?.response.revision === response.revision) this.session.finishPresentation(receipt.requestId);
+    if (!this.presenting) {
+      this.displayed = radiantReadout(response.run.state);
+      this.statuses = radiantStatusSnapshot(response.run.state);
+      this.render();
+      this.focusTerminalResult();
+    } else this.render();
   }
   private syncTarget(run: FrozenRadiantRun): void {
     if (!this.target || !run.state.enemies.some(enemy => enemy.id === this.target && enemy.hp > 0))
@@ -450,7 +532,7 @@ export class RadiantBattleView {
   async act(kind: 'normal' | 'defense' | 'flare', bearerId?: string): Promise<void> {
     this.presentationError = null;
     this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = '';
-    const before = this.session.view().saved.run;
+    const before = this.session.view().run;
     if (!before) throw new Error('A saved encounter is required.');
     // Programmatic callers may omit the member; every card action passes its own.
     const actor = bearerId ?? (before.state.bearers.find(unit => unit.hp > 0 && !before.state.acted.includes(unit.loadout.id))
@@ -462,22 +544,40 @@ export class RadiantBattleView {
       kind === 'normal' ? { type: kind, bearerId: actor, targetId: focusedTarget ?? '' } :
       { type: kind, bearerId: actor, ...(tier && radiantFlareNeedsTarget(member.loadout, tier)
         ? { targetId: focusedTarget ?? '' } : {}) };
-    const pending = this.session.perform({ kind: 'action', action }); this.render();
     try {
-      const response = await pending;
+      // Resolved instantly on the device; presentation follows without waiting for the network.
+      const turn = this.session.act(action);
       if (kind !== 'defense') this.cardFeedback(action.bearerId, kind === 'flare' ? 'flare' : 'strike');
-      const presentation = this.queuePresentation(before.state, response, action, affectedEnemyTarget(response, focusedTarget));
+      const presentation = this.queuePresentation(turn.before, turn.response, action,
+        affectedEnemyTarget(turn.response, focusedTarget), false);
+      if (this.session.view().settleDue) void this.settleEncounter();
       if (this.actionQueueRunning) void presentation.catch(error => this.report(error));
       else await presentation;
     }
     finally { this.render(); }
   }
+  /** End Turn: members who have not acted skip this round and the enemy phase plays. */
+  endTurn(): void {
+    if (this.disposed || this.actionQueue.length || this.actionQueueRunning) return;
+    const button = this.host.querySelector<HTMLButtonElement>('[data-radiant-end-turn]');
+    if (!button || button.disabled) return;
+    this.presentationError = null;
+    try {
+      const turn = this.session.act({ type: 'end-turn' });
+      void this.queuePresentation(turn.before, turn.response, { type: 'end-turn' }, null, false)
+        .catch(error => this.report(error));
+      if (this.session.view().settleDue) void this.settleEncounter();
+    } catch (error) { this.report(error); }
+    finally { this.render(); }
+  }
   private enqueueAction(kind: QueuedRadiantAction['kind'], bearerId: string | undefined): void {
     if (!bearerId || this.disposed || this.queuedActionActors.has(bearerId)) return;
-    const view = this.session.view(), run = view.saved.run;
+    const view = this.session.view(), run = view.run;
+    // Taps are accepted while earlier actions are still being presented (flurry); the next
+    // round opens only once the enemy phase has been shown.
     if (!run || view.settingsOpen || view.entrancePending || run.quit || run.state.phase !== 'player' ||
-      view.preparationPending || view.preparationPresentation ||
-      !this.actionQueueRunning && (view.busy || view.pending || view.presentation || this.presenting)) return;
+      this.displayed.round !== run.state.round || view.preparationPending || view.preparationPresentation ||
+      !this.actionQueueRunning && (view.busy || view.pending || view.presentation)) return;
     const member = run.state.bearers.find(unit => unit.loadout.id === bearerId);
     if (!member || member.hp <= 0 || run.state.acted.includes(bearerId)) return;
     if (kind === 'flare' && !readyFlare(run.state.gauge, bearerId)) {
@@ -498,7 +598,7 @@ export class RadiantBattleView {
     try {
       while (this.actionQueue.length && !this.disposed) {
         const queued = this.actionQueue.shift()!;
-        const run = this.session.view().saved.run;
+        const run = this.session.view().run;
         if (!run || run.quit || run.state.phase !== 'player' || this.session.view().settingsOpen) {
           this.actionQueue.length = 0;
           break;
@@ -528,17 +628,20 @@ export class RadiantBattleView {
   }
   async retry(): Promise<void> {
     this.presentationError = null;
-    const before = this.session.view().saved.run, request = this.session.view().pending;
+    const before = this.session.view().run, request = this.session.view().pending;
     if (!before || !request) throw new Error('An unresolved battle request is required.');
+    if (request.operation.kind === 'settle') {
+      this.settling = (async () => {
+        try { this.finalHaul ??= this.session.view().haul; this.finishSettle(await this.session.retryPending()); }
+        finally { this.settling = null; this.render(); }
+      })();
+      this.render();
+      return this.settling;
+    }
     const pending = this.session.retryPending(); this.render();
     try {
       const response = await pending;
-      if (request.operation.kind === 'action') {
-        const action = request.operation.action;
-        const focusedTarget = action.type === 'defense' ? null : 'targetId' in action ? action.targetId ?? this.target : this.target;
-        await this.queuePresentation(before.state, response, action, affectedEnemyTarget(response, focusedTarget));
-      }
-      else if (request.operation.kind === 'continue' || request.operation.kind === 'retry' || request.operation.kind === 'exit')
+      if (request.operation.kind === 'continue' || request.operation.kind === 'retry' || request.operation.kind === 'exit')
         await this.finishTransition(request.operation.kind, response);
       else throw new Error('Unsupported pending battle transition.');
     }
@@ -556,11 +659,13 @@ export class RadiantBattleView {
     finally { this.render(); }
   }
   private queuePresentation(before: RadiantCombatState, response: RadiantRunResponse,
-    action: RadiantPlayerAction, focusedTarget: string | null): Promise<void> {
-    const receipt = this.session.view().presentation;
-    if (!receipt || receipt.response.revision !== response.revision)
-      throw new Error('Saved action presentation receipt is missing.');
-    this.session.finishPresentation(receipt.requestId);
+    action: RadiantTurnAction, focusedTarget: string | null, saved = true): Promise<void> {
+    if (saved) {
+      const receipt = this.session.view().presentation;
+      if (!receipt || receipt.response.revision !== response.revision)
+        throw new Error('Saved action presentation receipt is missing.');
+      this.session.finishPresentation(receipt.requestId);
+    }
     this.skipped = false;
     this.presenting = true;
     const promise = new Promise<void>((resolve, reject) => {
@@ -605,8 +710,11 @@ export class RadiantBattleView {
     this.session.setSettings(true); this.render();
     let confirmed: boolean;
     try {
-      confirmed = await gameConfirm('Leave this encounter? Earned rewards are retained. The current run will end.',
-        { title: 'Exit battle', confirmLabel: 'Exit · Keep rewards' });
+      const haul = this.session.view().haul;
+      confirmed = await gameConfirm(haul > 0
+        ? `Leave this encounter? Its unsaved Haul of ${haul.toLocaleString('en-US')} Prismatica is forfeited. Rewards saved from earlier encounters are kept. The current run will end.`
+        : 'Leave this encounter? Rewards saved from earlier encounters are kept. The current run will end.',
+      { title: 'Exit battle', confirmLabel: haul > 0 ? 'Exit · Forfeit Haul' : 'Exit · Keep saved rewards' });
     } finally { if (!this.disposed) { this.session.setSettings(false); this.render(); } }
     if (confirmed && !this.disposed) await this.transition('exit');
   }
@@ -627,17 +735,21 @@ export class RadiantBattleView {
       }
       return;
     }
+    await this.remount(response.run);
+  }
+  /** Rebuilds the battle surface for a new or restarted encounter attempt. */
+  private async remount(run: FrozenRadiantRun): Promise<void> {
     this.gestures.cancel(); this.cancelEffects(); this.artworkCleanup(); this.resultCelebration?.(); this.resultCelebration = null;
-    this.displayed = radiantReadout(response.run.state); this.statuses = radiantStatusSnapshot(response.run.state);
+    this.displayed = radiantReadout(run.state); this.statuses = radiantStatusSnapshot(run.state);
     this.statusMarkup.clear(); this.shieldMarkup.clear(); this.resultKey = null; this.leaderMarkup = null;
-    this.target = response.run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
-    this.impactTarget = null;
-    this.mount(response.run); this.render();
+    this.target = run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
+    this.impactTarget = null; this.finalHaul = null; this.shownHaul = this.session.view().haul;
+    this.mount(run); this.render();
     await this.finishEntrance();
-    const first = response.run.state.bearers.find(unit => unit.hp > 0)?.loadout.id ?? response.run.state.bearers[0].loadout.id;
+    const first = run.state.bearers.find(unit => unit.hp > 0)?.loadout.id ?? run.state.bearers[0].loadout.id;
     if (!this.disposed) this.element<HTMLElement>(`[data-radiant-actor="${first}"]`).focus();
   }
-  private async present(before: RadiantCombatState, response: RadiantRunResponse, action: RadiantPlayerAction,
+  private async present(before: RadiantCombatState, response: RadiantRunResponse, action: RadiantTurnAction,
     focusedTarget: string | null): Promise<void> {
     if (this.disposed) return;
     const generation = ++this.presentationGeneration;
@@ -649,7 +761,7 @@ export class RadiantBattleView {
         await this.nextPresentationFrame();
         if (this.disposed || this.skipped || generation !== this.presentationGeneration) return;
       }
-      if (!reducedMotion()) {
+      if (!reducedMotion() && action.type !== 'end-turn') {
         const member = before.bearers.find(unit => unit.loadout.id === action.bearerId)!;
         const motion = action.type === 'defense' ? 'guard' : characterChoreography[member.loadout.starter].motion;
         const poised = motion === 'cast' ? 'translateY(-4px)' : motion === 'bow' ? 'translateX(5px)' :
@@ -676,6 +788,7 @@ export class RadiantBattleView {
         }
         previousActor = actor;
         const previous = this.displayed;
+        this.shownHaul += frame.events.reduce((sum, event) => sum + (event.type === 'currency' ? event.amount : 0), 0);
         this.displayed = structuredClone(frame.readout); this.statuses = structuredClone(frame.statuses); this.render();
         if (!reducedMotion()) {
           const random = presentationRandom(`${response.revision}:${frameIndex}`);
@@ -704,20 +817,25 @@ export class RadiantBattleView {
     }
   }
   private settle(response: RadiantRunResponse): void {
-    this.displayed = radiantReadout(response.run.state);
-    this.statuses = radiantStatusSnapshot(response.run.state);
+    const view = this.session.view();
+    // Once nothing else is queued, show the live run (the saved run after a settle) exactly.
+    const shown = !this.presentationQueue.length && view.run ? view.run : response.run;
+    this.displayed = radiantReadout(shown.state);
+    this.statuses = radiantStatusSnapshot(shown.state);
+    if (!this.presentationQueue.length) this.shownHaul = this.targetHaul();
     this.presenting = this.presentationQueue.length > 0; this.activeReceipt = null; this.impactTarget = null;
     this.presentationError = null;
-    const receipt = this.session.view().presentation;
+    const receipt = view.presentation;
     if (receipt?.response.revision === response.revision) this.session.finishPresentation(receipt.requestId);
-    const latest = this.session.view().saved.run;
+    const latest = this.session.view().run;
     if (latest) this.syncTarget(latest);
     this.render();
-    this.focusTerminalResult(response.run);
+    this.focusTerminalResult();
   }
-  private focusTerminalResult(run: FrozenRadiantRun): void {
+  private focusTerminalResult(): void {
+    const run = this.session.view().saved.run;
     const results = this.element<HTMLElement>('[data-radiant-results]');
-    if (!results.hidden) {
+    if (run && !results.hidden) {
       const heading = this.element<HTMLElement>('[data-radiant-result-heading]');
       heading.focus();
       // Once per saved result, and only after a live presentation settles: never on
@@ -738,14 +856,15 @@ export class RadiantBattleView {
     this.skipped = true; this.presentationGeneration++; this.cancelEffects();
     this.cancelActivePresentation?.();
     for (const queued of this.presentationQueue.splice(0)) queued.resolve();
-    const latest = this.session.view().saved.run;
+    const view = this.session.view(), latest = view.run;
     if (latest) {
       this.displayed = radiantReadout(latest.state);
       this.statuses = radiantStatusSnapshot(latest.state);
+      this.shownHaul = this.targetHaul();
       this.presenting = false; this.activeReceipt = null; this.impactTarget = null; this.presentationError = null;
       this.syncTarget(latest);
       this.render();
-      this.focusTerminalResult(latest);
+      this.focusTerminalResult();
     }
   }
   private motion = (): void => { if (reducedMotion()) this.skip(); };
@@ -874,7 +993,7 @@ export class RadiantBattleView {
   }
   /** Presentation-only orbs follow the saved enemy drop and charge deltas. */
   private async chargeOrbs(frame: RadiantImpactFrame, previous: RadiantReadout, random: () => number): Promise<void> {
-    const run = this.session.view().saved.run!;
+    const run = this.session.view().run!;
     const enemies = new Set(run.state.enemies.map(unit => unit.id));
     const sources = [...new Set(frame.events.flatMap(event =>
       event.type === 'damage' && enemies.has(event.targetId) && event.healthLoss + event.absorbed > 0 ? [event.targetId] : []))];
@@ -983,7 +1102,7 @@ export class RadiantBattleView {
   }
   private async fieldImpact(frame: RadiantImpactFrame): Promise<void> {
     const hits = new Map<string, { enemy: boolean; defeated: boolean }>();
-    const run = this.session.view().saved.run!;
+    const run = this.session.view().run!;
     for (const event of frame.events) {
       if (event.type !== 'damage' || event.healthLoss + event.absorbed <= 0) continue;
       hits.set(event.targetId, { enemy: run.state.enemies.some(unit => unit.id === event.targetId),

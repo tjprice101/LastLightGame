@@ -58,7 +58,7 @@ function prerequisites(anchor: RadiantPressureAnchor, account: ReturnType<typeof
 }
 function paperControls(emit: (row: unknown) => void): void {
   const teams: RadiantBearerId[][] = [
-    ['ember'], ['ember', 'tide', 'sprout'], ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'disciple'],
+    ['ember'], ['ember', 'tide', 'sprout'], ['rosetta', 'thornia', 'disciple'],
   ];
   for (const ids of teams) for (const rounds of [6, 20]) {
     const loadouts = pressureStudyLoadouts(ids, 105, 'common').loadouts;
@@ -91,12 +91,12 @@ function paperControls(emit: (row: unknown) => void): void {
 export function executeRadiantPressureStudy(emit: (row: unknown) => void, tunedOnly = false): void {
   const anchors = radiantPressureAnchors();
   const calibrations = tunedOnly ? [pressureRadiantCalibration] : [authoredRadiantCalibration, pressureRadiantCalibration];
-  const calamityTeam: RadiantBearerId[] = ['ozriel', 'ilvaris', 'kaelith', 'tide', 'sprout', 'disciple'];
+  const calamityTeam: RadiantBearerId[] = ['ozriel', 'ilvaris', 'kaelith'];
   const optimized = pressureStudyLoadouts(calamityTeam, 105, 'calamitic').loadouts;
   emit({ metadata: { schema: 1, now: pressureStudyNow, seeds: pressureStudySeeds, maximumRounds: 100,
     stalemateRounds: 20, anchors, families: [...new Set(anchors.map(anchor => anchor.family))],
     calibrations, speciesSeeds: [1],
-    ownership: 'One starter free. Every trio/six and all gear/Masters/progress/clears conditional acquired laboratory assumptions.',
+    ownership: 'One starter free. Every trio (squads cap at three, D-471) and all gear/Masters/progress/clears conditional acquired laboratory assumptions.',
     restrictions: ['No live account writes, acquisition grants, reward RNG or migration.',
       'Budgets use fixed minimum ordinary Prismatica; Calamity budget zero, no chest/recruitment simulation.',
       'Three seeds are a small reproducible sample, not population clear rates or confidence intervals.',
@@ -104,7 +104,7 @@ export function executeRadiantPressureStudy(emit: (row: unknown) => void, tunedO
       'Single-target authored enemy schedule, deterministic noncritical damage; legacy critical/taunt omitted in new model.',
       'All authored species/forms are exercised; anchors do not cover every floor or every acquired roster/gear permutation.',
       'Species-completion anchors use one seed; early/mid/final/boss and controls use three.',
-      'Calamitic six uses bounded greedy personal-Master screening against Machines EX+3, seed1; not a global optimum.'] } });
+      'Calamitic trio uses bounded greedy personal-Master screening against Machines EX+3, seed1; not a global optimum.'] } });
   paperControls(emit);
   const screeningAnchor = anchors.find(anchor => anchor.id === 'calamity:machines:3')!;
   const screeningEnemies = adaptRadiantPressureEncounter(screeningAnchor, 1, pressureRadiantCalibration);
@@ -177,13 +177,13 @@ export function executeRadiantPressureStudy(emit: (row: unknown) => void, tunedO
     const playerLevel = Math.min(105, Math.max(gate, level - 5));
     run(anchor, ['ember'], playerLevel, playerLevel < 10 ? 'empty' : 'common', 'balanced', 'solo-conditional-progression');
     run(anchor, ['ember', 'tide', 'sprout'], playerLevel, 'common', 'balanced', 'trio-conditional-common');
-    run(anchor, ['ember', 'tide', 'sprout', 'atmoso', 'bruno', 'elise'], playerLevel,
-      playerLevel >= 80 ? 'farmed' : 'common', 'balanced', 'six-conditional-developed');
+    run(anchor, ['atmoso', 'bruno', 'elise'], playerLevel,
+      playerLevel >= 80 ? 'farmed' : 'common', 'balanced', 'trio-conditional-developed');
     if (a.kind === 'calamity')
-      run(anchor, calamityTeam, 105, 'calamitic', 'balanced', 'six-separate-calamitic');
+      run(anchor, calamityTeam, 105, 'calamitic', 'balanced', 'trio-separate-calamitic');
     if (a.kind === 'calamity' && a.tier === 3 || anchor.id === 'oblivion:final')
-      run(anchor, ['ember', 'tide', 'sprout', 'atmoso', 'bruno', 'elise'], 105,
-        'common', 'balanced', 'six-common-late-wall-control');
+      run(anchor, ['atmoso', 'bruno', 'elise'], 105,
+        'common', 'balanced', 'trio-common-late-wall-control');
   }
   const opening = anchors.find(anchor => anchor.id === 'story:infernic:early')!;
   for (const id of ['ember', 'tide', 'sprout'] as const)

@@ -54,15 +54,15 @@ describe('isolated radiant charge foundation', () => {
     expect(state.members[0].charge).toBe(60);
   });
   it('grants incoming-hit Luminosity only to the living recipient and nothing at round end', () => {
-    const state = fixture(6, 6);
-    state.members[5].living = false;
+    const state = fixture(6, 3);
+    state.members[2].living = false;
     const drop = grantRadiantDrop(state, 'member-0', 20);
     const next = grantRadiantRound(grantRadiantAction(drop, 'member-0', 'normal', 1).state);
-    expect(next.members.map(member => member.charge)).toEqual([20, 2, 2, 2, 2, 0]);
-    expect(next.members[5].charge).toBe(0);
+    expect(next.members.map(member => member.charge)).toEqual([20, 2, 0]);
+    expect(next.members[2].charge).toBe(0);
   });
   it('does not create charge at round end', () => {
-    const state = fixture(5, 6);
+    const state = fixture(5, 3);
     const next = grantRadiantRound(grantRadiantAction(state, 'member-0', 'normal', 1).state);
     expect(next.members.every(member => member.charge === 0)).toBe(true);
   });
@@ -91,7 +91,7 @@ describe('isolated radiant charge foundation', () => {
     expect(grantRadiantAction(state, 'member-0', 'flare', 1).state).toEqual(state);
     expect(() => grantRadiantAction(state, 'member-0', 'normal', 3)).toThrow('one mechanical');
   });
-  it.each([1, 2, 3, 4, 5, 6])('gives the attacker the full drop and each of %i-member squad its own ten percent', size => {
+  it.each([1, 2, 3])('gives the attacker the full drop and each of %i-member squad its own ten percent', size => {
     const state = fixture(6, size), before = structuredClone(state);
     const next = grantRadiantDrop(state, 'member-0', 25);
     expect(next.members.map(member => member.charge)).toEqual([25, ...Array(size - 1).fill(2.5)]);
@@ -113,10 +113,10 @@ describe('isolated radiant charge foundation', () => {
     validateRadiantGauge(state);
   });
   it('rejects defeated drop sources without reviving or redistributing their charge', () => {
-    const state = fixture(6, 4);
+    const state = fixture(6, 3);
     state.members[0].living = false;
-    state.members[2].charge = 60;
-    state.members[3].living = false;
+    state.members[1].charge = 60;
+    state.members[2].living = false;
     const before = structuredClone(state);
     expect(() => grantRadiantDrop(state, 'member-0', 5)).toThrow('defeated');
     expect(state).toEqual(before);
@@ -130,8 +130,8 @@ describe('isolated radiant charge foundation', () => {
     state.members[0].charge = 60.1;
     expect(() => validateRadiantGauge(state)).toThrow('unlocked layers');
   });
-  it('rejects malformed charge, unknown/defeated actors and seven-member squads', () => {
-    expect(() => validateRadiantGauge(fixture(6, 7))).toThrow('one to six');
+  it('rejects malformed charge, unknown/defeated actors and four-member squads', () => {
+    expect(() => validateRadiantGauge(fixture(6, 4))).toThrow('one to three');
     const state = fixture();
     expect(() => readyFlare(state, 'missing')).toThrow('not in');
     state.members[0].living = false;

@@ -178,7 +178,7 @@ describe('actual bounded action-driven radiant pressure', () => {
     expect(() => pressureStudyLoadouts(['ember', 'ember'], 0, 'empty')).toThrow();
     const farmed = pressureStudyLoadouts(['ember', 'tide', 'sprout'], 105, 'farmed');
     expect(farmed.loadouts.every(member => member.masterId !== null)).toBe(true);
-    const calamity = pressureStudyLoadouts(['ozriel', 'ilvaris', 'kaelith', 'tide', 'sprout', 'disciple'], 105, 'calamitic');
+    const calamity = pressureStudyLoadouts(['ozriel', 'ilvaris', 'kaelith'], 105, 'calamitic');
     expect(calamity.loadouts.every(member => member.gear!.filter(slot => slot !== null).length === 8)).toBe(true);
   });
 });

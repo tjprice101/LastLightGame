@@ -59,7 +59,7 @@ import { createBackdrop } from './presentation/backdrop';
 import { applyMotion, loadMotion, saveMotion, reducedMotion, type MotionPreference } from './presentation/settings';
 import { commands, defaultBindings, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession, type BattleAuthority, type BattleAuthorityResponse } from './presentation/battle-view';
-import { RadiantSession } from './online/battle-session';
+import { RadiantSession, radiantLogStorage } from './online/battle-session';
 import { LocalRadiantTransport } from './online/battle-local';
 import { readRadiantStudy } from './online/battle-transport';
 import type { RadiantCheckpoint } from './online/battle-run';
@@ -254,7 +254,8 @@ async function readRadiantCheckpoint(): Promise<RadiantCheckpoint> {
 }
 
 function createRadiantSession(checkpoint: RadiantCheckpoint): RadiantSession {
-  return playMode === 'online' ? new RadiantSession(checkpoint) : new RadiantSession(checkpoint, localRadiant);
+  return playMode === 'online' ? new RadiantSession(checkpoint, undefined, undefined, radiantLogStorage())
+    : new RadiantSession(checkpoint, localRadiant, undefined, radiantLogStorage());
 }
 
 async function refreshAfterRadiant(): Promise<void> {
@@ -388,7 +389,7 @@ async function enterOnline(progressReady = false): Promise<void> {
   if (response.starterId) {
     try {
       const checkpoint = await readRadiantStudy();
-      if (checkpoint.run) { radiantSession = new RadiantSession(checkpoint); resumed = true; }
+      if (checkpoint.run) { radiantSession = new RadiantSession(checkpoint, undefined, undefined, radiantLogStorage()); resumed = true; }
     } catch (error) { console.error('Saved battle could not be resumed', error); }
   }
   menuPage = resumed ? 'battle' : (response.account.storyCompleted ?? 0) < storyRules.regionStages ? 'story' : 'home';

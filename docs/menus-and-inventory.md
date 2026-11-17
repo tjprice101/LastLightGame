@@ -1,5 +1,20 @@
 # Menus and inventory
 
+## Three-member squads, Haul and End Turn (D-471, 2026-11-16)
+
+Supersedes every earlier "six slots" statement below.
+- Squad editor, Home formation, Profile squad panel, saved loadouts and the
+  Radiant entry form show **three** slots (`squadMemberLimit`). Home grids and
+  the editor use one row of three.
+- A stored squad of four to six shows its first three with the note "Squads now
+  hold up to 3 members…" and an enabled Save squad; nothing is written until the
+  player saves. A stored four- to six-member loadout shows and equips its first
+  three with a note to resave it ("Update with current setup").
+- Battle HUD: the title block shows the **Haul** (exact Prismatica gathered this
+  encounter; "Not saved yet" / "Saving…" / "Saved" state; a finite gold sheen on
+  each gain, static under Reduce motion). The footer has an **End Turn** text
+  button (44px, key E). Exit asks to forfeit any unsaved Haul.
+
 ## Battle HUD and Attendance & mail (D-469, 2026-11-16)
 
 - Battle HUD (`battle-screen.css`): jewel frame and gold hairlines around the

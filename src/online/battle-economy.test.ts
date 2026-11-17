@@ -18,22 +18,26 @@ describe('fresh-entry economy uses accepted authority actions and exact output s
     expect(result.full.damagePrismatica).toBe(result.budget);
     expect(result.full.bonusPrismatica).toBe(150); expect(result.full.nullPrismatica).toBe(0);
     expect(result.full.totalPrismatica).toBe(result.budget + 150);
-    expect(result.requests).toBe(result.actions + 2);
+    // D-471: device play; start, settle and exit are the only authority requests.
+    expect(result.requests).toBe(3);
     expect(result.full.prismaticaPerRequest).toBe(result.full.totalPrismatica / result.requests);
     expect(result.exit).toEqual({ prismatica: 0, rewardEvents: 0, disposed: true });
     expect(account).toEqual(raw);
   });
-  it('partial bounded cycle reports timeout, actual partial payouts and zero repeated-prefix gains', () => {
+  it('partial bounded cycle reports timeout and banks nothing from unsettled play', () => {
     const account = pressureStudyLoadouts(['ember'], 0, 'empty').account;
     account.squad = ['ember']; account.storyCompleted = storyRules.stages;
     const result = measureRadiantEconomyCycle(account, { ...anchor,
       activity: { kind: 'story', stage: storyRules.regionStages } }, 1729, { maximumActions: 2 });
     expect(result.outcome).toBe('timeout'); expect(result.actions).toBe(2);
     expect(result.full.damagePrismatica).toBeLessThan(result.budget);
-    expect(result.full.bonusPrismatica).toBe(0);
-    expect(result.bestPartial).not.toBeNull();
-    expect(result.repeatPrefix).toMatchObject({ attempts: 3, additionalPrismatica: 0, additionalLoot: 0 });
-    expect(result.repeatPrefix!.requests).toBe(3 * (2 + result.bestPartial!.actions));
+    expect(result.full.damagePrismatica).toBeGreaterThan(0);
+    // Unsettled damage Prismatica is never banked, so the account total stays unchanged.
+    expect(result.full.totalPrismatica).toBe(0);
+    expect(result.full.bonusPrismatica).toBe(-result.full.damagePrismatica);
+    expect(result.bestPartial).toBeNull();
+    expect(result.repeatPrefix).toBeNull();
+    expect(result.exit).toEqual({ prismatica: 0, rewardEvents: 0, disposed: true });
   });
   it.each([0, -1, Infinity, 1.5, 6001])('rejects invalid finite action bound %s without mutation', maximumActions => {
     const account = pressureStudyLoadouts(['ember'], 0, 'empty').account;

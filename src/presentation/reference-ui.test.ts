@@ -33,13 +33,13 @@ describe('replacement reference screen structures', () => {
     expect(css).toContain(`${selector}:not(:has(> .ability-icon)) { grid-template-columns: minmax(0, 1fr) !important; }`);
     expect(css).not.toMatch(/\.bubble-skill-summary\s*\{[^}]*-webkit-line-clamp/);
   });
-  it('keeps six formation slots and picker filtering usable over the existing bubble layer', () => {
+  it('keeps three formation slots and picker filtering usable over the existing bubble layer', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
     const css = readFileSync(new URL('./celestial-panels.css', import.meta.url), 'utf8');
     expect(main.indexOf("import './presentation/celestial-panels.css'")).toBeGreaterThan(main.indexOf("import './presentation/bubble-ui.css'"));
     expect(main.indexOf("import './sanctuary-reference.css'")).toBeGreaterThan(main.indexOf("import './presentation/celestial-panels.css'"));
     expect(css).toMatch(/\.squad-pick-card\[hidden\]:not\(#_\)\s*\{\s*display:\s*none\s*!important/);
-    expect(css).toContain('grid-template-rows: repeat(2, minmax(max-content, 1fr)) !important');
+    expect(css).toContain('grid-template-rows: minmax(max-content, 1fr) !important');
     expect(css).toMatch(/\.squad-card-art > img\s*\{[^}]*position:\s*absolute/);
   });
   it('gives Training its own scenery header, compact facts and real entry without a location picker', () => {
@@ -148,7 +148,7 @@ describe('replacement reference screen structures', () => {
     expect(html).toContain('class="ref-screen ref-home home-dashboard"');
     expect(html).toContain('data-team-character="tide"');
     expect(html).toContain('data-team-character="ember"');
-    expect(html).toContain('2 / 6 Element-Bearers');
+    expect(html).toContain('2 / 3 Element-Bearers');
     expect(html).toContain('class="home-squad-member is-leader"');
     expect(html.indexOf('data-team-character="tide"')).toBeLessThan(html.indexOf('data-team-character="ember"'));
     expect(referenceHomeProfile(getStarter('tide'), wallet)).toContain('radiant-attunement-chip');
@@ -160,7 +160,7 @@ describe('replacement reference screen structures', () => {
     expect(referenceHomeProfile(getStarter('tide'), wallet)).toContain('data-team-character="tide"');
     expect(html).toContain('Glasswater Reach');
     expect(html).toContain(`25 / ${storyRules.stages} cleared`);
-    expect(html.match(/class="home-squad-member is-empty"/g)).toHaveLength(4);
+    expect(html.match(/class="home-squad-member is-empty"/g)).toHaveLength(1);
     for (const page of ['events', 'stores', 'inventory', 'collections', 'team', 'story', 'summon', 'gameplay']) expect(html).toContain(`data-page="${page}"`);
     expect(html.match(/class="home-feature-slide(?: is-active)?"/g)).toHaveLength(4);
     for (const index of [0, 1, 2, 3]) expect(html).toContain(`data-home-slide="${index}"`);
@@ -185,14 +185,17 @@ describe('replacement reference screen structures', () => {
   });
 
 
-  it('shows all six acquired squad members in the dashboard formation', () => {
+  it('shows a stored pre-D-471 six-member squad as its first three without writing', () => {
     const wallet = account();
     const ids = ['tide', 'ember', 'sprout', 'atmoso', 'bruno', 'elise'] as const;
     for (const id of ids) wallet.characters[id] ??= { level: 1, evolution: 1 };
     wallet.squad = [...ids];
+    const before = structuredClone(wallet);
     const html = referenceHome(getStarter('tide'), wallet);
-    expect(html.match(/class="home-squad-member(?: is-leader)?"/g)).toHaveLength(6);
-    expect(html).toContain('6 / 6 Element-Bearers');
+    expect(html.match(/class="home-squad-member(?: is-leader)?"/g)).toHaveLength(3);
+    expect(html).toContain('3 / 3 Element-Bearers');
+    expect(html).not.toContain('data-team-character="atmoso"');
+    expect(wallet).toEqual(before);
   });
   it('never shows captured Elemental-Devourers as Home squad members and asks for a replacement', () => {
     const wallet = account();
@@ -204,7 +207,7 @@ describe('replacement reference screen structures', () => {
     expect(html).not.toContain(`data-team-capture-detail="${copy.instanceId}"`);
     expect(html).not.toContain(`data-team-character="${copy.instanceId}"`);
     expect(html).toContain('One saved member is not an acquired Element-Bearer and cannot fight.');
-    expect(html.match(/class="home-squad-member is-empty"/g)).toHaveLength(6);
+    expect(html.match(/class="home-squad-member is-empty"/g)).toHaveLength(3);
     expect(wallet).toEqual(before);
   });
 

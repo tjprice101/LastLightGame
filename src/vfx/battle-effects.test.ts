@@ -381,19 +381,19 @@ describe('saved Radiant signature choreography', () => {
     await expect(effects.impact(invalid)).rejects.toThrow('owner is missing');
     expect(callbacks.size).toBe(0);
   });
-  it('plays six effective heals with their attached saved statuses in one target-bounded frame', async () => {
-    const { effects, state } = fixture('seravelle', ['seravelle', 'ember', 'tide', 'sprout', 'rosetta', 'thornia']);
+  it('plays three effective heals with their attached saved statuses in one target-bounded frame', async () => {
+    const { effects, state } = fixture('seravelle', ['seravelle', 'ember', 'tide']);
     state.gauge.members[0].charge = state.gauge.members[0].baseCost;
     for (const bearer of state.bearers) bearer.hp = Math.round(bearer.hp / 2);
     const before = structuredClone(state), action: RadiantPlayerAction = { type: 'flare', bearerId: 'seravelle' };
     const windup = effects.windup(action, state); finish(); await windup;
     const result = applyRadiantCombatAction(state, action), frames = radiantImpactFrames(state, result.state, result.events);
-    expect(frames.some(frame => frame.events.filter(event => event.type === 'heal' || event.type === 'status').length > 6)).toBe(true);
+    expect(frames.some(frame => frame.events.filter(event => event.type === 'heal' || event.type === 'status').length > 3)).toBe(true);
     for (const frame of frames) { const pending = effects.impact(frame); finish(); await pending; }
     expect(callbacks.size).toBe(0); expect(state).toEqual(before);
   });
   it('stops rendering expired status cues while longer saved impact effects continue', async () => {
-    const { effects, state } = fixture('seravelle', ['seravelle', 'ember', 'tide', 'sprout', 'rosetta', 'thornia']);
+    const { effects, state } = fixture('seravelle', ['seravelle', 'ember', 'tide']);
     state.gauge.members[0].charge = state.gauge.members[0].baseCost;
     for (const bearer of state.bearers) bearer.hp = Math.round(bearer.hp / 2);
     const action: RadiantPlayerAction = { type: 'flare', bearerId: 'seravelle' };

@@ -66,7 +66,9 @@ return async (request: Request): Promise<Response> => {
     let parseFailed = false;
     try { parsed = JSON.parse(body); } catch { parseFailed = true; }
     if (!parseFailed && parsed && typeof parsed === 'object' && !Array.isArray(parsed) && 'radiantStudy' in parsed) {
-      if (body.length > 8192) return response(400, { error: 'Request too large.' }, origin);
+      // A settle carries the encounter's ordered action log (up to 1,000 inputs, D-471).
+      const settle = (parsed as { radiantStudy?: { operation?: { kind?: unknown } } }).radiantStudy?.operation?.kind === 'settle';
+      if (body.length > (settle ? 131072 : 8192)) return response(400, { error: 'Request too large.' }, origin);
       const supportsContinuation = request.headers.get('accept')?.split(',')
         .some(value => value.trim().split(';')[0].toLowerCase() === radiantContinuationMediaType) === true;
       const result = await handleRadiantRequest(parsed, user, admin, radiant, identityOf, supportsContinuation);

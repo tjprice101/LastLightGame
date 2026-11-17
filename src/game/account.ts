@@ -1,6 +1,6 @@
 import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, isResizedActivity, migrateLegacyActivityStage, migratePreviousMachineStage, previousMachineStageCount, migratePreviousInfusionStage, previousInfusionStageCount, type ElementId, type ResizedActivityId } from '../content/activities';
 import { stagedLycalisOdds, validDropAmount } from '../content/loot-random';
-import { squadMemberLimit } from '../content/squad-rules';
+import { squadMemberLimit, storedSquadLimit } from '../content/squad-rules';
 import { activityPrismaticaDrop } from '../content/prismatica';
 import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules,
   characterLevelCost, convergentLightRankCap, convergentLightRankCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
@@ -297,10 +297,11 @@ export function validateAccount(value: unknown): Account {
   }
   if (value.characterLocks !== undefined) account.characterLocks = validateCharacterLocks(value.characterLocks, account.characters);
   if (value.squad !== undefined) {
-    if (!Array.isArray(value.squad) || value.squad.length < 1 || value.squad.length > squadMemberLimit ||
+    // Pre-D-471 saves may hold up to six members; they load unchanged (no load-time trim).
+    if (!Array.isArray(value.squad) || value.squad.length < 1 || value.squad.length > storedSquadLimit ||
         new Set(value.squad).size !== value.squad.length ||
         !value.squad.every((id) => typeof id === 'string' && ownedCharacterInstances(account).includes(id))) {
-      throw new Error('Invalid saved squad. Equip one to six distinct owned characters.');
+      throw new Error('Invalid saved squad. Equip one to three distinct owned characters.');
     }
     account.squad = [...value.squad];
   }
@@ -440,17 +441,24 @@ export function setCharacterLock(storage: ProfileStorage, id: string, locked: bo
   }
   return saveAccount(storage, account);
 }
+/**
+ * The squad as played and displayed: the stored squad's first `squadMemberLimit` members (D-471).
+ * Read-only normalization; the stored array is trimmed only when the player next saves the squad.
+ */
+export function effectiveSquad(account: Account): string[] {
+  return (account.squad ?? ownedCharacters(account).slice(0, 1)).slice(0, squadMemberLimit);
+}
 export function equippedSquad(account: Account): string[] {
-  const ids = account.squad ?? ownedCharacters(account).slice(0, 1);
+  const ids = effectiveSquad(account);
   if (!ids.length || ids.length > squadMemberLimit || new Set(ids).size !== ids.length ||
       ids.some((id) => !ownedCharacterInstances(account).includes(id))) {
-    throw new Error('Equip one to six distinct owned characters before entering battle.');
+    throw new Error('Equip one to three distinct owned characters before entering battle.');
   }
   return [...ids];
 }
 export function squadEligibilityIssue(account: Account, ids: readonly string[]): string | null {
   if (!ids.length || ids.length > squadMemberLimit || new Set(ids).size !== ids.length)
-    return 'Choose one to six distinct owned Element-Bearers.';
+    return 'Choose one to three distinct owned Element-Bearers.';
   const owned = new Set(ownedCharacterInstances(account));
   for (const id of ids) {
     if (!owned.has(id)) return 'A squad member is no longer owned.';
@@ -501,10 +509,12 @@ export function equipSquadLoadout(storage: ProfileStorage, id: string): Account 
   const account = loadLoadoutAccount(storage);
   const entry = account.squadLoadouts?.find(entry => entry.id === id);
   if (!entry) throw new Error('Choose a saved squad loadout.');
-  const issue = squadEligibilityIssue(account, entry.members.map(member => member.character));
+  // A pre-D-471 loadout with more members equips its first three; the loadout itself is unchanged.
+  const members = entry.members.slice(0, squadMemberLimit);
+  const issue = squadEligibilityIssue(account, members.map(member => member.character));
   if (issue) throw new Error(issue);
-  for (const member of entry.members) applySavedEquipment(account, member.character, member);
-  account.squad = entry.members.map(member => member.character);
+  for (const member of members) applySavedEquipment(account, member.character, member);
+  account.squad = members.map(member => member.character);
   return saveAccount(storage, account);
 }
 export function deleteSquadLoadout(storage: ProfileStorage, id: string): Account {

@@ -1,4 +1,5 @@
 import { freshGame } from '../../supabase/functions/game-operation/engine';
+import { squadMemberLimit } from '../content/squad-rules';
 import { characterLevelCap } from '../content/progression';
 import { releasedRadiantIds, type RadiantBearerId } from '../content/combat-kits';
 import { personalChargeMaximum, validateRadiantGauge, type RadiantGaugeState } from '../game/combat-gauge';

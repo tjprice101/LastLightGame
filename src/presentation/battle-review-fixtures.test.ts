@@ -26,7 +26,7 @@ describe('isolated Radiant review fixtures', () => {
       expect(run.state.bearers[0].loadout, `${leader} form ${form}`).toMatchObject({
         id: leader, form, level: Math.min(105, characterLevelCap(form, leader)),
       });
-      expect(run.state.bearers).toHaveLength(6);
+      expect(run.state.bearers).toHaveLength(3);
       for (let cycle = 0; cycle <= 3; cycle++) {
         const gauge = structuredClone(run.state.gauge);
         setRadiantReviewCharge(gauge, cycle);

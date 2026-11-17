@@ -19,7 +19,7 @@ if (!host) throw new Error('Radiant development preview host is missing.');
 const reviewHosts: ShopHostId[] = ['mirel', 'veylin', 'torven', 'edda', 'sarev', 'nimra'];
 host.innerHTML = `<header class="radiant-preview-heading"><h1>Radiant battle · development preview</h1>
   <p>In-memory combat only. No sign-in, player account changes or network saves.
-  This conditional six-member squad is a test fixture, not a free or average account.
+  This conditional three-member squad is a test fixture, not a free or average account.
   All 192 released face crops use reviewed source-bound artwork; unreleased faces keep a neutral pending tile.
   All 32 bearers use authored identity paths, motifs and tier-specific choreography.
   This in-memory preview is not physical GPU/cadence or owner visual approval.</p>

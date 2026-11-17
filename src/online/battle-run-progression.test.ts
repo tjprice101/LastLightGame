@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
-import { resolveRadiantRun, validateFrozenRadiantRun, validateRadiantRunResponse, type RadiantRunSnapshot, type RadiantRunOperation,
-  type RadiantRunResponse, type RadiantRunAuthority } from './battle-run';
+import { applyRadiantTurn, resolveRadiantRun, validateFrozenRadiantRun, validateRadiantRunResponse, type RadiantRunSnapshot,
+  type RadiantRunOperation, type RadiantRunResponse, type RadiantRunAuthority, type RadiantTurnAction } from './battle-run';
 import { storyRules, storyClearReward } from '../content/story';
 import { infusionStageCount, warStageCount } from '../content/activities';
 import { createRadiantCombat, depleteRadiantCurrency } from '../game/combat-engine';
@@ -23,17 +23,22 @@ function step(snapshot: RadiantRunSnapshot, operation: RadiantRunOperation) {
   validateRadiantRunResponse(result.response);
   return { snapshot: { revision: result.response.revision, state: result.state }, response: result.response };
 }
+/** Device play to the end of the encounter, then one authority settle (D-471). */
 function clear(snapshot: RadiantRunSnapshot) {
-  const responses: RadiantRunResponse[] = [];
-  for (let i = 0; i < 100 && snapshot.state.radiantStudy!.state.phase === 'player'; i++) {
-    const run = snapshot.state.radiantStudy!;
-    const result = step(snapshot, { kind: 'action', action: { type: 'normal',
+  const run = structuredClone(snapshot.state.radiantStudy!), actions: RadiantTurnAction[] = [];
+  for (let i = 0; i < 100 && run.state.phase === 'player'; i++) {
+    const action: RadiantTurnAction = { type: 'normal',
       bearerId: run.state.bearers.find(unit => unit.hp > 0 && !run.state.acted.includes(unit.loadout.id))!.loadout.id,
-      targetId: run.state.enemies.find(unit => unit.hp > 0)!.id } });
-    snapshot = result.snapshot; responses.push(result.response);
+      targetId: run.state.enemies.find(unit => unit.hp > 0)!.id };
+    applyRadiantTurn(run, action); actions.push(action);
   }
-  expect(snapshot.state.radiantStudy!.state.phase).toBe('victory');
-  return { snapshot, responses };
+  expect(run.state.phase).toBe('victory');
+  // Device play alone saves nothing.
+  expect(snapshot.state.radiantStudy!.state.phase).toBe('player');
+  const result = step(snapshot, { kind: 'settle', actions });
+  expect(result.snapshot.state.radiantStudy!.state).toEqual(run.state);
+  const responses: RadiantRunResponse[] = [result.response];
+  return { snapshot: result.snapshot, responses };
 }
 function variedVictory(activity: 'story' | 'training'): RadiantRunSnapshot {
   const account = fixture();
@@ -137,8 +142,10 @@ describe('actual Radiant action-to-reward and progression authority', () => {
     expect(run.anchor.trainingWave).toBe(2);
     expect(validateFrozenRadiantRun(JSON.parse(JSON.stringify(run)))).toEqual(run);
     const initial = structuredClone(run.initial);
-    next = step(next, { kind: 'action', action: { type: 'normal', bearerId: 'ember',
-      targetId: run.state.enemies[0].id } }).snapshot;
+    // Unsettled device play is forfeited by Quit; Retry restarts from the frozen entry.
+    const device = structuredClone(run);
+    applyRadiantTurn(device, { type: 'normal', bearerId: 'ember', targetId: run.state.enemies[0].id });
+    expect(device.state).not.toEqual(initial);
     next = step(next, { kind: 'quit' }).snapshot;
     next = step(next, { kind: 'retry' }).snapshot;
     expect(next.state.radiantStudy!.state.bearers).toEqual(initial.bearers);

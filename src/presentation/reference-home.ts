@@ -39,7 +39,7 @@ function emptySquadSlot(index: number): string {
 
 function quickAccess(online: boolean): string {
   const actions: readonly (readonly [string, string, string, HubIcon, string?])[] = [
-    ['team', 'Squad', 'Manage your six-slot formation', 'squad'],
+    ['team', 'Squad', 'Manage your three-slot formation', 'squad'],
     ['team', 'Loadouts', 'Saved squad configurations', 'squad'],
     ['inventory', 'Items', 'Inventory and currencies', 'inventory'],
     ['collections', 'Archive', 'Collections and discoveries', 'overview'],

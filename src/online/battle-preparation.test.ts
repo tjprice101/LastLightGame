@@ -36,17 +36,25 @@ describe('gated manual bearer-only squad and saved equipment preparation', () =>
     expect(after.state.account.conduits).toEqual(before.state.account.conduits);
     expect(before).toEqual(original);
   });
-  it('manually replaces a captured squad with six acquired bearers without grants or holdings loss', () => {
+  it('manually replaces a captured squad with three acquired bearers without grants or holdings loss', () => {
     const before = fixture(), copy = before.state.account.capturedCharacters![0];
     before.state.account.squad = [copy.instanceId];
-    const unchanged = structuredClone(before), ids = releasedRadiantIds.slice(0, 6);
+    const unchanged = structuredClone(before), ids = releasedRadiantIds.slice(0, 3);
     const after = step(before, { kind: 'setSquad', ids });
     expect(before).toEqual(unchanged);
     expect(after.state.account).toEqual({ ...before.state.account, squad: ids });
-    expect(radiantAccountLoadouts(after.state.account)).toHaveLength(6);
-    expect(step(after, { kind: 'setSquad', ids: [ids[5], ids[0]] }).state.account.squad).toEqual([ids[5], ids[0]]);
+    expect(radiantAccountLoadouts(after.state.account)).toHaveLength(3);
+    expect(step(after, { kind: 'setSquad', ids: [ids[2], ids[0]] }).state.account.squad).toEqual([ids[2], ids[0]]);
   });
-  it.each([[], ['ember', 'ember'], ['tide', 'missing'], releasedRadiantIds.slice(0, 7)].map(ids => ({ ids })))(
+  it('keeps a stored pre-D-471 six-member squad unchanged through an unrelated preparation write', () => {
+    const before = fixture(), ids = releasedRadiantIds.slice(0, 6);
+    before.state.account.squad = [...ids];
+    const after = step(before, { kind: 'equipConduit', character: 'ember', slot: 0, conduit: 'vigil-core' });
+    expect(after.state.account.squad).toEqual(ids);
+    expect(radiantAccountLoadouts(after.state.account).map(member => member.id)).toEqual(ids.slice(0, 3));
+    expect(step(after, { kind: 'setSquad', ids: ids.slice(0, 3) }).state.account.squad).toEqual(ids.slice(0, 3));
+  });
+  it.each([[], ['ember', 'ember'], ['tide', 'missing'], releasedRadiantIds.slice(0, 4)].map(ids => ({ ids })))(
     'rejects invalid replacement with no save: $ids', ({ ids }) => {
       const before = fixture(), original = structuredClone(before);
       expect(() => step(before, { kind: 'setSquad', ids })).toThrow();
@@ -65,19 +73,19 @@ describe('gated manual bearer-only squad and saved equipment preparation', () =>
     expect(() => step(snapshot, { kind: 'setSquad', ids: ['tide'] })).toThrow('acquired starter');
     expect(snapshot.state.account.characters.ember).toBeUndefined();
   });
-  it('saves/renames/restores six-member gear snapshots atomically with matching personal Masters', () => {
-    let snapshot = step(fixture(), { kind: 'setSquad', ids: releasedRadiantIds.slice(0, 6) });
+  it('saves/renames/restores three-member gear snapshots atomically with matching personal Masters', () => {
+    let snapshot = step(fixture(), { kind: 'setSquad', ids: releasedRadiantIds.slice(0, 3) });
     snapshot = step(snapshot, { kind: 'equipConduit', character: 'ember', slot: 5, conduit: 'vigil-core' });
     snapshot = step(snapshot, { kind: 'equipMasterConduit', character: 'ember', conduit: 'master-ember-1' });
     snapshot = step(snapshot, { kind: 'saveConduitConfiguration', character: 'ember', index: 0, name: 'Burst' });
-    snapshot = step(snapshot, { kind: 'saveSquadLoadout', id, name: 'Six members' });
+    snapshot = step(snapshot, { kind: 'saveSquadLoadout', id, name: 'Three members' });
     const saved = structuredClone(snapshot.state.account.squadLoadouts);
     snapshot = step(snapshot, { kind: 'renameSquadLoadout', id, name: 'Reordered' });
     snapshot = step(snapshot, { kind: 'renameConduitConfiguration', character: 'ember', index: 0, name: 'Prism' });
     snapshot = step(snapshot, { kind: 'unequipAllConduits', character: 'ember' });
     snapshot = step(snapshot, { kind: 'setSquad', ids: ['tide'] });
     snapshot = step(snapshot, { kind: 'equipSquadLoadout', id });
-    expect(snapshot.state.account.squad).toEqual(releasedRadiantIds.slice(0, 6));
+    expect(snapshot.state.account.squad).toEqual(releasedRadiantIds.slice(0, 3));
     expect(snapshot.state.account.squadLoadouts![0].members).toEqual(saved![0].members);
     expect(snapshot.state.account.masterEquipment!.ember).toBe('master-ember-1');
     snapshot = step(snapshot, { kind: 'unequipAllConduits', character: 'ember' });

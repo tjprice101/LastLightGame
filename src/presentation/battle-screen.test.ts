@@ -17,7 +17,7 @@ import type { Activity } from '../online/server-game';
 let serial = 0;
 const uuid = () => `00000000-0000-4000-8000-${(++serial).toString(16).padStart(12, '0')}`;
 const disposed: RadiantBattleView[] = [];
-function fixture(count: number | RadiantBearerId[] = 6, form = 6, effects?: RadiantBattleEffects, stage = 25, onExit?: () => void,
+function fixture(count: number | RadiantBearerId[] = 3, form = 6, effects?: RadiantBattleEffects, stage = 25, onExit?: () => void,
   masterId?: RadiantMasterId, charged = false, setup?: (state: RadiantCombatState) => void, activity?: Activity) {
   const state = freshGame('battle-surface'); state.starterId = 'ember';
   state.account.storyCompleted = stage - 1;
@@ -51,15 +51,19 @@ function fixture(count: number | RadiantBearerId[] = 6, form = 6, effects?: Radi
   const host = document.createElement('div'); document.body.append(host);
   const settings = vi.fn();
   const view = new RadiantBattleView(host, session, settings, effects, onExit); disposed.push(view);
-  return { view, session, host, transport, settings };
+  const acts = vi.spyOn(session, 'act');
+  return { view, session, host, transport, settings, acts };
 }
 function controls(host: HTMLElement, selector: string) { return host.querySelector<HTMLButtonElement>(selector)!; }
 function action(host: HTMLElement, bearerId: string) {
   return controls(host, `[data-radiant-actor="${bearerId}"]`);
 }
+/** Plays the encounter on the device, then waits for its one authority settle. */
 async function clear(view: RadiantBattleView, session: RadiantSession) {
-  for (let turn = 0; turn < 40 && session.view().saved.run!.state.phase === 'player'; turn++) await view.act('normal');
-  expect(session.view().saved.run!.state.phase).toBe('victory');
+  for (let turn = 0; turn < 40 && session.view().run!.state.phase === 'player'; turn++) await view.act('normal');
+  expect(session.view().run!.state.phase).toBe('victory');
+  await vi.waitFor(() => expect(session.view().saved.run!.state.phase).toBe('victory'));
+  await vi.waitFor(() => expect(session.view().busy).toBe(false));
 }
 afterEach(() => {
   for (const view of disposed.splice(0)) view.dispose();
@@ -67,7 +71,7 @@ afterEach(() => {
   document.documentElement.dataset.battleSpeed = '1';
   vi.restoreAllMocks();
 });
-describe('saved six-member Radiant battle surface', () => {
+describe('device-run three-member Radiant battle surface', () => {
   it('keeps the arena and complete squad in one viewport layout, with results outside its sizing', () => {
     const { host } = fixture();
     const layout = host.querySelector('.radiant-battle-layout')!;
@@ -76,8 +80,11 @@ describe('saved six-member Radiant battle surface', () => {
     ]);
     expect(host.querySelector('.radiant-battle-heading')).toBeNull();
     expect(host.querySelector('.radiant-field .radiant-hud [data-radiant-settings]')!.getAttribute('aria-label')).toBe('Settings');
-    expect(layout.querySelectorAll('.radiant-member')).toHaveLength(6);
-    expect(layout.querySelectorAll('.radiant-frozen-stats dd')).toHaveLength(18);
+    expect(layout.querySelectorAll('.radiant-member')).toHaveLength(3);
+    expect(layout.querySelectorAll('.radiant-frozen-stats dd')).toHaveLength(9);
+    const endTurn = controls(host, '[data-radiant-end-turn]');
+    expect(endTurn.textContent).toBe('End Turn'); expect(endTurn.getAttribute('aria-keyshortcuts')).toBe('E');
+    expect(host.querySelector('.radiant-hud [data-radiant-haul-amount]')!.textContent).toBe('0');
     expect(host.querySelector('[data-radiant-results]')!.parentElement).toBe(layout.parentElement);
     expect(layout.querySelector('[data-radiant-results]')).toBeNull();
     const skip = controls(host, '[data-radiant-skip]');
@@ -88,14 +95,14 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelector('[data-radiant-gesture-status]')!.classList.contains('radiant-visually-hidden')).toBe(true);
     expect(host.querySelector('[data-radiant-status-timing]')).toBeNull();
   });
-  it('grounds six actual enemies and six allies while keeping one selected enemy readout', async () => {
-    const { view, host, session, transport } = fixture(6, 6, undefined, 34, undefined, undefined, false,
+  it('grounds six actual enemies and three allies while keeping one selected enemy readout', async () => {
+    const { view, host, session, transport, acts } = fixture(3, 6, undefined, 34, undefined, undefined, false,
       undefined, { kind: 'dungeon', element: 'infernic', stage: 34 });
     applyMotion('reduced'); await view.finishEntrance();
     const enemies = Array.from(host.querySelectorAll<HTMLButtonElement>('[data-radiant-target]'));
     const allies = Array.from(host.querySelectorAll<HTMLElement>('.radiant-allies [data-radiant-field-unit]'));
     expect(enemies).toHaveLength(6);
-    expect(allies).toHaveLength(6);
+    expect(allies).toHaveLength(3);
     expect(enemies.every(enemy => enemy.style.getPropertyValue('--formation-x'))).toBe(true);
     expect(new Set(enemies.map(enemy => enemy.style.getPropertyValue('--formation-y'))).size).toBeGreaterThan(1);
     expect(host.querySelectorAll('.radiant-enemy .radiant-health')).toHaveLength(0);
@@ -104,15 +111,14 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelectorAll('[data-radiant-target-detail]')).toHaveLength(6);
     expect(Array.from(host.querySelectorAll<HTMLElement>('[data-radiant-target-detail]')).every(detail => detail.tabIndex === 0)).toBe(true);
     expect(host.querySelectorAll('[data-radiant-target-detail]:not([hidden])')).toHaveLength(1);
-    const target = session.view().saved.run!.state.enemies[2].id;
+    const target = session.view().run!.state.enemies[2].id;
     enemies[2].click();
     expect(enemies[2].getAttribute('aria-pressed')).toBe('true');
     expect(host.querySelector<HTMLElement>(`[data-radiant-target-detail="${target}"]`)!.hidden).toBe(false);
     const positions = enemies.map(enemy => enemy.getAttribute('style'));
     await view.act('normal', 'ember');
-    expect(transport.execute.mock.calls.at(-1)?.[0].operation).toMatchObject({
-      kind: 'action', action: { type: 'normal', bearerId: 'ember', targetId: target },
-    });
+    expect(acts.mock.calls.at(-1)?.[0]).toEqual({ type: 'normal', bearerId: 'ember', targetId: target });
+    expect(transport.execute).not.toHaveBeenCalled();
     expect(enemies.map(enemy => enemy.getAttribute('style'))).toEqual(positions);
   });
 
@@ -122,7 +128,7 @@ describe('saved six-member Radiant battle surface', () => {
     const enemies = Array.from(host.querySelectorAll<HTMLButtonElement>('[data-radiant-target]'));
     const positions = enemies.map(enemy => enemy.getAttribute('style'));
     await view.act('normal', 'ember');
-    expect(session.view().saved.run!.state.enemies[0].hp).toBe(0);
+    expect(session.view().run!.state.enemies[0].hp).toBe(0);
     expect(enemies[0].disabled).toBe(true);
     expect(enemies[1].getAttribute('aria-pressed')).toBe('true');
     expect(host.querySelectorAll('[data-radiant-target-detail]:not([hidden])')).toHaveLength(1);
@@ -138,7 +144,7 @@ describe('saved six-member Radiant battle surface', () => {
     };
     const { view, host, session } = fixture(2, 6, effects, 1, undefined, undefined, true);
     await view.finishEntrance();
-    const [oldTarget, nextTarget] = session.view().saved.run!.state.enemies.map(enemy => enemy.id);
+    const [oldTarget, nextTarget] = session.view().run!.state.enemies.map(enemy => enemy.id);
     const oldDetail = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${oldTarget}"]`)!;
     const nextDetail = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${nextTarget}"]`)!;
     const flare = view.act('flare', 'tide');
@@ -164,14 +170,14 @@ describe('saved six-member Radiant battle surface', () => {
     };
     const { view, host, session } = fixture(2, 6, effects, 1);
     await view.finishEntrance();
-    target = session.view().saved.run!.state.enemies[0].id;
-    const survivor = session.view().saved.run!.state.enemies[1].id;
+    target = session.view().run!.state.enemies[0].id;
+    const survivor = session.view().run!.state.enemies[1].id;
     const oldDetail = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${target}"]`)!;
     const newDetail = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${survivor}"]`)!;
     const oldHP = oldDetail.querySelector('[data-hp]')!.textContent;
     const pending = view.act('normal', 'ember');
     await vi.waitFor(() => expect(effects.windup).toHaveBeenCalledTimes(1));
-    expect(session.view().saved.run!.state.enemies[0].hp).toBe(0);
+    expect(session.view().run!.state.enemies[0].hp).toBe(0);
     expect(oldDetail.hidden).toBe(false);
     expect(oldDetail.querySelector('[data-hp]')!.textContent).toBe(oldHP);
     expect(oldDetail.textContent).not.toContain('Resolving impact');
@@ -207,23 +213,23 @@ describe('saved six-member Radiant battle surface', () => {
     expect(action(host, 'ember').disabled).toBe(false);
     expect(action(host, 'tide').disabled).toBe(false);
   });
-  it('queues rapid portrait actions in order while saves and visual receipts are still resolving', async () => {
-    const ids = releasedRadiantIds.slice(0, 6);
+  it('resolves rapid portrait taps instantly on the device, in tap order, with no network request', async () => {
+    const ids = releasedRadiantIds.slice(0, 3);
     let releaseWindup!: () => void;
     const effects = {
       windup: vi.fn(() => new Promise<void>(resolve => { releaseWindup = resolve; })),
       impact: vi.fn(async () => {}),
       cancel: vi.fn(),
     };
-    const { view, host, session, transport } = fixture(ids, 6, effects, 120);
+    const { view, host, session, transport, acts } = fixture(ids, 6, effects, 120);
     applyMotion('reduced'); await view.finishEntrance(); applyMotion('system');
     for (const id of ids) action(host, id).click();
     await vi.waitFor(() => expect(effects.windup).toHaveBeenCalledOnce());
-    await vi.waitFor(() => expect(transport.execute).toHaveBeenCalledTimes(ids.length));
-    expect(transport.execute.mock.calls.map(([request]) =>
-      request.operation.kind === 'action' ? request.operation.action.bearerId : 'not-action')).toEqual(ids);
-    expect(session.view().saved.revision).toBe(1 + ids.length);
-    expect(session.view().saved.run?.state.gauge.members.every(member => member.charge > 0)).toBe(true);
+    await vi.waitFor(() => expect(acts).toHaveBeenCalledTimes(ids.length));
+    expect(acts.mock.calls.map(([turn]) => 'bearerId' in turn ? turn.bearerId : 'end-turn')).toEqual(ids);
+    expect(transport.execute).not.toHaveBeenCalled();
+    expect(session.view().saved.revision).toBe(1);
+    expect(session.view().run?.state.gauge.members.every(member => member.charge > 0)).toBe(true);
     releaseWindup();
   });
 
@@ -249,27 +255,27 @@ describe('saved six-member Radiant battle surface', () => {
     expect(energy.querySelectorAll('meter.radiant-visually-hidden')).toHaveLength(2);
     expect(energy.querySelector<HTMLMeterElement>('[data-layer="2"]')!.value).toBeCloseTo(Math.max(0, charge - 100));
   });
-  it('renders six stable per-form face controls, four stats, personal layers and exact Luminosity', async () => {
+  it('renders three stable per-form face controls, four stats, personal layers and exact Luminosity', async () => {
     const { view, host, session } = fixture(); applyMotion('reduced'); await view.finishEntrance();
-    expect(host.querySelectorAll('[data-radiant-actor]')).toHaveLength(6);
-    expect(host.querySelectorAll('.compact-portrait img')).toHaveLength(6);
-    for (const id of releasedRadiantIds.slice(0, 6)) {
+    expect(host.querySelectorAll('[data-radiant-actor]')).toHaveLength(3);
+    expect(host.querySelectorAll('.compact-portrait img')).toHaveLength(3);
+    for (const id of releasedRadiantIds.slice(0, 3)) {
       const art = characterArt(id, 6).art;
       const image = host.querySelector<HTMLImageElement>(`.compact-portrait[data-character="${id}"] img`)!;
       expect(image.getAttribute('src')).toContain(`character-faces/${art}.png?v=${compactPortraitRevisions[art]}`);
       expect(image.alt).not.toContain('pending');
     }
-    expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(12);
+    expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(6);
     expect(host.querySelectorAll('[data-radiant-reference]')).toHaveLength(0);
     expect(host.querySelectorAll('[data-radiant-menu], [data-radiant-action], [data-radiant-member-actions]')).toHaveLength(0);
     expect(host.textContent).not.toContain('Kit');
-    expect(host.querySelectorAll('.radiant-allies .radiant-ally-art')).toHaveLength(6);
-    expect(host.querySelectorAll('.radiant-field [data-radiant-art]')).toHaveLength(8);
+    expect(host.querySelectorAll('.radiant-allies .radiant-ally-art')).toHaveLength(3);
+    expect(host.querySelectorAll('.radiant-field [data-radiant-art]')).toHaveLength(5);
     expect(host.querySelectorAll('.radiant-allies .compact-portrait')).toHaveLength(0);
     expect(host.querySelector('.radiant-squad .radiant-ally-art')).toBeNull();
     expect(host.textContent).not.toMatch(/Critical|Shatter Damage|Elemental Damage/);
     expect(host.querySelector('[data-radiant-shared]')).toBeNull();
-    expect(host.querySelectorAll('.radiant-member-head.radiant-visually-hidden, .radiant-member-foot.radiant-visually-hidden')).toHaveLength(12);
+    expect(host.querySelectorAll('.radiant-member-head.radiant-visually-hidden, .radiant-member-foot.radiant-visually-hidden')).toHaveLength(6);
     expect(host.getAttribute('aria-busy')).toBe('false');
     const image = host.querySelector('.compact-portrait img');
     const enemyImage = host.querySelector('.radiant-enemy-art');
@@ -282,7 +288,7 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelector('.radiant-arena-art')).toBe(scenery);
     expect(host.querySelector('.radiant-ally-art')).toBe(ally);
     expect(session.view().presentation).toBeNull();
-    const savedCharge = session.view().saved.run!.state.gauge.members[0].charge;
+    const savedCharge = session.view().run!.state.gauge.members[0].charge;
     expect(host.querySelector('[data-radiant-charge-text="ember"]')!.textContent).toBe(`${savedCharge} / 200 Luminosity`);
     expect(parseFloat(host.querySelector<HTMLElement>('[data-radiant-energy="ember"] [data-energy-layer="1"]')!.style.width))
       .toBeCloseTo(Math.min(savedCharge, 100));
@@ -304,21 +310,21 @@ describe('saved six-member Radiant battle surface', () => {
     expect(energy.classList.contains('is-flowing')).toBe(false);
     expect(energy.querySelector<HTMLElement>('[data-energy-layer="2"]')!.style.width).toBe('50%');
   });
-  it('portrait tap saves exactly one Normal Attack for that member with no selection step', async () => {
-    const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+  it('portrait tap resolves exactly one Normal Attack for that member with no selection step', async () => {
+    const { view, session, host, transport, acts } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     controls(host, '[data-radiant-actor="tide"]').click();
-    await vi.waitFor(() => expect(session.view().presentation).toBeNull());
-    expect(transport.execute).toHaveBeenCalledTimes(1);
-    expect(transport.execute.mock.calls[0][0].operation).toEqual({ kind: 'action',
-      action: { type: 'normal', bearerId: 'tide', targetId: 'story-25-0' } });
+    await vi.waitFor(() => expect(session.view().run!.state.acted).toContain('tide'));
+    expect(acts).toHaveBeenCalledTimes(1);
+    expect(acts.mock.calls[0][0]).toEqual({ type: 'normal', bearerId: 'tide', targetId: 'story-25-0' });
+    expect(transport.execute).not.toHaveBeenCalled();
     expect(host.querySelector('[data-radiant-field-unit="tide"]')).not.toBeNull();
     expect(host.querySelector('[data-radiant-card].is-selected, [data-radiant-actor][aria-pressed]')).toBeNull();
   });
   it('shows every saved teammate share and preserves static feedback under Reduce motion', async () => {
     const { view, session, host } = fixture(['ember', 'caldrex', 'tide']); applyMotion('reduced'); await view.finishEntrance();
     await view.act('normal');
-    const run = session.view().saved.run!;
-    const drops = session.view().events.filter(event => event.type === 'gauge-drop' && event.bearerId === 'ember');
+    const run = session.view().run!;
+    const drops = run.journal.events.filter(event => event.type === 'gauge-drop' && event.bearerId === 'ember');
     const total = drops.reduce((sum, event) => sum + (event.type === 'gauge-drop' ? event.amount : 0), 0);
     expect(total).toBeGreaterThan(0);
     for (const member of run.state.gauge.members.slice(1)) {
@@ -342,10 +348,10 @@ describe('saved six-member Radiant battle surface', () => {
     } });
     try {
       const { view, session, host } = fixture(['ember', 'caldrex']); await view.finishEntrance();
-      const enemyId = session.view().saved.run!.state.enemies[0].id;
+      const enemyId = session.view().run!.state.enemies[0].id;
       const enemy = host.querySelector<HTMLElement>(`[data-radiant-art="${enemyId}"]`)!;
       vi.spyOn(enemy, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 50, 0, 0));
-      const ids = session.view().saved.run!.state.gauge.members.map(member => member.id);
+      const ids = session.view().run!.state.gauge.members.map(member => member.id);
       ids.forEach((id, index) => {
         const face = host.querySelector<HTMLElement>(`[data-radiant-unit="${id}"] .radiant-face`)!;
         vi.spyOn(face, 'getBoundingClientRect').mockReturnValue(new DOMRect(400 + index * 80, 500, 0, 0));
@@ -375,7 +381,7 @@ describe('saved six-member Radiant battle surface', () => {
       document.documentElement.dataset.battleSpeed = String(speed);
       const { view, session } = fixture(1, 1); await view.finishEntrance();
       animations.length = 0;
-      const enemyIds = new Set(session.view().saved.run!.state.enemies.map(enemy => enemy.id));
+      const enemyIds = new Set(session.view().run!.state.enemies.map(enemy => enemy.id));
       await view.act('normal');
       const windup = animations.findIndex(entry => entry.duration === 420 &&
         enemyIds.has(entry.target.getAttribute('data-radiant-art') ?? '') &&
@@ -391,12 +397,12 @@ describe('saved six-member Radiant battle surface', () => {
       else Reflect.deleteProperty(Element.prototype, 'animate');
     }
   });
-  it('surfaces a missing Gauge recipient without losing the saved action', async () => {
-    const { view, session, host } = fixture(['ember', 'caldrex']); await view.finishEntrance();
+  it('surfaces a missing Gauge recipient without losing the resolved action', async () => {
+    const { view, session, host, acts } = fixture(['ember', 'caldrex']); await view.finishEntrance();
     host.querySelector('[data-radiant-unit="caldrex"] .radiant-face')!.remove();
     await expect(view.act('normal')).rejects.toThrow('Gauge-drop recipient is missing');
-    expect(session.view().saved.revision).toBe(2);
-    expect(session.view().saved.run!.state.gauge.members[1].charge).toBeGreaterThan(0);
+    expect(acts).toHaveBeenCalledTimes(1); expect(session.view().run!.state.acted).toEqual(['ember']);
+    expect(session.view().run!.state.gauge.members[1].charge).toBeGreaterThan(0);
     expect(host.querySelector('[data-radiant-error]')!.textContent).toContain('Gauge-drop recipient is missing');
   });
   it('keeps Guard in the optional reference and updates it through round expiry without filling the card', async () => {
@@ -408,21 +414,21 @@ describe('saved six-member Radiant battle surface', () => {
     await view.act('normal');
     expect(host.querySelector('[data-radiant-member-reference="ember"] [data-radiant-effect="guard"]')).toBeNull();
   });
-  it('clicking anywhere on a member card saves its Normal Attack', async () => {
-    const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+  it('clicking anywhere on a member card resolves its Normal Attack', async () => {
+    const { view, session, host, transport, acts } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     host.querySelector<HTMLElement>('[data-radiant-card][data-radiant-unit="tide"] .radiant-frozen-stats dd')!
       .dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    await vi.waitFor(() => expect(session.view().presentation).toBeNull());
-    expect(transport.execute).toHaveBeenCalledTimes(1);
-    expect(transport.execute.mock.calls[0][0].operation).toEqual({ kind: 'action',
-      action: { type: 'normal', bearerId: 'tide', targetId: 'story-25-0' } });
+    await vi.waitFor(() => expect(session.view().run!.state.acted).toContain('tide'));
+    expect(acts).toHaveBeenCalledTimes(1);
+    expect(acts.mock.calls[0][0]).toEqual({ type: 'normal', bearerId: 'tide', targetId: 'story-25-0' });
     host.querySelector<HTMLElement>('[data-radiant-card][data-radiant-unit="tide"] [data-radiant-charge-text]')!
       .dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await Promise.resolve();
-    expect(transport.execute).toHaveBeenCalledTimes(1);
+    expect(acts).toHaveBeenCalledTimes(1);
+    expect(transport.execute).not.toHaveBeenCalled();
   });
-  it('a held upward portrait release sends one saved Flare and suppresses its compatibility click', async () => {
-    const { view, session, host, transport } = fixture(6, 6, undefined, 25, undefined, undefined, true);
+  it('a held upward portrait release casts one Flare and suppresses its compatibility click', async () => {
+    const { view, session, host, transport, acts } = fixture(3, 6, undefined, 25, undefined, undefined, true);
     applyMotion('reduced'); await view.finishEntrance();
     vi.useFakeTimers();
     const button = controls(host, '[data-radiant-actor="tide"]');
@@ -433,65 +439,61 @@ describe('saved six-member Radiant battle surface', () => {
     };
     pointer('pointerdown', 100); vi.advanceTimersByTime(350); pointer('pointerup', 50); button.click();
     vi.useRealTimers();
-    await vi.waitFor(() => expect(session.view().presentation).toBeNull());
-    expect(transport.execute).toHaveBeenCalledTimes(1);
-    expect(transport.execute.mock.calls[0][0].operation).toEqual({ kind: 'action', action: { type: 'flare', bearerId: 'tide' } });
+    await vi.waitFor(() => expect(session.view().run!.state.acted).toContain('tide'));
+    expect(acts).toHaveBeenCalledTimes(1);
+    expect(acts.mock.calls[0][0]).toEqual({ type: 'flare', bearerId: 'tide' });
+    expect(transport.execute).not.toHaveBeenCalled();
   });
   it('form1 has one personal layer and released forms use reviewed face art', async () => {
-    const { view, host } = fixture(6, 1); applyMotion('reduced'); await view.finishEntrance();
-    expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(6);
-    expect(host.querySelectorAll('[data-energy-layer="1"]')).toHaveLength(6);
+    const { view, host } = fixture(3, 1); applyMotion('reduced'); await view.finishEntrance();
+    expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(3);
+    expect(host.querySelectorAll('[data-energy-layer="1"]')).toHaveLength(3);
     expect(host.querySelectorAll('[data-energy-layer="2"]')).toHaveLength(0);
     expect(host.querySelector('.radiant-shared')).toBeNull();
-    expect(host.querySelector<HTMLImageElement>('[data-character="rosetta"] img')!.alt).not.toContain('pending');
+    expect(host.querySelector<HTMLImageElement>(`[data-character="${releasedRadiantIds[2]}"] img`)!.alt).not.toContain('pending');
     expect(host.querySelector<HTMLImageElement>('[data-character="ember"] img')!.alt).not.toContain('pending');
   });
-  it('keeps old HP while save and windup are pending, then shows the saved impact before visuals finish', async () => {
+  it('keeps old HP while the windup plays, then shows the resolved impact before visuals finish, with no save', async () => {
     let windup!: () => void, impact!: () => void;
     const frames: RadiantImpactFrame[] = [];
     const effects = { windup: vi.fn(() => new Promise<void>(resolve => { windup = resolve; })),
       impact: vi.fn((frame: RadiantImpactFrame) => { frames.push(frame);
         return frames.length === 1 ? new Promise<void>(resolve => { impact = resolve; }) : Promise.resolve(); }),
       cancel: vi.fn() };
-    const { view, host, session, transport } = fixture(6, 6, effects);
+    const { view, host, session, transport } = fixture(3, 6, effects);
     await view.finishEntrance();
-    const execute = transport.execute.getMockImplementation()!;
-    let save!: () => void;
-    transport.execute.mockImplementationOnce(async request => {
-      await new Promise<void>(resolve => { save = resolve; }); return execute(request);
-    });
-    const target = session.view().saved.run!.state.enemies[0].id;
+    const target = session.view().run!.state.enemies[0].id;
     const readout = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${target}"]`)!;
     const enemyHP = readout.querySelector('[data-hp]')!.textContent;
     const pending = view.act('normal');
+    await vi.waitFor(() => expect(effects.windup).toHaveBeenCalledTimes(1));
     expect(readout.querySelector('[data-hp]')!.textContent).toBe(enemyHP);
-    expect(effects.windup).not.toHaveBeenCalled(); expect(host.getAttribute('aria-busy')).toBe('true');
-    save(); await vi.waitFor(() => expect(effects.windup).toHaveBeenCalledTimes(1));
-    expect(readout.querySelector('[data-hp]')!.textContent).toBe(enemyHP);
-    expect(session.view().saved.revision).toBe(2);
+    expect(session.view().run!.state.enemies[0].hp).toBeLessThan(session.view().saved.run!.state.enemies[0].hp);
+    expect(session.view().saved.revision).toBe(1); expect(transport.execute).not.toHaveBeenCalled();
     windup(); await vi.waitFor(() => expect(effects.impact).toHaveBeenCalledTimes(1));
     expect(readout.querySelector('[data-hp]')!.textContent).not.toBe(enemyHP);
     expect(action(host, 'tide').disabled).toBe(false);
     impact(); await pending;
     expect(session.view().presentation).toBeNull(); expect(host.getAttribute('aria-busy')).toBe('false');
   });
-  it('saves another member action while the previous member is still winding up', async () => {
+  it('resolves another member action while the previous member is still winding up', async () => {
     const windups: (() => void)[] = [];
     const effects = { windup: vi.fn(() => new Promise<void>(resolve => { windups.push(resolve); })),
       impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, session, transport, host } = fixture(6, 6, effects);
+    const { view, session, transport, host, acts } = fixture(3, 6, effects);
     await view.finishEntrance();
 
     const first = view.act('normal');
     await vi.waitFor(() => expect(windups).toHaveLength(1));
-    expect(session.view().saved.revision).toBe(2);
+    expect(acts).toHaveBeenCalledTimes(1);
     expect(action(host, 'tide').disabled).toBe(false);
     expect(host.querySelector('[data-radiant-status]')?.textContent).toBe('');
 
     const second = view.act('normal');
-    await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
-    expect(transport.execute).toHaveBeenCalledTimes(2);
-    expect(session.view().saved.run!.state.acted).toEqual(['ember', 'tide']);
+    await vi.waitFor(() => expect(acts).toHaveBeenCalledTimes(2));
+    // Only an encounter-ending action sends a request: the one settle.
+    expect(transport.execute.mock.calls.every(([request]) => request.operation.kind === 'settle')).toBe(true);
+    expect(session.view().run!.state.acted).toEqual(['ember', 'tide']);
     expect(windups).toHaveLength(1);
 
     windups[0]();
@@ -499,21 +501,22 @@ describe('saved six-member Radiant battle surface', () => {
     windups[1]();
     await Promise.all([first, second]);
     expect(session.view().presentation).toBeNull();
-    expect(session.view().saved.revision).toBe(3);
+    await vi.waitFor(() => expect(session.view().busy).toBe(false));
+    expect(session.view().saved.revision).toBe(1 + transport.execute.mock.calls.length);
   });
-  it('allows a teammate to cast newly shared saved charge during the previous windup', async () => {
+  it('allows a teammate to cast newly shared charge during the previous windup', async () => {
     const windups: (() => void)[] = [];
     const effects = { windup: vi.fn(() => new Promise<void>(resolve => { windups.push(resolve); })),
       impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, session, host, transport } = fixture(['ember', 'caldrex'], 6, effects, 25, undefined, undefined, false, state => {
+    const { view, session, host, acts } = fixture(['ember', 'caldrex'], 6, effects, 25, undefined, undefined, false, state => {
       const caldrex = state.gauge.members.find(member => member.id === 'caldrex')!;
       caldrex.charge = caldrex.baseCost - 1;
     });
     await view.finishEntrance();
-    const caldrexBefore = session.view().saved.run!.state.gauge.members.find(member => member.id === 'caldrex')!;
+    const caldrexBefore = session.view().run!.state.gauge.members.find(member => member.id === 'caldrex')!;
     const first = view.act('normal');
     await vi.waitFor(() => expect(windups).toHaveLength(1));
-    const savedTide = session.view().saved.run!.state.gauge.members.find(member => member.id === 'caldrex')!;
+    const savedTide = session.view().run!.state.gauge.members.find(member => member.id === 'caldrex')!;
     expect(savedTide.charge).toBeGreaterThanOrEqual(savedTide.baseCost);
     expect(host.querySelector('[data-radiant-charge-text="caldrex"]')!.textContent)
       .toBe(`${caldrexBefore.charge} / ${caldrexBefore.baseCost * 2} Luminosity`);
@@ -522,31 +525,29 @@ describe('saved six-member Radiant battle surface', () => {
     expect(action(host, 'caldrex').disabled).toBe(false);
     expect(host.querySelector('[data-radiant-readiness="caldrex"]')!.textContent).toBe('Sparkling Convergent Light ready');
     const second = view.act('flare');
-    await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
-    expect(transport.execute.mock.calls[1][0].operation).toMatchObject({
-      kind: 'action', action: { type: 'flare', bearerId: 'caldrex' },
-    });
+    await vi.waitFor(() => expect(acts).toHaveBeenCalledTimes(2));
+    expect(acts.mock.calls[1][0]).toMatchObject({ type: 'flare', bearerId: 'caldrex' });
     windups[0]();
     await vi.waitFor(() => expect(windups).toHaveLength(2));
     windups[1]();
     await Promise.all([first, second]);
-    const remainingCharge = session.view().saved.run!.state.gauge.members.find(member => member.id === 'caldrex')!.charge;
+    const remainingCharge = session.view().run!.state.gauge.members.find(member => member.id === 'caldrex')!.charge;
     expect(parseFloat(caldrexLiquid.style.width)).toBeCloseTo(remainingCharge / caldrexBefore.baseCost * 100);
     expect(remainingCharge).toBeLessThan(caldrexBefore.charge);
     expect(host.querySelector<HTMLElement>('[data-radiant-energy="caldrex"] [data-energy-layer="2"]')!.style.width).toBe('0%');
   });
-  it('Skip settles queued actions to the latest saved state without replaying stale impacts', async () => {
+  it('Skip settles queued actions to the latest resolved state without replaying stale impacts', async () => {
     const windups: (() => void)[] = [];
     const effects = { windup: vi.fn(() => new Promise<void>(resolve => { windups.push(resolve); })),
       impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, session, host } = fixture(6, 6, effects);
+    const { view, session, host, acts } = fixture(3, 6, effects);
     await view.finishEntrance();
 
     const first = view.act('normal');
     await vi.waitFor(() => expect(windups).toHaveLength(1));
     const second = view.act('normal');
-    await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
-    const latest = session.view().saved.run!;
+    await vi.waitFor(() => expect(acts).toHaveBeenCalledTimes(2));
+    const latest = session.view().run!;
     const target = latest.state.enemies[0];
     const expected = radiantReadout(latest.state).units[target.id];
     view.skip();
@@ -574,7 +575,7 @@ describe('saved six-member Radiant battle surface', () => {
       expect(field.getBoundingClientRect().top).toBe(100);
       expect(scrollDelivered).toBe(true);
     }), impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, host } = fixture(6, 6, effects); await view.finishEntrance();
+    const { view, host } = fixture(3, 6, effects); await view.finishEntrance();
     scroller.append(host);
     field = host.querySelector<HTMLElement>('.radiant-field')!;
     let fieldTop = -160;
@@ -595,7 +596,7 @@ describe('saved six-member Radiant battle surface', () => {
   it('keeps saved controls available and honors Skip while an automatic reveal waits for its scroll event', async () => {
     const callbacks: FrameRequestCallback[] = [];
     const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, host, session, transport } = fixture(6, 6, effects); await view.finishEntrance();
+    const { view, host, session, transport, acts } = fixture(3, 6, effects); await view.finishEntrance();
     const scroller = document.createElement('div');
     scroller.style.overflowY = 'auto';
     Object.defineProperties(scroller, { scrollHeight: { value: 1600 }, clientHeight: { value: 800 } });
@@ -609,11 +610,11 @@ describe('saved six-member Radiant battle surface', () => {
 
     const first = view.act('normal');
     await vi.waitFor(() => expect(callbacks).toHaveLength(1));
-    expect(session.view().saved.revision).toBe(2);
+    expect(acts).toHaveBeenCalledTimes(1);
     expect(action(host, 'tide').disabled).toBe(false);
     const second = view.act('normal');
-    await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
-    expect(transport.execute).toHaveBeenCalledTimes(2);
+    await vi.waitFor(() => expect(acts).toHaveBeenCalledTimes(2));
+    expect(transport.execute.mock.calls.every(([request]) => request.operation.kind === 'settle')).toBe(true);
     view.skip();
     expect(cancelFrame).toHaveBeenCalledWith(1);
     await Promise.all([first, second]);
@@ -625,12 +626,12 @@ describe('saved six-member Radiant battle surface', () => {
     expect(effects.windup).not.toHaveBeenCalled();
     expect(effects.impact).not.toHaveBeenCalled();
     expect(session.view().presentation).toBeNull();
-    expect(session.view().saved.run!.state.acted).toEqual(['ember', 'tide']);
+    expect(session.view().run!.state.acted).toEqual(['ember', 'tide']);
   });
   it('cancels a pending automatic reveal frame when the battle is disposed', async () => {
     const callbacks: FrameRequestCallback[] = [];
     const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, host } = fixture(6, 6, effects); await view.finishEntrance();
+    const { view, host } = fixture(3, 6, effects); await view.finishEntrance();
     const scroller = document.createElement('div');
     scroller.style.overflowY = 'auto';
     Object.defineProperties(scroller, { scrollHeight: { value: 1600 }, clientHeight: { value: 800 } });
@@ -655,7 +656,7 @@ describe('saved six-member Radiant battle surface', () => {
   });
   it('keeps the original viewport under Reduce motion when the battlefield is offscreen', async () => {
     const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, host } = fixture(6, 6, effects); await view.finishEntrance();
+    const { view, host } = fixture(3, 6, effects); await view.finishEntrance();
     const field = host.querySelector<HTMLElement>('.radiant-field')!;
     vi.spyOn(field, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, -160, 400, 400));
     const scrollIntoView = vi.fn();
@@ -676,12 +677,12 @@ describe('saved six-member Radiant battle surface', () => {
       });
     }),
       impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, session, host } = fixture(6, 6, effects); await view.finishEntrance();
+    const { view, session, host, acts } = fixture(3, 6, effects); await view.finishEntrance();
     const old = view.act('normal'); await vi.waitFor(() => expect(releases).toHaveLength(1));
     view.skip(); expect(session.view().presentation).toBeNull();
     const next = view.act('normal'); await vi.waitFor(() => expect(releases).toHaveLength(2));
     releases[0](); await old;
-    expect(session.view().saved.revision).toBe(3);
+    expect(acts).toHaveBeenCalledTimes(2);
     expect(session.view().presentation).toBeNull();
     expect(host.querySelector('[data-radiant-error]')!.textContent).toBe('');
     releases[1](); await next; expect(session.view().presentation).toBeNull();
@@ -690,7 +691,7 @@ describe('saved six-member Radiant battle surface', () => {
     let release!: () => void;
     const effects = { windup: vi.fn(() => new Promise<void>(resolve => { release = resolve; })),
       impact: vi.fn(async () => {}), cancel: vi.fn(), pause: vi.fn() };
-    const { view, session, host, transport, settings } = fixture(6, 6, effects); await view.finishEntrance();
+    const { view, session, host, transport, settings } = fixture(3, 6, effects); await view.finishEntrance();
     controls(host, '[data-radiant-settings]').click();
     expect(settings).toHaveBeenCalledTimes(1); expect(session.view().settingsOpen).toBe(true);
     expect(host.querySelector('.radiant-battle')!.classList.contains('is-settings-open')).toBe(true);
@@ -703,27 +704,85 @@ describe('saved six-member Radiant battle surface', () => {
     expect(effects.cancel).toHaveBeenCalled(); expect(session.view().presentation).toBeNull();
     release(); await pending; expect(effects.impact).not.toHaveBeenCalled();
   });
-  it('lost acknowledgements expose an exact action retry and never celebrate a failure', async () => {
-    const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, host, session, transport } = fixture(6, 6, effects); await view.finishEntrance();
+  it('a lost settle acknowledgement exposes an exact retry and never celebrates before the save', async () => {
+    const { view, host, session, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     const execute = transport.execute.getMockImplementation()!;
     transport.execute.mockImplementationOnce(async request => { await execute(request); throw new Error('Lost reply'); });
-    await expect(view.act('normal')).rejects.toThrow('Lost reply');
-    expect(effects.windup).not.toHaveBeenCalled(); expect(session.view().presentation).toBeNull();
+    for (let turn = 0; turn < 40 && session.view().run!.state.phase === 'player'; turn++) await view.act('normal');
+    await vi.waitFor(() => expect(session.view().pending?.operation.kind).toBe('settle'));
+    await vi.waitFor(() => expect(session.view().busy).toBe(false));
+    expect(transport.execute).toHaveBeenCalledTimes(1);
+    expect(session.view().saved.revision).toBe(1);
+    const results = host.querySelector<HTMLElement>('[data-radiant-results]')!;
+    expect(results.hidden).toBe(true);
+    expect(host.querySelector('[data-radiant-error]')!.textContent).toContain('not acknowledged');
+    expect(host.querySelector('[data-radiant-haul-state]')!.textContent).toBe('Not saved yet');
     expect(controls(host, '[data-radiant-retry]').hidden).toBe(false);
     const request = session.view().pending!;
     await view.retry(); expect(transport.execute.mock.calls.at(-1)![0]).toEqual(request);
-    expect(session.view().saved.revision).toBe(2); expect(effects.windup).toHaveBeenCalledTimes(1);
+    expect(session.view().saved.revision).toBe(2);
+    expect(results.hidden).toBe(false);
+    expect(host.querySelector('[data-radiant-haul-state]')!.textContent).toBe('Saved');
+  });
+  it('sends exactly one settle at victory and shows the result only after its acknowledgement', async () => {
+    const { view, host, session, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+    const execute = transport.execute.getMockImplementation()!;
+    let save!: () => void;
+    transport.execute.mockImplementationOnce(async request => { await new Promise<void>(resolve => { save = resolve; }); return execute(request); });
+    for (let turn = 0; turn < 40 && session.view().run!.state.phase === 'player'; turn++) await view.act('normal');
+    expect(session.view().run!.state.phase).toBe('victory');
+    const haul = session.view().haul;
+    expect(haul).toBeGreaterThan(0);
+    expect(host.querySelector('[data-radiant-haul-amount]')!.textContent).toBe(haul.toLocaleString('en-US'));
+    await vi.waitFor(() => expect(transport.execute).toHaveBeenCalledTimes(1));
+    expect(transport.execute.mock.calls[0][0].operation.kind).toBe('settle');
+    expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(true);
+    expect(host.querySelector('[data-radiant-status]')!.textContent).toBe('Saving encounter…');
+    expect(host.querySelector('[data-radiant-haul-state]')!.textContent).toBe('Saving…');
+    save();
+    await vi.waitFor(() => expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(false));
+    expect(transport.execute).toHaveBeenCalledTimes(1);
+    expect(session.view().saved.run!.state.phase).toBe('victory');
+    expect(host.querySelector('[data-radiant-haul-amount]')!.textContent).toBe(haul.toLocaleString('en-US'));
+  });
+  it('End Turn skips members who have not acted and plays the enemy phase without a request', async () => {
+    const { view, host, session, transport, acts } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+    await view.act('defense', 'ember');
+    const round = session.view().run!.state.round;
+    controls(host, '[data-radiant-end-turn]').click();
+    expect(acts.mock.calls.at(-1)![0]).toEqual({ type: 'end-turn' });
+    await vi.waitFor(() => expect(host.querySelector('[data-radiant-round]')!.textContent).toBe(`Round ${round + 1}`));
+    expect(transport.execute).not.toHaveBeenCalled();
+    expect(session.view().run!.state.acted).toEqual([]);
+    expect(action(host, 'ember').disabled).toBe(false);
+    action(host, 'tide').dispatchEvent(new KeyboardEvent('keydown', { key: 'e', bubbles: true, cancelable: true }));
+    expect(acts.mock.calls.at(-1)![0]).toEqual({ type: 'end-turn' });
+  });
+  it('a resumed device log restores the live encounter after reconstruction', async () => {
+    const items = new Map<string, string>();
+    const storage = { getItem: (key: string) => items.get(key) ?? null,
+      setItem: (key: string, value: string) => { items.set(key, value); }, removeItem: (key: string) => { items.delete(key); } };
+    const { session, transport } = fixture(); applyMotion('reduced');
+    const logged = new RadiantSession(session.view().saved, transport, uuid, storage);
+    logged.finishEntrance(); logged.act({ type: 'defense', bearerId: 'ember' });
+    const resumed = new RadiantSession(logged.view().saved, transport, uuid, storage);
+    const host = document.createElement('div'); document.body.append(host);
+    const view = new RadiantBattleView(host, resumed, vi.fn()); disposed.push(view);
+    await view.finishEntrance();
+    expect(resumed.view().run!.state.acted).toEqual(['ember']);
+    expect(action(host, 'ember').disabled).toBe(true);
+    expect(action(host, 'tide').disabled).toBe(false);
+    expect(transport.execute).not.toHaveBeenCalled();
   });
   it('disposing during saved presentation cancels effects and prevents late DOM updates', async () => {
     let release!: () => void;
     const effects = { windup: vi.fn(() => new Promise<void>(resolve => { release = resolve; })),
       impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, host, session } = fixture(6, 6, effects); await view.finishEntrance();
+    const { view, host, session } = fixture(3, 6, effects); await view.finishEntrance();
     const pending = view.act('normal'); await vi.waitFor(() => expect(effects.windup).toHaveBeenCalled());
     view.dispose(); release(); await pending;
     expect(host.children).toHaveLength(0); expect(effects.impact).not.toHaveBeenCalled();
-    expect(session.view().saved.revision).toBe(2);
+    expect(session.view().run!.state.acted).toEqual(['ember']);
   });
   it('saved results dismiss/reopen and Settings preserve the same receipt and sheet without new requests', async () => {
     const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
@@ -759,11 +818,13 @@ describe('saved six-member Radiant battle surface', () => {
       state => { state.bearers[0].hp = 1; }, { kind: 'dungeon', element: 'infernic', stage: 34 });
     await view.finishEntrance();
     const pending = view.act('normal');
+    await vi.waitFor(() => expect(session.view().run!.state.phase).toBe('defeat'));
+    expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(true);
     await vi.waitFor(() => expect(session.view().saved.run!.state.phase).toBe('defeat'));
     expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(true);
     release(); await pending;
     const results = host.querySelector<HTMLElement>('[data-radiant-results]')!;
-    expect(results.hidden).toBe(false);
+    await vi.waitFor(() => expect(results.hidden).toBe(false));
     expect(results.querySelector('[data-outcome="defeat"]')).not.toBeNull();
     expect(results.querySelector('.radiant-result-aura[aria-hidden="true"]')).not.toBeNull();
     expect(results.querySelector('.rarity-feedback')).toBeNull();
@@ -780,13 +841,13 @@ describe('saved six-member Radiant battle surface', () => {
   it('Continue rebuilds only after save, freezes loadouts, resets encounter totals and keeps final stages terminal', async () => {
     const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     await clear(view, session);
-    const before = session.view().saved.run!, oldImage = host.querySelector('.radiant-enemy-art');
+    const before = session.view().run!, oldImage = host.querySelector('.radiant-enemy-art');
     const execute = transport.execute.getMockImplementation()!;
     let save!: () => void;
     transport.execute.mockImplementationOnce(async request => { await new Promise<void>(resolve => { save = resolve; }); return execute(request); });
     const pending = view.transition('continue');
     expect(host.querySelector('.radiant-enemy-art')).toBe(oldImage);
-    expect(session.view().saved.run!.encounter).toBe(before.encounter);
+    expect(session.view().run!.encounter).toBe(before.encounter);
     expect(controls(host, '[data-radiant-transition="retry"]').disabled).toBe(true);
     save(); await pending;
     const next = session.view();
@@ -795,17 +856,17 @@ describe('saved six-member Radiant battle surface', () => {
     expect(next.saved.run!.journal.events).toEqual([]); expect(next.entrancePending).toBe(false);
     expect(next.presentation).toBeNull(); expect(host.querySelector('.radiant-enemy-art')).not.toBe(oldImage);
     expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(true);
-    const final = fixture(6, 6, undefined, 120); await final.view.finishEntrance(); await clear(final.view, final.session);
+    const final = fixture(3, 6, undefined, 120); await final.view.finishEntrance(); await clear(final.view, final.session);
     expect(final.host.querySelector('[data-radiant-transition="continue"]')).toBeNull();
     expect(final.host.textContent).toContain('Activity complete');
   });
   it('Replay and lost exit acknowledgements retain earned rewards and retry the exact saved request once', async () => {
-    const exited = vi.fn(), { view, session, host, transport } = fixture(6, 6, undefined, 25, exited);
+    const exited = vi.fn(), { view, session, host, transport } = fixture(3, 6, undefined, 25, exited);
     applyMotion('reduced'); await view.finishEntrance(); await clear(view, session);
-    const banked = session.view().saved.account.fractalis, journal = session.view().saved.run!.journal;
+    const banked = session.view().saved.account.fractalis, journal = session.view().run!.journal;
     await view.transition('retry');
     expect(session.view().saved.account.fractalis).toBe(banked);
-    expect(session.view().saved.run!.journal).toEqual(journal);
+    expect(session.view().run!.journal).toEqual(journal);
     await clear(view, session);
     expect(session.view().saved.account.fractalis).toBe(banked);
     const execute = transport.execute.getMockImplementation()!;
@@ -815,12 +876,12 @@ describe('saved six-member Radiant battle surface', () => {
     const pending = session.view().pending!;
     await view.retry();
     expect(transport.execute.mock.calls.at(-1)![0]).toEqual(pending);
-    expect(exited).toHaveBeenCalledTimes(1); expect(session.view().saved.run).toBeNull();
+    expect(exited).toHaveBeenCalledTimes(1); expect(session.view().run).toBeNull();
     expect(session.view().saved.account.fractalis).toBe(banked); expect(host.children).toHaveLength(0);
   });
   it('celebrates a live victory once with exact saved amounts, never on reopen, Settings close or restore', async () => {
     const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, session, host } = fixture(6, 6, effects); await view.finishEntrance();
+    const { view, session, host } = fixture(3, 6, effects); await view.finishEntrance();
     await clear(view, session);
     const results = host.querySelector<HTMLElement>('[data-radiant-results]')!;
     const sheet = results.querySelector<HTMLElement>('.radiant-results')!;
@@ -853,12 +914,14 @@ describe('saved six-member Radiant battle surface', () => {
   it('victory sheet waits for saved impact completion and Skip prevents late duplicate results', async () => {
     let release!: () => void;
     const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, session, host } = fixture(6, 6, effects); await view.finishEntrance();
+    const { view, session, host } = fixture(3, 6, effects); await view.finishEntrance();
     // This authored fixture has two targets; the first Normal defeats one.
     await view.act('normal');
     effects.windup.mockImplementationOnce(() => new Promise<void>(resolve => { release = resolve; }));
     const pending = view.act('normal');
+    await vi.waitFor(() => expect(session.view().run!.state.phase).toBe('victory'));
     await vi.waitFor(() => expect(session.view().saved.run!.state.phase).toBe('victory'));
+    await vi.waitFor(() => expect(session.view().busy).toBe(false));
     expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(true);
     expect(host.querySelector('[data-radiant-result-heading]')).toBeNull();
     view.skip();
@@ -883,7 +946,7 @@ describe('saved six-member Radiant battle surface', () => {
     expect(session.view().saved).toEqual(checkpoint);
   });
   it('mid-battle exit confirmation locks actions, cancellation saves nothing, acceptance exits once', async () => {
-    const exited = vi.fn(), { view, session, host, transport } = fixture(6, 6, undefined, 25, exited);
+    const exited = vi.fn(), { view, session, host, transport } = fixture(3, 6, undefined, 25, exited);
     applyMotion('reduced'); await view.finishEntrance();
     let choose!: (value: boolean) => void;
     const confirm = vi.spyOn(dialogs, 'gameConfirm').mockImplementation(() => new Promise(resolve => { choose = resolve; }));
@@ -900,45 +963,38 @@ describe('saved six-member Radiant battle surface', () => {
     await vi.waitFor(() => expect(exited).toHaveBeenCalledTimes(1));
     expect(transport.execute).toHaveBeenCalledTimes(1);
     expect(transport.execute.mock.calls[0][0].operation.kind).toBe('exit');
-    expect(session.view().saved.run).toBeNull();
+    expect(session.view().run).toBeNull();
   });
   it('right click defends; D and F/Up Arrow are keyboard Defense and Flare alternatives', async () => {
-    const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+    const { view, session, host, transport, acts } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     const card = host.querySelector<HTMLElement>('[data-radiant-card][data-radiant-unit="ember"] .radiant-frozen-stats dd')!;
     const menu = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 });
     card.dispatchEvent(menu);
     expect(menu.defaultPrevented).toBe(true);
-    await vi.waitFor(() => expect(session.view().presentation).toBeNull());
-    expect(transport.execute).toHaveBeenCalledTimes(1);
-    expect(transport.execute.mock.calls[0][0].operation).toMatchObject({
-      kind: 'action', action: { type: 'defense', bearerId: 'ember' },
-    });
-    expect(session.view().saved.run!.state.acted).toEqual(['ember']);
+    await vi.waitFor(() => expect(session.view().run!.state.acted).toEqual(['ember']));
+    expect(acts).toHaveBeenCalledTimes(1);
+    expect(acts.mock.calls[0][0]).toEqual({ type: 'defense', bearerId: 'ember' });
     const acted = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 });
     card.dispatchEvent(acted);
     expect(acted.defaultPrevented).toBe(true);
     await Promise.resolve();
-    expect(transport.execute).toHaveBeenCalledTimes(1);
+    expect(acts).toHaveBeenCalledTimes(1);
+    expect(transport.execute).not.toHaveBeenCalled();
     const keyboard = fixture(); await keyboard.view.finishEntrance();
     const tide = action(keyboard.host, 'tide');
     expect(tide.disabled).toBe(false);
     tide.dispatchEvent(new KeyboardEvent('keydown', { key: 'd', bubbles: true, cancelable: true }));
-    await vi.waitFor(() => expect(keyboard.transport.execute).toHaveBeenCalledTimes(1));
-    expect(keyboard.transport.execute.mock.calls[0][0].operation).toMatchObject({
-      kind: 'action', action: { type: 'defense', bearerId: 'tide' },
-    });
+    await vi.waitFor(() => expect(keyboard.acts).toHaveBeenCalledTimes(1));
+    expect(keyboard.acts.mock.calls[0][0]).toEqual({ type: 'defense', bearerId: 'tide' });
     expect(host.querySelector('.radiant-actions [data-radiant-action], [data-radiant-menu]')).toBeNull();
     expect(host.querySelector('[data-radiant-reference]')).toBeNull();
   });
   it.each(['master-tide-3', 'master-sprout-2'] as const)('keeps %s support Flare ally-targeted without a retired generated strike', async masterId => {
-    const { view, host, transport } = fixture(3, 6, undefined, 25, undefined, masterId, true);
+    const { view, host, acts } = fixture(3, 6, undefined, 25, undefined, masterId, true);
     applyMotion('reduced'); await view.finishEntrance();
     const bearer = masterId.includes('tide') ? 'tide' : 'sprout';
     await view.act('flare', bearer);
-    const action = transport.execute.mock.calls.at(-1)![0].operation;
-    expect(action.kind).toBe('action');
-    if (action.kind !== 'action') throw new Error('Expected Flare action.');
-    expect(action.action).toEqual({ type: 'flare', bearerId: bearer });
+    expect(acts.mock.calls.at(-1)![0]).toEqual({ type: 'flare', bearerId: bearer });
     expect(host.querySelector('[data-radiant-error]')!.textContent).toBe('');
   });
 });

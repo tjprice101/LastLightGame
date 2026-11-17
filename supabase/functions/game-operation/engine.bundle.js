@@ -271,7 +271,8 @@ function rollDrop(drop, random) {
 }
 
 // src/content/squad-rules.ts
-var squadMemberLimit = 6;
+var squadMemberLimit = 3;
+var storedSquadLimit = 6;
 
 // src/content/phase-zero-stats.ts
 var phaseZeroStatsReady = true;
@@ -14685,8 +14686,8 @@ function validateSquadLoadouts(account, value2) {
     validateLoadoutId(entry.id);
     if (ids.has(entry.id)) throw new Error("Duplicate squad loadout ID.");
     ids.add(entry.id);
-    if (!Array.isArray(entry.members) || !entry.members.length || entry.members.length > squadMemberLimit)
-      throw new Error("A squad loadout needs one to six members.");
+    if (!Array.isArray(entry.members) || !entry.members.length || entry.members.length > storedSquadLimit)
+      throw new Error("A squad loadout needs one to three members.");
     const members = /* @__PURE__ */ new Set();
     return { id: entry.id, name: loadoutName(entry.name), members: entry.members.map((member) => {
       if (!record(member) || typeof member.character !== "string" || !isStarterId(member.character) && !(member.character.startsWith("capture:") && uuid.test(member.character.slice(8))) || typeof member.element !== "string" || !elements.some((element2) => element2.id === member.element) || members.has(member.character)) throw new Error("Invalid saved squad loadout member.");
@@ -14931,8 +14932,8 @@ function validateAccount(value2) {
   }
   if (value2.characterLocks !== void 0) account.characterLocks = validateCharacterLocks(value2.characterLocks, account.characters);
   if (value2.squad !== void 0) {
-    if (!Array.isArray(value2.squad) || value2.squad.length < 1 || value2.squad.length > squadMemberLimit || new Set(value2.squad).size !== value2.squad.length || !value2.squad.every((id) => typeof id === "string" && ownedCharacterInstances(account).includes(id))) {
-      throw new Error("Invalid saved squad. Equip one to six distinct owned characters.");
+    if (!Array.isArray(value2.squad) || value2.squad.length < 1 || value2.squad.length > storedSquadLimit || new Set(value2.squad).size !== value2.squad.length || !value2.squad.every((id) => typeof id === "string" && ownedCharacterInstances(account).includes(id))) {
+      throw new Error("Invalid saved squad. Equip one to three distinct owned characters.");
     }
     account.squad = [...value2.squad];
   }
@@ -15062,16 +15063,19 @@ function setCharacterLock(storage, id, locked) {
   }
   return saveAccount(storage, account);
 }
+function effectiveSquad(account) {
+  return (account.squad ?? ownedCharacters(account).slice(0, 1)).slice(0, squadMemberLimit);
+}
 function equippedSquad(account) {
-  const ids = account.squad ?? ownedCharacters(account).slice(0, 1);
+  const ids = effectiveSquad(account);
   if (!ids.length || ids.length > squadMemberLimit || new Set(ids).size !== ids.length || ids.some((id) => !ownedCharacterInstances(account).includes(id))) {
-    throw new Error("Equip one to six distinct owned characters before entering battle.");
+    throw new Error("Equip one to three distinct owned characters before entering battle.");
   }
   return [...ids];
 }
 function squadEligibilityIssue(account, ids) {
   if (!ids.length || ids.length > squadMemberLimit || new Set(ids).size !== ids.length)
-    return "Choose one to six distinct owned Element-Bearers.";
+    return "Choose one to three distinct owned Element-Bearers.";
   const owned = new Set(ownedCharacterInstances(account));
   for (const id of ids) {
     if (!owned.has(id)) return "A squad member is no longer owned.";
@@ -15124,10 +15128,11 @@ function equipSquadLoadout(storage, id) {
   const account = loadLoadoutAccount(storage);
   const entry = account.squadLoadouts?.find((entry2) => entry2.id === id);
   if (!entry) throw new Error("Choose a saved squad loadout.");
-  const issue = squadEligibilityIssue(account, entry.members.map((member) => member.character));
+  const members = entry.members.slice(0, squadMemberLimit);
+  const issue = squadEligibilityIssue(account, members.map((member) => member.character));
   if (issue) throw new Error(issue);
-  for (const member of entry.members) applySavedEquipment(account, member.character, member);
-  account.squad = entry.members.map((member) => member.character);
+  for (const member of members) applySavedEquipment(account, member.character, member);
+  account.squad = members.map((member) => member.character);
   return saveAccount(storage, account);
 }
 function deleteSquadLoadout(storage, id) {
@@ -17266,7 +17271,7 @@ function personalChargeMaximum(member) {
 }
 function validateRadiantGauge(state) {
   if (!Array.isArray(state.members) || !state.members.length || state.members.length > squadMemberLimit)
-    throw new Error("Radiant charge requires one to six squad members.");
+    throw new Error("Radiant charge requires one to three squad members.");
   const ids = /* @__PURE__ */ new Set();
   for (const member of state.members) {
     if (typeof member.id !== "string" || !member.id || ids.has(member.id) || typeof member.living !== "boolean" || !isCombatElement(member.elementId))
@@ -17510,7 +17515,7 @@ function validateEffects(state, effects, fractional = false) {
   }
 }
 function validateRadiantCombat(state) {
-  if (!state || state.version !== 6 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
+  if (!state || state.version !== 7 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
     throw new Error("Invalid radiant combat roster or version.");
   safe(state.round, "round", 1);
   safe(state.chargeSeed, "charge seed");
@@ -17595,7 +17600,7 @@ function validateRadiantCombat(state) {
 }
 function validateRadiantParty(loadouts) {
   if (!Array.isArray(loadouts) || loadouts.length < 1 || loadouts.length > squadMemberLimit)
-    throw new Error("Radiant party must contain one to six acquired Element-Bearers.");
+    throw new Error("Radiant party must contain one to three acquired Element-Bearers.");
   const instanceIds = /* @__PURE__ */ new Set(), bearerIds = /* @__PURE__ */ new Set();
   for (const loadout of loadouts) {
     validateRadiantLoadout(loadout);
@@ -17607,7 +17612,7 @@ function validateRadiantParty(loadouts) {
 }
 function createRadiantCombat(loadouts, enemies2, chargeSeed) {
   const state = {
-    version: 6,
+    version: 7,
     bearers: loadouts.map((loadout) => {
       const stats = resolveRadiantStarterStats(loadout);
       return {
@@ -18408,11 +18413,16 @@ function processRadiantGear(state, events, action) {
 }
 function applyRadiantCombatAction(input, action) {
   validateRadiantCombat(input);
-  if (!action || !["normal", "defense", "flare", "enemy-attack", "enemy-heal", "finish-enemy-phase"].includes(action.type))
+  if (!action || !["normal", "defense", "flare", "end-turn", "enemy-attack", "enemy-heal", "finish-enemy-phase"].includes(action.type))
     throw new Error("Unknown radiant combat action.");
   if (input.phase === "victory" || input.phase === "defeat") throw new Error("Radiant encounter is finished.");
   const state = structuredClone(input), events = [];
-  if (action.type === "normal" || action.type === "defense" || action.type === "flare") {
+  if (action.type === "end-turn") {
+    if (state.phase !== "player") throw new Error("Not the radiant player phase.");
+    for (const member of state.bearers)
+      if (member.hp > 0 && !state.acted.includes(member.loadout.id)) state.acted.push(member.loadout.id);
+    state.phase = "enemy";
+  } else if (action.type === "normal" || action.type === "defense" || action.type === "flare") {
     if (state.phase !== "player") throw new Error("Not the radiant player phase.");
     const actor2 = bearer(state, action.bearerId);
     living2(actor2.hp);
@@ -18526,7 +18536,7 @@ function radiantPressureEnemyAction(state, enemy2, targetRandom) {
 }
 
 // src/online/battle-run.ts
-var radiantContinuationMediaType = "application/vnd.lastlight.radiant-continuation-v2+json";
+var radiantContinuationMediaType = "application/vnd.lastlight.radiant-continuation-v3+json";
 var radiantClientAccept = `application/json, ${radiantContinuationMediaType}`;
 var RadiantRunError = class extends Error {
   constructor(code, message) {
@@ -18535,18 +18545,22 @@ var RadiantRunError = class extends Error {
   }
   code;
 };
+var radiantSettleActionLimit = 1e3;
 var retiredRadiantRunNotice = "Combat rules changed. The previous battle has ended; all saved rewards are kept.";
 function validateRadiantCheckpoint(value2) {
   try {
     if (!record4(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 0) throw new Error();
     validateAccount(value2.account);
     if (value2.notice !== void 0 && typeof value2.notice !== "string") throw new Error();
-    const retired = value2.run !== null && record4(value2.run) && (value2.run.version === 3 || value2.run.version === 4 || value2.run.version === 5);
+    const retired = value2.run !== null && record4(value2.run) && retiredRunVersion(value2.run.version);
     if (value2.run !== null && !retired) validateFrozenRadiantRun(value2.run);
     return { ...structuredClone(value2), ...retired ? { run: null, notice: retiredRadiantRunNotice } : {} };
   } catch {
     throw new RadiantRunError("unavailable", "Invalid saved Radiant checkpoint.");
   }
+}
+function retiredRunVersion(version) {
+  return version === 3 || version === 4 || version === 5 || version === 6;
 }
 var uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function invalid(message) {
@@ -18567,9 +18581,11 @@ function assertRunAccess(anchor, account, now) {
   }
 }
 function radiantAccountLoadouts(account) {
-  const ids = account.squad;
-  if (!Array.isArray(ids) || ids.length < 1 || ids.length > squadMemberLimit || new Set(ids).size !== ids.length)
-    throw new RadiantRunError("manual-squad", "Manually select one to six distinct acquired Element-Bearers.");
+  if (!Array.isArray(account.squad))
+    throw new RadiantRunError("manual-squad", "Manually select one to three distinct acquired Element-Bearers.");
+  const ids = effectiveSquad(account);
+  if (ids.length < 1 || ids.length > squadMemberLimit || new Set(ids).size !== ids.length)
+    throw new RadiantRunError("manual-squad", "Manually select one to three distinct acquired Element-Bearers.");
   const members = ids.map((id) => {
     if (typeof id !== "string" || !Object.hasOwn(radiantBearerKits, id) || !account.characters[id])
       throw new RadiantRunError("manual-squad", "Your squad includes a captured Elemental-Devourer or unavailable member. Open Team \u203A Squad and choose acquired Element-Bearers only.");
@@ -18615,7 +18631,7 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1, cont
     validateRadiantCombat(initial);
   }
   return {
-    version: 6,
+    version: 7,
     id: entropy.runId,
     encounter: encounter2,
     anchor,
@@ -18703,18 +18719,50 @@ function validateRadiantRunRequest(request) {
     validateRadiantActivity(op.activity);
   } else {
     if (typeof request.runId !== "string" || !uuid2.test(request.runId) || typeof request.encounter !== "number" || !Number.isSafeInteger(request.encounter) || request.encounter < 1) invalid("Missing prior Radiant encounter.");
-    if (op.kind === "action") {
-      exactKeys(op, ["kind", "action"]);
-      if (!record4(op.action) || typeof op.action.type !== "string" || !["normal", "defense", "flare"].includes(op.action.type)) invalid("Only player choices are accepted.");
-      exactKeys(op.action, op.action.type === "defense" ? ["type", "bearerId"] : ["type", "bearerId", "targetId"]);
-      if (!validId(op.action.bearerId) || op.action.type === "normal" && !validId(op.action.targetId) || "targetId" in op.action && !validId(op.action.targetId))
-        invalid("Invalid player choice.");
+    if (op.kind === "action") invalid("Update the game to continue this battle.");
+    if (op.kind === "settle") {
+      exactKeys(op, ["kind", "actions"]);
+      if (!Array.isArray(op.actions) || op.actions.length < 1 || op.actions.length > radiantSettleActionLimit)
+        invalid("Invalid encounter action log.");
+      op.actions.forEach(validateTurnAction);
     } else {
       if (typeof op.kind !== "string" || !["retry", "quit", "continue", "exit"].includes(op.kind)) invalid("Unknown Radiant operation.");
       exactKeys(op, ["kind"]);
     }
   }
   return structuredClone(request);
+}
+function validateTurnAction(action) {
+  if (!record4(action) || typeof action.type !== "string" || !["normal", "defense", "flare", "end-turn"].includes(action.type)) invalid("Only player choices are accepted.");
+  if (action.type === "end-turn") {
+    exactKeys(action, ["type"]);
+    return;
+  }
+  exactKeys(action, action.type === "defense" ? ["type", "bearerId"] : ["type", "bearerId", "targetId"]);
+  if (!validId(action.bearerId) || action.type === "normal" && !validId(action.targetId) || "targetId" in action && !validId(action.targetId))
+    invalid("Invalid player choice.");
+}
+function applyRadiantTurn(run, action) {
+  if (run.quit || run.state.phase !== "player") invalid("Run cannot accept a player action.");
+  const events = [];
+  const apply = (next) => {
+    const result = applyRadiantCombatAction(run.state, next);
+    run.state = result.state;
+    events.push(...result.events);
+  };
+  apply(action);
+  if (run.state.phase === "enemy") {
+    for (const enemy2 of run.enemies) {
+      if (run.state.phase !== "enemy") break;
+      if (run.state.enemies.find((unit) => unit.id === enemy2.id).hp <= 0) continue;
+      apply(radiantPressureEnemyAction(run.state, enemy2, () => {
+        run.targetSeed = nextSeed(run.targetSeed);
+        return run.targetSeed / 4294967296;
+      }));
+    }
+    if (run.state.phase === "enemy") apply({ type: "finish-enemy-phase" });
+  }
+  return events;
 }
 function saveCurrency(game, amount, receipt) {
   if (!Number.isSafeInteger(amount) || amount < 0 || !Number.isSafeInteger(game.account.fractalis + amount))
@@ -18775,30 +18823,23 @@ function resolveRadiantRun(snapshot, request, authority) {
     discover = true;
   } else {
     const run2 = game.radiantStudy;
-    if (!run2 || run2.version !== 6 || run2.id !== request.runId || run2.encounter !== request.encounter)
+    if (!run2 || run2.version !== 7 || run2.id !== request.runId || run2.encounter !== request.encounter)
       throw new RadiantRunError("stale-run", "The saved Radiant encounter does not match.");
     validateFrozenRadiantRun(run2);
     if (run2.enemies.length !== run2.state.enemies.length || run2.enemies.some((enemy2, i) => enemy2.id !== run2.state.enemies[i].id || enemy2.currencyBudget !== run2.state.enemies[i].currency.budget || enemy2.currencyBudget !== run2.initial.enemies[i]?.currency.budget))
       invalid("Frozen encounter budget does not match its authored snapshot.");
-    if (op.kind === "action") {
+    if (op.kind === "settle") {
       if (run2.quit || run2.state.phase !== "player") invalid("Run cannot accept a player action.");
-      const apply = (action) => {
-        const result = applyRadiantCombatAction(run2.state, action);
-        run2.state = result.state;
-        events.push(...result.events);
-      };
-      apply(op.action);
-      if (run2.state.phase === "enemy") {
-        for (const enemy2 of run2.enemies) {
-          if (run2.state.phase !== "enemy") break;
-          if (run2.state.enemies.find((unit) => unit.id === enemy2.id).hp <= 0) continue;
-          apply(radiantPressureEnemyAction(run2.state, enemy2, () => {
-            run2.targetSeed = nextSeed(run2.targetSeed);
-            return run2.targetSeed / 4294967296;
-          }));
+      try {
+        for (const action of op.actions) {
+          if (run2.state.phase !== "player") invalid("Encounter actions continue after the encounter ended.");
+          events.push(...applyRadiantTurn(run2, action));
         }
-        if (run2.state.phase === "enemy") apply({ type: "finish-enemy-phase" });
+      } catch (error) {
+        if (error instanceof RadiantRunError) throw error;
+        invalid("The encounter replay was rejected; nothing was saved.");
       }
+      if (!["victory", "defeat"].includes(run2.state.phase)) invalid("Settle requires a finished encounter.");
     } else if (op.kind === "quit" || op.kind === "exit") run2.quit = true;
     else if (op.kind === "retry") {
       if (!run2.quit && !["defeat", "victory"].includes(run2.state.phase)) invalid("Retry requires a finished or quit encounter.");
@@ -18842,7 +18883,8 @@ function resolveRadiantRun(snapshot, request, authority) {
   const run = game.radiantStudy;
   validateRadiantCombat(run.state);
   const amount = events.reduce((sum, event2) => sum + (event2.type === "currency" ? event2.amount : 0), 0);
-  saveCurrency(game, amount, `radiant-study:v1:${run.id}:${run.encounter}:${request.requestId}`);
+  if (op.kind === "settle" || amount > 0)
+    saveCurrency(game, amount, `radiant-study:v2:${run.id}:${run.encounter}:${request.requestId}`);
   const settled = resolveRadiantRewards(
     game.account,
     run.anchor,
@@ -18880,7 +18922,7 @@ function canonical(value2) {
 }
 function validateFrozenRadiantRun(value2) {
   try {
-    if (!record4(value2) || value2.version !== 6 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
+    if (!record4(value2) || value2.version !== 7 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
       throw new Error();
     for (const key of ["encounterSeed", "initialChargeSeed", "initialTargetSeed"])
       seed2(value2[key]);
@@ -18939,7 +18981,7 @@ function validateRadiantRunSnapshot(value2) {
       throw new Error();
     validateAccount(value2.state.account);
     const state = structuredClone(value2.state);
-    const retired = record4(state.radiantStudy) && (state.radiantStudy.version === 3 || state.radiantStudy.version === 4 || state.radiantStudy.version === 5);
+    const retired = record4(state.radiantStudy) && retiredRunVersion(state.radiantStudy.version);
     if (retired) delete state.radiantStudy;
     else if (state.radiantStudy !== void 0) validateFrozenRadiantRun(state.radiantStudy);
     return { ...structuredClone(value2), state, ...retired ? { notice: retiredRadiantRunNotice } : {} };
@@ -19120,13 +19162,13 @@ function resolveRadiantPreparation(value2, input) {
   if ("character" in op && !capturedCleanup) acquired(op.character);
   if (op.kind === "setSquad") {
     if (!op.ids.length || op.ids.length > squadMemberLimit || new Set(op.ids).size !== op.ids.length)
-      throw new RadiantRunError("manual-squad", "Choose one to six distinct acquired Element-Bearers.");
+      throw new RadiantRunError("manual-squad", "Choose one to three distinct acquired Element-Bearers.");
     op.ids.forEach(acquired);
   }
   if (op.kind === "equipSquadLoadout") {
     const entry = raw.squadLoadouts?.find((entry2) => entry2.id === op.id);
     if (!entry) throw new RadiantRunError("invalid-input", "Choose a saved squad loadout.");
-    entry.members.forEach((member) => acquired(member.character));
+    entry.members.slice(0, squadMemberLimit).forEach((member) => acquired(member.character));
   }
   const data = /* @__PURE__ */ new Map([
     [ACCOUNT_KEY, JSON.stringify(raw)],
@@ -19264,7 +19306,7 @@ async function handleRadiantRequest(value2, user, admin, config, identityOf, sup
       throw new RadiantRunError("invalid-input", "A game update is required. Refresh the page to continue; saved rewards are safe.");
     };
     const requireCompatibleRun = (run) => {
-      if (!supportsContinuation && run?.continuation) requireUpdatedClient();
+      if (!supportsContinuation && run) requireUpdatedClient();
     };
     const compatibleCheckpoint = (value3) => {
       const checkpoint = validateRadiantCheckpoint(value3);
@@ -19324,7 +19366,7 @@ async function handleRadiantRequest(value2, user, admin, config, identityOf, sup
     const { data: allowed, error: limitError } = await admin.rpc("consume_game_attempt", { p_user: user });
     if (limitError) throw new RadiantRunError("unavailable", "Game rate-limit storage unavailable.");
     if (!allowed) return { status: 429, body: { error: "Too many game operations. Wait one minute." } };
-    if (!supportsContinuation && input.operation.kind === "continue") requireUpdatedClient();
+    if (!supportsContinuation) requireUpdatedClient();
     const entropy = await deriveRadiantEntry(config.secret, user, input.requestId);
     const repository = radiantRpcRepositoryFor(admin, user, load, compatibleResponse);
     const result = await executeRadiantRun(repository, input, {
@@ -19413,7 +19455,8 @@ function createGameOperationHandler(admin, radiant = {}) {
         parseFailed = true;
       }
       if (!parseFailed && parsed && typeof parsed === "object" && !Array.isArray(parsed) && "radiantStudy" in parsed) {
-        if (body.length > 8192) return response(400, { error: "Request too large." }, origin);
+        const settle = parsed.radiantStudy?.operation?.kind === "settle";
+        if (body.length > (settle ? 131072 : 8192)) return response(400, { error: "Request too large." }, origin);
         const supportsContinuation = request.headers.get("accept")?.split(",").some((value2) => value2.trim().split(";")[0].toLowerCase() === radiantContinuationMediaType) === true;
         const result = await handleRadiantRequest(parsed, user, admin, radiant, identityOf, supportsContinuation);
         return response(result.status, result.body, origin);

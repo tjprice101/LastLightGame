@@ -1,5 +1,61 @@
 # Combat specification
 
+## Device-run encounters, settle replay and squad cap 3 (D-471, Battle Flurry Phase 1)
+
+**Encounter flow.** `start`, `continue` and `retry` still go to the authority,
+which freezes the run and its seeds as before. Inside an encounter every input
+resolves **instantly on the device** with `applyRadiantTurn`
+(`src/online/battle-run.ts`), the same pure step the authority uses: one player
+action and, when it completes the player phase, the whole enemy phase on the
+run's `targetSeed` stream. No network request is made per tap. When the
+encounter ends (victory or defeat), the client sends one `settle` operation with
+the ordered action log (at most 1,000 inputs). The authority replays the log
+on its stored encounter start and rejects any illegal input, any input after
+the encounter ended, or a log that does not finish the encounter. It then saves
+the outcome, the Haul and the loot with one revision bump and one receipt
+(`radiant-study:v2:{run}:{encounter}:{request}`). The reward celebration plays
+only after that acknowledgement. Retries reuse the request ID. If the saved
+result differs from the device's playback, the saved result is shown. If the
+replay is rejected, nothing is saved and the encounter restarts from its saved
+start.
+
+**Turn order.** Members act once per round in any order (tap order is the
+replay order). **End Turn** (`end-turn`, key E) marks living members who have
+not acted as done, without acting; the enemy phase follows. Taps are accepted
+while earlier actions are still animating; the next round opens once the
+enemy phase has been shown.
+
+**Haul.** Prismatica paid by hits (the same per-enemy damage ledgers as before)
+fills a visible Haul counter during the encounter. Nothing is saved until the
+settle: defeat saves the Haul earned so far, and quitting or exiting
+mid-encounter forfeits that encounter's unsaved Haul. Rewards already saved by
+earlier encounters are never removed. Retry after a settled defeat keeps the
+paid ledgers, so the same Health loss never pays twice. Operations other than
+settle that pay nothing no longer add an empty receipt.
+
+**Resume.** A combat-only log (`last-light.radiant-log`: run, encounter,
+revision, actions) lets a reload replay the encounter on the device. It never
+grants anything; it is discarded when it no longer matches the saved run.
+
+**Squads.** Squads, saved loadouts, Team/Home UI, battle entry and every
+authority check allow **one to three** members. Stored squads and loadouts
+saved earlier with four to six members load unchanged. They display, enter
+battle and equip as their first three, and are physically trimmed only when the
+player next saves that squad or loadout (rename keeps members). In-squad
+protection still covers every stored member until that save. Enemy formations
+are not yet retuned for three-member squads; Calamity, tuned for six-member
+teams, is harder until the Phase 3 retune (owner choice).
+
+**Versions.** Combat-state and frozen-run schemas are **7**; versions 3–6
+retire read-only with the standard notice (rewards already saved are kept).
+The continuation media type is `radiant-continuation-v3`. Older clients are
+told to refresh, and the per-action `action` operation is rejected. A `settle`
+body may be up to 128 KB; other Radiant bodies keep the 8 KB cap.
+
+**Flare recovery.** Radiant has no Flare next-turn recovery; the Luminosity
+cost alone gates Convergent Light (D-470). Legacy recovery text applies only
+to the retired legacy engine.
+
 ## Distinct Leader and equipment mechanics (D-456; local-only)
 
 The current working tree replaces the generic Leader damage bonus and repeated
@@ -35,7 +91,7 @@ Flare, healing, direct-kill, incoming-damage and round grants are explicit
 bonuses, with the same personal capacity limits. They are not new baseline
 charge for all characters.
 
-Combat-state and frozen-run schemas are now **6**. Versions 3/4/5 retire
+Combat-state and frozen-run schemas were **6** here (now 7 under D-471). Versions 3/4/5 retire
 without load-time writes, preserving account data, revision and saved rewards.
 New battles freeze current equipment; reload/Continue retain it, and changing
 menu equipment never modifies an existing run. The matching authority bundle

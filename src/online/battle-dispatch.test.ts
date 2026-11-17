@@ -3,8 +3,8 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { createGameOperationHandler } from '../../supabase/functions/game-operation/handler';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
 import { deriveRadiantEntry, type RadiantServerConfig } from '../../supabase/functions/game-operation/battle-dispatch';
-import { radiantClientAccept, validateRadiantRunRequest, validateRadiantRunResponse,
-  type RadiantRunRequest, type RadiantRunOperation } from './battle-run';
+import { applyRadiantTurn, radiantClientAccept, validateRadiantRunRequest, validateRadiantRunResponse,
+  type RadiantRunRequest, type RadiantRunOperation, type RadiantTurnAction } from './battle-run';
 import { createCreatureCopy } from '../game/character-instances';
 
 const user = '00000000-0000-4000-8000-000000000001';
@@ -70,10 +70,18 @@ class SupabaseMock {
     return { requestId: uuid(), expectedRevision: this.revision, runId: this.state.radiantStudy!.id,
       encounter: this.state.radiantStudy!.encounter, operation };
   }
-  normal(): RadiantRunRequest {
-    return this.request({ kind: 'action', action: { type: 'normal', bearerId: 'ember',
-      targetId: this.state.radiantStudy!.state.enemies.find(enemy => enemy.hp > 0)!.id } });
+  /** Device play (D-471) of the saved encounter to its end; returns the ordered action log. */
+  log(): RadiantTurnAction[] {
+    const run = structuredClone(this.state.radiantStudy!), actions: RadiantTurnAction[] = [];
+    while (run.state.phase === 'player' && actions.length < 1000) {
+      const action: RadiantTurnAction = { type: 'normal',
+        bearerId: run.state.bearers.find(unit => unit.hp > 0 && !run.state.acted.includes(unit.loadout.id))!.loadout.id,
+        targetId: run.state.enemies.find(unit => unit.hp > 0)!.id };
+      applyRadiantTurn(run, action); actions.push(action);
+    }
+    return actions;
   }
+  settle(): RadiantRunRequest { return this.request({ kind: 'settle', actions: this.log() }); }
 }
 async function send(handler: ReturnType<SupabaseMock['handler']>, radiantStudy: unknown, token = 'valid',
   supportsContinuation = true) {
@@ -85,13 +93,16 @@ async function send(handler: ReturnType<SupabaseMock['handler']>, radiantStudy: 
 }
 
 describe('authenticated actual game-operation dispatch with mocked Supabase boundary', () => {
-  it('gated preparation commits manual six-member loadout changes once and preserves frozen encounters', async () => {
+  it('gated preparation commits manual three-member loadout changes once and preserves frozen encounters', async () => {
     const db = new SupabaseMock(105), handler = db.handler();
     for (const id of ['tide', 'sprout', 'rosetta', 'thornia', 'crinso'] as const)
       db.state.account.characters[id] = { level: 0, evolution: 1, weaponRank: 0 };
     await send(handler, entry());
     const frozen = structuredClone(db.state.radiantStudy), holdings = structuredClone(db.state.account);
-    const ids = ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'];
+    const tooMany = await send(handler, { kind: 'prepare', requestId: uuid(), expectedRevision: db.revision,
+      operation: { kind: 'setSquad', ids: ['ember', 'tide', 'sprout', 'rosetta'] } });
+    expect(tooMany.status).toBe(400); expect(db.writes).toBe(1);
+    const ids = ['ember', 'tide', 'sprout'];
     const request = { kind: 'prepare', requestId: uuid(), expectedRevision: db.revision,
       operation: { kind: 'setSquad', ids } };
     const result = await send(handler, request), writes = db.writes;
@@ -129,7 +140,7 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     const empty = await send(handler, { kind: 'read' });
     expect(empty.status).toBe(200); expect(empty.body.run).toBeNull(); expect(db.writes).toBe(0);
     await send(handler, entry());
-    await send(handler, db.normal());
+    await send(handler, db.settle());
     const before = structuredClone(db.state), writes = db.writes;
     const read = await send(handler, { kind: 'read' });
     expect(read.status).toBe(200);
@@ -195,33 +206,48 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect(db.rpc).not.toHaveBeenCalled();
     expect((await send(db.handler({ ...enabled, calibration: 'radiant-pressure-v2' }), request)).status).toBe(200);
   });
-  it('action duplicates pay once; quit/retry preserve frozen roster, gear and earned ledger', async () => {
+  it('settle duplicates pay once; quit forfeits unsettled play; retry never pays twice', async () => {
     const db = new SupabaseMock(), handler = db.handler();
     await send(handler, entry());
-    const initial = structuredClone(db.state.radiantStudy!.initial), action = db.normal();
-    const first = await send(handler, action);
+    const initial = structuredClone(db.state.radiantStudy!.initial), log = db.log();
+    // Quitting after device play saves nothing.
+    expect((await send(handler, db.request({ kind: 'quit' }))).status).toBe(200);
+    expect(db.state.account.fractalis).toBe(0);
+    expect((await send(handler, db.request({ kind: 'settle', actions: log }))).status).toBe(400);
+    expect((await send(handler, db.request({ kind: 'retry' }))).status).toBe(200);
+    expect(db.state.radiantStudy!.state.currencyEarned).toBe(0);
+    const settle = db.settle();
+    const first = await send(handler, settle);
     expect(first.status).toBe(200);
     expect(first.body.events.some((event: { type: string }) => event.type === 'currency')).toBe(true);
-    expect((await send(handler, action)).body).toEqual(first.body);
+    expect((await send(handler, settle)).body).toEqual(first.body);
     const balance = db.state.account.fractalis, ledgers = structuredClone(db.state.radiantStudy!.state.enemies.map(e => e.currency));
-    expect(db.writes).toBe(2);
-    const quit = db.request({ kind: 'quit' });
-    expect((await send(handler, quit)).status).toBe(200);
-    expect((await send(handler, quit)).status).toBe(200);
-    expect((await send(handler, db.normal())).status).toBe(400);
+    expect(balance).toBe(db.state.radiantStudy!.state.currencyEarned);
+    expect(db.writes).toBe(4);
     expect((await send(handler, db.request({ kind: 'retry' }))).status).toBe(200);
     expect(db.state.radiantStudy!.initial).toEqual(initial);
     expect(db.state.radiantStudy!.state.enemies.map(e => e.currency)).toEqual(ledgers);
     expect(db.state.account.fractalis).toBe(balance);
     expect(db.state.radiantStudy!.state.chargeSeed).toBe(initial.chargeSeed);
-    expect((await send(handler, db.normal())).status).toBe(200);
+    expect((await send(handler, db.settle())).status).toBe(200);
     expect(db.state.account.fractalis).toBe(balance);
+  });
+  it('rejects the retired per-action operation and unfinished logs without writes', async () => {
+    const db = new SupabaseMock(), handler = db.handler();
+    await send(handler, entry());
+    const writes = db.writes, before = structuredClone(db.state);
+    const action = db.request({ kind: 'action', action: { type: 'normal', bearerId: 'ember',
+      targetId: db.state.radiantStudy!.state.enemies[0].id } } as never);
+    const old = await send(handler, action);
+    expect(old.status).toBe(400); expect(old.body.error).toContain('Update the game');
+    expect((await send(handler, db.request({ kind: 'settle', actions: db.log().slice(0, 1) }))).status).toBe(400);
+    expect(db.state).toEqual(before); expect(db.writes).toBe(writes);
   });
   it('concurrent identical requests duplicate under lock before CAS; distinct requests conflict', async () => {
     const db = new SupabaseMock(), handler = db.handler(), start = entry();
     const same = await Promise.all([send(handler, start), send(handler, start)]);
     expect(same.map(r => r.status)).toEqual([200, 200]); expect(db.writes).toBe(1);
-    const one = db.normal(), two = { ...one, requestId: uuid() };
+    const one = db.settle(), two = { ...one, requestId: uuid() };
     const different = await Promise.all([send(handler, one), send(handler, two)]);
     expect(different.map(r => r.status).sort()).toEqual([200, 409]); expect(db.writes).toBe(2);
     expect((await send(handler, { ...one, operation: { kind: 'quit' } })).status).toBe(409);
@@ -238,7 +264,7 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect((await legacy({ kind: 'setSquad', ids: ['ember'] })).status).toBe(200);
     expect(db.state.radiantStudy).toEqual(frozen);
     expect((await legacy({ kind: 'enter', activity: { kind: 'training' } })).status).toBe(400);
-    expect((await send(handler, db.normal())).status).toBe(200);
+    expect((await send(handler, db.settle())).status).toBe(200);
     expect(db.state.radiantStudy!.initial).toEqual(frozen!.initial);
   });
   it('supports staged Continue only after victory without repeating an already-completed Story unlock', async () => {
@@ -246,8 +272,7 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     db.state.account.storyCompleted = 1;
     expect((await send(handler, entry({ kind: 'story', stage: 1 }))).status).toBe(200);
     expect((await send(handler, db.request({ kind: 'continue' }))).status).toBe(400);
-    for (let i = 0; i < 10 && db.state.radiantStudy!.state.phase === 'player'; i++)
-      expect((await send(handler, db.normal())).status).toBe(200);
+    expect((await send(handler, db.settle())).status).toBe(200);
     expect(db.state.radiantStudy!.state.phase).toBe('victory');
     const loadout = structuredClone(db.state.radiantStudy!.initial.bearers[0].loadout);
     expect((await send(handler, db.request({ kind: 'continue' }))).status).toBe(200);
@@ -255,12 +280,16 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect(db.state.radiantStudy!.initial.bearers[0].loadout).toEqual(loadout);
     expect(db.state.account.storyCompleted).toBe(1);
   });
-  it('lets older clients finish existing fights but requires a refresh before incompatible continuations', async () => {
+  it('requires the device-run (v3) client for every encounter operation and for reading an existing run', async () => {
     const db = new SupabaseMock(105), handler = db.handler();
-    expect((await send(handler, entry(), 'valid', false)).status).toBe(200);
+    const oldEntry = await send(handler, entry(), 'valid', false);
+    expect(oldEntry.status).toBe(400); expect(oldEntry.body.error).toContain('Refresh the page');
+    expect(db.writes).toBe(0);
     expect((await send(handler, { kind: 'read' }, 'valid', false)).status).toBe(200);
-    for (let i = 0; i < 10 && db.state.radiantStudy!.state.phase === 'player'; i++)
-      expect((await send(handler, db.normal(), 'valid', false)).status).toBe(200);
+    expect((await send(handler, entry())).status).toBe(200);
+    const deniedSettle = await send(handler, db.settle(), 'valid', false);
+    expect(deniedSettle.status).toBe(400); expect(deniedSettle.body.error).toContain('Refresh the page');
+    expect((await send(handler, db.settle())).status).toBe(200);
     expect(db.state.radiantStudy!.state.phase).toBe('victory');
     const before = structuredClone(db.state), writes = db.writes, continued = db.request({ kind: 'continue' });
     const denied = await send(handler, continued, 'valid', false);
@@ -275,7 +304,7 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     const after = structuredClone(db.state), afterWrites = db.writes;
     for (const operation of [
       { kind: 'read' },
-      db.normal(),
+      db.settle(),
       { kind: 'prepare', requestId: uuid(), expectedRevision: db.revision,
         operation: { kind: 'setSquad', ids: ['ember'] } },
     ]) {
@@ -291,17 +320,11 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
   it('actual HTTP Story victory unlocks Continue and exit receipts retain the banked outcome', async () => {
     const db = new SupabaseMock(105), handler = db.handler();
     expect((await send(handler, entry({ kind: 'story', stage: 1 }))).status).toBe(200);
-    let rewardCount = 0;
-    for (let i = 0; i < 20 && db.state.radiantStudy!.state.phase === 'player'; i++) {
-      const request = db.normal(), result = await send(handler, request);
-      expect(result.status).toBe(200);
-      rewardCount += result.body.rewards.length;
-      if (result.body.rewards.length) {
-        const writes = db.writes;
-        expect((await send(handler, request)).body).toEqual(result.body);
-        expect(db.writes).toBe(writes);
-      }
-    }
+    const request = db.settle(), settled = await send(handler, request);
+    expect(settled.status).toBe(200);
+    const rewardCount = settled.body.rewards.length, writes = db.writes;
+    expect((await send(handler, request)).body).toEqual(settled.body);
+    expect(db.writes).toBe(writes);
     expect(db.state.radiantStudy!.state.phase).toBe('victory');
     expect(rewardCount).toBe(2); expect(db.state.account.storyCompleted).toBe(1);
     const frozen = structuredClone(db.state.radiantStudy!.initial.bearers[0].loadout);
@@ -343,9 +366,9 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect((await send(handler, entry())).status).toBe(429); expect(db.writes).toBe(0);
     db.limited = false;
     await send(handler, entry());
-    expect((await send(handler, { ...db.normal(), runId: uuid() })).status).toBe(409);
-    expect((await send(handler, { ...db.normal(), encounter: 2 })).status).toBe(409);
-    expect((await send(handler, { ...db.normal(), expectedRevision: 0 })).status).toBe(409);
+    expect((await send(handler, { ...db.settle(), runId: uuid() })).status).toBe(409);
+    expect((await send(handler, { ...db.settle(), encounter: 2 })).status).toBe(409);
+    expect((await send(handler, { ...db.settle(), expectedRevision: 0 })).status).toBe(409);
     expect((await send(handler, db.request({ kind: 'continue' }))).status).toBe(400);
     expect(db.writes).toBe(1);
   });
@@ -404,6 +427,17 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect((await send(handler, { ...entry(), padding: 'x'.repeat(9000) })).status).toBe(400);
     expect(db.rpc).not.toHaveBeenCalled();
   });
+  it('allows a settle action log past the 8 KB cap but not past 128 KB', async () => {
+    const db = new SupabaseMock(), handler = db.handler();
+    await send(handler, entry());
+    const action = { type: 'normal', bearerId: 'ember', targetId: 'enemy-with-a-long-identifier' } as const;
+    const long = await send(handler, db.request({ kind: 'settle', actions: Array(900).fill(action) }));
+    expect(long.status).toBe(400); expect(long.body.error).not.toBe('Request too large.');
+    const huge = await send(handler, db.request({ kind: 'settle',
+      actions: Array(900).fill({ ...action, targetId: 'x'.repeat(150) }) }));
+    expect(huge.status).toBe(400); expect(huge.body.error).toBe('Request too large.');
+    expect(db.writes).toBe(1);
+  });
 });
 describe('stable server entry entropy and unknown transport validation', () => {
   it('matches a fixed HMAC vector and separates user/request/secret with RFC4122 UUID bits', async () => {
@@ -440,8 +474,19 @@ describe('stable server entry entropy and unknown transport validation', () => {
     { type: 'flare', bearerId: 'ember', tier: 'ultimate' },
     { type: 'flare', bearerId: 'ember', targetId: undefined },
     { type: 'defense', bearerId: 'ember', targetId: 'enemy' },
+    { type: 'end-turn', bearerId: 'ember' },
     { type: 'normal', bearerId: '', targetId: 'enemy' }])('rejects hostile player choice %j', action => {
       expect(() => validateRadiantRunRequest({ requestId: uuid(), expectedRevision: 1, runId: user, encounter: 1,
-        operation: { kind: 'action', action } })).toThrow(expect.objectContaining({ code: 'invalid-input' }));
+        operation: { kind: 'settle', actions: [action] } })).toThrow(expect.objectContaining({ code: 'invalid-input' }));
     });
+  it('rejects the retired action operation and empty or oversized settle logs', () => {
+    const base = { requestId: uuid(), expectedRevision: 1, runId: user, encounter: 1 };
+    expect(() => validateRadiantRunRequest({ ...base, operation: { kind: 'action',
+      action: { type: 'normal', bearerId: 'ember', targetId: 'enemy' } } })).toThrow('Update the game');
+    expect(() => validateRadiantRunRequest({ ...base, operation: { kind: 'settle', actions: [] } })).toThrow();
+    expect(() => validateRadiantRunRequest({ ...base, operation: { kind: 'settle',
+      actions: Array(1001).fill({ type: 'end-turn' }) } })).toThrow();
+    expect(validateRadiantRunRequest({ ...base, operation: { kind: 'settle', actions: [{ type: 'end-turn' }] } }))
+      .toMatchObject({ operation: { kind: 'settle' } });
+  });
 });

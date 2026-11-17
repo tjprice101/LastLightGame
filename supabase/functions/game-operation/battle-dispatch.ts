@@ -46,7 +46,8 @@ export async function handleRadiantRequest(value: object, user: string,
       throw new RadiantRunError('invalid-input', 'A game update is required. Refresh the page to continue; saved rewards are safe.');
     };
     const requireCompatibleRun = (run: FrozenRadiantRun | null | undefined) => {
-      if (!supportsContinuation && run?.continuation) requireUpdatedClient();
+      // Clients without the v3 media type cannot play device-run encounters (D-471).
+      if (!supportsContinuation && run) requireUpdatedClient();
     };
     const compatibleCheckpoint = (value: unknown) => {
       const checkpoint = validateRadiantCheckpoint(value);
@@ -102,7 +103,7 @@ export async function handleRadiantRequest(value: object, user: string,
     const { data: allowed, error: limitError } = await admin.rpc('consume_game_attempt', { p_user: user });
     if (limitError) throw new RadiantRunError('unavailable', 'Game rate-limit storage unavailable.');
     if (!allowed) return { status: 429, body: { error: 'Too many game operations. Wait one minute.' } };
-    if (!supportsContinuation && input.operation.kind === 'continue') requireUpdatedClient();
+    if (!supportsContinuation) requireUpdatedClient();
     const entropy = await deriveRadiantEntry(config.secret, user, input.requestId);
     const repository = radiantRpcRepositoryFor(admin, user, load, compatibleResponse);
     const result = await executeRadiantRun(repository, input, {

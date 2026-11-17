@@ -55,7 +55,7 @@ export interface RadiantEnemy {
   currency: RadiantCurrencyLedger;
 }
 export interface RadiantCombatState {
-  version: 6;
+  version: 7;
   bearers: RadiantBearer[];
   enemies: RadiantEnemy[];
   gauge: RadiantGaugeState;
@@ -76,6 +76,7 @@ export type RadiantCombatAction =
   | { type: 'normal'; bearerId: string; targetId: string }
   | { type: 'defense'; bearerId: string }
   | { type: 'flare'; bearerId: string; targetId?: string }
+  | { type: 'end-turn' }
   | { type: 'enemy-attack'; enemyId: string; targetIds: string[]; coefficient: number;
       hits?: number; healBefore?: number; refreshShieldBefore?: number }
   | { type: 'enemy-heal'; enemyId: string; amount: number }
@@ -246,7 +247,7 @@ function validateEffects(state: RadiantCombatState, effects: RadiantTimedEffect[
   }
 }
 export function validateRadiantCombat(state: RadiantCombatState): void {
-  if (!state || state.version !== 6 || !Array.isArray(state.bearers) || !state.bearers.length ||
+  if (!state || state.version !== 7 || !Array.isArray(state.bearers) || !state.bearers.length ||
       state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length ||
       !['player', 'enemy', 'victory', 'defeat'].includes(state.phase))
     throw new Error('Invalid radiant combat roster or version.');
@@ -338,7 +339,7 @@ export function validateRadiantCombat(state: RadiantCombatState): void {
 }
 export function validateRadiantParty(loadouts: RadiantLoadout[]): void {
   if (!Array.isArray(loadouts) || loadouts.length < 1 || loadouts.length > squadMemberLimit)
-    throw new Error('Radiant party must contain one to six acquired Element-Bearers.');
+    throw new Error('Radiant party must contain one to three acquired Element-Bearers.');
   const instanceIds = new Set<string>(), bearerIds = new Set<string>();
   for (const loadout of loadouts) {
     validateRadiantLoadout(loadout);
@@ -352,7 +353,7 @@ export function createRadiantCombat(
   loadouts: RadiantLoadout[], enemies: { id: string; elementId: ElementId | null; stats: RadiantStats; currencyBudget: number }[], chargeSeed: number,
 ): RadiantCombatState {
   const state: RadiantCombatState = {
-    version: 6,
+    version: 7,
     bearers: loadouts.map(loadout => {
       const stats = resolveRadiantStarterStats(loadout);
       return { loadout: structuredClone(loadout), stats, hp: rounded(stats.hp), shields: [],
@@ -1013,11 +1014,17 @@ export function applyRadiantCombatAction(
   input: RadiantCombatState, action: RadiantCombatAction,
 ): { state: RadiantCombatState; events: RadiantCombatEvent[] } {
   validateRadiantCombat(input);
-  if (!action || !['normal', 'defense', 'flare', 'enemy-attack', 'enemy-heal', 'finish-enemy-phase'].includes(action.type))
+  if (!action || !['normal', 'defense', 'flare', 'end-turn', 'enemy-attack', 'enemy-heal', 'finish-enemy-phase'].includes(action.type))
     throw new Error('Unknown radiant combat action.');
   if (input.phase === 'victory' || input.phase === 'defeat') throw new Error('Radiant encounter is finished.');
   const state = structuredClone(input), events: RadiantCombatEvent[] = [];
-  if (action.type === 'normal' || action.type === 'defense' || action.type === 'flare') {
+  if (action.type === 'end-turn') {
+    // End Turn: remaining living bearers forgo their action and the enemy phase begins.
+    if (state.phase !== 'player') throw new Error('Not the radiant player phase.');
+    for (const member of state.bearers)
+      if (member.hp > 0 && !state.acted.includes(member.loadout.id)) state.acted.push(member.loadout.id);
+    state.phase = 'enemy';
+  } else if (action.type === 'normal' || action.type === 'defense' || action.type === 'flare') {
     if (state.phase !== 'player') throw new Error('Not the radiant player phase.');
     const actor = bearer(state, action.bearerId);
     living(actor.hp);

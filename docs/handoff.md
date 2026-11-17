@@ -1,5 +1,54 @@
 # Current state and handoff
 
+## Battle Flurry Phase 1: device-run encounters and squad cap 3 (2026-11-16)
+
+**Implemented (D-471):** encounter taps resolve instantly on the device with the
+shared `applyRadiantTurn`; one `settle` per finished encounter is replayed by
+the authority, which saves outcome, Haul and loot atomically before the
+celebration. The per-action `action` op is retired. Also added:
+- End Turn (button and key E), visible Haul with Not saved / Saving / Saved
+  states; Exit warns that unsaved Haul is forfeited.
+- A combat-only resume log, so a reload replays the encounter.
+- Squads are capped at 3 everywhere. Stored 4-6 member squads and loadouts load
+  unchanged, play as their first three, and are trimmed only on the next save.
+- Schemas 7 (v3-v6 retire read-only); media type `radiant-continuation-v3`;
+  settle bodies up to 128 KB.
+- Owner chose no interim retune: Calamity is harder until Phase 3.
+- Lab tools `economy-study.ts` and `pressure-study.ts` were moved to trios and
+  settle. Their outputs are not re-calibrated.
+
+**Verified:**
+- `npx tsc --noEmit`: passed.
+- Full `npx vitest run`: 10,515 passed, 2 failed (`battle-effects.test.ts`
+  six-ally fixtures). Those fixtures were moved to 3 allies; that file then
+  passed 76/76.
+- New tests cover:
+  - settle replay equals device state;
+  - illegal, trailing and unfinished logs are rejected with no write;
+  - the old `action` op is rejected;
+  - v6 retirement;
+  - v3 header gating;
+  - the 128 KB settle cap;
+  - End Turn;
+  - resume log;
+  - settle mismatch;
+  - lost-settle retry;
+  - stored six-member squads stay unwritten until saved.
+- `vite build`: passed (existing chunk advisory).
+- `node tools/bundle_server_game.mjs`: bundle regenerated.
+- **Not verified:**
+  - headless/visual battle play;
+  - SQL smoke scripts (need a database);
+  - hosted release;
+  - authority deploy (needs owner approval).
+
+**Next:**
+- Deploy the authority together with the client push. Each half refuses the
+  other's old version, so they must ship together.
+- Owner then play-tests an online battle: instant taps, Haul saved on victory
+  and defeat, an old 4-6 squad shown as 3.
+- After that, Phase 2 presentation (Opus, Plan mode).
+
 ## Battle Flurry overhaul plan (2026-11-16)
 
 **Planned, not implemented (D-470):** owner feedback that battles stutter,

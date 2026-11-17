@@ -34,7 +34,9 @@ export function squadLoadoutsPanel(account: Account): string {
     const member = ownedCompanion(account, id);
     return `<article class="saved-loadout-member"><header class="saved-loadout-member-heading"><span class="ref-thumb">${member.compactArt}</span><div><small>${index ? `Member ${index + 1}` : 'Leader'}</small><b>${escape(member.name)}</b><small>${escape(member.element)} · Lv.${member.level}</small></div></header>${equipmentPreview(equipment, account)}<p class="saved-loadout-equipment-count">Conduits · ${equipment.conduits.filter(Boolean).length} of 8</p></article>`;
   };
-  const entries = account.squadLoadouts ?? [];
+  // D-471 read-only view: a loadout saved with more than three members shows and equips its first three.
+  const entries = (account.squadLoadouts ?? []).map(entry => ({ ...entry,
+    members: entry.members.slice(0, squadMemberLimit), trimmed: entry.members.length > squadMemberLimit }));
   const matchesCurrent = (members: readonly { character: string; conduits: SavedEquipment['conduits']; master: SavedEquipment['master'] }[]) =>
     !squadEligibilityIssue(account, members.map(member => member.character)) &&
     current.join('|') === members.map(member => member.character).join('|') &&
@@ -71,6 +73,7 @@ export function squadLoadoutsPanel(account: Account): string {
         entry.members.every(member => equipmentMatches(member, currentEquipment(account, member.character)));
       return `<article id="loadout-${entry.id}" class="saved-loadout-card" data-saved-entry data-saved-id="${entry.id}"${selected === entry.id ? '' : ' hidden'}>
         <header class="saved-loadout-card-heading"><h3>${escape(entry.name)}</h3>${equipped ? '<span class="saved-loadout-match">Matches current</span>' : `<span>${entry.members.length} / ${squadMemberLimit} members</span>`}</header>
+        ${entry.trimmed ? `<p role="note">Saved before squads held at most ${squadMemberLimit} members. Its first ${squadMemberLimit} are shown and equipped; Update with current setup to resave it.</p>` : ''}
         ${equipped ? '<p class="saved-loadout-equipped" role="note">Currently equipped. Your squad and every member’s Conduits match this loadout.</p>' : ''}
         <div class="saved-loadout-members">${entry.members.map((member, index) => owned.has(member.character)
           ? memberPreview(member.character, index, member)

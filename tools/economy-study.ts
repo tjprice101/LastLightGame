@@ -1,6 +1,6 @@
 import { freshGame } from '../supabase/functions/game-operation/engine';
 import { chooseRadiantPressureAction, type RadiantPressurePolicy } from '../src/game/enemy-pressure';
-import { resolveRadiantRun, type RadiantPlayerAction, type RadiantRunAuthority,
+import { applyRadiantTurn, resolveRadiantRun, type RadiantPlayerAction, type RadiantRunAuthority,
   type RadiantRunOperation, type RadiantRunSnapshot } from '../src/online/battle-run';
 import { pressureStudyLoadouts, pressureStudyNow, pressureStudySeeds } from './pressure-study';
 import { radiantPressureAnchors, assertRadiantPressureAccess, isRadiantAccessError,
@@ -74,11 +74,14 @@ export function measureRadiantEconomyCycle(account: Account, anchor: RadiantPres
     return { actions, damagePrismatica: run.state.currencyEarned,
       bonusPrismatica: totalPrismatica - run.state.currencyEarned, totalPrismatica,
       nullPrismatica: value.state.account.lycalis - baseline.lycalis, defeated: run.rewards.defeated.length,
-      phase: run.state.phase, freshCycleRequests: actions + 2, prismaticaPerRequest: totalPrismatica / (actions + 2) };
+      // D-471: the encounter runs on the device; start, settle and exit are the only requests.
+      phase: run.state.phase, freshCycleRequests: 3, prismaticaPerRequest: totalPrismatica / 3 };
   };
   let actions = 0, bestPartial: EconomyPoint | null = null, bestSnapshot: RadiantRunSnapshot | null = null;
   let stagnation = 0, lowestHP = Infinity, halted: 'timeout' | 'stalemate' | null = null;
   const actionLog: RadiantPlayerAction[] = [];
+  // Device play mutates a working copy; the authority replays the log from the saved start.
+  const start = structuredClone(snapshot);
   while (snapshot.state.radiantStudy!.state.phase === 'player') {
     if (actions >= maximumActions) { halted = 'timeout'; break; }
     if (stagnation >= stagnationActions) { halted = 'stalemate'; break; }
@@ -90,8 +93,10 @@ export function measureRadiantEconomyCycle(account: Account, anchor: RadiantPres
       throw new Error('Economy selected a nonplayer action.');
     const choice = action;
     actionLog.push(choice);
-    snapshot = step(snapshot, { kind: 'action', action: choice }).snapshot;
+    applyRadiantTurn(snapshot.state.radiantStudy!, choice);
     actions++;
+    if (snapshot.state.radiantStudy!.state.phase !== 'player')
+      snapshot = step(start, { kind: 'settle', actions: actionLog }).snapshot;
     const current = point(snapshot, actions);
     const low = snapshot.state.radiantStudy!.state.enemies.reduce((sum, enemy) => sum + enemy.currency.lowestHP, 0);
     if (low < lowestHP) { lowestHP = low; stagnation = 0; } else stagnation++;
@@ -101,35 +106,16 @@ export function measureRadiantEconomyCycle(account: Account, anchor: RadiantPres
     }
   }
   const full = point(snapshot, actions);
-  let repeatPrefix: EconomyCycle['repeatPrefix'] = null;
-  if (bestSnapshot && bestPartial) {
-    let replay = bestSnapshot, additionalLoot = 0, requests = 0;
-    const before = replay.state.account.fractalis;
-    for (let attempt = 0; attempt < 3; attempt++) {
-      replay = step(replay, { kind: 'quit' }).snapshot;
-      replay = step(replay, { kind: 'retry' }).snapshot;
-      requests += 2;
-      for (const action of actionLog.slice(0, bestPartial.actions)) {
-        const next = step(replay, { kind: 'action', action });
-        replay = next.snapshot; additionalLoot += next.rewardCount; requests++;
-      }
-    }
-    repeatPrefix = { attempts: 3, requests,
-      additionalPrismatica: replay.state.account.fractalis - before, additionalLoot };
-    if (repeatPrefix.additionalPrismatica !== 0 || additionalLoot !== 0)
-      throw new Error('Repeated identical prefix repaid currency or loot.');
-    const partialExit = step(bestSnapshot, { kind: 'exit' });
-    if (partialExit.snapshot.state.account.fractalis !== bestSnapshot.state.account.fractalis ||
-      partialExit.rewardCount !== 0 || partialExit.snapshot.state.radiantStudy)
-      throw new Error('Partial exit changed banked rewards or failed to dispose.');
-  }
-  const exit = step(snapshot, { kind: 'exit' });
+  // Unsettled partial play banks nothing under D-471, so there is no partial prefix to repeat.
+  const repeatPrefix: EconomyCycle['repeatPrefix'] = null;
+  if (bestSnapshot) throw new Error('Unsettled partial play banked Prismatica.');
+  const exit = step(snapshot.state.radiantStudy!.state.phase === 'player' ? start : snapshot, { kind: 'exit' });
   const outcome = halted ?? snapshot.state.radiantStudy!.state.phase;
   if (outcome !== 'victory' && outcome !== 'defeat' && outcome !== 'timeout' && outcome !== 'stalemate')
     throw new Error('Invalid economy terminal outcome.');
   return { calibration, policy, firstClearSensitive: anchor.activity.kind === 'story' &&
       (account.storyCompleted ?? 0) < anchor.activity.stage,
-    outcome, budget, requests: actions + 2, actions, full, bestPartial,
+    outcome, budget, requests: 3, actions, full, bestPartial,
     partialToFullRatio: full.prismaticaPerRequest > 0 && bestPartial
       ? bestPartial.prismaticaPerRequest / full.prismaticaPerRequest : null,
     repeatPrefix, exit: { prismatica: exit.snapshot.state.account.fractalis - snapshot.state.account.fractalis,
@@ -150,7 +136,7 @@ export function executeRadiantEconomyStudy(emit: (row: unknown) => void): void {
     { id: 'free-sprout0-normal-only', ids: ['sprout'], level: 0, gear: 'empty', free: true, policy: 'normal-only' },
     { id: 'solo-owned-starter30', ids: ['ember'], level: 30, gear: 'empty' },
     { id: 'conditional-common-trio60', ids: ['ember', 'tide', 'sprout'], level: 60, gear: 'common' },
-    { id: 'conditional-farmed-six105', ids: ['ember', 'tide', 'sprout', 'disciple', 'aurora', 'razor'],
+    { id: 'conditional-farmed-trio105', ids: ['disciple', 'aurora', 'razor'],
       level: 105, gear: 'farmed' },
   ];
   emit({ metadata: { schema: 2, calibration: liveRadiantCalibrationId, seeds: pressureStudySeeds, now: pressureStudyNow,
@@ -160,12 +146,12 @@ export function executeRadiantEconomyStudy(emit: (row: unknown) => void): void {
       'Three free-starter controls have no pre-cleared stages/grants; each is a separate one-starter account.',
       'Free Story first-clear outputs are acquisition controls, NOT repeatable currency/premium farm rates.',
       'Developed conditional fixtures pre-clear Story to exclude first-clear bonuses from repeatable farming.',
-      'Rate is Prismatica per accepted request including start+actions+exit, NOT observed real-time player income.',
+      'Rate is Prismatica per accepted request (start+settle+exit; encounters run on the device, D-471), NOT observed real-time player income.',
       'Existing SQL limit is120 attempts per60-second window anchored to first request/server time; rejects/retries also consume it.',
       'No animation/network/speed/latency estimate, population clear rate, final tuning approval or global optimization.',
       'Every legal balanced-action prefix is screened, with strongest paying nonterminal prefix compared to terminal play.',
       'Free starters also run Normal-only controls; conservative balanced-policy stalemate is not proven player inability.',
-      'Repeat identical prefix through quit/retry three times must pay zero additional currency/loot.',
+      'Unsettled partial play banks nothing; quitting forfeits the encounter Haul (D-471).',
       'Calamity zero-Prismatica and ownership-gated Oblivion excluded; next-wave Training is not a fresh-entry choice.',
       'Three deterministic seeds are a small comparative sample; all complete and denied cases are retained.'],
     anchors: anchors.map(anchor => ({ id: anchor.id, activity: anchor.activity })), profiles } });
