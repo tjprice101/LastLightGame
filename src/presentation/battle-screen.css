@@ -279,7 +279,13 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
 .radiant-loot i { display: block; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff, var(--loot) 60%, #0000 72%); }
 .radiant-loot b { position: relative; font-size: 13px; color: #fff; text-shadow: 0 1px 2px #000, 0 0 6px #000; white-space: nowrap; }
 .radiant-loot[data-rarity="Legendary"] img, .radiant-loot[data-rarity="Omnic"] img, .radiant-loot[data-rarity="Calamitic"] img { width: 54px; height: 54px; }
-html[data-motion="reduced"] .radiant-fx-layer { display: none; }
+/* Reduce motion keeps only static cues (R6): one element ring and the number per impact. */
+html[data-motion="reduced"] .radiant-fx-layer > :not(.radiant-static-ring):not(.radiant-number.is-static) { display: none; }
+.radiant-static-ring { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; pointer-events: none;
+  border: 3px solid var(--ring, #fff); box-shadow: 0 0 14px var(--ring, #fff), inset 0 0 10px var(--ring, #fff); }
+/* Battle Spectacle GPU layer (D-484): pointer-transparent, between the field and the DOM effects. */
+.radiant-gpu-layer { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
+.radiant-gpu-layer canvas { display: block; pointer-events: none; }
 .radiant-battle .radiant-field .radiant-enemy:disabled, .radiant-battle .radiant-face:disabled { opacity: 1; }
 .radiant-battle .radiant-member.has-acted .radiant-face, .radiant-battle .radiant-member.is-defeated .radiant-face { opacity: .55; }
 .radiant-field .is-defeated .radiant-unit-motion { opacity: .18; filter: grayscale(1) brightness(.6); transform: translateY(14px) scale(.96); transition: opacity .4s ease, transform .4s ease; }
@@ -698,6 +704,7 @@ html[data-motion="reduced"] .radiant-result-aura { display: none; }
   text-shadow: 0 2px 2px #000, 0 0 10px color-mix(in srgb, var(--gild-light) 70%, transparent), 0 0 22px color-mix(in srgb, var(--gild-mid) 50%, transparent); }
 .radiant-number.is-periodic b { font-size: clamp(15px, 1.6vw, 20px); color: #ffd2b8; }
 .radiant-number.is-hurt b { color: #ff9a9a; }
+.radiant-number.is-static { opacity: 1; transform: translate(-50%, -16px); }
 .radiant-number.is-heal b { color: #9be7a4; }
 .radiant-number.is-shield b, .radiant-number.is-absorb b { font-size: clamp(14px, 1.5vw, 19px); color: #d6e6ff; }
 

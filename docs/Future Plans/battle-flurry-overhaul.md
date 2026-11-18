@@ -287,6 +287,24 @@ devices fall back to fewer particles, not to a different look.
 tiers (plus an enemy turn) before and after, then an owner feel review of
 the hosted build.
 
+#### Step 2: GPU effect foundation (implemented, D-484)
+
+Status: **implemented 2026-11-18; owner feel review of the hosted build
+pending.** It is one Phaser WebGL layer on the VFX textures, with tier beats,
+screen tools, Reduce motion static cues and a static-ring fallback when
+WebGL is unavailable. See the
+[combat spec](../combat.md#battle-spectacle-gpu-effect-layer-and-beats-d-484-spectacle-step-2).
+
+Owner choices: the interim look is one effect per tier, tinted by element
+(per-bearer glyphs retired until Step 4). Without WebGL, static rings show.
+
+Still open for later steps:
+- element shape grammar (Step 3);
+- per-bearer layers (Step 4);
+- cut-in art and finisher choreography (Step 5);
+- enemy telegraphs (Step 6);
+- a physical-device GPU check on the owner's own hardware (see the handoff).
+
 ## Skill language
 
 One fixed phrase order: **[hits] [element] attack on [target] ([power]%),**

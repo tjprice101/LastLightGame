@@ -1,5 +1,71 @@
 # Current state and handoff
 
+## Spectacle step 2: GPU effect layer live (2026-11-18)
+
+**Implemented (D-484).** One Phaser WebGL layer on the VFX textures replaces
+the canvas effects in the live battle and the dev preview. Every player
+action now follows the approved tier beats (R2) with these screen tools:
+- lunge, dash, brace or rise;
+- shake and hit-stop;
+- soft flash on Skill 2;
+- dim, zoom and a full flash on the finisher for Convergent Light.
+
+Reduce motion shows one static element ring and the number per impact. The
+[combat spec](combat.md#battle-spectacle-gpu-effect-layer-and-beats-d-484-spectacle-step-2)
+has the details.
+
+Owner choices:
+- interim look: one effect per tier, tinted by element (per-bearer glyphs
+  retired until Step 4);
+- no WebGL: static rings.
+
+Presentation only, so no deploy of the authority.
+- Deleted `src/vfx/battle-effects.ts` (+ test), `signature-vfx.ts` and
+  `cinematic-motifs.ts`. Legacy `BattleView` systems are untouched.
+- The dev preview has a Convergent Light tier picker.
+- `tools/capture_frames.mjs` gains `--stream`, `--battle enemy`,
+  `--flare-tier`, `--speed` and `--reduced`. `--stream` uses the browser
+  screencast and counts frames from the input event. Screenshot mode stalls
+  rendering and slows GPU-timed effects.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: passed (existing chunk-size
+  warning).
+- Full `npx vitest run`: 10,683 of 10,684 passed. The one failure was the
+  known 20 s timeout in `acquisition-surfaces.test.ts`; alone it passed in
+  13 s. The total fell by the deleted canvas-effects test file.
+- Before/after `--stream` captures of every tier, run against the dev
+  preview (Nerithe final boss):
+  - all four tiers and all three Convergent Light tiers;
+  - an enemy turn;
+  - Reduce motion: static ring and numbers for about 200 ms;
+  - 3x: Skill 2 in about 0.4 s.
+
+  No page errors.
+- GPU check, headless Chromium on the dev PC's integrated AMD Radeon
+  (D3D11). Three-bearer Ultimate Convergent Light flurry, Training:
+  - median frame 16.7 ms, p95 16.8 ms at 1x and at 3x;
+  - peak 183 of 700 particles.
+
+  The first action on a page stalls about 0.35 s on the main thread (DOM
+  layout); the previous code showed the same stall.
+- **Not verified:** owner feel review of the hosted build; a check on other
+  devices (phones, low-power laptops).
+
+**Known:**
+- Effects are the interim shared look: element grammar (Step 3) and
+  per-bearer layers (Step 4) are next. The melee slash and ranged orb are
+  generic.
+- Damage numbers and drops still linger past each tier's budget (about
+  0.86 s), by design for readability.
+
+**Next:**
+- Owner reviews the before/after contact sheets, then plays the hosted build
+  at 1x and 3x, with and without Reduce motion.
+- Spectacle step 3: six element base sets (Opus for the grammar, Sonnet for
+  batches).
+- Owner decides the Warden Lv.177 / Training 120 source fix (Opus).
+
 ## Convergent Light rename; Spectacle step 1 rules approved (2026-11-18)
 
 - **Convergent Light label everywhere.** Kits, glossary, tooltips, the skill

@@ -1,6 +1,6 @@
 import { freshGame } from '../../supabase/functions/game-operation/engine';
 import { squadMemberLimit } from '../content/squad-rules';
-import { characterLevelCap } from '../content/progression';
+import { characterLevelCap, convergentLightRankCap } from '../content/progression';
 import { releasedRadiantIds, type RadiantBearerId } from '../content/combat-kits';
 import { personalChargeMaximum, validateRadiantGauge, type RadiantGaugeState } from '../game/combat-gauge';
 import type { Activity } from '../online/server-game';
@@ -15,11 +15,20 @@ export const radiantReviewEncounters = [
   { id: 'nerithe-10', label: 'Elemental War: Nerithe - final boss', activity: { kind: 'war', character: 'nerithe', stage: 10 } },
 ] as const satisfies readonly { id: string; label: string; activity: Activity }[];
 
-export function createRadiantReviewFixture(leader: RadiantBearerId, form: number, encounterId: string, strikeMasters: boolean) {
+/** Preview-only Convergent Light tiers: the saved rank that unlocks each one (D-484 capture review). */
+export const radiantReviewFlareRanks = { sparkling: 1, glimmering: 6, ultimate: 11 } as const;
+export type RadiantReviewFlareTier = keyof typeof radiantReviewFlareRanks;
+
+export function createRadiantReviewFixture(leader: RadiantBearerId, form: number, encounterId: string, strikeMasters: boolean,
+  flareTier: RadiantReviewFlareTier = 'sparkling') {
   if (!releasedRadiantIds.includes(leader)) throw new Error('Preview leader is not a released Radiant Element-Bearer.');
   const encounter = radiantReviewEncounters.find(candidate => candidate.id === encounterId);
   if (!encounter) throw new Error('Unknown Radiant review encounter.');
   const leaderLevel = Math.min(105, characterLevelCap(form, leader));
+  const rank = radiantReviewFlareRanks[flareTier];
+  if (!rank) throw new Error('Unknown Convergent Light review tier.');
+  if (rank > convergentLightRankCap({ level: leaderLevel, evolution: form, weaponRank: 0 }, leader))
+    throw new Error('This form has not unlocked that Convergent Light tier.');
   const game = freshGame('in-memory-preview', '2026-11-08T00:00:00Z');
   game.starterId = 'ember';
   game.account.storyCompleted = encounter.activity.kind === 'story' ? encounter.activity.stage - 1 : 24;
@@ -28,7 +37,7 @@ export function createRadiantReviewFixture(leader: RadiantBearerId, form: number
   game.account.squad = squad;
   for (const id of squad) {
     game.account.characters[id] = id === leader
-      ? { level: leaderLevel, evolution: form, weaponRank: 0 }
+      ? { level: leaderLevel, evolution: form, weaponRank: 0, ...(rank > 1 ? { convergenceRank: rank } : {}) }
       : { level: 105, evolution: 6, weaponRank: 0 };
   }
   if (encounter.activity.kind === 'dungeon')

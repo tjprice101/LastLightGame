@@ -48,6 +48,16 @@ describe('isolated Radiant review fixtures', () => {
     }
   });
 
+  it('reaches every Convergent Light tier for capture review only where the form has unlocked it', () => {
+    for (const tier of ['sparkling', 'glimmering', 'ultimate'] as const) {
+      const run = enter(createRadiantReviewFixture('ember', 6, 'nerithe-10', false, tier));
+      const gauge = structuredClone(run.state.gauge);
+      setRadiantReviewCharge(gauge, 3);
+      expect(readyFlare(gauge, 'ember'), tier).toBe(tier);
+    }
+    expect(() => createRadiantReviewFixture('ember', 3, 'story-25', false, 'glimmering')).toThrow('has not unlocked');
+    expect(() => createRadiantReviewFixture('ember', 5, 'story-25', false, 'ultimate')).toThrow('has not unlocked');
+  });
   it('rejects invalid forms, encounters and charge cycles rather than substituting a fixture', () => {
     expect(() => createRadiantReviewFixture('ember', 7, 'story-25', false)).toThrow();
     expect(() => createRadiantReviewFixture('ember', 6, 'missing', false)).toThrow('Unknown Radiant review encounter.');

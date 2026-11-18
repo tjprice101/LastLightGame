@@ -11,8 +11,8 @@ vi.mock('./battle-screen', () => ({
     render() {}
   },
 }));
-vi.mock('../vfx/battle-effects', () => ({
-  RadiantCanvasEffects: class {},
+vi.mock('../vfx/gpu-effects', () => ({
+  GpuBattleEffects: class {},
 }));
 vi.mock('./game-dialog', () => ({
   gameConfirm: vi.fn(async () => true),

@@ -1,5 +1,28 @@
 # Decision log
 
+## Spectacle step 2: one GPU effect layer replaces the canvas effects (D-484, 2026-11-18)
+
+- **Owner-approved plan:** one Phaser WebGL layer built on the VFX texture
+  library replaces `RadiantCanvasEffects` in the live battle and the dev
+  preview. Every player action is retimed to the D-483 tier beats and screen
+  tools ([combat spec](combat.md#battle-spectacle-gpu-effect-layer-and-beats-d-484-spectacle-step-2)).
+- **Owner choices (2026-11-18):**
+  - Interim look: one strong effect per tier, tinted by element. The old
+    per-bearer glyphs retire until Step 4 rebuilds per-bearer layers.
+  - Without WebGL: a static element ring and the number on each hit, the
+    same as Reduce motion. There is no second effect engine.
+- **Implemented:**
+  - `src/vfx/gpu-effects.ts`, `spectacle-scene.ts`, `spectacle-timing.ts`
+    and `vfx-textures.ts` are new.
+  - The canvas effects modules (`vfx/battle-effects.ts`, `signature-vfx.ts`,
+    `cinematic-motifs.ts`) are deleted. The legacy `BattleView` systems are
+    untouched; they are still the Future Plans legacy-code item.
+  - The dev preview has a Convergent Light tier picker.
+  - `tools/capture_frames.mjs` gains `--stream`, `--battle enemy`,
+    `--flare-tier`, `--speed` and `--reduced`.
+- Presentation only: no rule, RNG, reward, save or authority change, and no
+  deploy.
+
 ## Spectacle visual rules approved; Convergent Light label shipped (D-483, 2026-11-18)
 
 - **Owner-approved:** Spectacle step 1 visual rules R1 to R8, including the

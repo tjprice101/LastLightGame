@@ -31,13 +31,28 @@ import { radiantFlareCutin } from './battle-cutin';
 import './battle-cutin.css';
 import { radiantBearerKits, radiantFlareName } from '../content/combat-kits';
 import { elementDamageMultiplier } from '../content/element-matchups';
+import { beatPlan, elementTint, enemyScreenTools, screenTools, spectacleTier, staticImpactMs, tintCss,
+  type FlashKind, type SpectacleBeats } from '../vfx/spectacle-timing';
 
 export { radiantActivityTitle };
 
+/** Screen tools the view asks the effect layer to draw (D-483 R2). */
+export interface RadiantScreenCue {
+  flash?: FlashKind;
+  dim?: { alpha: number; inMs: number; holdMs: number; outMs: number };
+  /** Hit-stop: freeze effect clocks for this many ms (speed 1). */
+  freeze?: number;
+}
 export interface RadiantBattleEffects {
-  windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
-  /** `action` is the presented player action, or null for enemy-phase frames (no caster). */
-  impact(frame: RadiantImpactFrame, action?: RadiantPlayerAction | null, state?: RadiantCombatState): Promise<void>;
+  /** Wind-up and travel beats; resolves when the travel beat ends. */
+  windup(action: RadiantPlayerAction, state: RadiantCombatState, beats?: SpectacleBeats): Promise<void>;
+  /** `action` is the presented player action, or null for enemy-phase frames (no caster).
+   * Resolves after this hit's slot in the impact beat; lingering particles are awaited through `idle`. */
+  impact(frame: RadiantImpactFrame, action?: RadiantPlayerAction | null, state?: RadiantCombatState,
+    beats?: SpectacleBeats, finisher?: boolean): Promise<void>;
+  screen?(cue: RadiantScreenCue): void;
+  /** Resolves once every lingering effect has finished (the aftermath beat). */
+  idle?(): Promise<void>;
   pause?(paused: boolean): void;
   cancel(): void;
   dispose?(): void;
@@ -79,6 +94,14 @@ function enemyPhaseFrame(frame: RadiantImpactFrame): boolean {
     'source' in event && event.source.kind === 'enemy' ||
     event.type === 'damage' && event.origin === 'periodic' ||
     event.type === 'status' && event.clockOnly);
+}
+type ImpactPacket = Extract<RadiantImpactFrame['events'][number], { type: 'damage' | 'heal' | 'shield' | 'status' }>;
+/** Packets that show an impact (the same set the effect layer draws). */
+function impactPacket(event: RadiantImpactFrame['events'][number]): event is ImpactPacket {
+  return event.type === 'damage' && event.healthLoss + event.absorbed > 0 ||
+    event.type === 'heal' && event.effective > 0 ||
+    event.type === 'shield' && event.amount > 0 ||
+    event.type === 'status' && !event.clockOnly && event.remaining > 0 && event.status !== 'weaken-removed';
 }
 /** Exact presentation amount: whole numbers grouped, fractional values unrounded beyond 2 places. */
 function amountText(value: number): string {
@@ -151,6 +174,9 @@ export class RadiantBattleView {
   private settling: Promise<void> | null = null;
   /** Haul submitted by the last settle, kept on screen with the saved result. */
   private finalHaul: number | null = null;
+  /** Hit-stop end (performance.now ms); WAAPI animations stay paused until then. */
+  private hitStopUntil = 0;
+  private hitStopTimer: number | null = null;
   constructor(private readonly host: HTMLElement, private readonly session: RadiantSession,
     private readonly openSettings: () => void, private readonly effects?: RadiantBattleEffects,
     private readonly onExit?: () => void) {
@@ -514,8 +540,9 @@ export class RadiantBattleView {
     if (blocked) this.gestures?.cancel();
     this.host.setAttribute('aria-busy', String(view.busy || view.entrancePending));
     this.element<HTMLElement>('.radiant-battle').classList.toggle('is-settings-open', view.settingsOpen);
+    const frozen = view.settingsOpen || this.hitStopUntil > performance.now();
     for (const animation of this.animations) {
-      if (view.settingsOpen) animation.pause();
+      if (frozen) animation.pause();
       else if (animation.playState === 'paused') animation.play();
     }
     this.effects?.pause?.(view.settingsOpen);
@@ -921,24 +948,35 @@ export class RadiantBattleView {
         await this.nextPresentationFrame();
         if (!current()) return;
       }
-      if (!reducedMotion() && player) {
-        const member = before.bearers.find(unit => unit.loadout.id === player.bearerId)!;
-        const motion = characterChoreography[member.loadout.starter].motion;
-        const poised = motion === 'cast' ? 'translateY(-4px)' : motion === 'bow' ? 'translateX(5px)' :
-          motion === 'hammer' ? 'translate(-5px, -4px) rotate(3deg)' : motion === 'guard' ? 'translateX(-3px)' :
-            motion === 'twin' ? 'translateX(-8px) rotate(-2deg)' : 'translateX(-12px)';
-        await Promise.all([
-          this.animate(this.element(`[data-radiant-art="${player.bearerId}"]`),
-            [{ transform: 'none' }, { transform: poised }, { transform: 'none' }], 120),
-          this.effects ? this.effects.windup(player, structuredClone(before)) :
-            this.animate(this.element(`[data-radiant-art="${player.bearerId}"]`),
-              [{ filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' }], 200),
-          this.flareCutin(player, before),
-          this.skillCallout(player, before),
-        ]);
-      }
+      // D-483 R2: four beats per player action, timed by tier; the impact beat is split across its hits.
+      const enemyStart = frames.findIndex(enemyPhaseFrame);
+      const hitFrames = frames.slice(0, enemyStart < 0 ? frames.length : enemyStart).flatMap((frame, frameIndex) =>
+        frame.events.some(impactPacket) ? [frameIndex] : []);
+      // The finisher is the last damaging hit (later frames may only add buffs or statuses).
+      const strikeFrames = hitFrames.filter(frameIndex => frames[frameIndex].events.some(event =>
+        event.type === 'damage' && event.healthLoss + event.absorbed > 0));
+      const finisherFrame = strikeFrames.at(-1) ?? hitFrames.at(-1);
+      const tier = player ? spectacleTier(player) : null;
+      const flareTier = player?.type === 'flare' ? readyFlare(before.gauge, player.bearerId) : null;
+      const beats = tier ? beatPlan(tier, flareTier, hitFrames.length) : null;
+      const tools = tier ? screenTools(tier, flareTier) : null;
       const fx: Promise<void>[] = [], failures: unknown[] = [], played = new Set<number>();
       const track = (effect: Promise<void>) => { fx.push(effect.catch(error => { failures.push(error); })); };
+      if (!reducedMotion() && player && beats && tools) {
+        if (tools.dim) {
+          this.effects?.screen?.({ dim: { alpha: tools.dim, inMs: beats.windup * .5,
+            holdMs: beats.windup * .5 + beats.travel + beats.impact, outMs: beats.aftermath } });
+          track(this.zoomField(tools.zoom, beats));
+        }
+        track(this.skillCallout(player, before));
+        track(this.lunge(player, before, beats));
+        await Promise.all([
+          this.effects ? this.effects.windup(player, structuredClone(before), beats) :
+            this.animate(this.element(`[data-radiant-art="${player.bearerId}"]`),
+              [{ filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' }], beats.windup + beats.travel),
+          this.flareCutin(player, before, beats.windup + beats.travel),
+        ]);
+      }
       let shaken = false, enemyPhase = false;
       let previousActor: string | null = null;
       for (const [frameIndex, frame] of frames.entries()) {
@@ -962,24 +1000,46 @@ export class RadiantBattleView {
         // With motion, Prismatica reaches the Haul when its motes land.
         if (reducedMotion()) this.shownHaul += frame.events.reduce((sum, event) => sum + (event.type === 'currency' ? event.amount : 0), 0);
         this.render();
-        if (!reducedMotion()) {
-          const random = presentationRandom(`${response.revision}:${index}:${frameIndex}`);
-          track(this.chargeOrbs(frame, previous, random));
-          track(this.haulMotes(frame, random));
-          track(this.damageNumbers(frame, before, random));
-          for (const event of frame.events) if (event.type === 'defeated')
-            track(this.lootDrops(response, played, event.targetId, random));
-          const hit = frame.events.some(event => event.type === 'damage' && event.healthLoss + event.absorbed > 0);
-          const defeat = frame.events.some(event => event.type === 'defeated');
-          const flareHit = !enemyPhase && player?.type === 'flare';
-          if (!shaken && hit && (flareHit || defeat || actor)) {
-            shaken = true; track(this.shakeField(flareHit ? 10 : defeat ? 7 : 4));
-          }
-          await Promise.all([this.fieldImpact(frame), this.effects
-            ? this.effects.impact(structuredClone(frame), enemyPhase ? null : player, structuredClone(before)) : this.impact(frame)]);
-          if (actor) await this.pause(enemyRecoveryMs);
+        const random = presentationRandom(`${response.revision}:${index}:${frameIndex}`);
+        if (reducedMotion()) {
+          // R6: one static element ring and the number per impact, 200 ms or less.
+          this.staticImpact(frame, before, random);
+          continue;
         }
+        const hit = frame.events.some(event => event.type === 'damage' && event.healthLoss + event.absorbed > 0);
+        const playerHit = !enemyPhase && !!beats && hitFrames.includes(frameIndex);
+        const finisher = playerHit && tier === 'flare' && frameIndex === finisherFrame;
+        if (playerHit && hit && tools) {
+          // Screen tools land on the first hit; a Convergent Light saves its heaviest for the finisher.
+          const first = frameIndex === strikeFrames[0];
+          if (tier !== 'flare' ? first : finisher) {
+            this.hitStop(tools.hitStop);
+            if (tools.flash !== 'none') this.effects?.screen?.({ flash: tools.flash });
+            track(this.shakeField(tools.shake));
+          } else if (tier === 'flare' && first) track(this.shakeField(3));
+        }
+        track(this.chargeOrbs(frame, previous, random));
+        track(this.haulMotes(frame, random));
+        track(this.damageNumbers(frame, before, random));
+        for (const event of frame.events) if (event.type === 'defeated')
+          track(this.lootDrops(response, played, event.targetId, random));
+        if (playerHit && beats) {
+          // The recoil and particles overlap the next hit; only this hit's slot is awaited.
+          track(this.fieldImpact(frame));
+          if (this.effects) await this.effects.impact(structuredClone(frame), player, structuredClone(before), beats, finisher);
+          else { track(this.impact(frame)); await this.pause(beats.hitInterval); }
+          continue;
+        }
+        const defeat = frame.events.some(event => event.type === 'defeated');
+        if (!shaken && hit && (defeat || actor)) {
+          shaken = true; track(this.shakeField(defeat && !actor ? 7 : enemyScreenTools.shake));
+        }
+        await Promise.all([this.fieldImpact(frame), this.effects
+          ? this.effects.impact(structuredClone(frame), enemyPhase ? null : player, structuredClone(before)) : this.impact(frame)]);
+        if (actor) await this.pause(enemyRecoveryMs);
       }
+      // Aftermath beat: lingering particles finish before the action counts as settled.
+      if (!reducedMotion() && current() && this.effects?.idle) track(this.effects.idle());
       if (!reducedMotion() && current()) {
         track(this.lootDrops(response, played, null, presentationRandom(`${response.revision}:${index}:end`)));
         await Promise.all(fx);
@@ -1157,6 +1217,7 @@ export class RadiantBattleView {
   }
   private cancelEffects(): void {
     this.effectsEpoch++;
+    this.releaseHitStop();
     this.numberStacks.clear();
     this.effects?.cancel();
     this.selectionCleanup?.(); this.selectionCleanup = null;
@@ -1381,6 +1442,11 @@ export class RadiantBattleView {
       const node = this.spawn(`radiant-number is-${kind}`, box.left + box.width / 2 + (random() - .5) * box.width * .3,
         box.top + box.height * .32 - (stack % 5) * 22);
       node.innerHTML = `${tag ? `<small>${escape(tag)}</small>` : ''}<b>${escape(text)}</b>`;
+      const release = () => {
+        const left = (this.numberStacks.get(targetId) ?? 1) - 1;
+        if (left > 0) this.numberStacks.set(targetId, left); else this.numberStacks.delete(targetId);
+      };
+      if (reducedMotion()) { node.classList.add('is-static'); this.staticCue(node, staticImpactMs, release); return; }
       floats.push(this.animate(node, [
         { opacity: 0, transform: 'translate(-50%, 8px) scale(.6)', easing: 'cubic-bezier(.2,.9,.3,1.3)' },
         { opacity: 1, transform: 'translate(-50%, -10px) scale(1.2)', offset: .14, easing: 'ease-out' },
@@ -1388,8 +1454,7 @@ export class RadiantBattleView {
         { opacity: 1, transform: 'translate(-50%, -30px) scale(1)', offset: .78, easing: 'ease-in' },
         { opacity: 0, transform: 'translate(-50%, -44px) scale(.92)' },
       ], kind === 'weak' ? 1000 : 860, { easing: 'linear' }).finally(() => {
-        const left = (this.numberStacks.get(targetId) ?? 1) - 1;
-        if (left > 0) this.numberStacks.set(targetId, left); else this.numberStacks.delete(targetId);
+        release();
         node.dispatchEvent(new Event('radiant-fx-done'));
       }));
     };
@@ -1408,7 +1473,7 @@ export class RadiantBattleView {
     return Promise.all(floats).then(() => {});
   }
   /** Flare cut-in during the windup: the bearer's portrait, tier and Flare name. */
-  private async flareCutin(action: RadiantPlayerAction, before: RadiantCombatState): Promise<void> {
+  private async flareCutin(action: RadiantPlayerAction, before: RadiantCombatState, duration: number): Promise<void> {
     if (action.type !== 'flare' || reducedMotion() || this.disposed) return;
     const tier = readyFlare(before.gauge, action.bearerId);
     const member = before.bearers.find(unit => unit.loadout.id === action.bearerId);
@@ -1428,7 +1493,7 @@ export class RadiantBattleView {
         { opacity: 1, transform: 'translateX(0) skewX(0deg)', offset: .16, easing: 'linear' },
         { opacity: 1, transform: 'translateX(2%) skewX(0deg)', offset: .82, easing: 'cubic-bezier(.6,0,.9,.4)' },
         { opacity: 0, transform: 'translateX(12%) skewX(6deg)' },
-      ], tier === 'ultimate' ? 1100 : 820, { easing: 'linear' });
+      ], duration, { easing: 'linear' });
     } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
   }
   /** Skill name callout over the caster's card during the windup (finite, pointer-transparent; none under Reduce motion). */
@@ -1452,6 +1517,96 @@ export class RadiantBattleView {
         { opacity: 0, transform: 'translate(-50%, -18px) scale(1.02)' },
       ], 640);
     } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
+  }
+  /** R1 caster motion across wind-up and travel: melee kits dash toward the target, ranged kits
+   * brace and recoil, support kits rise. Returns during the impact and aftermath beats. */
+  private lunge(action: RadiantPlayerAction, before: RadiantCombatState, beats: SpectacleBeats): Promise<void> {
+    const art = this.host.querySelector<HTMLElement>(`[data-radiant-art="${action.bearerId}"]`);
+    const member = before.bearers.find(unit => unit.loadout.id === action.bearerId);
+    if (!art || !member) return Promise.resolve();
+    const motion = characterChoreography[member.loadout.starter].motion;
+    const kit = radiantKits[member.loadout.starter as RadiantKitId];
+    const reach = action.type === 'normal' ? 'one-enemy' : action.type === 'skill'
+      ? kit?.[action.slot === 2 ? 'skill2' : 'skill1'].target ?? 'one-enemy' : kit?.flare.target ?? 'all-enemies';
+    const poised = motion === 'cast' ? 'translateY(-4px)' : motion === 'bow' ? 'translateX(5px)' :
+      motion === 'hammer' ? 'translate(-5px, -4px) rotate(3deg)' : motion === 'guard' ? 'translateX(-3px)' :
+        motion === 'twin' ? 'translateX(-8px) rotate(-2deg)' : 'translateX(-12px)';
+    const lead = beats.windup + beats.travel, total = lead + Math.min(beats.impact, 300) + beats.aftermath;
+    const at = (ms: number) => Math.min(1, ms / total);
+    let strike: string;
+    if (reach === 'none') strike = 'translateY(-10px) scale(1.03)';
+    else if (motion === 'cast' || motion === 'bow') strike = motion === 'bow' ? 'translateX(9px)' : 'translateY(-6px) scale(1.02)';
+    else {
+      // Dash about a third of the way to the target, kept on the field.
+      const enemies = before.enemies.filter(enemy => enemy.hp > 0);
+      const targetId = 'targetId' in action && action.targetId ? action.targetId : enemies[0]?.id;
+      const target = targetId ? this.host.querySelector(`[data-radiant-art="${targetId}"]`) : null;
+      const from = centre(art), to = target ? centre(target) : from;
+      const dx = Math.max(-140, Math.min(140, (to.x - from.x) * .3)), dy = Math.max(-40, Math.min(40, (to.y - from.y) * .2));
+      strike = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(1.04)`;
+    }
+    return this.animate(art, [
+      { offset: 0, transform: 'none', filter: 'brightness(1)', easing: 'cubic-bezier(.3,0,.4,1)' },
+      { offset: at(beats.windup * .85), transform: poised, filter: 'brightness(1.35)', easing: 'cubic-bezier(.5,0,.9,.6)' },
+      { offset: at(lead), transform: strike, filter: 'brightness(1.6)', easing: 'linear' },
+      { offset: at(lead + Math.min(beats.impact, 300) * .6), transform: strike, filter: 'brightness(1.15)', easing: 'cubic-bezier(.3,.7,.4,1)' },
+      { offset: 1, transform: 'none', filter: 'brightness(1)' },
+    ], total, { easing: 'linear' });
+  }
+  /** R2 Convergent Light camera push: the field scales in through the wind-up and settles in the aftermath. */
+  private zoomField(zoom: number, beats: SpectacleBeats): Promise<void> {
+    if (zoom === 1) return Promise.resolve();
+    const total = beats.total, settle = (total - beats.aftermath) / total;
+    return this.animate(this.element('.radiant-field'), [
+      { offset: 0, scale: '1', easing: 'cubic-bezier(.3,0,.2,1)' },
+      { offset: Math.min(settle, (beats.windup + beats.travel) / total), scale: String(zoom), easing: 'linear' },
+      { offset: settle, scale: String(zoom), easing: 'cubic-bezier(.4,0,.2,1)' },
+      { offset: 1, scale: '1' },
+    ], total, { easing: 'linear' });
+  }
+  /** R2 hit-stop: freezes every running animation and the GPU clocks; overlapping requests take the longest. */
+  private hitStop(ms: number): void {
+    if (ms <= 0 || reducedMotion() || this.disposed) return;
+    this.effects?.screen?.({ freeze: ms });
+    const until = performance.now() + ms / battleSpeed();
+    if (until <= this.hitStopUntil) return;
+    this.hitStopUntil = until;
+    for (const animation of this.animations) if (animation.playState === 'running') animation.pause();
+    if (this.hitStopTimer !== null) window.clearTimeout(this.hitStopTimer);
+    this.hitStopTimer = window.setTimeout(() => this.releaseHitStop(), ms / battleSpeed());
+  }
+  private releaseHitStop(): void {
+    if (this.hitStopTimer !== null) window.clearTimeout(this.hitStopTimer);
+    this.hitStopTimer = null; this.hitStopUntil = 0;
+    if (this.disposed || this.session.view().settingsOpen) return;
+    for (const animation of this.animations) if (animation.playState === 'paused') animation.play();
+  }
+  /** Removes a static Reduce motion cue after `ms` (speed-scaled); Skip and Exit remove it at once. */
+  private staticCue(node: HTMLElement, ms: number, after?: () => void): void {
+    let timer = 0;
+    const cleanup = () => { window.clearTimeout(timer); node.remove(); this.effectsCleanup.delete(cleanup); after?.(); };
+    timer = window.setTimeout(cleanup, ms / battleSpeed());
+    this.effectsCleanup.add(cleanup);
+  }
+  /** R6 Reduce motion: one static element ring per impacted unit plus its number; no motion. */
+  private staticImpact(frame: RadiantImpactFrame, before: RadiantCombatState, random: () => number): void {
+    const seen = new Set<string>();
+    for (const event of frame.events) {
+      if (!impactPacket(event) || event.type === 'status' || seen.has(event.targetId)) continue;
+      seen.add(event.targetId);
+      const anchor = this.host.querySelector(`[data-radiant-art="${event.targetId}"]`);
+      if (!anchor) continue;
+      const point = centre(anchor);
+      const element = event.source.kind === 'enemy'
+        ? before.enemies.find(enemy => enemy.id === (event.source as { enemyId: string }).enemyId)?.elementId
+        : before.bearers.find(unit => unit.loadout.id === (event.source as { bearerId: string }).bearerId)?.loadout.starter;
+      const tint = event.source.kind === 'enemy' ? elementTint(element)
+        : elementTint(element ? radiantBearerKits[element as keyof typeof radiantBearerKits]?.elementId : null);
+      const ring = this.spawn('radiant-static-ring', point.x, point.y);
+      ring.style.setProperty('--ring', tintCss(tint));
+      this.staticCue(ring, staticImpactMs);
+    }
+    void this.damageNumbers(frame, before, random);
   }
   private shakeField(amplitude: number): Promise<void> {
     const a = amplitude;

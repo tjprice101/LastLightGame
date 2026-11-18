@@ -11,7 +11,7 @@ import { RadiantSession, radiantLogStorage } from '../online/battle-session';
 import { readRadiantStudy } from '../online/battle-transport';
 import { onlineClient } from '../online/account-client';
 import { RadiantBattleView } from './battle-screen';
-import { RadiantCanvasEffects } from '../vfx/battle-effects';
+import { GpuBattleEffects } from '../vfx/gpu-effects';
 import { gameConfirm, escapeDialogText as escape } from './game-dialog';
 import './battle-client.css';
 
@@ -234,7 +234,7 @@ export class RadiantClient {
     if (receipt) session.finishPresentation(receipt.requestId);
     this.battle?.dispose();
     this.battle = new RadiantBattleView(this.host, session, this.openSettings,
-      new RadiantCanvasEffects(this.host), () => {
+      new GpuBattleEffects(this.host), () => {
         this.battle = null;
         this.tab = 'entry';
         this.render();
@@ -251,7 +251,7 @@ export class RadiantClient {
     if (checkpoint.run) {
       this.battle?.dispose();
       this.battle = new RadiantBattleView(this.host, session, this.openSettings,
-        new RadiantCanvasEffects(this.host), () => {
+        new GpuBattleEffects(this.host), () => {
           this.battle = null;
           this.tab = 'entry';
           this.render();

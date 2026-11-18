@@ -3,13 +3,13 @@ import './presentation/battle-screen.css';
 import { RadiantSession } from './online/battle-session';
 import { resolveRadiantRun, type RadiantRunRequest, type RadiantRunResponse, type RadiantRunSnapshot } from './online/battle-run';
 import { RadiantBattleView } from './presentation/battle-screen';
-import { createRadiantReviewFixture, radiantReviewEncounters, setRadiantReviewCharge } from './presentation/battle-review-fixtures';
+import { createRadiantReviewFixture, radiantReviewEncounters, setRadiantReviewCharge, type RadiantReviewFlareTier } from './presentation/battle-review-fixtures';
 import { measureRadiantCadence, type RadiantCadenceOutcome } from './presentation/battle-preview-cadence';
 import { applyMotion } from './presentation/settings';
 import { applyBattleSpeed, parseBattleSpeed } from './presentation/battle-speed';
 import { createGameDialog, escapeDialogText } from './presentation/game-dialog';
 import { readyFlare } from './game/combat-gauge';
-import { RadiantCanvasEffects } from './vfx/battle-effects';
+import { GpuBattleEffects } from './vfx/gpu-effects';
 import { releasedRadiantIds } from './content/combat-kits';
 import { getStarter } from './content/starters';
 import { liveRadiantCalibrationId } from './content/enemy-calibration';
@@ -34,6 +34,8 @@ host.innerHTML = `<header class="radiant-preview-heading"><h1>Radiant battle · 
     `<option value="${encounter.id}">${escapeDialogText(encounter.label)}</option>`).join('')}</select></label>
   <label>Conditional Master fixture <select data-preview-master><option value="none">No personal Masters</option>
     <option value="strikes">Tizu / Flora selected-enemy Masters</option></select></label>
+  <label>Convergent Light tier <select data-preview-flare-tier><option value="sparkling">Sparkling (rank 1)</option>
+    <option value="glimmering">Glimmering (rank 6)</option><option value="ultimate">Ultimate (rank 11)</option></select></label>
   <button type="button" data-preview-reset>Reset preview encounter</button>
   <button type="button" data-preview-cycle>Charge cycle: normal / Glowing / Lustrous / Eternal</button>
   <p>Available Convergent Light tiers depend on each selected form.</p>
@@ -66,7 +68,8 @@ function build(): void {
   const form = Number(host!.querySelector<HTMLSelectElement>('[data-preview-form]')!.value);
   const encounter = host!.querySelector<HTMLSelectElement>('[data-preview-encounter]')!.value;
   const strikes = host!.querySelector<HTMLSelectElement>('[data-preview-master]')!.value === 'strikes';
-  const { game, activity } = createRadiantReviewFixture(leader, form, encounter, strikes);
+  const flareTier = host!.querySelector<HTMLSelectElement>('[data-preview-flare-tier]')!.value as RadiantReviewFlareTier;
+  const { game, activity } = createRadiantReviewFixture(leader, form, encounter, strikes, flareTier);
   const authority = { capability: 'isolated-radiant-study' as const, now: Date.UTC(2026, 10, 8),
     entry: () => ({ runId: crypto.randomUUID(), encounterSeed: 1729, chargeSeed: 7, targetSeed: 104729 }) };
   const entry = resolveRadiantRun({ revision: 0, state: game }, { requestId: crypto.randomUUID(),
@@ -95,7 +98,7 @@ function build(): void {
       <form method="dialog"><button autofocus>Close</button></form>`;
     dialog.addEventListener('close', () => { dispose(); session.setSettings(false); view.render(); }, { once: true });
     dialog.showModal();
-  }, new RadiantCanvasEffects(battleHost), () => {
+  }, new GpuBattleEffects(battleHost), () => {
     session.dispose();
     notice.textContent = 'Saved encounter exited. Earned rewards retained in this in-memory fixture. Reset to start a new preview.';
     battleHost.innerHTML = '<p role="status">Preview encounter ended. Use Reset preview encounter to start again.</p>';
@@ -146,6 +149,7 @@ host.querySelector('[data-preview-reset]')!.addEventListener('click', build);
 host.querySelector('[data-preview-master]')!.addEventListener('change', build);
 host.querySelector('[data-preview-leader]')!.addEventListener('change', build);
 host.querySelector('[data-preview-form]')!.addEventListener('change', build);
+host.querySelector('[data-preview-flare-tier]')!.addEventListener('change', build);
 host.querySelector('[data-preview-encounter]')!.addEventListener('change', build);
 host.querySelector('[data-preview-cycle]')!.addEventListener('click', () => { cycle = (cycle + 1) % 4; build(); });
 window.addEventListener('pagehide', () => {

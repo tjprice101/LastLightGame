@@ -20,6 +20,11 @@ and hashes: `Art/provenance/vfx-library-intake.json`;
   and the mod's `Sandbox*` and item folders.
 - To add one: add its origin to `LIBRARY`, run the tool, then `--apply`,
   then `node tools/build_avif.mjs`.
+- In use (D-484): the battle GPU layer loads the keys listed in
+  `src/vfx/vfx-textures.ts` (grayscale L/LA only; a test enforces it). At
+  runtime each texture becomes white with alpha equal to its brightness, so
+  "black" in a texture means transparent. To use a new texture in battle,
+  add its key there.
 
 ## Derived compact face portraits: 192 released forms (2026-11-09)
 

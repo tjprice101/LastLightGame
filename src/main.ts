@@ -64,7 +64,7 @@ import { LocalRadiantTransport } from './online/battle-local';
 import { readRadiantStudy } from './online/battle-transport';
 import type { RadiantCheckpoint } from './online/battle-run';
 import { RadiantBattleView } from './presentation/battle-screen';
-import { RadiantCanvasEffects } from './vfx/battle-effects';
+import { GpuBattleEffects } from './vfx/gpu-effects';
 import { restartHistoricalConduitSession } from './presentation/conduit-compatibility';
 import { assertActivityAccess } from './game/activity-access';
 import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab, updateEvolutionSelection } from './presentation/hub';
@@ -301,7 +301,7 @@ function mountRadiantBattle(host: HTMLElement): void {
   radiantView?.dispose();
   radiantView = new RadiantBattleView(host, session, () => {
     try { openSettingsDrawer(); } catch (error) { showError(errorMessage(error)); }
-  }, new RadiantCanvasEffects(host), () => {
+  }, new GpuBattleEffects(host), () => {
     radiantView = null;
     session.dispose();
     if (radiantSession === session) radiantSession = null;
@@ -638,7 +638,7 @@ try {
   speedError = `Battle speed could not be loaded. ${errorMessage(error)} 1x is active; choose a speed in battle to repair the saved value.`;
 }
 applyBattleSpeed(speed);
-createBackdrop();
+const backdrop = createBackdrop();
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'An unexpected error occurred.';
@@ -687,6 +687,8 @@ function frame(body: string, battle = false, sanctuary = false): void {
   unmountTitle();
   applyLeaderTheme(document.documentElement, leaderElement(journey.profile ? account : null, battle ? battleSession?.state : undefined));
   document.body.classList.toggle('in-battle', battle);
+  // The backdrop is hidden in battle; sleeping it frees the GPU for the battle effect layer (D-484).
+  if (battle && backdrop.loop.running) backdrop.loop.sleep(); else if (!battle && !backdrop.loop.running) backdrop.loop.wake();
   const backgroundScreen: AmbientScreen = battle ? 'battle' : !sanctuary
     ? journey.screen === 'selection' ? 'selection' : 'title'
     : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'special-banner-archive' ? 'summon' : menuPage === 'profile' ? 'home' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;

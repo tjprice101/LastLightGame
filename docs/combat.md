@@ -524,6 +524,98 @@ event, so it triggers no Conduits. The mote is deterministic and uses no RNG.
   Weaken on allies" Leaders have no effect until enemies gain debuffs.
 - Kit text, Skill stats and the skill fan: implemented in D-479.
 
+## Battle Spectacle: GPU effect layer and beats (D-484, Spectacle step 2)
+
+Presentation only, so no server deploy. It implements the approved visual
+rules R1 to R7
+([D-483](Future%20Plans/battle-flurry-overhaul.md#step-1-proposal-visual-rules-approved-d-483))
+and replaces the Phase 2 canvas effects (`RadiantCanvasEffects` and its
+per-bearer glyphs are retired).
+
+- **One GPU layer.** `GpuBattleEffects` (`src/vfx/gpu-effects.ts`) starts one
+  transparent Phaser WebGL game on the first battle and keeps it for the
+  page. `SpectacleScene` (`src/vfx/spectacle-scene.ts`) is fixed full screen,
+  pointer-transparent, at z-index 4, between the field and the DOM effects.
+  Its world origin is the top-left of `.radiant-field`, so effects follow
+  scroll and shake. The game loop sleeps when no effect is live. The menu
+  backdrop sleeps during battle.
+- **Textures.** 20 grayscale textures from the VFX library
+  (`src/vfx/vfx-textures.ts`: AVIF with one PNG retry). At boot each texture
+  is rebuilt as white with alpha equal to its brightness, and a custom "glow"
+  blend adds color while alpha composites normally. Light therefore
+  brightens the page; it never paints black squares. Each texture is drawn
+  once at boot so first-use GPU uploads do not land on the first hit.
+- **Interim look (owner, 2026-11-18).** One effect per tier, tinted by the
+  caster's element (the same tints as the HUD accents). Per-bearer layers
+  come in Step 4.
+  - Wind-up: light and motes gather into the caster.
+  - Travel depends on the kit:
+    - melee kits (motions slash, thrust, hammer, twin, guard): one cut
+      across the target, two crossing cuts from Skill 2 up;
+    - ranged kits (bow, cast): an orb with a spark trail;
+    - support kits (target `none`): a pulse from the caster to every ally.
+  - Impact: a white-hot core, tinted rings, streaks and a particle burst.
+    The burst grows from Normal to Skill 1, Skill 2 and a Convergent Light
+    hit, with a larger finisher on the last damaging hit.
+  - Enemy hits use a neutral burst tinted by the enemy's element.
+- **Beats (R2).** `beatPlan` (`src/vfx/spectacle-timing.ts`) gives wind-up,
+  travel, impact and aftermath per tier:
+  - Normal 0.45 s;
+  - Skill 1 0.85 s;
+  - Skill 2 1.2 s;
+  - Convergent Light 1.5, 1.9 or 2.4 s (Sparkling, Glimmering, Ultimate).
+
+  The impact beat is split across the action's hit frames, and
+  `effects.impact` resolves after its slot. Recoil and particles overlap the
+  next hit, and the enemy phase waits on `effects.idle()`. Damage numbers
+  spawn on their impact frame. The caster dashes about a third of the way to
+  the target (melee), braces (ranged) or rises (support) through wind-up and
+  travel, then returns. The Convergent Light cut-in lasts its wind-up and
+  travel time.
+- **Screen tools (R2).** These land on the first damaging hit. A Convergent
+  Light instead saves them for its finisher and adds a light shake on its
+  first hit.
+
+  | Tier | Shake | Hit-stop | Flash | Other |
+  |---|---|---|---|---|
+  | Normal | 2 px | none | none | |
+  | Skill 1 | 3 px | 40 ms | none | |
+  | Skill 2 | 5 px | 60 ms | soft | |
+  | Convergent Light | 8 px | 90 ms | full, on the finisher | 30%, 42% or 55% field dim through the action; 1.06 field zoom |
+
+  - Hit-stop pauses every WAAPI animation and the GPU clocks together.
+    Overlapping requests take the longest, never the sum. It never changes
+    outcomes, RNG or receipts.
+  - `FlashGovernor` allows at most three full flashes in any second
+    (WCAG 2.3.1) and softens extra ones.
+  - Flash and dim cover the field only, not the HUD.
+  - Enemy hits keep their Phase 2 shake until Step 6.
+- **Speed, Settings, Skip.** GPU time scale follows 1x, 2x and 3x, freezes
+  while Settings is open and has no delta smoothing, so it stays in step with
+  DOM animations after a frame stall. Skip, Exit, Retry and Continue cancel
+  every GPU effect, wait, dim and hit-stop at once.
+- **Reduce motion (R6).** No lunge, shake, zoom, flash, dim or particles.
+  Each impact shows one static ring in the attacker's element color plus its
+  number, for 200 ms (speed-scaled). The DOM effects layer stays visible only
+  for these static cues.
+- **No WebGL (owner, 2026-11-18).** If the GPU layer cannot start, or before
+  its textures load, each impact shows the same static element ring. DOM
+  motion (numbers, drops, lunge, shake) still plays.
+- **Performance (R7).** The live particle cap is 700 at high quality and 300
+  at low. Quality starts low on devices with 4 or fewer cores, or 4 GB or
+  less memory. It steps down for the session after one second averaging over
+  22 ms per frame. Lower quality only scales counts. Development builds and
+  `?spectacle-stats` expose `window.lastLightSpectacleStats` (quality, peak
+  particles, frame times).
+- **Review captures.** These come from the dev preview (`battle-preview.html`)
+  with `node tools/capture_frames.mjs --battle <tier> --stream`:
+  - `--stream` uses the browser screencast, so capture does not stall
+    GPU-timed effects;
+  - the preview's Convergent Light tier picker with `--flare-tier` reaches
+    Glimmering and Ultimate;
+  - `--battle enemy` captures an enemy phase;
+  - `--speed` and `--reduced` set battle speed and Reduce motion.
+
 ## Flurry presentation (D-472, Battle Flurry Phase 2)
 
 Presentation only: combat rules, events, rewards, receipts, the `settle`
@@ -540,12 +632,9 @@ replay and the authority are unchanged, so no server deploy.
   HP, Shields, statuses and Luminosity update only from a newer key, so an
   older action that finishes late cannot show stale values. When nothing is
   playing, the screen shows the live run exactly.
-- **Canvas.** `RadiantCanvasEffects` (`src/vfx/battle-effects.ts`) draws every
-  active effect in one frame loop, each with its own clock.
-  `impact(frame, action, state)` takes the presented action, or `null` for
-  enemy frames, so effects that overlap never share context. A direct hit
-  adds deterministic hit-spark rays in the attacker's palette. A normal
-  windup lasts 0.14 s.
+- **Effects.** Superseded by the GPU layer (D-484, above).
+  `impact(frame, action, state, beats, finisher)` takes the presented action,
+  or `null` for enemy frames, so effects that overlap never share context.
 - **Damage numbers.** One floater per damage (Health lost; Shield absorption
   shown as "Shield −N"), heal ("+N") and Shield ("Shield +N") event, with
   exact values. Numbers on the same target stack upward. An elemental
@@ -563,14 +652,16 @@ replay and the authority are unchanged, so no server deploy.
   frame that gets faster and brighter by tier.
 - **Flare cut-in.** `radiantFlareCutin` (`battle-cutin.ts`) reuses the shared
   portrait panel: bearer portrait, tier, display name and Flare name. It
-  lasts 0.82 s (1.1 s for Ultimate) during the Flare windup.
-- **Shake.** At most one field shake per action: strong on a Flare hit,
-  medium on a defeat, light on an enemy hit.
+  lasts the Convergent Light wind-up and travel beats (D-484).
+- **Shake.** Player actions follow the D-484 tier shakes. In the enemy
+  phase, at most one shake per action: medium on a defeat, light on an enemy
+  hit.
 - **Speed.** A HUD text button cycles through 1x, 2x and 3x. When the
   Settings control is mounted it saves the choice (`last-light.battle-speed`).
-  Every DOM animation, canvas clock and CSS crackle scales with it.
-- **Reduce motion and Skip.** Under Reduce motion there are no numbers,
-  motes, cut-in, crackle or pour, and the saved values show immediately. Skip
+  Every DOM animation, GPU clock and CSS crackle scales with it.
+- **Reduce motion and Skip.** Under Reduce motion there are no motes,
+  cut-in, crackle or pour, and the saved values show immediately; each impact
+  shows a static element ring and its number (D-484). Skip
   cancels every active presentation and shows the live run and Haul.
 - **Measured** (headless Chrome, development preview, three-member squad,
   1x): the three-tap flurry with its Prismatica and Gauge pour finished in

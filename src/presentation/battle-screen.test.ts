@@ -1096,3 +1096,59 @@ describe('device-run three-member Radiant battle surface', () => {
     expect(host.querySelector('[data-radiant-error]')!.textContent).toBe('');
   });
 });
+describe('Battle Spectacle beats and screen tools (D-483 R2/R6, D-484)', () => {
+  function spectacleEffects() {
+    return { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), screen: vi.fn(), idle: vi.fn(async () => {}),
+      cancel: vi.fn() };
+  }
+  it('times a Normal Attack with its tier beats and lands every hit inside the impact beat', async () => {
+    const effects = spectacleEffects();
+    const { view } = fixture(3, 6, effects); await view.finishEntrance();
+    await view.act('normal', 'ember');
+    const beats = (effects.windup.mock.calls[0] as unknown[])[2] as { tier: string; total: number };
+    expect(beats).toMatchObject({ tier: 'normal', total: 450 });
+    const hits = (effects.impact.mock.calls as unknown[][]).filter(call => call[1] && call[3]);
+    expect(hits.length).toBeGreaterThan(0);
+    for (const call of hits) expect((call[3] as { tier: string }).tier).toBe('normal');
+    // Normal Attack: no flash, no hit-stop freeze, no dim.
+    expect(effects.screen).not.toHaveBeenCalled();
+    expect(effects.idle).toHaveBeenCalled();
+  });
+  it('gives Skill 2 a soft flash and hit-stop on its first hit only', async () => {
+    const effects = spectacleEffects();
+    const { view } = fixture(3, 6, effects, 25, undefined, undefined, true); await view.finishEntrance();
+    await view.act('skill', 'ember', 2);
+    const cues = effects.screen.mock.calls.map(call => (call as unknown[])[0]);
+    expect(cues).toEqual([{ freeze: 60 }, { flash: 'soft' }]);
+    const beats = (effects.windup.mock.calls[0] as unknown[])[2] as { tier: string; hits: number; hitInterval: number };
+    expect(beats.tier).toBe('skill2');
+    expect(beats.hitInterval * beats.hits).toBeCloseTo(450);
+  });
+  it('dims the field for a Convergent Light and saves the full flash for its finisher', async () => {
+    const effects = spectacleEffects();
+    const { view } = fixture(3, 6, effects, 25, undefined, undefined, true); await view.finishEntrance();
+    await view.act('flare', 'ember');
+    const cues = effects.screen.mock.calls.map(call => (call as unknown[])[0] as Record<string, unknown>);
+    expect(cues[0]).toMatchObject({ dim: { alpha: .3 } });
+    expect(cues.filter(cue => cue.flash === 'full')).toHaveLength(1);
+    expect(cues.filter(cue => cue.freeze === 90)).toHaveLength(1);
+    const player = (effects.impact.mock.calls as unknown[][]).filter(call => call[1] && call[3]);
+    expect(player.filter(call => call[4] === true)).toHaveLength(1);
+    const finisher = player.find(call => call[4] === true)![0] as RadiantImpactFrame;
+    expect(finisher.events.some(event => event.type === 'damage')).toBe(true);
+  });
+  it('shows one static element ring and the number per impact under Reduce motion, gone within 200 ms', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    try {
+      const { view, host } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+      await view.act('normal', 'ember');
+      const ring = host.querySelector<HTMLElement>('.radiant-static-ring');
+      expect(ring).not.toBeNull();
+      expect(ring!.style.getPropertyValue('--ring')).toBe('#ff8a5c');
+      expect(host.querySelector('.radiant-number.is-static')).not.toBeNull();
+      expect(host.querySelector('.radiant-orb')).toBeNull();
+      await vi.advanceTimersByTimeAsync(200);
+      expect(host.querySelector('.radiant-static-ring, .radiant-number')).toBeNull();
+    } finally { vi.useRealTimers(); }
+  });
+});
