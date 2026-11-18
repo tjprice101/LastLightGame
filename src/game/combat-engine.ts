@@ -731,15 +731,20 @@ function packet(
   living(target.hp);
   let remaining = offered;
   const shields: { source: RadiantSource; amount: number }[] = [];
+  // D-480 `shield-break`: a bearer's direct damage removes more enemy Shield per point dealt.
+  const breaker = 'currency' in target && origin === 'direct' &&
+    (source.kind === 'normal' || source.kind === 'skill' || source.kind === 'flare')
+    ? 1 + combatAmount(state, bearer(state, source.bearerId), 'shield-break') : 1;
   for (const shield of target.shields) {
-    const amount = Math.min(remaining, shield.remaining);
+    const amount = Math.min(shield.remaining, Math.floor(remaining * breaker));
     if (amount > 0) shields.push({ source: { ...shield.source }, amount });
     shield.remaining -= amount;
-    remaining -= amount;
+    remaining -= Math.min(remaining, Math.ceil(amount / breaker));
   }
   target.shields = target.shields.filter(shield => shield.remaining > 0);
   let healthLoss = Math.min(target.hp, remaining);
-  const absorbed = offered - remaining;
+  // Shield actually removed (equals offered - remaining unless `shield-break` applies).
+  const absorbed = shields.reduce((sum, entry) => sum + entry.amount, 0);
   // Ozriel's Refusal: while he lives, each ally survives one lethal enemy hit per encounter with 1 Health.
   const refusal = 'loadout' in target && source.kind === 'enemy' && healthLoss > 0 && healthLoss === target.hp
     ? refuser(state, target) : undefined;
@@ -1815,6 +1820,13 @@ function processRadiantGear(
           case 'leech':
             if (direct.length) heal(state, events, owner, source, amount * direct.reduce((sum, event) => sum + event.healthLoss, 0));
             break;
+          case 'skill-leech': {
+            // D-480: once per own skill or Convergent Light, heal the most-wounded ally from direct Health damage.
+            const dealt = direct.filter(event => event.source.kind === 'skill' || event.source.kind === 'flare')
+              .reduce((sum, event) => sum + event.healthLoss, 0);
+            if (ownAction && dealt > 0 && wounded) heal(state, events, wounded, source, amount * dealt);
+            break;
+          }
           case 'heal-charge':
             if (restored.length) grant(owner, amount);
             break;

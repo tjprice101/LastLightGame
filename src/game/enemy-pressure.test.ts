@@ -127,6 +127,18 @@ describe('actual bounded action-driven radiant pressure', () => {
     expect(result.metrics.personalGranted).toBeGreaterThan(0);
     expect(result.metrics.currency).toBeLessThanOrEqual(enemies.reduce((sum, e) => sum + e.currencyBudget, 0));
   });
+  it('flare-saving holds Luminosity for the Flare where balanced spends it on skills', () => {
+    const loadouts = pressureStudyLoadouts(['ember', 'tide', 'sprout'], 60, 'common').loadouts;
+    const harmless = opponents().map(enemy => ({ ...enemy, stats: { hp: 1000000, attack: .001, defense: 0, recovery: 0 } }));
+    const run = { ...options, maximumRounds: 30, stalemateRounds: 30 };
+    const saving = runRadiantPressure(loadouts, harmless, { ...run, policy: 'flare-saving' });
+    const balanced = runRadiantPressure(loadouts, harmless, { ...run, policy: 'balanced' });
+    expect(saving.metrics.flares).toBeGreaterThan(0);
+    expect(balanced.metrics.flares).toBe(0);
+    expect(saving.metrics.skills).toBeLessThan(balanced.metrics.skills);
+    // Saving never stalls: a bearer at capacity spends, so every round still acts.
+    expect(saving.metrics.normals + saving.metrics.skills + saving.metrics.flares).toBe(30 * 3);
+  });
   it('distinguishes effective healing and actual Shield absorption in a sustained support fixture', () => {
     const loadouts = pressureStudyLoadouts(['ember', 'tide', 'sprout'], 0, 'empty').loadouts;
     const enemies = [{ ...opponents()[0], pattern: { ...calamityPatterns.treasury, hits: 4 },

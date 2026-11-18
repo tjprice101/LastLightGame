@@ -4,7 +4,7 @@ import type { ConduitId } from './conduits';
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
 const number = (value: number): string => String(Number(value.toPrecision(12)));
 const conditionalDamage = (amount: number, condition: string): string =>
-  `Normal Attacks and Convergent Light deal ${percent(amount)} more direct damage ${condition}.`;
+  `Normal Attacks, skills and Convergent Light deal ${percent(amount)} more direct damage ${condition}.`;
 
 const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => string> = {
   hp: a => `Maximum Health increases by ${percent(a)}.`,
@@ -13,18 +13,18 @@ const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => stri
   recovery: a => `Recovery increases by ${percent(a)}.`,
   normal: a => `Normal Attacks deal ${percent(a)} more damage.`,
   flare: a => `Convergent Light deals ${percent(a)} more damage.`,
-  pierce: a => `Normal Attacks and Convergent Light ignore ${percent(a)} of enemy Defense, up to 80% total.`,
+  pierce: a => `Normal Attacks, skills and Convergent Light ignore ${percent(a)} of enemy Defense, up to 80% total.`,
   healing: a => `Healing from this bearer's abilities is ${percent(a)} stronger. Conduit-generated healing is unchanged.`,
   shielding: a => `Shields from this bearer's abilities are ${percent(a)} stronger. Conduit-generated Shields are unchanged.`,
   resilience: a => `Reduces the strength of the strongest Weaken on this bearer by ${percent(a)}, up to 80% total.`,
-  guard: a => `While defending, this bearer takes 50% less direct damage. This Conduit further reduces the damage left by ${percent(a)}, up to a 60% combined bonus; damage taken cannot fall below 20%.`,
+  guard: a => `After this bearer uses Skill 1 or Skill 2, they take ${percent(Math.min(.6, a))} less direct damage for the rest of the round, up to 60%; damage taken cannot fall below 20%.`,
   leader: a => `This bearer's Leader Skill effects are ${percent(a)} stronger while they are the living leader.`,
   'normal-charge': a => `A Normal Attack that hits Health or a Shield grants the attacker ${number(a)} extra Luminosity. Any fraction is rounded once.`,
-  'guard-charge': a => `Defending grants this bearer ${number(a)} extra Luminosity. Any fraction is rounded once.`,
+  'guard-charge': a => `Using Skill 1 or Skill 2 grants this bearer ${number(a)} extra Luminosity. Any fraction is rounded once.`,
   'team-charge': a => `When a Normal Attack hits Health or a Shield, each other living ally gains ${number(a)} Luminosity. Any fraction is rounded once.`,
-  'guard-shield': a => `When this bearer Defends, they gain a Shield equal to ${percent(a)} of their current Defense.`,
+  'guard-shield': a => `When this bearer uses Skill 1 or Skill 2, they gain a Shield equal to ${percent(a)} of their current Defense.`,
   'normal-heal': a => `When this bearer's Normal Attack damages Health, it heals the most-wounded living ally for ${percent(a)} of this bearer's current Recovery.`,
-  leech: a => `This bearer's Normal Attacks and Convergent Light restore their Health by ${percent(a)} of the direct Health damage they deal.`,
+  leech: a => `This bearer's Normal Attacks, skills and Convergent Light restore their Health by ${percent(a)} of the direct Health damage they deal.`,
   'heal-charge': a => `Once per action, actual healing from this bearer's abilities grants them ${number(a)} Luminosity. Any fraction is rounded once.`,
   'heal-buff': a => `Each living ally actually healed by this bearer's abilities gains ${percent(Math.min(.8, a))} Attack for the rest of the round, up to 80%.`,
   'absorbed-charge': a => `Once per round, when an enemy's direct attack damages a Shield from this bearer's abilities, gain ${number(a)} Luminosity, rounded once.`,
@@ -36,7 +36,7 @@ const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => stri
   'normal-burn': a => `When a Normal Attack damages Health, the surviving target burns through the next enemy phase, taking damage equal to ${percent(a)} of this bearer's current Attack.`,
   'normal-expose': a => `When a Normal Attack damages Health, the surviving target takes ${percent(Math.min(.8, a))} more direct damage for the rest of the round, up to 80%.`,
   'normal-weaken': a => `When a Normal Attack damages Health, the surviving target deals ${percent(Math.min(.8, a))} less damage during the next enemy phase, up to 80%.`,
-  cooperation: a => `After another squad member acts this round, this bearer's Normal Attacks and Convergent Light deal ${percent(a)} more damage.`,
+  cooperation: a => `After another squad member acts this round, this bearer's Normal Attacks, skills and Convergent Light deal ${percent(a)} more damage.`,
   'next-buff': a => `When a Normal Attack damages Health, the next living ally who has not acted gains ${percent(Math.min(.8, a))} Attack for the rest of the round, up to 80%.`,
   'status-shield': a => `When one of this bearer's abilities applies Burn, Weaken or Exposure, the most-wounded living ally gains a Shield equal to ${percent(a)} of this bearer's current Defense, once per action.`,
   opening: a => conditionalDamage(a, 'against enemies at full Health'),
@@ -52,7 +52,7 @@ const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => stri
   shelter: a => `Above 75% Health, this bearer takes ${percent(a)} less direct enemy damage.`,
   brace: a => `Enemy attacks exceeding 20% of this bearer's maximum Health deal ${percent(a)} less direct damage.`,
   'start-charge': a => `Begin each encounter with ${number(a)} Luminosity, rounded once and limited by capacity.`,
-  'guard-heal': a => `Defending heals this bearer for ${percent(a)} of their current Recovery.`,
+  'guard-heal': a => `Using Skill 1 or Skill 2 heals this bearer for ${percent(a)} of their current Recovery.`,
   'flare-heal': a => `Convergent Light heals the most-wounded living ally for ${percent(a)} of this bearer's current Recovery.`,
   'normal-shield': a => `A Normal Attack that damages Health gives this bearer a Shield worth ${percent(a)} of their current Defense.`,
   'heal-shield': a => `Each ally actually healed by this bearer's abilities gains a Shield worth ${percent(a)} of this bearer's current Defense, once per action.`,
@@ -65,18 +65,20 @@ const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => stri
   'flare-team-charge': a => `Convergent Light grants each other living ally ${number(a)} Luminosity, rounded once.`,
   'hurt-charge': a => `Once per round, surviving direct enemy Health damage grants this bearer ${number(a)} Luminosity, rounded once.`,
   'heal-team-charge': a => `Once per action, actual healing from this bearer's abilities grants each other living ally ${number(a)} Luminosity, rounded once.`,
-  'guard-team-shield': a => `Defending gives every living ally a Shield worth ${percent(a)} of this bearer's current Defense.`,
+  'guard-team-shield': a => `When this bearer uses Skill 1 or Skill 2, every living ally gains a Shield worth ${percent(a)} of this bearer's current Defense.`,
   'flare-weaken': a => `Convergent Light weakens all surviving enemies by ${percent(Math.min(.8, a))} through the next enemy phase.`,
   'normal-reduction': a => `After a Normal Attack damages Health, this bearer takes ${percent(Math.min(.8, a))} less direct enemy damage through the next enemy phase.`,
   'round-charge': a => `At each new round, this bearer gains ${number(a)} Luminosity, rounded once.`,
   'round-team-heal': a => `At each new round, heal every living ally for ${percent(a)} of this bearer's current Recovery.`,
+  'skill-leech': a => `Once per action, this bearer's skills and Convergent Light heal the most-wounded living ally for ${percent(a)} of the direct Health damage they deal.`,
+  'shield-break': a => `This bearer's Normal Attacks, skills and Convergent Light deal ${percent(a)} more damage to enemy Shields.`,
 };
 
 /** Radiant effects that combat sums across every equipped Conduit before applying them once. */
 export const radiantSummedConduitEffects = [
   'hp', 'attack', 'defense', 'recovery', 'normal', 'flare', 'pierce', 'healing', 'shielding',
   'resilience', 'guard', 'leader', 'cooperation', 'opening', 'execution', 'burning', 'exposed',
-  'weakened', 'shielded', 'wounded', 'solo', 'first-action', 'burn-power', 'shelter', 'brace', 'start-charge',
+  'weakened', 'shielded', 'wounded', 'solo', 'first-action', 'burn-power', 'shelter', 'brace', 'start-charge', 'shield-break',
 ] as const satisfies readonly RadiantConduitEffect[];
 
 /** Exact player-facing text for one Radiant primitive, shared by menus and the battle reference. */

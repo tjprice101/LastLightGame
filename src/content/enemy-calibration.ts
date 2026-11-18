@@ -7,6 +7,8 @@ export interface RadiantCalibrationPoint extends RadiantEnemyFactors { level: nu
 export interface RadiantEnemyCalibration {
   id: string;
   points: readonly RadiantCalibrationPoint[];
+  /** Optional per-category level curves (Step 4 retune); a category without one uses `points`. */
+  categoryPoints?: Partial<Record<RadiantEnemyCategory, readonly RadiantCalibrationPoint[]>>;
   categories: Record<RadiantEnemyCategory, RadiantEnemyFactors>;
 }
 const unity = { hp: 1, attack: 1, defense: 1 };
@@ -34,7 +36,7 @@ export function radiantEnemyFactors(
   level: number, category: RadiantEnemyCategory, calibration: RadiantEnemyCalibration,
 ): RadiantEnemyFactors {
   if (!Number.isInteger(level) || level < 1 || level > 185) throw new Error('Invalid authored enemy level.');
-  const points = calibration.points;
+  const points = calibration.categoryPoints?.[category] ?? calibration.points;
   if (points.length < 2 || points[0].level !== 1 || points.at(-1)!.level !== 185 ||
     points.some((point, i) => !Number.isInteger(point.level) || i > 0 && point.level <= points[i - 1].level))
     throw new Error('Invalid radiant calibration anchors.');
@@ -57,3 +59,5 @@ export function calibratedRadiantEnemyStats(
   return { hp: Math.max(1, Math.round(authored.health * factors.hp)),
     attack: authored.damage * factors.attack, defense: authored.defense * factors.defense, recovery: 0 };
 }
+/** Step 4 retune candidates measured by the offline study; empty until a candidate is fitted. */
+export const radiantRetuneCandidates: readonly RadiantEnemyCalibration[] = [];

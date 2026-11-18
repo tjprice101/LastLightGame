@@ -3,10 +3,11 @@ import { radiantSkillAcceptsTarget, type RadiantSkillDef, type RadiantSkillSlot 
 import { scheduledEnemySkill } from '../content/enemy-skills';
 import { applyRadiantCombatAction, createRadiantCombat, radiantSkillStats, type RadiantBearer, type RadiantCombatState,
   type RadiantCombatEvent, type RadiantCombatAction } from './combat-engine';
-import { personalChargeUnit, radiantFlareCost, readyFlare, readySkill } from './combat-gauge';
+import { personalChargeMaximum, personalChargeUnit, radiantFlareCost, readyFlare, readySkill } from './combat-gauge';
 import type { RadiantPressureEnemy } from './enemy-pressure-encounters';
 
-export type RadiantPressurePolicy = 'balanced' | 'normal-only' | 'support-only';
+/** `flare-saving` (Step 4 retune study): holds Luminosity for the Flare, still protects, spends only at capacity. */
+export type RadiantPressurePolicy = 'balanced' | 'flare-saving' | 'normal-only' | 'support-only';
 export interface RadiantPressureMetrics {
   outgoingHPDamage: number; outgoingAbsorbed: number; incomingHPDamage: number; incomingAbsorbed: number;
   effectiveHealing: number; enemyHealing: number; shieldCreated: number; enemyShieldCreated: number;
@@ -34,7 +35,9 @@ export function chooseRadiantPressureAction(
   const unshielded = state.bearers.some(member => member.hp > 0 && !member.shields.length);
   const endangered = actor.hp < actor.stats.hp * .25 && actor.shields.length === 0;
   const supportive = (def: RadiantSkillDef) => def.target === 'none';
-  const useful = (def: RadiantSkillDef) => !supportive(def) || def.effects.some(effect =>
+  // A lone survivor keeps attacking unless below half Health, so self-sustain cannot loop forever.
+  const alone = state.bearers.filter(member => member.hp > 0).length === 1 && actor.hp >= actor.stats.hp * .5;
+  const useful = (def: RadiantSkillDef) => !supportive(def) || !alone && def.effects.some(effect =>
     effect.kind === 'heal' ? wounded : effect.kind === 'shield' ? unshielded :
       ['attack-up', 'defense-up', 'reduction', 'gain-up', 'fill', 'signature'].includes(effect.kind));
   const allowed = (def: RadiantSkillDef) => (policy !== 'support-only' || supportive(def)) && useful(def);
@@ -42,11 +45,21 @@ export function chooseRadiantPressureAction(
   if (readyFlare(state.gauge, id) && allowed(kit.flare)) return { type: 'flare', bearerId: id, ...targeted(kit.flare) };
   const options = ([2, 1] as const).filter(slot => readySkill(state.gauge, id, slot,
     radiantSkillStats(state, id, slot).skillEfficiency) && allowed(slotDef(kit, slot)));
+  if (policy === 'flare-saving') {
+    const member = state.gauge.members.find(entry => entry.id === id)!;
+    const capped = member.charge >= personalChargeMaximum(member) - radiantChargeHeadroom;
+    const protective = options.find(choice => supportive(slotDef(kit, choice)) &&
+      (endangered || slotDef(kit, choice).effects.some(effect => effect.kind === 'heal' || effect.kind === 'shield')));
+    const saved = protective ?? (capped ? options[0] : undefined);
+    return saved === undefined ? normal : { type: 'skill', bearerId: id, slot: saved, ...targeted(slotDef(kit, saved)) };
+  }
   const slot = endangered ? options.find(choice => supportive(slotDef(kit, choice))) ?? options[0] : options[0];
   if (slot !== undefined) return { type: 'skill', bearerId: id, slot, ...targeted(slotDef(kit, slot)) };
   // Support-only control passes instead of attacking; the other policies attack.
   return policy === 'support-only' ? { type: 'end-turn' } : normal;
 }
+/** A saving bearer spends once a Normal hit (+15) would overflow its unlocked capacity. */
+const radiantChargeHeadroom = 15;
 function slotDef(kit: { skill1: RadiantSkillDef; skill2: RadiantSkillDef }, slot: RadiantSkillSlot): RadiantSkillDef {
   return slot === 1 ? kit.skill1 : kit.skill2;
 }
@@ -90,7 +103,7 @@ export function runRadiantPressure(
   if (!Number.isSafeInteger(options.targetSeed) || options.targetSeed < 1 || options.targetSeed > 0xffffffff)
     throw new Error('Invalid pressure target seed.');
   const policy = options.policy ?? 'balanced';
-  if (!['balanced', 'normal-only', 'support-only'].includes(policy)) throw new Error('Invalid pressure policy.');
+  if (!['balanced', 'flare-saving', 'normal-only', 'support-only'].includes(policy)) throw new Error('Invalid pressure policy.');
   let state = createRadiantCombat(loadouts, enemies, options.chargeSeed), targetSeed = options.targetSeed;
   const random = () => {
     targetSeed = (Math.imul(targetSeed, 1664525) + 1013904223) >>> 0;

@@ -1,5 +1,35 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 Step 4: retune sheet and Conduit reworks (2026-11-17)
+
+**On branch `battle-flurry-phase3`, not released (D-480).** The live enemy
+calibration is unchanged (`authored-control`). Sheet:
+[Step 4 retune sheet](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#step-4-retune-sheet-proposal-2026-11-17-numbers-await-owner-approval).
+- Measured today's enemies with three-member squads: levels 1-80 win 100%, but
+  ordinary wins fall to 62% overall and Calamity to 0%, from about Lv.100.
+- Owner-approved Conduit reworks are implemented (five Conduits, two new
+  effects, tooltip fixes).
+- Proposed calibration `radiant-trio-v1` (candidate D): ordinary 96.9%,
+  Calamity EX+1/2/3 85/53/33%. A few late bands stay below 95%; the sheet
+  explains why and asks the owner how to handle them.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Full `npx vitest run`: 306 files, 10,735 tests passed.
+- New tests: `flare-saving` policy (`enemy-pressure.test.ts`); `skill-leech`
+  and `shield-break` (`conduit-effects.test.ts`). Fixtures that used the old
+  Reserve Torque Crank and Fieldbrace Coupler effects moved to other Conduits.
+- `node tools\run_pressure_study.mjs <out> --retune` and `--retune-fit` ran to
+  completion (about 2-5 minutes each).
+- **Not verified:** in-game play; server bundle not regenerated or deployed.
+
+**Next:**
+- Owner answers the sheet's questions (Opus).
+- Then apply the approved numbers (live calibration id, allowlists, preview,
+  tests, docs, bundle; Sonnet is enough), and the single Phase 3 release with
+  the authority deploy (owner approval). Before deploying, check that the
+  `RADIANT_STUDY_CALIBRATION` secret is unset or updated (names only).
+
 ## Battle Flurry Phase 3 Step 3: skill fan, kit text, counters (2026-11-17)
 
 **Implemented on branch `battle-flurry-phase3`, not released (D-479).**

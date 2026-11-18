@@ -17,14 +17,17 @@ export type RadiantConduitEffect =
   | 'start-charge' | 'guard-heal' | 'flare-heal' | 'normal-shield' | 'heal-shield'
   | 'hurt-heal' | 'break-heal' | 'burn-heal' | 'kill-heal' | 'kill-charge' | 'normal-splash'
   | 'flare-team-charge' | 'hurt-charge' | 'heal-team-charge' | 'guard-team-shield'
-  | 'flare-weaken' | 'normal-reduction' | 'round-charge' | 'round-team-heal';
+  | 'flare-weaken' | 'normal-reduction' | 'round-charge' | 'round-team-heal'
+  | 'skill-leech' | 'shield-break';
 export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number }
 export type RadiantConduitDesign = readonly RadiantConduitPrimitive[];
 export const effect = (kind: RadiantConduitEffect, amount: number): RadiantConduitPrimitive => ({ kind, amount });
 export const pair = (kind: RadiantConduitEffect, amount: number, related: RadiantConduitEffect, extra: number): RadiantConduitDesign =>
   [effect(kind, amount), effect(related, extra)];
 
-// Stable-ID design decisions. Fractions are ratios and charge values are whole personal charge.
+// Stable-ID design decisions. Step 4 retune (D-480) reworked Fieldbrace Coupler, Reserve Torque Crank,
+// Duplex Heart, Horizon Heartcase and Starvein Conductor into sustain and anti-Shield effects.
+// Fractions are ratios and charge values are whole personal charge.
 export const radiantConduits = {
   'vigil-core': [effect('hp', .2)],
   'siegebound-drive': [effect('normal', .15)],
@@ -33,11 +36,11 @@ export const radiantConduits = {
   'fracture-reservoir': [effect('start-charge', 10)],
   'prism-splinter-socket': [effect('opening', .2)],
   'precision-escapement': [effect('first-action', .2)],
-  'fieldbrace-coupler': [effect('break-heal', .15)],
-  'reserve-torque-crank': [effect('normal-charge', 2)],
+  'fieldbrace-coupler': [effect('shield-break', .3)],
+  'reserve-torque-crank': pair('leech', .15, 'normal-charge', 1),
   'crosspin-governor': [effect('flare', .12)],
   'aegis-capacitor': [effect('absorbed-charge', 6)],
-  'duplex-heart': [effect('hurt-heal', .25)],
+  'duplex-heart': [effect('skill-leech', .1)],
   'falcon-sight': pair('exposed', .25, 'normal-expose', .1),
   'spearwheel-engine': [effect('pierce', .18)],
   'springwell-pump': [effect('healing', .3)],
@@ -59,11 +62,11 @@ export const radiantConduits = {
   'worldbreaker-drive': pair('flare', .4, 'wounded', .3),
   'siege-cantilever': [effect('solo', .5)],
   'nullsong-transmission': pair('normal', .35, 'normal-charge', 4),
-  'horizon-heartcase': pair('hurt-shield', .08, 'hurt-charge', 5),
+  'horizon-heartcase': pair('guard-team-shield', .4, 'hurt-charge', 5),
   'stasis-reliquary': pair('brace', .25, 'guard', .12),
   'granite-hourglass': pair('hurt-shield', .06, 'round-shield', .5),
   'pale-bulwark-diadem': pair('shelter', .15, 'shielding', .3),
-  'starvein-conductor': pair('burn-power', .4, 'burning', .25),
+  'starvein-conductor': pair('skill-leech', .15, 'burn-power', .2),
   'meridian-inverter': pair('flare-heal', .4, 'shielding', .25),
   'verdict-caliper': pair('normal', .3, 'solo', .25),
   'infernic-phoenix-reactor': pair('break-heal', .4, 'hurt-shield', .08),

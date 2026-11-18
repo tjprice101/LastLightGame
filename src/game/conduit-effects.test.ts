@@ -172,16 +172,17 @@ describe('real four-stat and action modifiers', () => {
 
 describe('bounded, sourced Conduit triggers', () => {
   it('rounds upgraded charge once, caps it, and does not change combat RNG', () => {
-    const state = fixture(['reserve-torque-crank']);
+    const state = fixture(['coilfeed-ratchet']);
     state.bearers[0].loadout.gear![0]!.rank = 3;
     const result = normal(state);
-    expect(result.state.gauge.members[0].charge).toBe(18);
+    // 15 Normal hit + round(3 x 1.3) = 19.
+    expect(result.state.gauge.members[0].charge).toBe(19);
     expect(result.state.chargeSeed).toBe(state.chargeSeed);
     state.gauge.members[0].charge = 199;
     expect(normal(state).state.gauge.members[0].charge).toBe(200);
   });
   it('resolves native Shield breaks before generated replacement Shields, independent of slot order', () => {
-    for (const ids of [['horizon-heartcase', 'fieldbrace-coupler'], ['fieldbrace-coupler', 'horizon-heartcase']] as ConduitId[][]) {
+    for (const ids of [['granite-hourglass', 'infernic-phoenix-reactor'], ['infernic-phoenix-reactor', 'granite-hourglass']] as ConduitId[][]) {
       let state = fixture(ids);
       state.bearers[0].hp = 500;
       sourceShield(state, 0, { kind: 'flare', bearerId: 'ember' }, 1);
@@ -296,5 +297,39 @@ describe('eligibility, frozen identity and read-only account boundary', () => {
       const before = structuredClone(invalid);
       expect(() => normal(invalid)).toThrow(); expect(invalid).toEqual(before);
     }
+  });
+});
+
+describe('Step 4 retune Conduit effects (D-480)', () => {
+  it('skill-leech heals the most-wounded ally once per own skill from its direct Health damage', () => {
+    const state = fixture(['duplex-heart'], 'ember', ['tide']);
+    state.bearers[1].hp = 100;
+    state.gauge.members[0].charge = 40;
+    const result = act(state, { type: 'skill', bearerId: 'ember', slot: 2 });
+    const dealt = result.events.filter(event => event.type === 'damage' && event.source.kind === 'skill')
+      .reduce((sum, event) => sum + (event.type === 'damage' ? event.healthLoss : 0), 0);
+    const heals = result.events.filter(event => event.type === 'heal' && event.source.kind === 'gear');
+    expect(heals).toHaveLength(1);
+    expect(heals[0].type === 'heal' && heals[0].targetId).toBe('tide');
+    expect(heals[0].type === 'heal' && heals[0].offered).toBe(Math.round(.1 * dealt));
+    // A Normal Attack does not trigger it.
+    const plain = fixture(['duplex-heart'], 'ember', ['tide']);
+    plain.bearers[1].hp = 100;
+    expect(normal(plain).events.some(event => event.type === 'heal' && event.source.kind === 'gear')).toBe(false);
+  });
+  it('shield-break removes 30% more enemy Shield per point and reports absorbed as Shield removed', () => {
+    const shielded = (ids: ConduitId[]) => {
+      const state = fixture(ids);
+      state.enemies[0].shields.push({ id: state.nextShieldId++, source: { kind: 'enemy', enemyId: 'enemy' }, remaining: 100000 });
+      return normal(state);
+    };
+    const base = shielded([]), boosted = shielded(['fieldbrace-coupler']);
+    const hit = (result: ReturnType<typeof normal>) => result.events.find(event => event.type === 'damage' && event.targetId === 'enemy')!;
+    const [a, b] = [hit(base), hit(boosted)];
+    if (a.type !== 'damage' || b.type !== 'damage') throw new Error('Missing damage events.');
+    expect(a.absorbed).toBe(a.offered);
+    expect(b.absorbed).toBe(Math.floor(b.offered * 1.3));
+    expect(b.healthLoss).toBe(0);
+    expect(b.absorbed).toBe(b.shields.reduce((sum, entry) => sum + entry.amount, 0));
   });
 });

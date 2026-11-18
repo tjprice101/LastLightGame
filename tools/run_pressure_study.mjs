@@ -7,21 +7,24 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 
 const [output, mode] = process.argv.slice(2);
-if (!output || mode && mode !== '--tuned-only')
-  throw new Error('Usage: node tools\\run_pressure_study.mjs <report.jsonl> [--tuned-only]');
+if (!output || mode && !['--tuned-only', '--retune', '--retune-fit'].includes(mode))
+  throw new Error('Usage: node tools\\run_pressure_study.mjs <report.jsonl> [--tuned-only | --retune | --retune-fit]');
+const retune = mode === '--retune' || mode === '--retune-fit';
 const directory = resolve('.radiant-pressure-runner');
 await mkdir(directory, { recursive: false });
 let file;
 try {
   const bundle = join(directory, 'study.mjs');
-  await build({ entryPoints: [resolve('tools\\pressure-study.ts')], outfile: bundle, bundle: true,
+  await build({ entryPoints: [resolve(retune ? 'tools\\retune-entry.ts' : 'tools\\pressure-study.ts')], outfile: bundle, bundle: true,
     platform: 'node', format: 'esm', target: 'node22', legalComments: 'none' });
   file = await open(resolve(output), 'wx');
   const emit = row => writeSync(file.fd, JSON.stringify(row) + '\n');
   emit({ source: { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
     bundleSHA256: createHash('sha256').update(readFileSync(bundle)).digest('hex'), startedAt: new Date().toISOString() } });
   const api = await import(pathToFileURL(bundle).href);
-  api.executeRadiantPressureStudy(emit, mode === '--tuned-only');
+  if (mode === '--retune-fit') api.executeRetuneFit(emit);
+  else if (retune) api.executeRetuneEntry(emit);
+  else api.executeRadiantPressureStudy(emit, mode === '--tuned-only');
   console.log(`Pressure study complete: ${resolve(output)}`);
 } finally {
   await file?.close();

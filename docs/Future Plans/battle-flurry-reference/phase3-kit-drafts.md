@@ -561,3 +561,133 @@ Moonflower becomes Attack Up and Ceasefire becomes Damage Reduction.
 - Leader, Ceasefire Interval: Tranquilitic allies above 75% Health take 10% less
   direct damage; a Tranquilitic ally that uses a skill heals itself (20% of its
   Recovery).
+
+## Step 4 retune sheet (proposal, 2026-11-17; numbers await owner approval)
+
+**Status:** the five Conduit reworks below are owner-approved (2026-11-17) and
+implemented on branch `battle-flurry-phase3`. The enemy calibration numbers are a
+**proposal**: the live calibration is still `authored-control` (every factor 1)
+until the owner approves. Owner choices already made: tune enemy stat factors
+only (formations and rewards unchanged), measure a Flare-saving player too,
+Resonance stays off, reuse the D-404 targets.
+
+### How it was measured
+
+- `node tools\run_pressure_study.mjs <out.jsonl> --retune` (study) and
+  `--retune-fit` (fitting sweep); `node tools\render_retune_report.mjs` renders
+  the tables. Offline only: no account writes, no reward RNG.
+- D-404 preparation: player level = enemy level - 1 (cap 105), least
+  evolution, gear common0 up to Lv.40, mixed0 to 80, mixed5 to 105, omnic5 to
+  120, master5 above; Convergent Light rank 1, no ascension.
+- Ordinary teams: Infernis/Tizu/Flora, Infernis/Atmoso/Flora, Elise/Bruno/Flora,
+  Infernis/Tizu/Atmoso, Atmoso/Bruno/Flora, Elise/Tizu/Flora. Calamity: the six
+  Lv.105 D-404 trios with master5 gear. 284 anchors, 3 seeds (species anchors 1).
+- Two simulated players: `balanced` (spends Luminosity on skills as soon as it
+  can; the tuning target) and `flare-saving` (saves for the Flare, still
+  protects, spends at capacity; reported, not tuned against).
+- Simulator fix: a lone survivor at or above half Health now attacks instead of
+  healing itself forever (that loop produced fake "stalls").
+
+### Conduit reworks (owner-approved, implemented)
+
+IDs, ownership, ranks, price and art unchanged; values grow +10% per rank.
+
+| Conduit | Old effect | New effect |
+|---|---|---|
+| Starvein Conductor (Legendary) | Burn +40%; +25% vs burning | Once per action, this bearer's skills and Convergent Light heal the most-wounded living ally for 15% of the direct Health damage they deal. Burn from this bearer's abilities deals 20% more damage. |
+| Horizon Heartcase (Legendary) | Shield when hit; +5 Luminosity when hit | When this bearer uses Skill 1 or Skill 2, every living ally gains a Shield worth 40% of this bearer's current Defense. Keeps +5 Luminosity when hit (once per round). |
+| Duplex Heart (Rare) | Heal-when-hit | The same skill-damage heal as Starvein Conductor, at 10%. |
+| Reserve Torque Crank (Common) | +2 Luminosity per Normal | Normal Attacks, skills and Convergent Light restore this bearer's Health by 15% of the direct Health damage they deal; keeps +1 Luminosity per Normal. |
+| Fieldbrace Coupler (Common) | Heal when last Shield breaks | This bearer's Normal Attacks, skills and Convergent Light deal 30% more damage to enemy Shields. |
+
+Two small deviations from the approved proposal, made because a test requires
+every Conduit design to be distinct: Reserve Torque Crank keeps +1 Luminosity
+per Normal (its heal alone matched Lifeline Flywheel), and Horizon Heartcase
+keeps its +5 Luminosity when hit instead of a Shield when hit (that pair matched
+Calamitic Bulwark of the Last Horizon). Tooltip fixes in the same change:
+conditional-damage, pierce, cooperation and leech text now say they apply to
+skills too, and the Defend-era effects now say "uses Skill 1 or Skill 2".
+
+### Proposed calibration `radiant-trio-v1` (candidate D)
+
+Model: levels 1-95 unchanged. Above that, an enemy of level L gets the shared
+curve's Health/Attack/Defense at a lower **effective level** E, which never goes
+down as L rises, so calibrated stats never fall with level. Ordinary enemies,
+bosses and Calamity each have their own E curve (new optional
+`categoryPoints` field; existing calibrations unaffected).
+
+| Real level | Ordinary fights like | Bosses fight like | Calamity fights like |
+|---|---|---|---|
+| 1-95 | same level | same level (to 90) | - |
+| 100 | 95 | about 96 | - |
+| 105 | 95 | 99 | - |
+| 110-120 | 95 | 100 | - |
+| 125-140 | 95 rising to 103 | 101 | - |
+| 145 (EX+1) | 103 | 104 | **103** |
+| 150-180 | 103 | 105-108 | - |
+| 160 (EX+2) | 103 | 107 | **109** |
+| 170 (EX+3) | 103 | 108 | **111** |
+| 185 | 108 | 113 | 111 + tail |
+
+Exact factor table (Health / Attack / Defense multipliers on the authored
+stats), interpolated linearly between points:
+- Ordinary: 95: 1/1/1; 100: .6981/.7958/.7819; 105: .5005/.6457/.6275;
+  110: .362/.5435/.5235; 115: .274/.472/.451; 120: .2227/.418/.3972;
+  140: .2128/.4513/.4163; 150: .1408/.358/.3105; 155: .1126/.3264/.2675;
+  160: .09/.2895/.2292; 170: .0576/.2472/.1709; 180: .0369/.1812/.1239;
+  185: .0412/.1869/.1285.
+- Boss: 90: 1/1/1; 105: .671/.7751/.765; 115: .3924/.5931/.5768;
+  120: .3189/.5252/.5079; 125: .2901/.5018/.4814; 135: .2164/.4502/.4178;
+  140: .1863/.4145/.3807; 150: .1611/.3874/.3376; 165: .1004/.3214/.2409;
+  175: .0643/.255/.1771; 180: .0514/.2183/.1508; 185: .0556/.2177/.1509.
+- Calamity: 80: 1/1/1; 145: .1762/.4053/.3629; 160: .1338/.3604/.2887;
+  170: .0968/.3276/.2299; 185: .0918/.2877/.2036.
+
+### Results (skill-spending player; flare-saving in brackets)
+
+| Scope | Today (`authored-control`) | Candidate D | Target |
+|---|---|---|---|
+| Ordinary, all fights | 62.0% (61.6%) | **96.9%** (93.3%) | 95% per band |
+| Calamity EX+1 | 0% (0%) | **85.2%** (81.9%) | 80% |
+| Calamity EX+2 | 0% (0%) | **52.8%** (59.3%) | 50% |
+| Calamity EX+3 | 0% (0%) | **33.3%** (45.4%) | 30% |
+
+- Levels 1-80: 100% everywhere, unchanged from today.
+- Bands still below 95%: Dungeon 101-120 (91.7%), Sunshade 101-140 (92-94%,
+  inactive event), War 121-140 (94.3%), Oblivion 141-160 (77.1%) and 161-180
+  (54.8%), Training 101-120 (50%; six enemies).
+- Fight length rises late: about 20-30 rounds at Lv.101-140, 22-33 in Calamity.
+
+### Why some bands stay below target
+
+Enemies above Lv.100 are already nearly flat (ordinary Lv.110-140 all fight
+like Lv.95-103). The remaining misses come from specific cases, not the
+overall curve:
+1. **Elemental counter-picks:** both Botanic Bruno/Flora trios lose to
+   Atmospheric enemies (Vaelor's War forms, the Atmospheric Dungeon). A real
+   player would swap teams; the fixed study teams cannot.
+2. **Outlier enemies** every trio loses to even when held flat: Dungeon
+   Infernic forms 7-8, Oblivion's Fatebreaker Warden and Annihilation Colossus
+   Fragment, and Oblivion mid/final.
+3. **Training 120:** six Lv.120 enemies against three bearers.
+4. **Calamity offense trios** (Crinso/Rosetta/Disciple 30%, Nerithe/Orvella/
+   Vaelor 28%) die early; sustain-heavy trios win 70-94%.
+
+Softening the whole curve further to fix these would make all other late
+content trivial. Options for the owner are listed under open questions.
+
+### Flare finding
+
+The skill-spending player fires about 0.1 Flares per ordinary fight; the
+Flare-saving player about 2 per fight and 6-9 per Calamity fight. Saving wins
+more Calamity fights but fewer ordinary ones (more timeouts). Flares are
+reachable at the current costs, so **no Flare cost change is proposed**.
+
+### Owner questions
+
+1. Approve candidate D as `radiant-trio-v1`?
+2. The bands still below target: accept them as challenge spots, or fix the
+   outlier enemies and Training 120 at their source (authored stats or
+   formation)? A source fix would be a separate, smaller follow-up.
+3. Calamity offense trios: accept that they need a sustain member at EX tiers,
+   or address it in Phase 4's Conduit remap?

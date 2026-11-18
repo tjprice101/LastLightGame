@@ -117,7 +117,8 @@ describe('local Radiant authority', () => {
     expect((await reloaded.read()).run!.state.bearers[0].stats.hp).toBe(288);
     const device = structuredClone((await reloaded.read()).run!);
     const events = applyRadiantTurn(device, { type: 'normal', bearerId: 'ember', targetId: started.run.state.enemies[0].id });
-    expect(device.state.gauge.members[0].charge).toBe(17);
+    // 15 Normal hit + 1 from Reserve Torque Crank (D-480).
+    expect(device.state.gauge.members[0].charge).toBe(16);
     expect(events).toContainEqual(expect.objectContaining({
       type: 'charge', gearSource: { kind: 'gear', bearerId: 'ember', conduitId: 'reserve-torque-crank' },
     }));

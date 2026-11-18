@@ -1,5 +1,31 @@
 # Decision log
 
+## Battle Flurry Phase 3 Step 4: retune measurement and Conduit reworks (D-480, 2026-11-17)
+
+On branch `battle-flurry-phase3`. **Not released.** Sheet:
+[Step 4 retune sheet](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#step-4-retune-sheet-proposal-2026-11-17-numbers-await-owner-approval).
+
+- **Owner choices (2026-11-17):** tune enemy stat factors only (formations and
+  rewards unchanged); measure a Flare-saving player too, change Flare costs
+  only with evidence and separate approval; Resonance stays off in Radiant;
+  reuse the D-404 targets.
+- **Owner-approved and implemented:** five Conduit reworks for teams without a
+  dedicated healer and against enemy Shields (Starvein Conductor, Horizon
+  Heartcase, Duplex Heart, Reserve Torque Crank, Fieldbrace Coupler), two new
+  Conduit effects (`skill-leech`, `shield-break`), and tooltip fixes (effects
+  that already applied to skills now say so; Defend-era effects say "uses
+  Skill 1 or Skill 2"). Two keep-distinct deviations are listed in the sheet.
+- **Implemented, offline only:** the retune study and fitting sweep, the
+  `flare-saving` pressure policy, a lone-survivor fix in the simulated player,
+  and an optional per-category level curve (`categoryPoints`) on calibrations.
+  Existing calibrations are unchanged.
+- **Proposed, not approved:** calibration `radiant-trio-v1` (candidate D):
+  ordinary 96.9%, Calamity 85/53/33%. The live calibration stays
+  `authored-control` until the owner approves.
+- **Open:** the sheet's owner questions (candidate D, the bands still below
+  target, Calamity offense trios); then applying the numbers and the single
+  Phase 3 release with the authority deploy (owner approval).
+
 ## Battle Flurry Phase 3 Step 3: skill fan, kit text, Skill stats, counters (D-479, 2026-11-17)
 
 Implements Step 3 on branch `battle-flurry-phase3`. **Not released.** Spec:
