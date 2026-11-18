@@ -1,6 +1,6 @@
 # Current state and handoff
 
-## Convergent Light rename; Spectacle step 1 rules drafted (2026-11-18)
+## Convergent Light rename; Spectacle step 1 rules approved (2026-11-18)
 
 - **Convergent Light label everywhere.** Kits, glossary, tooltips, the skill
   menu and docs say "Convergent Light" instead of "Flare". Internal IDs
@@ -9,10 +9,10 @@
   attack|skill1|skill2|flare [--leader id] [--encounter id] [--member n]`
   drives the in-memory dev preview (`battle-preview.html`, no saves). It
   charges the gauge as needed and records frames from the input.
-- **Visual rules drafted.**
-  [Step 1 proposal](Future%20Plans/battle-flurry-overhaul.md#step-1-proposal-visual-rules-draft-awaiting-owner-approval)
+- **Visual rules approved (D-483).**
+  [Step 1 proposal](Future%20Plans/battle-flurry-overhaul.md#step-1-proposal-visual-rules-approved-d-483)
   (R1 to R8, tier time budgets). Baseline captures show weak, uniform
-  effects. **Awaiting owner approval; nothing in the battle changed.**
+  effects. Owner approved the rules; nothing in the battle changed yet.
 
 **Verified:**
 - `npx tsc --noEmit`: 0 errors.
@@ -28,8 +28,7 @@
 - The preview page shifts scroll between frames.
 
 **Next:**
-- Owner approves or edits rules R1 to R8.
-- Then step 2, the GPU effect foundation (Opus, Plan mode).
+- Step 2, the GPU effect foundation (Opus, Plan mode).
 - Owner decides the Warden Lv.177 / Training 120 source fix (Opus).
 
 ## Battle Spectacle setup: VFX library, Playwright, plan (2026-11-18)

@@ -226,9 +226,9 @@ hosted build:
 Separately, small and first: label the Flare **Convergent Light** in every
 menu (internal IDs unchanged; Sonnet).
 
-#### Step 1 proposal: visual rules (draft, awaiting owner approval)
+#### Step 1 proposal: visual rules (approved, D-483)
 
-Status: **proposed, not approved, not implemented.** Baseline captured
+Status: **owner-approved 2026-11-18 (D-483); not yet implemented.** Baseline captured
 2026-11-18 with `node tools/capture_frames.mjs --battle <tier> --encounter
 nerithe-10 --frames 40 --every 50` against the dev preview:
 - casters never move;

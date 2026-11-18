@@ -1,5 +1,18 @@
 # Decision log
 
+## Spectacle visual rules approved; Convergent Light label shipped (D-483, 2026-11-18)
+
+- **Owner-approved:** Spectacle step 1 visual rules R1 to R8, including the
+  tier time budgets (Normal Attack ~0.45 s, Skill 1 ~0.85 s, Skill 2 ~1.2 s,
+  Convergent Light 1.5 / 1.9 / 2.4 s at battle speed 1):
+  [rules](Future%20Plans/battle-flurry-overhaul.md#step-1-proposal-visual-rules-approved-d-483).
+  Steps 2 onward must meet them. Not yet implemented in the battle.
+- **Implemented:** every menu, tooltip and kit text labels the Flare
+  **Convergent Light** (closes the D-482 naming direction). Internal IDs
+  are unchanged.
+- **Implemented (dev only):** `tools/capture_frames.mjs --battle` records
+  each tier from the in-memory dev preview.
+
 ## Battle Spectacle phase, VFX library and Convergent Light naming (D-482, 2026-11-18)
 
 Owner feedback after the Phase 3 release: every character and enemy
