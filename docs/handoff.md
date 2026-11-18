@@ -1,8 +1,34 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 released (2026-11-18)
+
+**Released and live (D-474 to D-481).** `main` and `overhaul/radiant-foundation`
+fast-forwarded to `1039ec20` and pushed. The authority (`game-operation`) is
+deployed and matches. New encounters start on `radiant-trio-v1`.
+
+**Verified:**
+- `RADIANT_STUDY_CALIBRATION` secret is not set (names checked only).
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: passed.
+- Full `npx vitest run`: 10,736 of 10,737 passed. The one failure was a 20s
+  timeout in `src/presentation/acquisition-surfaces.test.ts` under full-suite
+  load. Run alone it passed in 7.4s.
+- `node tools/bundle_server_game.mjs`: no change from the committed bundle.
+- `supabase functions deploy game-operation`: deployed, ACTIVE version 110.
+- GitHub Pages "Deploy Last Light" run 44245467673: build and deploy passed.
+  The hosted site serves an asset that contains `radiant-trio-v1`.
+- **Not verified:** in-game play on the hosted build; `tools/smoke_*.mjs`.
+
+**Next:**
+- Owner plays the hosted build: start a new encounter, use the Skill fan
+  (hold a card, right click or press D), check signature counters and the
+  character sheet Skill stats.
+- Owner decides the Warden Lv.177 / Training 120 source fix (Opus).
+- The acquisition-surfaces test can time out under full-suite load. Consider
+  raising its timeout (Sonnet, small fix).
+
 ## Battle Flurry Phase 3 Step 4: live calibration `radiant-trio-v1` (2026-11-18)
 
-**On branch `battle-flurry-phase3`, not released (D-481).** The owner approved
+**Released 2026-11-18 (see above) (D-481).** The owner approved
 candidate D. Answers:
 [owner answers](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#owner-answers-2026-11-18-d-481).
 - New encounters start on `radiant-trio-v1` (client, battle preview, server
@@ -14,14 +40,14 @@ candidate D. Answers:
   a proposed source fix awaiting owner approval.
 
 **Verified:**
-- Re-ran `node toolsun_pressure_study.mjs <out> --retune` with the factor
+- Re-ran `node tools/run_pressure_study.mjs <out> --retune` with the factor
   table: identical to the sheet (ordinary 96.9%; Calamity 85.2/52.8/33.3%).
 - New tests: live calibration shape and level sag bound
   (`enemy-pressure.test.ts`); underway `authored-control` run reads and quits
   under the new authority (`battle-dispatch.test.ts`).
 - `npx tsc --noEmit`: 0 errors. Full `npx vitest run`: 306 files, 10,737
   tests passed. `npx vite build`: passed (existing chunk advisory).
-- `node toolsundle_server_game.mjs`: regenerated; **not deployed**.
+- `node tools/bundle_server_game.mjs`: regenerated; **not deployed**.
 - **Not verified:** in-game play; hosted release; `tools/smoke_*.mjs` (need
   the database).
 
@@ -544,7 +570,7 @@ deploy. See the
   `conduit-store.test.ts` (price assertion updated to `1,000`) and
   `calamitic-ascension.test.ts`: 101 passed.
 - `npx tsc --noEmit`: passed. `npm run build`: passed (existing chunk
-  advisory). `node toolsundle_server_game.mjs`: output unchanged.
+  advisory). `node tools/bundle_server_game.mjs`: output unchanged.
 - Headless Chrome, `?workspace=menu` save, 1280x720 and 1600x900: menu,
   roster, detail tabs, formation, loadouts, Conduit loadout, Store, Upgrade,
   Event shop, Calamity, Ascension modal and a real level-up result (in-memory
@@ -584,7 +610,7 @@ captions. Presentation only; server bundle unchanged, so no deploy. See the
 - `npx vitest run` (full): 10,491 passed (297 files), including the new
   `social-luster.test.ts` (5).
 - `npx tsc --noEmit`: passed. `npm run build`: passed (existing chunk
-  advisory). `node toolsundle_server_game.mjs`: output unchanged.
+  advisory). `node tools/bundle_server_game.mjs`: output unchanged.
 - Headless Chrome on the `?workspace=menu` save, 1280x720 and 1600x900:
   Settings live; Social views rendered from the real markup with fixture
   profile/friends/chat data (the workspace has no online account); picture
@@ -624,7 +650,7 @@ bundle is unchanged, so no deploy. See the
   `summon-presentation`, `reward-screen`, `rarity-feedback`, `luster`,
   `banner-showcase`, `reference-ui`, `event-lifecycle`): 152 passed.
 - `npx tsc --noEmit`: passed. `vite build`: passed (existing chunk advisory).
-  `node toolsundle_server_game.mjs`: output unchanged.
+  `node tools/bundle_server_game.mjs`: output unchanged.
 - Headless Chrome, isolated `?workspace=menu` save, 1280x720 and 1600x900: no
   document overflow, buttons 204x56 with no clipping; entrance plays on arrival
   and banner switch, not after a saved draw; focus returns to Summon. Real
