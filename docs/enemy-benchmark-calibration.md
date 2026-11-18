@@ -1,5 +1,19 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Live calibration `radiant-trio-v1` (D-481, 2026-11-18)
+
+The owner approved candidate D from the
+[Step 4 retune sheet](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#step-4-retune-sheet-proposal-2026-11-17-numbers-await-owner-approval)
+as the live calibration (`src/content/enemy-calibration.ts`,
+`radiantTrioCalibration`). Levels 1-95 are unchanged. Above that, ordinary
+enemies, bosses and Calamity each follow their own effective-level curve.
+Three-member squads with D-404 preparation win 96.9% of ordinary fights and
+85/53/33% of Calamity EX+1/2/3. Factors interpolate linearly between the
+table points, so stats can sag up to about 4% before the next point. They
+never sag at Calamity tier levels. Re-measure with
+`node toolsun_pressure_study.mjs <out.jsonl> --retune`.
+
+
 ## Distinct equipment follow-up (2026-11-15; local-only)
 
 After D-456's Leader/ordinary/Master redesign, the same runner completed

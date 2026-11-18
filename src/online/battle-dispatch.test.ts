@@ -15,7 +15,7 @@ let serial = 10;
 const uuid = () => `00000000-0000-4000-8000-${(++serial).toString(16).padStart(12, '0')}`;
 function entry(activity: unknown = { kind: 'training' }): RadiantRunRequest {
   return { requestId: uuid(), expectedRevision: 0, runId: null, encounter: null,
-    operation: { kind: 'start', calibration: 'authored-control', activity } } as RadiantRunRequest;
+    operation: { kind: 'start', calibration: 'radiant-trio-v1', activity } } as RadiantRunRequest;
 }
 class SupabaseMock {
   state = freshGame('study_player', '2026-11-08T00:00:00Z');
@@ -180,7 +180,7 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect(first.status).toBe(200);
     const response = validateRadiantRunResponse(first.body);
     expect(response.run).toMatchObject({ id: (await deriveRadiantEntry(secret, user, request.requestId)).runId,
-      calibration: 'authored-control', encounter: 1 });
+      calibration: 'radiant-trio-v1', encounter: 1 });
     expect(response.run.initial.bearers[0].loadout).toMatchObject({ id: 'ember', level: 0, form: 1 });
     expect(response.run.enemies.length).toBeGreaterThan(0);
     expect(response.account.storyCompleted ?? 0).toBe(0);
@@ -205,6 +205,24 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect((await send(db.handler(), request)).status).toBe(503);
     expect(db.rpc).not.toHaveBeenCalled();
     expect((await send(db.handler({ ...enabled, calibration: 'radiant-pressure-v2' }), request)).status).toBe(200);
+  });
+  it('lets an encounter underway on the pre-D-481 calibration finish but starts new ones on radiant-trio-v1', async () => {
+    const db = new SupabaseMock(), legacy = entry();
+    legacy.operation = { kind: 'start', calibration: 'authored-control', activity: { kind: 'training' } };
+    // The live authority refuses new authored-control starts...
+    expect((await send(db.handler(), legacy)).status).toBe(503);
+    // ...but a run an older authority started on it still reads and quits under the live authority.
+    expect((await send(db.handler({ ...enabled, calibration: 'authored-control' }), legacy)).status).toBe(200);
+    const read = await send(db.handler(), { kind: 'read' });
+    expect(read.status).toBe(200);
+    expect(read.body.run.calibration).toBe('authored-control');
+    expect((await send(db.handler(), db.request({ kind: 'quit' }))).status).toBe(200);
+    // Experimental saved runs still need the authority to enable them.
+    const experimental = entry();
+    experimental.operation = { kind: 'start', calibration: 'radiant-pressure-v2', activity: { kind: 'training' } };
+    const other = new SupabaseMock();
+    expect((await send(other.handler({ ...enabled, calibration: 'radiant-pressure-v2' }), experimental)).status).toBe(200);
+    expect((await send(other.handler(), { kind: 'read' })).status).toBe(503);
   });
   it('settle duplicates pay once; quit forfeits unsettled play; retry never pays twice', async () => {
     const db = new SupabaseMock(), handler = db.handler();
@@ -375,7 +393,7 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
   it.each([
     null, [], 'start', {}, { ...entry(), operation: [] }, { ...entry(), operation: null },
     { ...entry(), requestId: 42 }, { ...entry(), expectedRevision: -1 },
-    { ...entry(), seed: 1 }, { ...entry(), operation: { kind: 'start', activity: [], calibration: 'authored-control' } },
+    { ...entry(), seed: 1 }, { ...entry(), operation: { kind: 'start', activity: [], calibration: 'radiant-trio-v1' } },
     entry({ kind: 'story', stage: 0 }), entry({ kind: 'story', stage: 121 }),
     entry({ kind: 'dungeon', element: 'unknown', stage: 1 }), entry({ kind: 'infusion', mode: 'unknown', stage: 1 }),
     entry({ kind: 'war', character: 'ember', stage: 1 }), entry({ kind: 'training', hp: 1 }),

@@ -102,7 +102,7 @@ try {
         error => error.status === 400 && error.message.includes('not active'));
       const entry = await client.functions.invoke('game-operation', {
         body: { radiantStudy: { requestId: randomUUID(), expectedRevision: response.revision, runId: null, encounter: null,
-          operation: { kind: 'start', activity: { kind: 'infusion', mode: event, stage: 1 }, calibration: 'authored-control' } } },
+          operation: { kind: 'start', activity: { kind: 'infusion', mode: event, stage: 1 }, calibration: 'radiant-trio-v1' } } },
         headers: { Accept: 'application/json, application/vnd.lastlight.radiant-continuation-v1+json' },
       });
       assert.equal(entry.error?.context?.status, 400, 'Inactive event entry must be rejected.');
@@ -609,12 +609,12 @@ async function smokeRadiantLive(client, userId, username, call, callAs) {
   }
   let checkpoint = await radiant({ kind: 'read' });
   const locked = { requestId: randomUUID(), expectedRevision: checkpoint.revision, runId: null, encounter: null,
-    operation: { kind: 'start', activity: { kind: 'story', stage: 2 }, calibration: 'authored-control' } };
+    operation: { kind: 'start', activity: { kind: 'story', stage: 2 }, calibration: 'radiant-trio-v1' } };
   await assert.rejects(radiant(locked), error => error.status === 400 &&
     (legacyAuthority || error.message.includes('Clear the previous stage first')));
   assert.equal((await radiant({ kind: 'read' })).revision, checkpoint.revision);
   const start = { ...locked, requestId: randomUUID(),
-    operation: { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' } };
+    operation: { kind: 'start', activity: { kind: 'training' }, calibration: 'radiant-trio-v1' } };
   let response = await radiant(start);
   assert.equal(response.run.calibration, 'authored-control');
   assert.deepEqual(await radiant(start), response);

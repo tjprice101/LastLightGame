@@ -12,6 +12,7 @@ import { readyFlare } from './game/combat-gauge';
 import { RadiantCanvasEffects } from './vfx/battle-effects';
 import { releasedRadiantIds } from './content/combat-kits';
 import { getStarter } from './content/starters';
+import { liveRadiantCalibrationId } from './content/enemy-calibration';
 import { bindShopHosts, shopHost, type ShopHostId } from './presentation/shop-host';
 
 const host = document.querySelector<HTMLElement>('#radiant-preview');
@@ -70,7 +71,7 @@ function build(): void {
     entry: () => ({ runId: crypto.randomUUID(), encounterSeed: 1729, chargeSeed: 7, targetSeed: 104729 }) };
   const entry = resolveRadiantRun({ revision: 0, state: game }, { requestId: crypto.randomUUID(),
     expectedRevision: 0, runId: null, encounter: null, operation: { kind: 'start', activity,
-      calibration: 'radiant-pressure-v2' } }, authority);
+      calibration: liveRadiantCalibrationId } }, authority);
   // Explicit preview-only charge fixtures; never a route to a player account.
   const combat = entry.state.radiantStudy!.state;
   setRadiantReviewCharge(combat.gauge, cycle);

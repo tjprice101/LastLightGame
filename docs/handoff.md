@@ -1,5 +1,37 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 Step 4: live calibration `radiant-trio-v1` (2026-11-18)
+
+**On branch `battle-flurry-phase3`, not released (D-481).** The owner approved
+candidate D. Answers:
+[owner answers](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#owner-answers-2026-11-18-d-481).
+- New encounters start on `radiant-trio-v1` (client, battle preview, server
+  default, smoke scripts). Menu strength panels show the calibrated stats.
+- Encounters already underway on `authored-control` may still finish after
+  the deploy. `radiant-pressure-v2` still needs explicit server opt-in.
+- Late spots that some team beats reliably stay as challenge content. Two
+  spots no team wins reliably (Fatebreaker Warden Lv.177, Training 120) have
+  a proposed source fix awaiting owner approval.
+
+**Verified:**
+- Re-ran `node toolsun_pressure_study.mjs <out> --retune` with the factor
+  table: identical to the sheet (ordinary 96.9%; Calamity 85.2/52.8/33.3%).
+- New tests: live calibration shape and level sag bound
+  (`enemy-pressure.test.ts`); underway `authored-control` run reads and quits
+  under the new authority (`battle-dispatch.test.ts`).
+- `npx tsc --noEmit`: 0 errors. Full `npx vitest run`: 306 files, 10,737
+  tests passed. `npx vite build`: passed (existing chunk advisory).
+- `node toolsundle_server_game.mjs`: regenerated; **not deployed**.
+- **Not verified:** in-game play; hosted release; `tools/smoke_*.mjs` (need
+  the database).
+
+**Next:**
+- Owner decides the Warden/Training 120 source fix (Opus for the numbers).
+- Phase 3 release: merge to `main` and `overhaul/radiant-foundation`, push,
+  and deploy the authority (owner approval). Before deploying, confirm the
+  `RADIANT_STUDY_CALIBRATION` secret is unset (names only), or new starts stay
+  on the old calibration.
+
 ## Battle Flurry Phase 3 Step 4: retune sheet and Conduit reworks (2026-11-17)
 
 **On branch `battle-flurry-phase3`, not released (D-480).** The live enemy

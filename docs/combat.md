@@ -724,9 +724,10 @@ bonuses; personal Masters retain their existing Prism-base profiles.
 ## Live Radiant encounters and continuity (2026-11-10)
 
 Radiant combat is used by normal online and local encounters throughout the
-game. Its actual enemy statistics use the `authored-control` calibration;
-activity strength panels display those calibrated Health, Attack and Defense
-values. Earlier legacy-combat and preview-only sections below are historical
+game. Its actual enemy statistics use the live calibration (`radiant-trio-v1`
+since D-481; `authored-control` before it, and encounters already underway on
+it may finish); activity strength panels display those calibrated Health,
+Attack and Defense values. Earlier legacy-combat and preview-only sections below are historical
 where they conflict with the current
 [Radiant specification](Future%20Plans/combat-system-specification.md).
 

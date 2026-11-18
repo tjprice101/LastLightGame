@@ -3281,11 +3281,11 @@ var radiantConduits = {
   "fracture-reservoir": [effect("start-charge", 10)],
   "prism-splinter-socket": [effect("opening", 0.2)],
   "precision-escapement": [effect("first-action", 0.2)],
-  "fieldbrace-coupler": [effect("break-heal", 0.15)],
-  "reserve-torque-crank": [effect("normal-charge", 2)],
+  "fieldbrace-coupler": [effect("shield-break", 0.3)],
+  "reserve-torque-crank": pair("leech", 0.15, "normal-charge", 1),
   "crosspin-governor": [effect("flare", 0.12)],
   "aegis-capacitor": [effect("absorbed-charge", 6)],
-  "duplex-heart": [effect("hurt-heal", 0.25)],
+  "duplex-heart": [effect("skill-leech", 0.1)],
   "falcon-sight": pair("exposed", 0.25, "normal-expose", 0.1),
   "spearwheel-engine": [effect("pierce", 0.18)],
   "springwell-pump": [effect("healing", 0.3)],
@@ -3307,11 +3307,11 @@ var radiantConduits = {
   "worldbreaker-drive": pair("flare", 0.4, "wounded", 0.3),
   "siege-cantilever": [effect("solo", 0.5)],
   "nullsong-transmission": pair("normal", 0.35, "normal-charge", 4),
-  "horizon-heartcase": pair("hurt-shield", 0.08, "hurt-charge", 5),
+  "horizon-heartcase": pair("guard-team-shield", 0.4, "hurt-charge", 5),
   "stasis-reliquary": pair("brace", 0.25, "guard", 0.12),
   "granite-hourglass": pair("hurt-shield", 0.06, "round-shield", 0.5),
   "pale-bulwark-diadem": pair("shelter", 0.15, "shielding", 0.3),
-  "starvein-conductor": pair("burn-power", 0.4, "burning", 0.25),
+  "starvein-conductor": pair("skill-leech", 0.15, "burn-power", 0.2),
   "meridian-inverter": pair("flare-heal", 0.4, "shielding", 0.25),
   "verdict-caliper": pair("normal", 0.3, "solo", 0.25),
   "infernic-phoenix-reactor": pair("break-heal", 0.4, "hurt-shield", 0.08),
@@ -3401,7 +3401,7 @@ function radiantGearAmount(gear2, kind) {
 // src/content/conduit-effect-text.ts
 var percent = (value2) => `${Number((value2 * 100).toPrecision(12))}%`;
 var number = (value2) => String(Number(value2.toPrecision(12)));
-var conditionalDamage = (amount, condition2) => `Normal Attacks and Convergent Light deal ${percent(amount)} more direct damage ${condition2}.`;
+var conditionalDamage = (amount, condition2) => `Normal Attacks, skills and Convergent Light deal ${percent(amount)} more direct damage ${condition2}.`;
 var conduitDescriptions = {
   hp: (a) => `Maximum Health increases by ${percent(a)}.`,
   attack: (a) => `Attack increases by ${percent(a)}.`,
@@ -3409,18 +3409,18 @@ var conduitDescriptions = {
   recovery: (a) => `Recovery increases by ${percent(a)}.`,
   normal: (a) => `Normal Attacks deal ${percent(a)} more damage.`,
   flare: (a) => `Convergent Light deals ${percent(a)} more damage.`,
-  pierce: (a) => `Normal Attacks and Convergent Light ignore ${percent(a)} of enemy Defense, up to 80% total.`,
+  pierce: (a) => `Normal Attacks, skills and Convergent Light ignore ${percent(a)} of enemy Defense, up to 80% total.`,
   healing: (a) => `Healing from this bearer's abilities is ${percent(a)} stronger. Conduit-generated healing is unchanged.`,
   shielding: (a) => `Shields from this bearer's abilities are ${percent(a)} stronger. Conduit-generated Shields are unchanged.`,
   resilience: (a) => `Reduces the strength of the strongest Weaken on this bearer by ${percent(a)}, up to 80% total.`,
-  guard: (a) => `While defending, this bearer takes 50% less direct damage. This Conduit further reduces the damage left by ${percent(a)}, up to a 60% combined bonus; damage taken cannot fall below 20%.`,
+  guard: (a) => `After this bearer uses Skill 1 or Skill 2, they take ${percent(Math.min(0.6, a))} less direct damage for the rest of the round, up to 60%; damage taken cannot fall below 20%.`,
   leader: (a) => `This bearer's Leader Skill effects are ${percent(a)} stronger while they are the living leader.`,
   "normal-charge": (a) => `A Normal Attack that hits Health or a Shield grants the attacker ${number(a)} extra Luminosity. Any fraction is rounded once.`,
-  "guard-charge": (a) => `Defending grants this bearer ${number(a)} extra Luminosity. Any fraction is rounded once.`,
+  "guard-charge": (a) => `Using Skill 1 or Skill 2 grants this bearer ${number(a)} extra Luminosity. Any fraction is rounded once.`,
   "team-charge": (a) => `When a Normal Attack hits Health or a Shield, each other living ally gains ${number(a)} Luminosity. Any fraction is rounded once.`,
-  "guard-shield": (a) => `When this bearer Defends, they gain a Shield equal to ${percent(a)} of their current Defense.`,
+  "guard-shield": (a) => `When this bearer uses Skill 1 or Skill 2, they gain a Shield equal to ${percent(a)} of their current Defense.`,
   "normal-heal": (a) => `When this bearer's Normal Attack damages Health, it heals the most-wounded living ally for ${percent(a)} of this bearer's current Recovery.`,
-  leech: (a) => `This bearer's Normal Attacks and Convergent Light restore their Health by ${percent(a)} of the direct Health damage they deal.`,
+  leech: (a) => `This bearer's Normal Attacks, skills and Convergent Light restore their Health by ${percent(a)} of the direct Health damage they deal.`,
   "heal-charge": (a) => `Once per action, actual healing from this bearer's abilities grants them ${number(a)} Luminosity. Any fraction is rounded once.`,
   "heal-buff": (a) => `Each living ally actually healed by this bearer's abilities gains ${percent(Math.min(0.8, a))} Attack for the rest of the round, up to 80%.`,
   "absorbed-charge": (a) => `Once per round, when an enemy's direct attack damages a Shield from this bearer's abilities, gain ${number(a)} Luminosity, rounded once.`,
@@ -3432,7 +3432,7 @@ var conduitDescriptions = {
   "normal-burn": (a) => `When a Normal Attack damages Health, the surviving target burns through the next enemy phase, taking damage equal to ${percent(a)} of this bearer's current Attack.`,
   "normal-expose": (a) => `When a Normal Attack damages Health, the surviving target takes ${percent(Math.min(0.8, a))} more direct damage for the rest of the round, up to 80%.`,
   "normal-weaken": (a) => `When a Normal Attack damages Health, the surviving target deals ${percent(Math.min(0.8, a))} less damage during the next enemy phase, up to 80%.`,
-  cooperation: (a) => `After another squad member acts this round, this bearer's Normal Attacks and Convergent Light deal ${percent(a)} more damage.`,
+  cooperation: (a) => `After another squad member acts this round, this bearer's Normal Attacks, skills and Convergent Light deal ${percent(a)} more damage.`,
   "next-buff": (a) => `When a Normal Attack damages Health, the next living ally who has not acted gains ${percent(Math.min(0.8, a))} Attack for the rest of the round, up to 80%.`,
   "status-shield": (a) => `When one of this bearer's abilities applies Burn, Weaken or Exposure, the most-wounded living ally gains a Shield equal to ${percent(a)} of this bearer's current Defense, once per action.`,
   opening: (a) => conditionalDamage(a, "against enemies at full Health"),
@@ -3448,7 +3448,7 @@ var conduitDescriptions = {
   shelter: (a) => `Above 75% Health, this bearer takes ${percent(a)} less direct enemy damage.`,
   brace: (a) => `Enemy attacks exceeding 20% of this bearer's maximum Health deal ${percent(a)} less direct damage.`,
   "start-charge": (a) => `Begin each encounter with ${number(a)} Luminosity, rounded once and limited by capacity.`,
-  "guard-heal": (a) => `Defending heals this bearer for ${percent(a)} of their current Recovery.`,
+  "guard-heal": (a) => `Using Skill 1 or Skill 2 heals this bearer for ${percent(a)} of their current Recovery.`,
   "flare-heal": (a) => `Convergent Light heals the most-wounded living ally for ${percent(a)} of this bearer's current Recovery.`,
   "normal-shield": (a) => `A Normal Attack that damages Health gives this bearer a Shield worth ${percent(a)} of their current Defense.`,
   "heal-shield": (a) => `Each ally actually healed by this bearer's abilities gains a Shield worth ${percent(a)} of this bearer's current Defense, once per action.`,
@@ -3461,11 +3461,13 @@ var conduitDescriptions = {
   "flare-team-charge": (a) => `Convergent Light grants each other living ally ${number(a)} Luminosity, rounded once.`,
   "hurt-charge": (a) => `Once per round, surviving direct enemy Health damage grants this bearer ${number(a)} Luminosity, rounded once.`,
   "heal-team-charge": (a) => `Once per action, actual healing from this bearer's abilities grants each other living ally ${number(a)} Luminosity, rounded once.`,
-  "guard-team-shield": (a) => `Defending gives every living ally a Shield worth ${percent(a)} of this bearer's current Defense.`,
+  "guard-team-shield": (a) => `When this bearer uses Skill 1 or Skill 2, every living ally gains a Shield worth ${percent(a)} of this bearer's current Defense.`,
   "flare-weaken": (a) => `Convergent Light weakens all surviving enemies by ${percent(Math.min(0.8, a))} through the next enemy phase.`,
   "normal-reduction": (a) => `After a Normal Attack damages Health, this bearer takes ${percent(Math.min(0.8, a))} less direct enemy damage through the next enemy phase.`,
   "round-charge": (a) => `At each new round, this bearer gains ${number(a)} Luminosity, rounded once.`,
-  "round-team-heal": (a) => `At each new round, heal every living ally for ${percent(a)} of this bearer's current Recovery.`
+  "round-team-heal": (a) => `At each new round, heal every living ally for ${percent(a)} of this bearer's current Recovery.`,
+  "skill-leech": (a) => `Once per action, this bearer's skills and Convergent Light heal the most-wounded living ally for ${percent(a)} of the direct Health damage they deal.`,
+  "shield-break": (a) => `This bearer's Normal Attacks, skills and Convergent Light deal ${percent(a)} more damage to enemy Shields.`
 };
 function radiantConduitDescription(primitive) {
   return conduitDescriptions[primitive.kind](primitive.amount);
@@ -16267,9 +16269,11 @@ function atTrainingWave(state, wave) {
 
 // src/content/enemy-calibration.ts
 var unity = { hp: 1, attack: 1, defense: 1 };
-var liveRadiantCalibrationId = "authored-control";
+var radiantCalibrationIds = ["authored-control", "radiant-pressure-v2", "radiant-trio-v1"];
+var liveRadiantCalibrationId = "radiant-trio-v1";
+var previousLiveRadiantCalibrationId = "authored-control";
 var authoredRadiantCalibration = {
-  id: liveRadiantCalibrationId,
+  id: "authored-control",
   points: [{ level: 1, ...unity }, { level: 185, ...unity }],
   categories: { ordinary: unity, boss: unity, calamity: unity }
 };
@@ -16287,9 +16291,65 @@ var pressureRadiantCalibration = {
   ],
   categories: { ordinary: unity, boss: unity, calamity: { hp: 1.5, attack: 3, defense: 1.1 } }
 };
+var radiantTrioCalibration = {
+  id: "radiant-trio-v1",
+  points: [
+    { level: 1, hp: 1, attack: 1, defense: 1 },
+    { level: 95, hp: 1, attack: 1, defense: 1 },
+    { level: 100, hp: 0.6981, attack: 0.7958, defense: 0.7819 },
+    { level: 105, hp: 0.5005, attack: 0.6457, defense: 0.6275 },
+    { level: 110, hp: 0.362, attack: 0.5435, defense: 0.5235 },
+    { level: 115, hp: 0.274, attack: 0.472, defense: 0.451 },
+    { level: 120, hp: 0.2227, attack: 0.418, defense: 0.3972 },
+    { level: 140, hp: 0.2128, attack: 0.4513, defense: 0.4163 },
+    { level: 150, hp: 0.1408, attack: 0.358, defense: 0.3105 },
+    { level: 155, hp: 0.1126, attack: 0.3264, defense: 0.2675 },
+    { level: 160, hp: 0.09, attack: 0.2895, defense: 0.2292 },
+    { level: 170, hp: 0.0576, attack: 0.2472, defense: 0.1709 },
+    { level: 180, hp: 0.0369, attack: 0.1812, defense: 0.1239 },
+    { level: 185, hp: 0.0412, attack: 0.1869, defense: 0.1285 }
+  ],
+  categoryPoints: {
+    boss: [
+      { level: 1, hp: 1, attack: 1, defense: 1 },
+      { level: 90, hp: 1, attack: 1, defense: 1 },
+      { level: 105, hp: 0.671, attack: 0.7751, defense: 0.765 },
+      { level: 115, hp: 0.3924, attack: 0.5931, defense: 0.5768 },
+      { level: 120, hp: 0.3189, attack: 0.5252, defense: 0.5079 },
+      { level: 125, hp: 0.2901, attack: 0.5018, defense: 0.4814 },
+      { level: 135, hp: 0.2164, attack: 0.4502, defense: 0.4178 },
+      { level: 140, hp: 0.1863, attack: 0.4145, defense: 0.3807 },
+      { level: 150, hp: 0.1611, attack: 0.3874, defense: 0.3376 },
+      { level: 165, hp: 0.1004, attack: 0.3214, defense: 0.2409 },
+      { level: 175, hp: 0.0643, attack: 0.255, defense: 0.1771 },
+      { level: 180, hp: 0.0514, attack: 0.2183, defense: 0.1508 },
+      { level: 185, hp: 0.0556, attack: 0.2177, defense: 0.1509 }
+    ],
+    calamity: [
+      { level: 1, hp: 1, attack: 1, defense: 1 },
+      { level: 80, hp: 1, attack: 1, defense: 1 },
+      { level: 145, hp: 0.1762, attack: 0.4053, defense: 0.3629 },
+      { level: 160, hp: 0.1338, attack: 0.3604, defense: 0.2887 },
+      { level: 170, hp: 0.0968, attack: 0.3276, defense: 0.2299 },
+      { level: 185, hp: 0.0918, attack: 0.2877, defense: 0.2036 }
+    ]
+  },
+  categories: { ordinary: unity, boss: unity, calamity: unity }
+};
+var calibrationsById = {
+  "authored-control": authoredRadiantCalibration,
+  "radiant-pressure-v2": pressureRadiantCalibration,
+  "radiant-trio-v1": radiantTrioCalibration
+};
+function isRadiantCalibrationId(value2) {
+  return typeof value2 === "string" && radiantCalibrationIds.includes(value2);
+}
+function radiantCalibration(id) {
+  return calibrationsById[id];
+}
 function radiantEnemyFactors(level, category2, calibration) {
   if (!Number.isInteger(level) || level < 1 || level > 185) throw new Error("Invalid authored enemy level.");
-  const points = calibration.points;
+  const points = calibration.categoryPoints?.[category2] ?? calibration.points;
   if (points.length < 2 || points[0].level !== 1 || points.at(-1).level !== 185 || points.some((point, i) => !Number.isInteger(point.level) || i > 0 && point.level <= points[i - 1].level))
     throw new Error("Invalid radiant calibration anchors.");
   const categoryFactor = calibration.categories[category2];
@@ -18145,15 +18205,16 @@ function packet(state, events, target, source, origin, offered, hitCharge, redir
   living2(target.hp);
   let remaining = offered;
   const shields = [];
+  const breaker = "currency" in target && origin === "direct" && (source.kind === "normal" || source.kind === "skill" || source.kind === "flare") ? 1 + combatAmount(state, bearer(state, source.bearerId), "shield-break") : 1;
   for (const shield3 of target.shields) {
-    const amount = Math.min(remaining, shield3.remaining);
+    const amount = Math.min(shield3.remaining, Math.floor(remaining * breaker));
     if (amount > 0) shields.push({ source: { ...shield3.source }, amount });
     shield3.remaining -= amount;
-    remaining -= amount;
+    remaining -= Math.min(remaining, Math.ceil(amount / breaker));
   }
   target.shields = target.shields.filter((shield3) => shield3.remaining > 0);
   let healthLoss = Math.min(target.hp, remaining);
-  const absorbed = offered - remaining;
+  const absorbed = shields.reduce((sum, entry) => sum + entry.amount, 0);
   const refusal = "loadout" in target && source.kind === "enemy" && healthLoss > 0 && healthLoss === target.hp ? refuser(state, target) : void 0;
   if (refusal) healthLoss = target.hp - 1;
   target.hp -= healthLoss;
@@ -19240,6 +19301,11 @@ function processRadiantGear(state, events, action) {
           case "leech":
             if (direct.length) heal2(state, events, owner, source, amount * direct.reduce((sum, event2) => sum + event2.healthLoss, 0));
             break;
+          case "skill-leech": {
+            const dealt = direct.filter((event2) => event2.source.kind === "skill" || event2.source.kind === "flare").reduce((sum, event2) => sum + event2.healthLoss, 0);
+            if (ownAction && dealt > 0 && wounded) heal2(state, events, wounded, source, amount * dealt);
+            break;
+          }
           case "heal-charge":
             if (restored.length) grant(owner, amount);
             break;
@@ -19595,7 +19661,7 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1, cont
   const enemies2 = adaptRadiantPressureEncounter(
     anchor,
     entropy.encounterSeed,
-    calibration === "authored-control" ? authoredRadiantCalibration : pressureRadiantCalibration
+    radiantCalibration(calibration)
   );
   const initial = createRadiantCombat(loadouts, enemies2, entropy.chargeSeed);
   if (continuation) {
@@ -19699,7 +19765,7 @@ function validateRadiantRunRequest(request) {
   const op = request.operation;
   if (op.kind === "start") {
     exactKeys(op, ["kind", "activity", "calibration"]);
-    if (typeof op.calibration !== "string" || !["authored-control", "radiant-pressure-v2"].includes(op.calibration) || request.runId !== null || request.encounter !== null) invalid("Invalid Radiant entry.");
+    if (!isRadiantCalibrationId(op.calibration) || request.runId !== null || request.encounter !== null) invalid("Invalid Radiant entry.");
     validateRadiantActivity(op.activity);
   } else {
     if (typeof request.runId !== "string" || !uuid2.test(request.runId) || typeof request.encounter !== "number" || !Number.isSafeInteger(request.encounter) || request.encounter < 1) invalid("Missing prior Radiant encounter.");
@@ -19907,7 +19973,7 @@ function canonical(value2) {
 }
 function validateFrozenRadiantRun(value2) {
   try {
-    if (!record4(value2) || value2.version !== 8 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
+    if (!record4(value2) || value2.version !== 8 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !isRadiantCalibrationId(value2.calibration) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
       throw new Error();
     for (const key of ["encounterSeed", "initialChargeSeed", "initialTargetSeed"])
       seed2(value2[key]);
@@ -19937,7 +20003,7 @@ function validateFrozenRadiantRun(value2) {
       const previousEnemies = adaptRadiantPressureEncounter(
         continuation.anchor,
         continuation.encounterSeed,
-        run.calibration === "authored-control" ? authoredRadiantCalibration : pressureRadiantCalibration
+        radiantCalibration(run.calibration)
       );
       if (continuation.state.enemies.length !== previousEnemies.length || continuation.state.enemies.some((unit, i) => unit.id !== previousEnemies[i].id || unit.elementId !== previousEnemies[i].elementId || canonical(unit.stats) !== canonical(previousEnemies[i].stats) || unit.currency.budget !== previousEnemies[i].currencyBudget)) throw new Error();
     }
@@ -20284,7 +20350,7 @@ async function handleRadiantRequest(value2, user, admin, config, identityOf, sup
     status: 503,
     body: { code: "unavailable", error: "Radiant authority is unavailable." }
   };
-  if (!config.secret || encoder.encode(config.secret).length < 32 || config.calibration !== void 0 && !["authored-control", "radiant-pressure-v2"].includes(config.calibration))
+  if (!config.secret || encoder.encode(config.secret).length < 32 || config.calibration !== void 0 && !isRadiantCalibrationId(config.calibration))
     return { status: 503, body: { code: "unavailable", error: "Radiant authority is not configured." } };
   try {
     if (Object.keys(value2).length !== 1 || !("radiantStudy" in value2))
@@ -20316,7 +20382,8 @@ async function handleRadiantRequest(value2, user, admin, config, identityOf, sup
       if (error) throw new RadiantRunError("unavailable", "Online account storage unavailable.");
       const snapshot = validateRadiantRunSnapshot(data);
       requireCompatibleRun(snapshot.state.radiantStudy);
-      if (snapshot.state.radiantStudy && snapshot.state.radiantStudy.calibration !== (config.calibration ?? liveRadiantCalibrationId))
+      const saved = snapshot.state.radiantStudy?.calibration;
+      if (saved !== void 0 && saved !== (config.calibration ?? liveRadiantCalibrationId) && saved !== previousLiveRadiantCalibrationId)
         throw new RadiantRunError("unavailable", "The saved encounter calibration is not enabled by the authority.");
       return snapshot;
     };

@@ -1,5 +1,27 @@
 # Decision log
 
+## Battle Flurry Phase 3 Step 4: live calibration `radiant-trio-v1` (D-481, 2026-11-18)
+
+On branch `battle-flurry-phase3`. **Not released.** Sheet:
+[owner answers](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#owner-answers-2026-11-18-d-481).
+
+- **Owner-approved:** candidate D is the live enemy calibration
+  `radiant-trio-v1` (ordinary 96.9%; Calamity EX+1/2/3 85/53/33%). Calamity
+  offense trios needing a sustain member is accepted.
+- **Owner principle for late content:** hard content should require proper
+  teams and Conduit selections, but not be insanely difficult. Below-target
+  spots that some team beats reliably stay as challenge content.
+- **Implemented:** new starts use `radiant-trio-v1` (client, preview, server
+  default, smoke scripts); menu strength panels show its stats. Encounters
+  already underway on `authored-control` may still finish under the new
+  authority; `radiant-pressure-v2` still needs explicit server opt-in.
+- **Known property:** factors interpolate linearly between table points, so
+  ordinary and boss stats can sag up to about 4% before the next point.
+  Calamity tier levels don't sag. The measured win rates include this.
+- **Open:** source fix for the two spots no team wins reliably (Fatebreaker
+  Warden, Training 120), numbers await owner approval; the Phase 3 release
+  and authority deploy (owner approval).
+
 ## Battle Flurry Phase 3 Step 4: retune measurement and Conduit reworks (D-480, 2026-11-17)
 
 On branch `battle-flurry-phase3`. **Not released.** Sheet:

@@ -13,7 +13,7 @@ import type { DurableGame } from '../../supabase/functions/game-operation/engine
 import type { Activity } from './server-game';
 import { squadMemberLimit } from '../content/squad-rules';
 import { radiantBearerKits, type RadiantBearerId, type RadiantLoadout } from '../content/combat-kits';
-import { authoredRadiantCalibration, pressureRadiantCalibration } from '../content/enemy-calibration';
+import { isRadiantCalibrationId, radiantCalibration, type RadiantCalibrationId } from '../content/enemy-calibration';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
 import { adaptRadiantPressureEncounter, assertRadiantPressureAccess, isRadiantAccessError,
   type RadiantPressureAnchor, type RadiantPressureEnemy } from '../game/enemy-pressure-encounters';
@@ -45,7 +45,7 @@ export interface FrozenRadiantRun {
   id: string;
   encounter: number;
   anchor: RadiantPressureAnchor;
-  calibration: 'authored-control' | 'radiant-pressure-v2';
+  calibration: RadiantCalibrationId;
   encounterSeed: number;
   initialChargeSeed: number;
   initialTargetSeed: number;
@@ -170,7 +170,7 @@ function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun
   if (!uuid.test(entropy.runId)) invalid('Invalid authority run ID.');
   [entropy.encounterSeed, entropy.chargeSeed, entropy.targetSeed].forEach(seed);
   const enemies = adaptRadiantPressureEncounter(anchor, entropy.encounterSeed,
-    calibration === 'authored-control' ? authoredRadiantCalibration : pressureRadiantCalibration);
+    radiantCalibration(calibration));
   const initial = createRadiantCombat(loadouts, enemies, entropy.chargeSeed);
   if (continuation) {
     const previous = continuation.state;
@@ -247,7 +247,7 @@ export function validateRadiantRunRequest(request: unknown): RadiantRunRequest {
   const op = request.operation;
   if (op.kind === 'start') {
     exactKeys(op, ['kind', 'activity', 'calibration']);
-    if (typeof op.calibration !== 'string' || !['authored-control', 'radiant-pressure-v2'].includes(op.calibration) ||
+    if (!isRadiantCalibrationId(op.calibration) ||
       request.runId !== null || request.encounter !== null) invalid('Invalid Radiant entry.');
     validateRadiantActivity(op.activity);
   } else {
@@ -426,7 +426,7 @@ export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
     if (!record(value) || value.version !== 8 || typeof value.id !== 'string' || !uuid.test(value.id) ||
       typeof value.encounter !== 'number' || !Number.isSafeInteger(value.encounter) || value.encounter < 1 ||
       typeof value.quit !== 'boolean' || !record(value.anchor) ||
-      !['authored-control', 'radiant-pressure-v2'].includes(String(value.calibration)) ||
+      !isRadiantCalibrationId(value.calibration) ||
       !Array.isArray(value.enemies) || !record(value.initial) || !record(value.state))
       throw new Error();
     for (const key of ['encounterSeed', 'initialChargeSeed', 'initialTargetSeed'])
@@ -469,7 +469,7 @@ export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
         run.initialChargeSeed !== (continuation.state.chargeSeed || 1) ||
         run.initialTargetSeed !== (continuation.targetSeed || 1)) throw new Error();
       const previousEnemies = adaptRadiantPressureEncounter(continuation.anchor, continuation.encounterSeed,
-        run.calibration === 'authored-control' ? authoredRadiantCalibration : pressureRadiantCalibration);
+        radiantCalibration(run.calibration));
       if (continuation.state.enemies.length !== previousEnemies.length ||
         continuation.state.enemies.some((unit, i) => unit.id !== previousEnemies[i].id ||
           unit.elementId !== previousEnemies[i].elementId ||

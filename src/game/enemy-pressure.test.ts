@@ -11,7 +11,8 @@ import { oblivionConstructs } from '../content/gates-of-oblivion';
 import { enemyCombatStats } from '../content/stat-growth';
 import { enemySkills } from '../content/enemy-skills';
 import { radiantMasters, type RadiantMasterId } from '../content/combat-kits';
-import { authoredRadiantCalibration, pressureRadiantCalibration, radiantEnemyFactors } from '../content/enemy-calibration';
+import { authoredRadiantCalibration, isRadiantCalibrationId, liveRadiantCalibration, liveRadiantCalibrationId, pressureRadiantCalibration,
+  radiantCalibration, radiantCalibrationIds, radiantEnemyFactors } from '../content/enemy-calibration';
 import { pressureStudyLoadouts } from '../../tools/pressure-study';
 import { emptyAccount } from './account';
 import { adaptRadiantPressureEncounter, radiantPressureAnchors, assertRadiantPressureAccess } from './enemy-pressure-encounters';
@@ -84,6 +85,38 @@ describe('radiant authored pressure adapter', () => {
     expect(() => radiantEnemyFactors(1, 'boss', { ...pressureRadiantCalibration, points: [] })).toThrow();
     expect(() => radiantEnemyFactors(1, 'boss', { ...pressureRadiantCalibration,
       points: [{ level: 1, hp: NaN, attack: 1, defense: 1 }, { level: 185, hp: 1, attack: 1, defense: 1 }] })).toThrow();
+  });
+  it('makes radiant-trio-v1 live: unchanged to Lv.95, never meaningfully weaker as level rises (D-481)', () => {
+    expect(liveRadiantCalibrationId).toBe('radiant-trio-v1');
+    expect(liveRadiantCalibration.id).toBe(liveRadiantCalibrationId);
+    for (const id of radiantCalibrationIds) expect(radiantCalibration(id).id).toBe(id);
+    expect(isRadiantCalibrationId('radiant-trio-v1')).toBe(true);
+    expect(isRadiantCalibrationId('client-choice')).toBe(false);
+    for (const category of ['ordinary', 'boss', 'calamity'] as const) {
+      const unchangedTo = category === 'ordinary' ? 95 : category === 'boss' ? 90 : 80;
+      for (let level = 1; level <= unchangedTo; level++)
+        expect(radiantEnemyFactors(level, category, liveRadiantCalibration)).toEqual({ hp: 1, attack: 1, defense: 1 });
+      // Calibration points never decrease; between points, factors interpolate linearly while the base curve
+      // does not, so stats may sag up to 5% (measured max 4.3%) before the next point. Calamity is judged
+      // only at its real tier levels.
+      const levels = category === 'calamity' ? [145, 160, 170, 185] : Array.from({ length: 185 }, (_, i) => i + 1);
+      const peak = { health: 0, damage: 0, defense: 0 };
+      for (const level of levels) {
+        const base = enemyCombatStats(level, false), factor = radiantEnemyFactors(level, category, liveRadiantCalibration);
+        const stats = { health: base.health * factor.hp, damage: base.damage * factor.attack, defense: base.defense * factor.defense };
+        for (const key of ['health', 'damage', 'defense'] as const) {
+          expect(stats[key], `${category} Lv.${level} ${key}`).toBeGreaterThanOrEqual(peak[key] * (category === 'calamity' ? .999 : .95));
+          peak[key] = Math.max(peak[key], stats[key]);
+        }
+      }
+    }
+    // Spot checks against the approved factor table.
+    const close = (actual: { hp: number; attack: number; defense: number }, hp: number, attack: number, defense: number) => {
+      expect(actual.hp).toBeCloseTo(hp, 10); expect(actual.attack).toBeCloseTo(attack, 10); expect(actual.defense).toBeCloseTo(defense, 10);
+    };
+    close(radiantEnemyFactors(105, 'ordinary', liveRadiantCalibration), .5005, .6457, .6275);
+    close(radiantEnemyFactors(145, 'calamity', liveRadiantCalibration), .1762, .4053, .3629);
+    expect(radiantEnemyFactors(160, 'boss', liveRadiantCalibration).hp).toBeCloseTo(.1611 + (.1004 - .1611) * 10 / 15);
   });
   it('keeps actual stage, level, normal-clear, Calamitic-ownership and event-window gates', () => {
     const account = emptyAccount(), before = JSON.stringify(account);

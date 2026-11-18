@@ -9,7 +9,7 @@ import { storyRules } from '../content/story';
 import { calamityActivities } from '../content/calamity';
 import { enemyCombatStats } from '../content/stat-growth';
 import { formatStat } from '../content/combat';
-import { authoredRadiantCalibration } from '../content/enemy-calibration';
+import { calibratedRadiantEnemyStats, liveRadiantCalibration } from '../content/enemy-calibration';
 import { adaptRadiantPressureEncounter } from '../game/enemy-pressure-encounters';
 import type { Activity } from '../online/server-game';
 import { gameplayHub } from './gameplay';
@@ -23,7 +23,7 @@ import { playableDungeons } from '../content/dungeons';
 afterEach(() => document.body.replaceChildren());
 
 function expectStats(panel: Element, activity: Activity): void {
-  const enemies = adaptRadiantPressureEncounter({ id: 'preview', family: 'preview', position: 'early', activity }, 1729, authoredRadiantCalibration);
+  const enemies = adaptRadiantPressureEncounter({ id: 'preview', family: 'preview', position: 'early', activity }, 1729, liveRadiantCalibration);
   const enemy = enemies[0];
   for (const other of enemies) expect(other.stats).toEqual(enemy.stats);
   expect(panel.querySelector('h4')!.textContent).toBe(`Lv.${enemy.level} · ${enemy.category === 'ordinary' ? 'Standard enemy' : 'Boss'}`);
@@ -88,9 +88,10 @@ describe('visible enemy strength', () => {
       for (const boss of [false, true]) {
         const stats = enemyCombatStats(level, boss);
         document.body.innerHTML = enemyStrength({ level, boss, stats });
-        const actual = stageBossStats(stats, boss);
+        // Panels show the live calibration's stats (radiant-trio-v1 flattens enemies above Lv.95, D-481).
+        const actual = calibratedRadiantEnemyStats(stageBossStats(stats, boss), level, boss ? 'boss' : 'ordinary', liveRadiantCalibration);
         expect(Array.from(document.querySelectorAll('dd')).map(cell => cell.textContent)).toEqual(
-          [actual.health, actual.damage, actual.defense].map(value => formatStat(value)));
+          [actual.hp, actual.attack, actual.defense].map(value => formatStat(value)));
         expect(document.body.textContent).toContain(boss ? `Boss scaling vs standard Lv.${level} enemy` : `Standard Lv.${level} stats`);
       }
     }

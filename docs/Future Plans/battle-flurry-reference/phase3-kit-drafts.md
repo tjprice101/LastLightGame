@@ -565,9 +565,10 @@ Moonflower becomes Attack Up and Ceasefire becomes Damage Reduction.
 ## Step 4 retune sheet (proposal, 2026-11-17; numbers await owner approval)
 
 **Status:** the five Conduit reworks below are owner-approved (2026-11-17) and
-implemented on branch `battle-flurry-phase3`. The enemy calibration numbers are a
-**proposal**: the live calibration is still `authored-control` (every factor 1)
-until the owner approves. Owner choices already made: tune enemy stat factors
+implemented on branch `battle-flurry-phase3`. Candidate D was **approved on
+2026-11-18 (D-481)** and is now the live calibration `radiant-trio-v1` on that
+branch (not yet released); see [owner answers](#owner-answers-2026-11-18-d-481).
+The section below is the original proposal. Owner choices already made: tune enemy stat factors
 only (formations and rewards unchanged), measure a Flare-saving player too,
 Resonance stays off, reuse the D-404 targets.
 
@@ -691,3 +692,26 @@ reachable at the current costs, so **no Flare cost change is proposed**.
    formation)? A source fix would be a separate, smaller follow-up.
 3. Calamity offense trios: accept that they need a sustain member at EX tiers,
    or address it in Phase 4's Conduit remap?
+
+### Owner answers (2026-11-18, D-481)
+
+1. **Candidate D: approved** as live `radiant-trio-v1`.
+2. **Bands below target:** "Hard content should be hard and require proper
+   teams and Conduit selections, but not insanely difficult." Applied as: a
+   spot is acceptable challenge content when some team wins it reliably, and
+   needs a source fix when no team does. Re-measured on 2026-11-18 (same
+   numbers as above), per encounter, across the six study trios and both
+   policies (12 combinations, generic study gear, not tuned Conduits):
+   - **Acceptable (challenge):** every other below-95% encounter. Each has 3
+     or more combinations that win every seed: Dungeon 101-120 (counter-picks
+     and Infernic form 8: 3/12), Sunshade 101-140, War 121-140 (Vaelor's forms
+     and final: 7-8/12), Oblivion Lantern Wraith, Husk Seraph, mid (4/12),
+     Annihilation Colossus Fragment (4/12) and final (3/12).
+   - **No team wins reliably (proposed source fix):** **Fatebreaker Warden**
+     (Oblivion Lv.177: 0/12 combinations, no wins at all) and **Training 120**
+     (0/12 perfect; the best trio wins 2 of 3). Proposed follow-up: lower
+     those two at their source (Warden authored stats; Training's Lv.120
+     formation) until at least a few combinations win reliably, then
+     re-measure. Numbers await owner approval; not implemented.
+3. **Calamity offense trios:** accepted; they need a sustain member at EX tiers.
+

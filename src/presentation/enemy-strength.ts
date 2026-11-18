@@ -4,7 +4,7 @@ import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
 import { infusionEncounter, isInfusionMode } from '../content/infusions';
 import { isWarCharacter, warEncounter } from '../content/elemental-war';
 import { oblivionEncounter } from '../content/gates-of-oblivion';
-import { authoredRadiantCalibration, calibratedRadiantEnemyStats } from '../content/enemy-calibration';
+import { calibratedRadiantEnemyStats, liveRadiantCalibration } from '../content/enemy-calibration';
 import { stageBossStats } from '../game/battle';
 import './enemy-strength.css';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
@@ -46,8 +46,8 @@ export function enemyStrengthModifiers(encounter: EnemyStrength): string {
 export function enemyStrength(encounter: EnemyStrength, kind: 'stage' | 'calamity' = 'stage'): string {
   const category = kind === 'calamity' ? 'calamity' : encounter.boss ? 'boss' : 'ordinary';
   const authored = kind === 'calamity' ? encounter.stats : stageBossStats(encounter.stats, encounter.boss);
-  const actual = calibratedRadiantEnemyStats(authored, encounter.level, category, authoredRadiantCalibration);
-  const standard = calibratedRadiantEnemyStats(enemyCombatStats(encounter.level, false), encounter.level, 'ordinary', authoredRadiantCalibration);
+  const actual = calibratedRadiantEnemyStats(authored, encounter.level, category, liveRadiantCalibration);
+  const standard = calibratedRadiantEnemyStats(enemyCombatStats(encounter.level, false), encounter.level, 'ordinary', liveRadiantCalibration);
   const values = [
     ['HP', actual.hp, standard.hp],
     ['Attack', actual.attack, standard.attack],
