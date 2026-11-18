@@ -404,7 +404,7 @@ def document():
         "## Inventory and boundaries",
         "| Category | Count | Scope |\n|---|---:|---|\n"
         "| Portraits |36|Six forms for each of six characters|\n"
-        "| Ability icons |24|Passive, Skill1, Skill2 and Last Flare per character|\n"
+        "| Ability icons |24|Passive, Skill1, Skill2 and Convergent Light per character|\n"
         "| Personal Masters |18|Three distinct Omnic mechanical alternatives per character|\n"
         "| Signature equipment |6|Optional standalone showcase art; does not replace shared actions|\n"
         "| Native status pictograms |11|Unreturned, Load, Beacon, Signal, Severance, Promise, Shelter, Flourish, Moonflower, Interval, Ceasefire|\n"

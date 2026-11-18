@@ -284,7 +284,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 16, particleDensity: 0.6, bloomScale: 0.8, streakScale: 0.8, speed: 1.1 },
       skill1: { name: 'Cinder Cleave', ribbonWidth: 26, particleDensity: 1.0, bloomScale: 1.2, streakScale: 1.2, speed: 1.0 },
       skill2: { name: 'Flame Arc', ribbonWidth: 32, particleDensity: 1.4, bloomScale: 1.4, streakScale: 1.4, speed: 0.95 },
-      ultimate: { name: 'Last Flare: Dawnfire', ribbonWidth: 44, particleDensity: 2.2, bloomScale: 2.2, streakScale: 2.4, speed: 0.9 },
+      ultimate: { name: 'Convergent Light: Dawnfire', ribbonWidth: 44, particleDensity: 2.2, bloomScale: 2.2, streakScale: 2.4, speed: 0.9 },
     },
   },
   tide: {
@@ -293,7 +293,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 14, particleDensity: 0.6, bloomScale: 0.8, streakScale: 0.8, speed: 1.2 },
       skill1: { name: 'Torrent Thrust', ribbonWidth: 24, particleDensity: 1.0, bloomScale: 1.1, streakScale: 1.2, speed: 1.1 },
       skill2: { name: 'Ocean Wall', ribbonWidth: 30, particleDensity: 1.3, bloomScale: 1.3, streakScale: 1.3, speed: 0.9 },
-      ultimate: { name: 'Last Flare: Leviathan', ribbonWidth: 42, particleDensity: 2.0, bloomScale: 2.0, streakScale: 2.2, speed: 0.85 },
+      ultimate: { name: 'Convergent Light: Leviathan', ribbonWidth: 42, particleDensity: 2.0, bloomScale: 2.0, streakScale: 2.2, speed: 0.85 },
     },
   },
   sprout: {
@@ -302,7 +302,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 12, particleDensity: 0.5, bloomScale: 0.7, streakScale: 0.7, speed: 1.2 },
       skill1: { name: 'Petal Shot', ribbonWidth: 22, particleDensity: 1.0, bloomScale: 1.1, streakScale: 1.1, speed: 1.1 },
       skill2: { name: 'Verdant Briar', ribbonWidth: 28, particleDensity: 1.4, bloomScale: 1.3, streakScale: 1.2, speed: 0.95 },
-      ultimate: { name: 'Last Flare: World Tree', ribbonWidth: 40, particleDensity: 2.1, bloomScale: 2.1, streakScale: 2.2, speed: 0.85 },
+      ultimate: { name: 'Convergent Light: World Tree', ribbonWidth: 40, particleDensity: 2.1, bloomScale: 2.1, streakScale: 2.2, speed: 0.85 },
     },
   },
   atmoso: {
@@ -311,7 +311,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 14, particleDensity: 0.6, bloomScale: 0.8, streakScale: 0.9, speed: 1.3 },
       skill1: { name: 'Zephyr Gale', ribbonWidth: 24, particleDensity: 1.1, bloomScale: 1.2, streakScale: 1.3, speed: 1.15 },
       skill2: { name: 'Vortex Burst', ribbonWidth: 32, particleDensity: 1.5, bloomScale: 1.5, streakScale: 1.5, speed: 1.0 },
-      ultimate: { name: 'Last Flare: Tempest', ribbonWidth: 46, particleDensity: 2.4, bloomScale: 2.3, streakScale: 2.5, speed: 0.95 },
+      ultimate: { name: 'Convergent Light: Tempest', ribbonWidth: 46, particleDensity: 2.4, bloomScale: 2.3, streakScale: 2.5, speed: 0.95 },
     },
   },
   aurora: {
@@ -320,7 +320,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 10, particleDensity: 0.5, bloomScale: 0.9, streakScale: 1.2, speed: 1.4 },
       skill1: { name: 'Prismatic Ray', ribbonWidth: 20, particleDensity: 0.9, bloomScale: 1.4, streakScale: 1.8, speed: 1.3 },
       skill2: { name: 'Dawn Barrier', ribbonWidth: 28, particleDensity: 1.3, bloomScale: 1.7, streakScale: 2.0, speed: 1.0 },
-      ultimate: { name: 'Last Flare: Supernova', ribbonWidth: 38, particleDensity: 2.0, bloomScale: 2.8, streakScale: 3.0, speed: 1.1 },
+      ultimate: { name: 'Convergent Light: Supernova', ribbonWidth: 38, particleDensity: 2.0, bloomScale: 2.8, streakScale: 3.0, speed: 1.1 },
     },
   },
   bliss: {
@@ -329,7 +329,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 14, particleDensity: 0.6, bloomScale: 0.8, streakScale: 0.8, speed: 1.15 },
       skill1: { name: 'Seraph Feather', ribbonWidth: 24, particleDensity: 1.1, bloomScale: 1.3, streakScale: 1.3, speed: 1.05 },
       skill2: { name: 'Divine Chorus', ribbonWidth: 30, particleDensity: 1.5, bloomScale: 1.6, streakScale: 1.5, speed: 0.95 },
-      ultimate: { name: 'Last Flare: Ascension', ribbonWidth: 44, particleDensity: 2.3, bloomScale: 2.4, streakScale: 2.4, speed: 0.9 },
+      ultimate: { name: 'Convergent Light: Ascension', ribbonWidth: 44, particleDensity: 2.3, bloomScale: 2.4, streakScale: 2.4, speed: 0.9 },
     },
   },
   bruno: {
@@ -338,7 +338,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 18, particleDensity: 0.6, bloomScale: 0.8, streakScale: 0.7, speed: 1.0 },
       skill1: { name: 'Seismic Bash', ribbonWidth: 28, particleDensity: 1.2, bloomScale: 1.2, streakScale: 1.0, speed: 0.95 },
       skill2: { name: 'Earth Wall', ribbonWidth: 34, particleDensity: 1.5, bloomScale: 1.4, streakScale: 1.1, speed: 0.9 },
-      ultimate: { name: 'Last Flare: Tectonic Rupture', ribbonWidth: 48, particleDensity: 2.5, bloomScale: 2.2, streakScale: 1.8, speed: 0.85 },
+      ultimate: { name: 'Convergent Light: Tectonic Rupture', ribbonWidth: 48, particleDensity: 2.5, bloomScale: 2.2, streakScale: 1.8, speed: 0.85 },
     },
   },
   disciple: {
@@ -347,7 +347,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 12, particleDensity: 0.5, bloomScale: 0.9, streakScale: 0.9, speed: 1.2 },
       skill1: { name: 'Mind Lance', ribbonWidth: 22, particleDensity: 1.0, bloomScale: 1.3, streakScale: 1.4, speed: 1.1 },
       skill2: { name: 'Astral Singularity', ribbonWidth: 32, particleDensity: 1.6, bloomScale: 1.7, streakScale: 1.8, speed: 0.95 },
-      ultimate: { name: 'Last Flare: Cosmic Transcendence', ribbonWidth: 46, particleDensity: 2.4, bloomScale: 2.6, streakScale: 2.6, speed: 0.9 },
+      ultimate: { name: 'Convergent Light: Cosmic Transcendence', ribbonWidth: 46, particleDensity: 2.4, bloomScale: 2.6, streakScale: 2.6, speed: 0.9 },
     },
   },
   elise: {
@@ -356,7 +356,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 10, particleDensity: 0.7, bloomScale: 0.9, streakScale: 1.2, speed: 1.5 },
       skill1: { name: 'Blitz Shuriken', ribbonWidth: 20, particleDensity: 1.2, bloomScale: 1.4, streakScale: 1.7, speed: 1.35 },
       skill2: { name: 'Plasma Storm', ribbonWidth: 28, particleDensity: 1.7, bloomScale: 1.8, streakScale: 2.1, speed: 1.15 },
-      ultimate: { name: 'Last Flare: Thunder God', ribbonWidth: 42, particleDensity: 2.6, bloomScale: 2.7, streakScale: 3.0, speed: 1.1 },
+      ultimate: { name: 'Convergent Light: Thunder God', ribbonWidth: 42, particleDensity: 2.6, bloomScale: 2.7, streakScale: 3.0, speed: 1.1 },
     },
   },
   razor: {
@@ -365,7 +365,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 16, particleDensity: 0.5, bloomScale: 0.8, streakScale: 0.8, speed: 1.1 },
       skill1: { name: 'Shadow Cleave', ribbonWidth: 26, particleDensity: 1.0, bloomScale: 1.2, streakScale: 1.2, speed: 1.05 },
       skill2: { name: 'Eclipse Barrier', ribbonWidth: 32, particleDensity: 1.5, bloomScale: 1.6, streakScale: 1.5, speed: 0.9 },
-      ultimate: { name: 'Last Flare: Event Horizon', ribbonWidth: 46, particleDensity: 2.3, bloomScale: 2.5, streakScale: 2.5, speed: 0.85 },
+      ultimate: { name: 'Convergent Light: Event Horizon', ribbonWidth: 46, particleDensity: 2.3, bloomScale: 2.5, streakScale: 2.5, speed: 0.85 },
     },
   },
   rosetta: {
@@ -374,7 +374,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 12, particleDensity: 0.5, bloomScale: 0.8, streakScale: 0.9, speed: 1.25 },
       skill1: { name: 'Solar Arrow', ribbonWidth: 22, particleDensity: 1.0, bloomScale: 1.3, streakScale: 1.4, speed: 1.2 },
       skill2: { name: 'Thorn Mandala', ribbonWidth: 30, particleDensity: 1.5, bloomScale: 1.6, streakScale: 1.6, speed: 1.0 },
-      ultimate: { name: 'Last Flare: Crimson Blossom', ribbonWidth: 44, particleDensity: 2.3, bloomScale: 2.4, streakScale: 2.6, speed: 0.9 },
+      ultimate: { name: 'Convergent Light: Crimson Blossom', ribbonWidth: 44, particleDensity: 2.3, bloomScale: 2.4, streakScale: 2.6, speed: 0.9 },
     },
   },
   thornia: {
@@ -383,7 +383,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 16, particleDensity: 0.6, bloomScale: 0.8, streakScale: 0.8, speed: 1.1 },
       skill1: { name: 'Bramble Slash', ribbonWidth: 26, particleDensity: 1.1, bloomScale: 1.2, streakScale: 1.2, speed: 1.0 },
       skill2: { name: 'Twilight Ward', ribbonWidth: 32, particleDensity: 1.5, bloomScale: 1.5, streakScale: 1.4, speed: 0.9 },
-      ultimate: { name: 'Last Flare: Thorn Cataclysm', ribbonWidth: 46, particleDensity: 2.4, bloomScale: 2.3, streakScale: 2.3, speed: 0.85 },
+      ultimate: { name: 'Convergent Light: Thorn Cataclysm', ribbonWidth: 46, particleDensity: 2.4, bloomScale: 2.3, streakScale: 2.3, speed: 0.85 },
     },
   },
   crinso: {
@@ -392,7 +392,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 14, particleDensity: 0.6, bloomScale: 0.8, streakScale: 0.9, speed: 1.2 },
       skill1: { name: 'Twin Blade', ribbonWidth: 24, particleDensity: 1.1, bloomScale: 1.3, streakScale: 1.4, speed: 1.1 },
       skill2: { name: 'Flame & Thunder', ribbonWidth: 32, particleDensity: 1.6, bloomScale: 1.7, streakScale: 1.8, speed: 1.0 },
-      ultimate: { name: 'Last Flare: Dual Chaos', ribbonWidth: 46, particleDensity: 2.5, bloomScale: 2.6, streakScale: 2.8, speed: 0.9 },
+      ultimate: { name: 'Convergent Light: Dual Chaos', ribbonWidth: 46, particleDensity: 2.5, bloomScale: 2.6, streakScale: 2.8, speed: 0.9 },
     },
   },
   nerithe: {
@@ -401,7 +401,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 14, particleDensity: 0.6, bloomScale: 0.8, streakScale: 0.8, speed: 1.15 },
       skill1: { name: 'Abyssal Spear', ribbonWidth: 24, particleDensity: 1.1, bloomScale: 1.2, streakScale: 1.3, speed: 1.1 },
       skill2: { name: 'Oceanic Pressure', ribbonWidth: 32, particleDensity: 1.5, bloomScale: 1.5, streakScale: 1.5, speed: 0.95 },
-      ultimate: { name: 'Last Flare: Maelstrom', ribbonWidth: 46, particleDensity: 2.4, bloomScale: 2.3, streakScale: 2.5, speed: 0.85 },
+      ultimate: { name: 'Convergent Light: Maelstrom', ribbonWidth: 46, particleDensity: 2.4, bloomScale: 2.3, streakScale: 2.5, speed: 0.85 },
     },
   },
   orvella: {
@@ -410,7 +410,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 18, particleDensity: 0.6, bloomScale: 0.8, streakScale: 0.7, speed: 1.0 },
       skill1: { name: 'Fortress Slam', ribbonWidth: 28, particleDensity: 1.2, bloomScale: 1.2, streakScale: 1.1, speed: 0.95 },
       skill2: { name: 'Adamantine Bastion', ribbonWidth: 34, particleDensity: 1.6, bloomScale: 1.5, streakScale: 1.3, speed: 0.9 },
-      ultimate: { name: 'Last Flare: Living Citadel', ribbonWidth: 48, particleDensity: 2.5, bloomScale: 2.2, streakScale: 2.0, speed: 0.85 },
+      ultimate: { name: 'Convergent Light: Living Citadel', ribbonWidth: 48, particleDensity: 2.5, bloomScale: 2.2, streakScale: 2.0, speed: 0.85 },
     },
   },
   vaelor: {
@@ -419,7 +419,7 @@ export const CHARACTER_PRESETS: Record<string, CharacterPreset> = {
       light: { name: 'Normal Attack', ribbonWidth: 12, particleDensity: 0.6, bloomScale: 0.9, streakScale: 1.2, speed: 1.35 },
       skill1: { name: 'Sonic Blade', ribbonWidth: 22, particleDensity: 1.1, bloomScale: 1.3, streakScale: 1.6, speed: 1.25 },
       skill2: { name: 'Chime Wave', ribbonWidth: 30, particleDensity: 1.5, bloomScale: 1.7, streakScale: 2.0, speed: 1.05 },
-      ultimate: { name: 'Last Flare: Resonance Cascade', ribbonWidth: 44, particleDensity: 2.4, bloomScale: 2.6, streakScale: 2.8, speed: 0.95 },
+      ultimate: { name: 'Convergent Light: Resonance Cascade', ribbonWidth: 44, particleDensity: 2.4, bloomScale: 2.6, streakScale: 2.8, speed: 0.95 },
     },
   },
 };

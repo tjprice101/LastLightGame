@@ -125,7 +125,7 @@ describe('Moon and Sunshade native combat loops', () => {
     }
   });
 
-  it('automatically removes a single status and keeps Last Flare Burn-first one-application priority', () => {
+  it('automatically removes a single status and keeps Convergent Light Burn-first one-application priority', () => {
     for (const only of ['burn', 'weaken'] as const) {
       const state = encounter('ilyss', 'ember');
       const ally = state.allies[1];

@@ -154,7 +154,7 @@ describe('released Element-Bearer catalog and frozen account compatibility', () 
       expect(offer.attackBuff > 0).toBe(offer.attackBuffRounds > 0);
     }
   });
-  it('scales kit Flares by tier: Glimmering 75% damage / 85% effects / 8 hits, Sparkling 50% / 70% / 4 (D-473 N3)', () => {
+  it('scales kit Convergent Light by tier: Glimmering 75% damage / 85% effects / 8 hits, Sparkling 50% / 70% / 4 (D-473 N3)', () => {
     expect(radiantFlares.ember.sparkling).toMatchObject({ name: 'Dawnfire', comboHits: 4, burnPhases: 3, attackBuffRounds: 3 });
     expect(radiantFlares.ember.sparkling.damage).toBeCloseTo(9 * .5);
     expect(radiantFlares.ember.glimmering.damage).toBeCloseTo(9 * .75);
@@ -261,7 +261,7 @@ describe('saved enemy Gauge drops', () => {
     expect(result.state.chargeSeed).toBe(0);
     expect(result.state.currencyEarned).toBe(101);
   });
-  it('resolves eight hits per Flare target without generating Luminosity', () => {
+  it('resolves eight hits per Convergent Light target without generating Luminosity', () => {
     const loadouts = squad.map((starter, index) => loadout(starter, { id: `ally-${index}`, form: 6 }));
     const enemies = Array.from({ length: 6 }, (_, index) => ({ elementId: null, id: `enemy-${index}`,
       stats: { hp: 1000000, attack: 20, defense: 10, recovery: 0 }, currencyBudget: 100 }));
@@ -489,7 +489,7 @@ describe('progressive signatures and layered shared readiness', () => {
     expect(state.phase).toBe('player');
     expect(state.acted).toEqual([]);
   });
-  it('resolves real AoE combos and support Flares without personal charge or random rolls', () => {
+  it('resolves real AoE combos and support Convergent Light without personal charge or random rolls', () => {
     const enemies = Array.from({ length: 6 }, (_, i) => ({ elementId: null, id: `enemy-${i}`,
       stats: { hp: 1000000, attack: 20, defense: 10, recovery: 0 }, currencyBudget: 100 }));
     const state = charged(createRadiantCombat([loadout('ember', { id: 'ally-0', form: 6 })], enemies, 0), 'ultimate');
@@ -786,7 +786,7 @@ describe('Passives, Masters and Leaders under the Phase 3 kits', () => {
     expect(state.gauge.members[0].charge).toBe(0);
   });
 
-  it('lets Rosetta\'s Flare Expose its target for a later squad strike (Skill Power scales Expose)', () => {
+  it('lets Rosetta\'s Convergent Light Expose its target for a later squad strike (Skill Power scales Expose)', () => {
     let state = charged(createRadiantCombat([
       loadout('rosetta', { id: 'rosetta' }), loadout('ember', { id: 'ember' }),
     ], [{ elementId: null, id: 'enemy', stats: { hp: 10000, attack: 10, defense: 10, recovery: 0 }, currencyBudget: 100 }], 0), 'sparkling', 'rosetta');

@@ -175,7 +175,7 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(ally.shatter).toBe(2 * Math.round(200 * benefit(.08, level)));
   });
 
-  it('chaotic-ouroboros-core creates upgraded generated Shields after Last Flare that last until broken', () => {
+  it('chaotic-ouroboros-core creates upgraded generated Shields after Convergent Light that last until broken', () => {
     const state = fixture('chaotic-ouroboros-core', level);
     hit(state, 'ultimate');
     const shield = Math.round(1000 * (1 + benefit(.55, level)) * benefit(.1, level));
@@ -188,7 +188,7 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(state.allies.every(ally => ally.conduitRuntime?.layers?.every(layer => !('expiresAfterPhase' in layer)) ?? true)).toBe(true);
   });
 
-  it('worldbreaker-drive changes Last Flare Power only, not other skills or a retired AoE override', () => {
+  it('worldbreaker-drive changes Convergent Light Power only, not other skills or a retired AoE override', () => {
     const state = fixture('worldbreaker-drive', level), [owner] = state.allies;
     expect(prepareConduitAction(state, owner, 'ultimate', 100, true).skillPower).toBeCloseTo(1 + benefit(.99, level));
     expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBe(1);
@@ -219,7 +219,7 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(calamiticExtraActionAvailable(state, ally, 'light')).toBe(false);
   });
 
-  it('calamitic-causality-funeral-engine grants Efficiency and Last Flare damage without free actions', () => {
+  it('calamitic-causality-funeral-engine grants Efficiency and Convergent Light damage without free actions', () => {
     const state = fixture('calamitic-causality-funeral-engine', level), [owner] = state.allies;
     applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
     const ctx = prepareConduitAction(state, owner, 'ultimate', 100, true);

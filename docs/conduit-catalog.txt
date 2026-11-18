@@ -82,7 +82,7 @@ Elemental Gauge Gain, with no level-based growth for these four stats.
 8. Skill Efficiency: additive percentage reduction to the skill's Gauge cost.
    +10% and +15% reduce the original cost by 25%; a negative value raises cost.
    Combined reduction cap: 50%; round the final cost up once.
-   Skill 1/2 cost at least 1 Gauge and Last Flare at least 70, unless a
+   Skill 1/2 cost at least 1 Gauge and Convergent Light at least 70, unless a
    specifically named, one-use effect explicitly overrides that floor.
 9. Elemental Gauge Capacity: the amount the bearer can hold, not free Gauge.
    Increasing capacity does not fill the extra space.
@@ -185,7 +185,7 @@ Ability (Default Value): +40% [Elemental Gauge Capacity].
 Name: Parallax Relay
 Rarity: Common
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +50% [Health] and +10% [Last Flare] [Direct Damage].
+Ability (Default Value): +50% [Health] and +10% [Convergent Light] [Direct Damage].
 
 Name: Precision Escapement
 Rarity: Common
@@ -318,7 +318,7 @@ Ability (Default Value): At the start of each [Player Turn], gain a [Shield] equ
 Name: Horizon Heartcase
 Rarity: Legendary
 Element: Oceanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. Gain +20% [Health] and +10% [Defense] while it is blocked by insufficient [Elemental Gauge], [Cooldown] or [Recovery].
+Ability (Default Value): Your [Convergent Light] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. Gain +20% [Health] and +10% [Defense] while it is blocked by insufficient [Elemental Gauge], [Cooldown] or [Recovery].
 
 Name: Immortal Vessel
 Rarity: Legendary
@@ -368,7 +368,7 @@ Ability (Default Value): A critical [Attack Action] heals you for 25% of your ma
 Name: Worldbreaker Drive
 Rarity: Legendary
 Element: Infernic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Your [Last Flare] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage].
+Ability (Default Value): Your [Convergent Light] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage].
 
 ==============================================================================
 OMNIC (111)
@@ -462,7 +462,7 @@ Ability (Default Value): When an allied ability-applied [Burn] tick damages an e
 Name: Cinderstar Genesis Engine
 Rarity: Omnic (Master)
 Element: Infernic (named bearer's actual element; Master for Infernis only)
-Ability (Default Value): Infernis' [Last Flare] now targets one enemy and gains +125% [Direct Damage]. Infernis also gains +55% [Health], +65% [Defense], and +40% [Skill Power].
+Ability (Default Value): Infernis' [Convergent Light] now targets one enemy and gains +125% [Direct Damage]. Infernis also gains +55% [Health], +65% [Defense], and +40% [Skill Power].
 
 Name: Concord Planet Thoughtforge
 Rarity: Omnic (Master)
@@ -512,7 +512,7 @@ Ability (Default Value): Using [Golden Edge] immediately after [Crimson Rupture]
 Name: Eclipse Mantle
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Last Flare] [Direct Damage].
+Ability (Default Value): Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Convergent Light] [Direct Damage].
 
 Name: Eclipse Planet Watchtower
 Rarity: Omnic (Master)
@@ -672,12 +672,12 @@ Ability (Default Value): When Leave the Doorway Standing spends at least 3 Cross
 Name: Ouroboros Core
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): +40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health].
+Ability (Default Value): +40% [Elemental Gauge Capacity]. After [Convergent Light], all living allies gain a [Shield] worth 10% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health].
 
 Name: Paradox Spindle
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): While you recover from [Last Flare], your other allies gain +40% [Skill Power] and +20% [Skill Efficiency]. +35% [Defense] and +20% [Skill Efficiency].
+Ability (Default Value): While you recover from [Convergent Light], your other allies gain +40% [Skill Power] and +20% [Skill Efficiency]. +35% [Defense] and +20% [Skill Efficiency].
 
 Name: Phoenix Lifeforge
 Rarity: Omnic
@@ -707,7 +707,7 @@ Ability (Default Value): Gain +20% [Skill Power] per different [Element] among l
 Name: Quarry Planet Gravitas
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Bruno only)
-Ability (Default Value): Bruno's [Last Flare] [Shield] uses the larger of 375% of his effective [Defense] or 37.5% of his maximum [Health], before [Skill Power]. Allies under his [Cover] gain +25% [Elemental Gauge Gain]. Bruno gains +65% [Health] and +65% [Defense].
+Ability (Default Value): Bruno's [Convergent Light] [Shield] uses the larger of 375% of his effective [Defense] or 37.5% of his maximum [Health], before [Skill Power]. Allies under his [Cover] gain +25% [Elemental Gauge Gain]. Bruno gains +65% [Health] and +65% [Defense].
 
 Name: Quiet Heaven Fanforge
 Rarity: Omnic (Master)
@@ -717,12 +717,12 @@ Ability (Default Value): [Thousandfeather Stillness] grants each other living al
 Name: Quiet-Arc Shelter Projector
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Solenne only)
-Ability (Default Value): After Solenne uses either Skill or her Last Flare, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power].
+Ability (Default Value): After Solenne uses either Skill or her Convergent Light, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power].
 
 Name: Reaping-Tide Recovery Dynamo
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Myrthen only)
-Ability (Default Value): When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power].
+Ability (Default Value): When Myrthen's Normal Attack, Skill or Convergent Light directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power].
 
 Name: Recoil-Star Compression Turbine
 Rarity: Omnic (Master)
@@ -742,7 +742,7 @@ Ability (Default Value): Every two direct hits that damage Rosetta's [Quarry] re
 Name: Rosefault Precision Sovereign
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): While [Shielded], gain +50% [Critical Damage Multiplier]. Your first critical [Attack Action] each [Player Turn] grants your [Shield]'s provider +20% [Skill Power] for their next [Skill]. +70% [Last Flare] [Direct Damage] and +55% [Health].
+Ability (Default Value): While [Shielded], gain +50% [Critical Damage Multiplier]. Your first critical [Attack Action] each [Player Turn] grants your [Shield]'s provider +20% [Skill Power] for their next [Skill]. +70% [Convergent Light] [Direct Damage] and +55% [Health].
 
 Name: Ruinselect Fracture Parliament
 Rarity: Omnic
@@ -767,7 +767,7 @@ Ability (Default Value): After another ally damages an enemy, your next damaging
 Name: Seedtrace Pursuit Distributor
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Myrthen only)
-Ability (Default Value): After using either Skill or her Last Flare, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate].
+Ability (Default Value): After using either Skill or her Convergent Light, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate].
 
 Name: Seraph Mirror
 Rarity: Omnic
@@ -827,7 +827,7 @@ Ability (Default Value): A damaging action that consumes Disciple's [Strike] or 
 Name: Stillhour Carillon
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): At the start of each [Player Turn] you spend in [Last Flare] [Recovery], heal every living ally for 8% of their own maximum [Health] and grant them 10% [Elemental Gauge]. +120% [Health] and +30% [Elemental Gauge Gain].
+Ability (Default Value): At the start of each [Player Turn] you spend in [Convergent Light] [Recovery], heal every living ally for 8% of their own maximum [Health] and grant them 10% [Elemental Gauge]. +120% [Health] and +30% [Elemental Gauge Gain].
 
 Name: Stillplume Planetary Ballet
 Rarity: Omnic (Master)
@@ -852,7 +852,7 @@ Ability (Default Value): Alternating [Skill 1] and [Skill 2] grants +30% [Skill 
 Name: Tempest Return Chronarch
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): Every third critical [Attack Action] you perform grants all living allies +25% [Skill Efficiency] for their next [Last Flare]. Store at most one discount per ally. +35% [Critical Rate] and +75% [Elemental Gauge Capacity].
+Ability (Default Value): Every third critical [Attack Action] you perform grants all living allies +25% [Skill Efficiency] for their next [Convergent Light]. Store at most one discount per ally. +35% [Critical Rate] and +75% [Elemental Gauge Capacity].
 
 Name: Tempest Shelter Sovereign
 Rarity: Omnic
@@ -1011,7 +1011,7 @@ Ability (Default Value): Your [Attack Actions] gain +250% [Critical Rate] and +1
 Name: Causality Funeral Engine
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage].
+Ability (Default Value): +50% [Skill Efficiency]. Your [Convergent Light] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage].
 
 Name: Choir-Array of Branded Stars
 Rarity: Calamitic
@@ -1046,7 +1046,7 @@ Ability (Default Value): Enemies this character [Weakens] take +10% damage from 
 Name: Throne of Borrowed Tomorrows
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense].
+Ability (Default Value): Your [Convergent Light] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Convergent Light] [Recovery] are ineligible. +45% [Health] and +45% [Defense].
 
 Name: Throne of the Lone Apostate
 Rarity: Calamitic

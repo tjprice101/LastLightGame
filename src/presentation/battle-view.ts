@@ -768,7 +768,7 @@ export class BattleView {
       ${results}
       <p id="battle-error" role="alert" aria-atomic="true" class="status"></p>
       ${this.session.log.at(-1) === conduitRestartNotice ? `<p class="battle-compatibility-notice" role="status">${conduitRestartNotice}</p>` : ''}
-      <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? state.calamity ? 'Calamity tier cleared. Your chest is saved in Inventory. Enter the next unlocked tier from Play.' : `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Elemental Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack.'}</p>
+      <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? state.calamity ? 'Calamity tier cleared. Your chest is saved in Inventory. Enter the next unlocked tier from Play.' : `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Elemental Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Convergent Light · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack.'}</p>
       <span class="battle-footer-target"><strong>${actor.name}</strong><small>Target: ${state.enemies.find((enemy) => enemy.id === this.targetId)?.name ?? 'None'}</small></span></div>
       </footer>
       <dialog id="battle-menu" class="battle-menu battle-status-menu" aria-labelledby="battle-menu-heading">
@@ -993,7 +993,7 @@ export class BattleView {
       ? `<small class="battle-status-note">Attack damage +${formatStat(unit.attackBoost.fraction * 100)}% &middot; ${unit.attackBoost.throughRound - state.round + 1} turn${unit.attackBoost.throughRound - state.round ? 's' : ''} left</small>` : '';
     return `<article class="battle-status-card${unit.hp <= 0 ? ' is-defeated' : ''}" data-status-unit="${unit.id}">
       <header><strong>${unit.name}</strong><span>${unit.level !== null ? `Lv.${unit.level}` : ''}</span>${elementLabel(unit.element)}</header>
-      <p class="battle-status-condition">${condition}${ally && unit.hp > 0 && unit.kit ? ` &middot; Last Flare ${flare ? 'not ready' : 'ready'}` : ''}</p>
+      <p class="battle-status-condition">${condition}${ally && unit.hp > 0 && unit.kit ? ` &middot; Convergent Light ${flare ? 'not ready' : 'ready'}` : ''}</p>
       ${ally && unit.kit && !unit.captured ? `<p><strong>${unit.kit.passive.name} · Passive</strong><br>${unit.kit.passive.description}</p>${rolePerkRow(unit.definitionId)}` : ''}
       <div class="battle-status-readout">${unitReadout(unit, false, state.allies, state.round, state)}${boost}</div></article>`;
   }

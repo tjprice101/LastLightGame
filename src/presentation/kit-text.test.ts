@@ -20,7 +20,7 @@ function approvedKits(): Record<string, Record<string, { name: string; text: str
     else if (/^ {2}\S/.test(line) && kits[id].length) kits[id][kits[id].length - 1] += ` ${line.trim()}`;
   }
   return Object.fromEntries(Object.entries(kits).map(([key, bullets]) => [key, Object.fromEntries(bullets.flatMap(bullet => {
-    const match = bullet.match(/^(Passive|Skill 1|Skill 2|Flare|Leader), (.+?)(?: \((?:25|40)\))?: (.*)$/);
+    const match = bullet.match(/^(Passive|Skill 1|Skill 2|Convergent Light|Leader), (.+?)(?: \((?:25|40)\))?: (.*)$/);
     return match ? [[match[1], { name: match[2], text: match[3] }]] : [];
   }))]));
 }
@@ -49,13 +49,13 @@ describe('Phase 3 kit text (D-479)', () => {
     const doc = approved[id], kit = radiantKits[id];
     expect(doc['Skill 1'].name).toBe(kit.skill1.name);
     expect(doc['Skill 2'].name).toBe(kit.skill2.name);
-    expect(doc.Flare.name).toBe(kit.flare.name);
+    expect(doc["Convergent Light"].name).toBe(kit.flare.name);
     expect(doc.Passive.name).toBe(kit.passive.name);
     expect(doc.Leader.name).toBe(radiantBearerKits[id].leader);
     expect(radiantSkillText(id, 1)).toBe(tooltip(doc['Skill 1'].text));
     expect(radiantSkillText(id, 2)).toBe(tooltip(doc['Skill 2'].text));
     // Aurora's draft says 8 hits, but every Ultimate Flare resolves 12 hits (N3), so the tooltip shows 12.
-    expect(radiantFlareText(id, 'ultimate')).toBe(tooltip(id === 'aurora' ? doc.Flare.text.replace('8-hit', '12-hit') : doc.Flare.text));
+    expect(radiantFlareText(id, 'ultimate')).toBe(tooltip(id === 'aurora' ? doc["Convergent Light"].text.replace('8-hit', '12-hit') : doc["Convergent Light"].text));
     expect(radiantLeaderSkillText(formOne(id))).toBe(tooltip(doc.Leader.text));
     expect(kit.passive.description).toBe(tooltip(doc.Passive.text));
   });

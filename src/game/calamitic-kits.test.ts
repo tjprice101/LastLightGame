@@ -239,7 +239,7 @@ describe('owner-authored Calamitic native kits', () => {
     expect(damage(use(base, 'kaelith', 'skill2').events, 'kaelith')[0].elementalCritical).not.toBe(true);
   });
 
-  it.each(['ozriel', 'ilvaris', 'kaelith'])('%s Last Flare retains the next-turn Recover contract', id => {
+  it.each(['ozriel', 'ilvaris', 'kaelith'])('%s Convergent Light retains the next-turn Recover contract', id => {
     const state = encounter(id);
     if (id === 'kaelith') nativeMemory(state.allies[0]).faults = Object.fromEntries(state.enemies.map(enemy => [enemy.id, 3]));
     const result = use(state, id, 'ultimate');

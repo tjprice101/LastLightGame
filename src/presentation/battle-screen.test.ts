@@ -136,7 +136,7 @@ describe('device-run three-member Radiant battle surface', () => {
     expect(enemies.map(enemy => enemy.getAttribute('style'))).toEqual(positions);
   });
 
-  it('does not show an enemy impact for a support-only Flare after changing targets', async () => {
+  it('does not show an enemy impact for a support-only Convergent Light after changing targets', async () => {
     let releaseWindup!: () => void;
     const effects = {
       windup: vi.fn(() => new Promise<void>(resolve => { releaseWindup = resolve; })),
@@ -420,7 +420,7 @@ describe('device-run three-member Radiant battle surface', () => {
     expect(acts).toHaveBeenCalledTimes(1);
     expect(transport.execute).not.toHaveBeenCalled();
   });
-  it('a held upward portrait release casts one Flare and suppresses its compatibility click', async () => {
+  it('a held upward portrait release casts one Convergent Light and suppresses its compatibility click', async () => {
     const { view, session, host, transport, acts } = fixture(3, 6, undefined, 25, undefined, undefined, true);
     applyMotion('reduced'); await view.finishEntrance();
     vi.useFakeTimers();
@@ -1087,7 +1087,7 @@ describe('device-run three-member Radiant battle surface', () => {
     expect(host.querySelector('[data-radiant-target-detail="story-25-0"] [data-radiant-effects]')!.textContent)
       .toContain('Thorn Trap · 3 charges · 3 turns');
   });
-  it.each(['master-tide-3', 'master-sprout-2'] as const)('keeps %s support Flare ally-targeted without a retired generated strike', async masterId => {
+  it.each(['master-tide-3', 'master-sprout-2'] as const)('keeps %s support Convergent Light ally-targeted without a retired generated strike', async masterId => {
     const { view, host, acts } = fixture(3, 6, undefined, 25, undefined, masterId, true);
     applyMotion('reduced'); await view.finishEntrance();
     const bearer = masterId.includes('tide') ? 'tide' : 'sprout';

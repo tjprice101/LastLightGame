@@ -55,7 +55,7 @@ describe('approved native identities', () => {
     expect(neralis).toContain('even when healing several allies');
     expect(neralis).toContain('can earn 1 back');
     expect(nativeIdentities.seravelle.playLoop).not.toContain('Burn');
-    expect(nativeIdentities.seravelle.playLoop).toContain('Last Flare gives other allies Gauge');
+    expect(nativeIdentities.seravelle.playLoop).toContain('Convergent Light gives other allies Gauge');
     expect(nativeIdentities.seravelle.passive.description).toContain('whole squad can earn only 1 per round');
     const velmira = nativeIdentities.velmira.passive.description;
     expect(velmira).toContain('Repeating a Skill keeps existing stacks');
@@ -83,7 +83,7 @@ describe('approved native identities', () => {
     expect(nativeIdentities.sprout.abilities.ultimate.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% at the start of the next player turn`);
   });
 
-  it('scales Last Flare damage and support while preserving ordinary skill coefficients', () => {
+  it('scales Convergent Light damage and support while preserving ordinary skill coefficients', () => {
     const scale = nativeBalance.skillDamageScale;
     const flareScale = scale * nativeBalance.lastFlare.damage;
     expect(nativeIdentities.crinso.abilities.skill2.description).toContain(`${200 * scale}% direct damage`);

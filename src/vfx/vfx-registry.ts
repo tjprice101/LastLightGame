@@ -228,7 +228,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'slash', description: 'Single incandescent greatsword slash leaving fiery embers.', palette: P_EMBER, duration: 1.8, chargeDuration: 0.4, impactDuration: 0.5 },
       skill1: { name: 'Cinder Cleave', tier: 'skill1', archetype: 'slash', description: 'Vertical volcanic cleave plunging into the earth, erupting a burning magma fissure.', palette: P_EMBER, duration: 2.4, chargeDuration: 0.6, impactDuration: 0.8 },
       skill2: { name: 'Flame Arc', tier: 'skill2', archetype: 'slash', description: 'Horizontal 180° wildfire crescent wave cutting across all targets with dual flame filaments.', palette: P_EMBER, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Dawnfire', tier: 'ultimate', archetype: 'cataclysm', description: 'Solar eclipse caldera eruption with sky-piercing volcanic magma pillars and fiery shockwaves.', palette: P_EMBER, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Dawnfire', tier: 'ultimate', archetype: 'cataclysm', description: 'Solar eclipse caldera eruption with sky-piercing volcanic magma pillars and fiery shockwaves.', palette: P_EMBER, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   tide: {
@@ -237,7 +237,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'volley', description: 'Sharp hydro spear jab with splashing pressurized water droplets.', palette: P_TIDE, duration: 1.8, chargeDuration: 0.35, impactDuration: 0.5 },
       skill1: { name: 'Torrent Thrust', tier: 'skill1', archetype: 'volley', description: 'Rapid multi-thrust hydro trident strikes forming piercing water drills.', palette: P_TIDE, duration: 2.4, chargeDuration: 0.55, impactDuration: 0.8 },
       skill2: { name: 'Ocean Wall', tier: 'skill2', archetype: 'vortex', description: 'Rising water geysers and spinning tidal barrier shielding against incoming pressure.', palette: P_TIDE, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Leviathan', tier: 'ultimate', archetype: 'cataclysm', description: 'Colossal ocean tsunami deluge crashing down with foaming crests and vortex undertow.', palette: P_TIDE, duration: 3.4, chargeDuration: 1.1, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Leviathan', tier: 'ultimate', archetype: 'cataclysm', description: 'Colossal ocean tsunami deluge crashing down with foaming crests and vortex undertow.', palette: P_TIDE, duration: 3.4, chargeDuration: 1.1, impactDuration: 1.4 },
     },
   },
   sprout: {
@@ -246,7 +246,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'volley', description: 'Wooden bow shot releasing a swift verdant arrow with leafy motes.', palette: P_SPROUT, duration: 1.8, chargeDuration: 0.4, impactDuration: 0.5 },
       skill1: { name: 'Petal Shot', tier: 'skill1', archetype: 'volley', description: 'Arcing volley of flower energy arrows raining downward into blooming blossoms.', palette: P_SPROUT, duration: 2.4, chargeDuration: 0.6, impactDuration: 0.8 },
       skill2: { name: 'Verdant Briar', tier: 'skill2', archetype: 'mandala', description: 'Sacred blossoming thorny vines bursting from the ground with restorative pollen spores.', palette: P_SPROUT, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: World Tree', tier: 'ultimate', archetype: 'cataclysm', description: 'Monumental Tree of Life rising with radiant roots and cascading emerald petals.', palette: P_SPROUT, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: World Tree', tier: 'ultimate', archetype: 'cataclysm', description: 'Monumental Tree of Life rising with radiant roots and cascading emerald petals.', palette: P_SPROUT, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   atmoso: {
@@ -255,7 +255,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'slash', description: 'Staff swipe releasing an aerodynamic jade breeze blade.', palette: P_ATMOSO, duration: 1.8, chargeDuration: 0.35, impactDuration: 0.5 },
       skill1: { name: 'Zephyr Gale', tier: 'skill1', archetype: 'vortex', description: 'Twin vacuum air-blade scythes crossing in high-speed wind shears.', palette: P_ATMOSO, duration: 2.4, chargeDuration: 0.55, impactDuration: 0.8 },
       skill2: { name: 'Vortex Burst', tier: 'skill2', archetype: 'vortex', description: 'Howling emerald whirlwind sucking in debris and detonating air currents.', palette: P_ATMOSO, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Tempest Rupture', tier: 'ultimate', archetype: 'cataclysm', description: 'Typhoon eye singularity drawing storm clouds into an apocalyptic hurricane burst.', palette: P_ATMOSO, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Tempest Rupture', tier: 'ultimate', archetype: 'cataclysm', description: 'Typhoon eye singularity drawing storm clouds into an apocalyptic hurricane burst.', palette: P_ATMOSO, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   aurora: {
@@ -264,7 +264,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'beam', description: 'Focused photon pulse with sparkling prismatic stardust.', palette: P_AURORA, duration: 1.8, chargeDuration: 0.35, impactDuration: 0.5 },
       skill1: { name: 'Prismatic Ray', tier: 'skill1', archetype: 'beam', description: 'Orbital crystal lenses aligning into a white-hot laser refracting into rainbow diffraction beams.', palette: P_AURORA, duration: 2.4, chargeDuration: 0.6, impactDuration: 0.8 },
       skill2: { name: 'Dawn Aurora', tier: 'skill2', archetype: 'beam', description: 'Cascading polar light curtains wafting across the field with blinding luminescence.', palette: P_AURORA, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Supernova', tier: 'ultimate', archetype: 'cataclysm', description: 'Celestial star cluster collapse into a blinding supernova with diamond shockwave rings.', palette: P_AURORA, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Supernova', tier: 'ultimate', archetype: 'cataclysm', description: 'Celestial star cluster collapse into a blinding supernova with diamond shockwave rings.', palette: P_AURORA, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   bliss: {
@@ -273,7 +273,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'slash', description: 'Graceful warfan sweep launching golden feather daggers.', palette: P_BLISS, duration: 1.8, chargeDuration: 0.35, impactDuration: 0.5 },
       skill1: { name: 'Seraph Feather', tier: 'skill1', archetype: 'mandala', description: 'Fan of razor celestial quill needles curving with golden stardust trails.', palette: P_BLISS, duration: 2.4, chargeDuration: 0.55, impactDuration: 0.8 },
       skill2: { name: 'Divine Fanfare', tier: 'skill2', archetype: 'mandala', description: 'Synchronized twin fan dance generating concentric holy halos and golden light pillars.', palette: P_BLISS, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Ascension', tier: 'ultimate', archetype: 'cataclysm', description: 'Six-winged archangel apparition descending with raining sanctified light feathers.', palette: P_BLISS, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Ascension', tier: 'ultimate', archetype: 'cataclysm', description: 'Six-winged archangel apparition descending with raining sanctified light feathers.', palette: P_BLISS, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   bruno: {
@@ -282,7 +282,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'slam', description: 'Heavy basalt hammer strike with flying gravel debris.', palette: P_BRUNO, duration: 1.8, chargeDuration: 0.45, impactDuration: 0.5 },
       skill1: { name: 'Seismic Bash', tier: 'skill1', archetype: 'slam', description: 'Hammer crash fracturing the ground into radiating fault cracks and jagged stone spires.', palette: P_BRUNO, duration: 2.4, chargeDuration: 0.65, impactDuration: 0.8 },
       skill2: { name: 'Earth Bastion', tier: 'skill2', archetype: 'slam', description: 'Interlocking tectonic stone slabs rising with glowing amber magma runes.', palette: P_BRUNO, duration: 2.6, chargeDuration: 0.75, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Tectonic Rupture', tier: 'ultimate', archetype: 'cataclysm', description: 'Vaulting strato-hammer drop shattering the continental crust with flying boulders.', palette: P_BRUNO, duration: 3.4, chargeDuration: 1.3, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Tectonic Rupture', tier: 'ultimate', archetype: 'cataclysm', description: 'Vaulting strato-hammer drop shattering the continental crust with flying boulders.', palette: P_BRUNO, duration: 3.4, chargeDuration: 1.3, impactDuration: 1.4 },
     },
   },
   disciple: {
@@ -291,7 +291,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'beam', description: 'Astral psychic dart with violet neural distortion ripples.', palette: P_DISCIPLE, duration: 1.8, chargeDuration: 0.35, impactDuration: 0.5 },
       skill1: { name: 'Mind Lance', tier: 'skill1', archetype: 'mandala', description: 'Psychic astral needle piercing through space with geometric neural diamonds.', palette: P_DISCIPLE, duration: 2.4, chargeDuration: 0.55, impactDuration: 0.8 },
       skill2: { name: 'Astral Singularity', tier: 'skill2', archetype: 'vortex', description: 'Gravitational psychic void orb distorting reality and pulling matter inward.', palette: P_DISCIPLE, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Cosmic Transcendence', tier: 'ultimate', archetype: 'cataclysm', description: 'Fabric of space cracking open to reveal an all-seeing astral mind eye and sacred lattice.', palette: P_DISCIPLE, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Cosmic Transcendence', tier: 'ultimate', archetype: 'cataclysm', description: 'Fabric of space cracking open to reveal an all-seeing astral mind eye and sacred lattice.', palette: P_DISCIPLE, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   elise: {
@@ -300,7 +300,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'volley', description: 'Swift four-point electric shuriken throw with spark trail.', palette: P_ELISE, duration: 1.8, chargeDuration: 0.3, impactDuration: 0.5 },
       skill1: { name: 'Blitz Shuriken', tier: 'skill1', archetype: 'volley', description: 'Twin lightning shurikens bouncing and ricocheting with branching Tesla electric arcs.', palette: P_ELISE, duration: 2.4, chargeDuration: 0.5, impactDuration: 0.8 },
       skill2: { name: 'Plasma Storm', tier: 'skill2', archetype: 'beam', description: 'Hexagonal electric cage trapping targets in continuous megavolt discharges.', palette: P_ELISE, duration: 2.6, chargeDuration: 0.65, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Thunder God', tier: 'ultimate', archetype: 'cataclysm', description: 'Dark thunderclouds gather as six giant plasma shurikens summon a colossal lightning spear.', palette: P_ELISE, duration: 3.4, chargeDuration: 1.1, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Thunder God', tier: 'ultimate', archetype: 'cataclysm', description: 'Dark thunderclouds gather as six giant plasma shurikens summon a colossal lightning spear.', palette: P_ELISE, duration: 3.4, chargeDuration: 1.1, impactDuration: 1.4 },
     },
   },
   razor: {
@@ -309,7 +309,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'slash', description: 'Night-blade thrust trailing dark void mist.', palette: P_RAZOR, duration: 1.8, chargeDuration: 0.4, impactDuration: 0.5 },
       skill1: { name: 'Shadow Cleave', tier: 'skill1', archetype: 'slash', description: 'Void blade slash tearing open a dimensional seam leaking dark matter gravity filaments.', palette: P_RAZOR, duration: 2.4, chargeDuration: 0.6, impactDuration: 0.8 },
       skill2: { name: 'Eclipse Barrier', tier: 'skill2', archetype: 'vortex', description: 'Crescent wings fold into an event horizon barrier deflecting energy.', palette: P_RAZOR, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Event Horizon', tier: 'ultimate', archetype: 'cataclysm', description: 'Black hole singularity with spinning accretion disk swallowing all light and matter.', palette: P_RAZOR, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Event Horizon', tier: 'ultimate', archetype: 'cataclysm', description: 'Black hole singularity with spinning accretion disk swallowing all light and matter.', palette: P_RAZOR, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   rosetta: {
@@ -318,7 +318,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'volley', description: 'Single radiant golden rose arrow leaving red petal motes.', palette: P_ROSETTA, duration: 1.8, chargeDuration: 0.35, impactDuration: 0.5 },
       skill1: { name: 'Solar Arrow', tier: 'skill1', archetype: 'volley', description: 'Charged crimson-gold photon arrow leaving a spiral trail of blooming rose petals.', palette: P_ROSETTA, duration: 2.4, chargeDuration: 0.55, impactDuration: 0.8 },
       skill2: { name: 'Thorn Mandala', tier: 'skill2', archetype: 'mandala', description: 'Constellation of floating petals rotating into sacred geometric rose mandala before detonating.', palette: P_ROSETTA, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Crimson Bloom', tier: 'ultimate', archetype: 'cataclysm', description: 'Arrow fired into the sun, blooming into a titanic celestial rose raining solar thorn lances.', palette: P_ROSETTA, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Crimson Bloom', tier: 'ultimate', archetype: 'cataclysm', description: 'Arrow fired into the sun, blooming into a titanic celestial rose raining solar thorn lances.', palette: P_ROSETTA, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   thornia: {
@@ -327,7 +327,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'slash', description: 'Jagged greatsword cut with amethyst thorn splinters.', palette: P_THORNIA, duration: 1.8, chargeDuration: 0.45, impactDuration: 0.5 },
       skill1: { name: 'Bramble Slash', tier: 'skill1', archetype: 'slash', description: 'Heavy diagonal cleave trailing hooked dark rose brambles that tear the air.', palette: P_THORNIA, duration: 2.4, chargeDuration: 0.65, impactDuration: 0.8 },
       skill2: { name: 'Twilight Ward', tier: 'skill2', archetype: 'mandala', description: 'Protective bramble cage of dark violet thorns absorbing enemy kinetic energy.', palette: P_THORNIA, duration: 2.6, chargeDuration: 0.75, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Thorn Cataclysm', tier: 'ultimate', archetype: 'cataclysm', description: 'Greatsword plunged into earth, erupting a colossal forest of jagged midnight-violet spikes.', palette: P_THORNIA, duration: 3.4, chargeDuration: 1.3, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Thorn Cataclysm', tier: 'ultimate', archetype: 'cataclysm', description: 'Greatsword plunged into earth, erupting a colossal forest of jagged midnight-violet spikes.', palette: P_THORNIA, duration: 3.4, chargeDuration: 1.3, impactDuration: 1.4 },
     },
   },
   crinso: {
@@ -336,7 +336,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'slash', description: 'Double-ended blade spin trailing gold and crimson fire.', palette: P_CRINSO, duration: 1.8, chargeDuration: 0.35, impactDuration: 0.5 },
       skill1: { name: 'Twin Blade', tier: 'skill1', archetype: 'slash', description: 'Spinning dual slash creating opposing arcs of golden flame and crimson lightning.', palette: P_CRINSO, duration: 2.4, chargeDuration: 0.55, impactDuration: 0.8 },
       skill2: { name: 'Flame & Thunder', tier: 'skill2', archetype: 'slash', description: 'Crossed blades releasing an explosive X-wave of intersecting fire and electric shockwaves.', palette: P_CRINSO, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Dual Chaos', tier: 'ultimate', archetype: 'cataclysm', description: 'Blazing sword wheel spinning into an apocalyptic Yin-Yang cyclone of fire and lightning.', palette: P_CRINSO, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Dual Chaos', tier: 'ultimate', archetype: 'cataclysm', description: 'Blazing sword wheel spinning into an apocalyptic Yin-Yang cyclone of fire and lightning.', palette: P_CRINSO, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   nerithe: {
@@ -345,7 +345,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'volley', description: 'Abyssal spear thrust trailing deep ocean bubbles.', palette: P_NERITHE, duration: 1.8, chargeDuration: 0.35, impactDuration: 0.5 },
       skill1: { name: 'Abyssal Spear', tier: 'skill1', archetype: 'volley', description: 'Pressurized oceanic cavitation drill spear thrust with crushing water vortex.', palette: P_NERITHE, duration: 2.4, chargeDuration: 0.55, impactDuration: 0.8 },
       skill2: { name: 'Oceanic Pressure', tier: 'skill2', archetype: 'vortex', description: 'Spinning tidal whirlpool shield crushing incoming projectiles with hydro pressure.', palette: P_NERITHE, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Maelstrom', tier: 'ultimate', archetype: 'cataclysm', description: 'Abyssal trench whirlpool pulling enemies into the dark depths with water spouts.', palette: P_NERITHE, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Maelstrom', tier: 'ultimate', archetype: 'cataclysm', description: 'Abyssal trench whirlpool pulling enemies into the dark depths with water spouts.', palette: P_NERITHE, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   orvella: {
@@ -354,7 +354,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'slam', description: 'Heavy bastion shield slam sending dust and stone fragments.', palette: P_ORVELLA, duration: 1.8, chargeDuration: 0.45, impactDuration: 0.5 },
       skill1: { name: 'Fortress Slam', tier: 'skill1', archetype: 'slam', description: 'Slamming bastion down, thrusting stone fortress ramparts and emerald earth shockwaves.', palette: P_ORVELLA, duration: 2.4, chargeDuration: 0.65, impactDuration: 0.8 },
       skill2: { name: 'Adamantine Bastion', tier: 'skill2', archetype: 'slam', description: 'Living petrified stone roots weaving into an impenetrable rampart bulwark.', palette: P_ORVELLA, duration: 2.6, chargeDuration: 0.75, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Living Citadel', tier: 'ultimate', archetype: 'cataclysm', description: 'Monumental ancient citadel rising with stone towers, glowing runic walls, and bastion dome.', palette: P_ORVELLA, duration: 3.4, chargeDuration: 1.3, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Living Citadel', tier: 'ultimate', archetype: 'cataclysm', description: 'Monumental ancient citadel rising with stone towers, glowing runic walls, and bastion dome.', palette: P_ORVELLA, duration: 3.4, chargeDuration: 1.3, impactDuration: 1.4 },
     },
   },
   vaelor: {
@@ -363,7 +363,7 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       light: { name: 'Normal Attack', tier: 'light', archetype: 'slash', description: 'Acoustic blade strike sending high-frequency vibration rings.', palette: P_VAELOR, duration: 1.8, chargeDuration: 0.35, impactDuration: 0.5 },
       skill1: { name: 'Sonic Blade', tier: 'skill1', archetype: 'beam', description: 'Ultrasonic acoustic wave lance oscillating with high-speed concentric sound ripples.', palette: P_VAELOR, duration: 2.4, chargeDuration: 0.55, impactDuration: 0.8 },
       skill2: { name: 'Chime Wave', tier: 'skill2', archetype: 'mandala', description: 'Resonance tuning forks creating concentric harmonic ripples disrupting enemy rhythm.', palette: P_VAELOR, duration: 2.6, chargeDuration: 0.7, impactDuration: 0.9 },
-      ultimate: { name: 'Last Flare: Resonance Cascade', tier: 'ultimate', archetype: 'cataclysm', description: 'Harmonic crystal blade strike shattering space with destructive acoustic glass ripples.', palette: P_VAELOR, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+      ultimate: { name: 'Convergent Light: Resonance Cascade', tier: 'ultimate', archetype: 'cataclysm', description: 'Harmonic crystal blade strike shattering space with destructive acoustic glass ripples.', palette: P_VAELOR, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
   caldrex: {

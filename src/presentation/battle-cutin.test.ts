@@ -10,7 +10,7 @@ import { infusionModeStageCount } from '../content/activities';
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe('Last Flare portrait cut-ins', () => {
+describe('Convergent Light portrait cut-ins', () => {
   it('shares field-facing metadata for every supplied portrait on both sides, including captured allies', () => {
     const panel = { className: '', setAttribute: vi.fn(), style: { setProperty: vi.fn() }, innerHTML: '',
       querySelector: () => ({ textContent: '' }) };
@@ -68,7 +68,7 @@ describe('Last Flare portrait cut-ins', () => {
     expect(impact).toHaveBeenCalledOnce();
   });
 
-  it('shows only Last Flare with consistent duration and actual form progression', () => {
+  it('shows only Convergent Light with consistent duration and actual form progression', () => {
     const state = createBattle(1, ['tide'], { tide: { level: 105, evolution: 6 } });
     state.allies[0].shatter = 100;
     const skill = act(state, 'tide', 'skill2', 'tide').events[0];
@@ -82,7 +82,7 @@ describe('Last Flare portrait cut-ins', () => {
     expect(portraitCue(young, ultimate)?.power).toBe(0);
   });
 
-  it.each(starters.map(unit => unit.id))('skips ordinary skill banners for %s while keeping Last Flare', id => {
+  it.each(starters.map(unit => unit.id))('skips ordinary skill banners for %s while keeping Convergent Light', id => {
     const unit = createBattle(1, [id]).allies[0];
     for (const action of ['light', 'skill1', 'skill2', 'ultimate'] as const) {
       const cue = portraitCue(unit, { kind: 'attack', source: id, target: id, action,

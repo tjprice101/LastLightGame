@@ -14,7 +14,7 @@ function loadout(starter: RadiantLoadout['starter'], masterId: RadiantMasterId |
   return { id: starter, starter, masterId, form: 6, level: 105, convergenceRank: 1, weaponRank: 0, ascension: {} };
 }
 describe('complete frozen Radiant battle reference', () => {
-  it.each(releasedRadiantIds.map(id => ({ id })))('covers all three authored Flare offers for $id without mutating content', ({ id }) => {
+  it.each(releasedRadiantIds.map(id => ({ id })))('covers all three authored Convergent Light offers for $id without mutating content', ({ id }) => {
     const member = loadout(id), before = structuredClone(radiantFlares[id]);
     const html = radiantBattleReference(member, radiantStarterKits[id].baseCost);
     for (const tier of ['sparkling', 'glimmering', 'ultimate'] as const) {
@@ -70,7 +70,7 @@ describe('complete frozen Radiant battle reference', () => {
     expect(html.match(/Locked · Rank/g)).toHaveLength(2);
     // Kit text shows base values: Worldseed Sparkling heals 60% x 70% = 42%; the lastFlare Imbue (x1.5) is the Flare power.
     expect(html).toContain('Heals all allies (42% of max Health)');
-    expect(html).toContain('Flare power ×1.5');
+    expect(html).toContain('Convergent Light power ×1.5');
     expect(radiantFinalFlare(member, 'sparkling').heal).toBeCloseTo(.63);
     expect(html).toContain('Kit text shows base values.');
     expect(html).not.toContain('Saved signature magnitude');

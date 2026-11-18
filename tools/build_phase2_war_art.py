@@ -59,7 +59,7 @@ DESIGNS = (
         arena="an empty stone river-station platform beside broken weirs, white rescue panels and silver crescent rails, amber station lamps and bright cyan-blue water beyond the rear edge",
         strengths="Reliable single-target rescue, Current-funded squad healing and a useful non-Calamitic Oceanic sustain choice. Healing is based on actual restored Health; no free Gauge from overheal.",
         limits="Low unperked base Attack, no revive or cleanse, and a real ultimate recovery turn. Current is earned, not preloaded; healing and Gauge-return Masters compete for the one personal Master slot.",
-        pilot="Normal -> Skill 1 on a wounded ally -> Normal -> Skill 2; save 3 Current for the Last Flare when the squad needs a larger recovery.",
+        pilot="Normal -> Skill 1 on a wounded ally -> Normal -> Skill 2; save 3 Current for the Convergent Light when the squad needs a larger recovery.",
     ),
     dict(
         name="Varkhel", slug="varkhel", source="caevren", role="Tank", element="Infernic",
@@ -108,7 +108,7 @@ DESIGNS = (
         arena="an empty chainwork bridge platform, silver suspension joints and black-white barriers, red warning banners, orange furnace slits and narrow violet reflections in distant counterweight housings",
         strengths="A damage-fed and Normal-fed tank with deliberate stored-pressure offense, strong short defensive setup and a meaningful piercing strike.",
         limits="No passive immortality, no Burn from visual fire, no automatic retaliation and no redirection of scripted/AoE attacks. Spending Tension trades away the storage Master's Defense.",
-        pilot="Skill 1 -> enemy pressure -> Normal -> Skill 2 with 3-4 Tension; reserve a funded Last Flare for squad shielding through its recovery phase.",
+        pilot="Skill 1 -> enemy pressure -> Normal -> Skill 2 with 3-4 Tension; reserve a funded Convergent Light for squad shielding through its recovery phase.",
     ),
     dict(
         name="Seravelle", slug="seravelle", source="vespera", role="Support", element="Infernic",
@@ -156,9 +156,9 @@ DESIGNS = (
         trial="March of the Ember Convoy",
         header="a vast ash-white courier gate with red command cloth, gold-brass braid-ring relays and alternating black-white feather arches, orange-red signal flames lighting an open road",
         arena="an empty ash-white courier terrace with red route panels, silver lance-shaped posts and black-white feather arches behind the field, orange flame lanterns and gold-white signal rails",
-        strengths="A funded squad offensive buffer with explicit Burn pressure and a Last Flare that helps other squad members reach their next abilities. Not a monochrome clone of Vespera.",
+        strengths="A funded squad offensive buffer with explicit Burn pressure and a Convergent Light that helps other squad members reach their next abilities. Not a monochrome clone of Vespera.",
         limits="Cadence builds only once per round and cannot grow from a triggered attack. No self-Gauge ultimate refund, no revival, and no extra turns. Buffs refresh rather than stack from repeated casts.",
-        pilot="Let a Normal Attack build Cadence each round; choose Skill 1 for Burn setup or save Cadence for Skill 2. Use the Last Flare to fund allies before Seravelle's real recovery.",
+        pilot="Let a Normal Attack build Cadence each round; choose Skill 1 for Burn setup or save Cadence for Skill 2. Use the Convergent Light to fund allies before Seravelle's real recovery.",
     ),
     dict(
         name="Velmira", slug="velmira", source="ilyss", role="Attacker", element="Chaotic",
@@ -189,7 +189,7 @@ DESIGNS = (
             "Dark blunt bob, white blade-petal skirt, black armor and dense black wings with green-yellow spark details. Preserve supplied detail during key removal; do not globally erase green pixels from the subject.",
             "Long curled dark hair, layered white gown, black-silver regalia and black wings edged red/violet; gold ring-grip blades with golden fracture energy. Face/window and full feather tips need edge review.",
         ),
-        passive=("Alternating Edge", "After using a different Skill from Velmira's previous Skill, gain 1 [Crosscut], up to 3. The first Skill grants no stack. Repeating a Skill keeps existing stacks but grants none. Normal Attacks and Last Flare do not change which Skill comes next in the sequence."),
+        passive=("Alternating Edge", "After using a different Skill from Velmira's previous Skill, gain 1 [Crosscut], up to 3. The first Skill grants no stack. Repeating a Skill keeps existing stacks but grants none. Normal Attacks and Convergent Light do not change which Skill comes next in the sequence."),
         skills=(
             ("skill1", "Open the Seam", "25 Gauge", "Deal 280% of Velmira's Direct Attack to one enemy. Apply Weaken for 2 enemy phases, reducing that enemy's direct damage by 25%.", "one silver crescent blade and gold ring grip opening an amber-gold seam in a dark plate, violet-magenta edge ribbon and sharp white pleat relief"),
             ("skill2", "Turn the Other Edge", "40 Gauge", "Deal 205% of Velmira's Direct Attack to all enemies. With at least 2 [Crosscut] before this attack, ignore 20% of their Defense. Keep your stacks; any new Crosscut is gained after the attack.", "two independent silver crescent blades cross along violet-magenta cutting ribbons over a white pleated-panel seal, gold ring grips and black feather-tip relief"),
@@ -207,8 +207,8 @@ DESIGNS = (
         header="a magnificent black-white atelier doorway with layered white pleated stone relief, gold ring-grip hinges and silver crescent arches, violet-magenta ribbons following amber fracture seams",
         arena="an empty black-white court terrace, white pleated wall niches and gold ring hinges, silver crescent rails and dark feather-shaped buttresses, violet-magenta seam light and amber cuts confined to rear architecture",
         strengths="Alternating-skill setup, sustained AoE with earned pierce, and a clear single-target finisher. Substantial bonuses rather than cosmetic single-digit buffs.",
-        limits="Crosscut requires a real alternation, starts empty and is spent by Last Flare. No extra action, universal execute, revive or guaranteed critical. One Master at a time prevents combining every payoff.",
-        pilot="Skill 1 -> Skill 2 -> Skill 1 -> Skill 2 to reach 3 Crosscut; use Last Flare only with real Gauge and accept the recovery turn.",
+        limits="Crosscut requires a real alternation, starts empty and is spent by Convergent Light. No extra action, universal execute, revive or guaranteed critical. One Master at a time prevents combining every payoff.",
+        pilot="Skill 1 -> Skill 2 -> Skill 1 -> Skill 2 to reach 3 Crosscut; use Convergent Light only with real Gauge and accept the recovery turn.",
     ),
 )
 
@@ -298,7 +298,7 @@ def document():
         "Attack/Defense/Burn/Weaken artwork is reused, not requested again. Status clocks/numbers stay HTML.",
         "## Inventory",
         "| Category | Existing source images | New images |\n|---|---:|---:|\n"
-        "| Six-form portraits |24|0|\n| Passive / Skill 1 / Skill 2 / Last Flare |0|16|\n"
+        "| Six-form portraits |24|0|\n| Passive / Skill 1 / Skill 2 / Convergent Light |0|16|\n"
         "| Personal Masters |0|12|\n| Native/buff status icons |0|8|\n"
         "| Individual War trial headers |0|4|\n| Individual War arenas |0|4|",
         "Each trial header is its activity banner, just like the existing War characters. "
@@ -344,13 +344,13 @@ def specification():
         "- Ordinary same-element progression materials and existing Heaven/Abyss fodder associations "
         "apply; no new material family is needed just because the art was reused.\n"
         "- Normal: 100% Direct Attack to one enemy, +20 Gauge; shared Defense and action legality.\n"
-        "- Skill1/2 base costs25/40, cooldown0; Last Flare100 and real next-player-turn recovery. "
+        "- Skill1/2 base costs25/40, cooldown0; Convergent Light100 and real next-player-turn recovery. "
         "Existing Skill Efficiency adjusts costs, Skill Power scales native damage/healing/Shield "
         "unless explicitly excepted. Stat/Gauge/counter bonuses are fixed, not implicitly scaled "
         "by Skill Power. Direct damage follows existing Defense/critical math.\n"
         "- Existing role perks: Tank +50% Defense and 1.25 random-target weight; Attacker +100% "
         "Direct Attack/+50 percentage points Skill Power; Support/Healer & Support +50% Health/"
-        "+25 percentage points Skill Power and shared 4% squad healing after ordinary Skills/Last Flare.\n"
+        "+25 percentage points Skill Power and shared 4% squad healing after ordinary Skills/Convergent Light.\n"
         "- All base stats below are before role/gear and use existing fractional growth/caps. "
         "Gauge capacity and critical multiplier remain their existing growth domains.\n"
         "- Named resources start empty and reset each encounter. Capped native counters have no "
@@ -399,7 +399,7 @@ def specification():
             "Shared Defense, critical and action rules apply.",
         ))
         for action, skill, cost, text, _ in design["skills"]:
-            label = {"skill1": "Skill 1", "skill2": "Skill 2", "ultimate": "Last Flare"}[action]
+            label = {"skill1": "Skill 1", "skill2": "Skill 2", "ultimate": "Convergent Light"}[action]
             parts.append(f"### {label}: {skill}\n\n**{cost}**\n\n{text}")
         for master, stats, effect, sculpture in design["masters"]:
             parts.append(f"### Master: {master}\n\n**{stats}**\n\n{effect}\n\n"
@@ -423,10 +423,10 @@ def specification():
         "Seravelle herself used it. Triggered attacks and repeated targets cannot grant another. "
         "Her offensive buff is a fixed stat bonus, not implicit Skill Power scaling. The Burn "
         "Master excludes detonations and generated damage; Gauge is not restored to her by that "
-        "Master or her Last Flare. Her ultimate Skill Power buff never strengthens its own attack.\n"
+        "Master or her Convergent Light. Her ultimate Skill Power buff never strengthens its own attack.\n"
         "- Velmira: determine whether the chosen Skill alternates, resolve that Skill's damage "
         "using its pre-action Crosscut amount, then add its earned stack. Skill2's pierce condition "
-        "therefore cannot be met retroactively by the new stack. Last Flare snapshots/spends its "
+        "therefore cannot be met retroactively by the new stack. Convergent Light snapshots/spends its "
         "counter before damage, keeps the previous ordinary Skill record, then applies its funded "
         "Master recovery once. The first-Skill Master grants only once per encounter.\n"
         "- Master Gauge/heal after-effects execute once after the actual action cost; no cost "

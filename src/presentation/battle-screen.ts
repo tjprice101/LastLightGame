@@ -256,7 +256,7 @@ export class RadiantBattleView {
       }).join('')}</div>
       <div class="radiant-battle-footer">
       <p id="radiant-gesture-help">Tap a card to attack · Hold or right click for skills · Swipe up for Convergent Light.
-        <span class="radiant-visually-hidden">Hold a card, then release on Skill 1, Skill 2 or Flare; releasing in place keeps the choices open for a tap. Keyboard: Enter attacks, D or the context-menu key opens the skills (arrows move, Enter casts, Escape closes), F or Up Arrow releases ready Convergent Light.</span></p>
+        <span class="radiant-visually-hidden">Hold a card, then release on Skill 1, Skill 2 or Convergent Light; releasing in place keeps the choices open for a tap. Keyboard: Enter attacks, D or the context-menu key opens the skills (arrows move, Enter casts, Escape closes), F or Up Arrow releases ready Convergent Light.</span></p>
       <p class="radiant-visually-hidden" data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" class="radiant-end-turn" data-radiant-end-turn
         aria-keyshortcuts="E" title="End Turn: members who have not acted skip this round (E)">End Turn</button>
@@ -362,7 +362,7 @@ export class RadiantBattleView {
       const text = slot === 'flare' ? radiantFlareText(member.starter, 'ultimate') : radiantSkillText(member.starter, slot);
       const icon = abilityIcon(member.starter, slot === 'flare' ? 'ultimate' : slot === 1 ? 'skill1' : 'skill2');
       return `<button type="button" class="radiant-skill-choice" data-radiant-skill="${slot}" data-radiant-skill-actor="${id}"
-        title="${escape(`${name}: ${text}`)}">${icon}<span class="radiant-skill-label"><small>${slot === 'flare' ? 'Flare' : `Skill ${slot}`}</small><strong>${escape(name)}</strong></span>
+        title="${escape(`${name}: ${text}`)}">${icon}<span class="radiant-skill-label"><small>${slot === 'flare' ? 'Convergent Light' : `Skill ${slot}`}</small><strong>${escape(name)}</strong></span>
         <span class="radiant-skill-cost" data-radiant-skill-cost></span><span class="radiant-visually-hidden" data-radiant-skill-text>${escape(text)}</span></button>`;
     };
     if (!Object.hasOwn(radiantKits, kit)) return '';

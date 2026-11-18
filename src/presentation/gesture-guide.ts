@@ -8,7 +8,7 @@ export function gestureGuide(state: BattleState, actor: Combatant, enemyTargetId
   if (!actor.kit) throw new Error('Gesture guide requires an owned character kit.');
   const starterId = actor.definitionId;
   const directions = [
-    { action: 'ultimate', direction: 'up', arrow: '&uarr;', label: 'Last Flare' },
+    { action: 'ultimate', direction: 'up', arrow: '&uarr;', label: 'Convergent Light' },
     { action: 'skill1', direction: 'left', arrow: '&larr;', label: 'Skill 1' },
     { action: 'skill2', direction: 'right', arrow: '&rarr;', label: 'Skill 2' },
     { action: 'light', direction: 'down', arrow: '&darr;', label: 'Normal' },

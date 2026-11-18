@@ -81,7 +81,7 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     drag.surface.classList.toggle('is-unready', !tier);
     if (drag.surface !== drag.button) drag.button.classList.add('is-held');
     options.open(drag.id);
-    if (notify) options.notice(`Skills open. Release on Skill 1, Skill 2 or Flare to cast${tier ? `; swipe up for ${tier}` : ''}. Escape cancels.`);
+    if (notify) options.notice(`Skills open. Release on Skill 1, Skill 2 or Convergent Light to cast${tier ? `; swipe up for ${tier}` : ''}. Escape cancels.`);
   };
   const down = (event: PointerEvent) => {
     if (event.button !== 0 || event.isPrimary === false || !(event.target instanceof Element)) return;
@@ -135,7 +135,7 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     else if (held && !moved) return; // The fan stays open for a tap.
     else {
       options.close();
-      options.notice(swipe && !tier ? 'Flare is not ready; no action spent.' : 'Skills closed; no action spent.');
+      options.notice(swipe && !tier ? 'Convergent Light is not ready; no action spent.' : 'Skills closed; no action spent.');
     }
   };
   const lost = (event: PointerEvent) => { if (drag?.pointer === event.pointerId) cancel(); };

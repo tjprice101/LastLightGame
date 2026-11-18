@@ -72,7 +72,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Cinder Cleave', description: '160% damage to one enemy; burn for 8 damage on its next two enemy phases.', cooldown: 0, strength: { damageMultiplier: 1.6, burnMultiplier: 1 } },
       skill2: { name: 'Flame Arc', description: `110% damage to every living enemy. ${kitPilotDescriptions.ember.skill2!}`, cooldown: 0, strength: { damageMultiplier: 1.1 } },
-      ultimate: { name: 'Last Flare: Dawnfire', description: `280% damage to every enemy; burn surviving targets for 6 damage on their next two enemy phases. Recover next turn. ${kitPilotDescriptions.ember.ultimate!}`, cooldown: 0, strength: { damageMultiplier: 2.8, burnMultiplier: .75 } },
+      ultimate: { name: 'Convergent Light: Dawnfire', description: `280% damage to every enemy; burn surviving targets for 6 damage on their next two enemy phases. Recover next turn. ${kitPilotDescriptions.ember.ultimate!}`, cooldown: 0, strength: { damageMultiplier: 2.8, burnMultiplier: .75 } },
     },
   },
   tide: {
@@ -82,7 +82,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Undertow Thrust', description: `150% damage to one enemy; reduce its next two enemy-phase attacks by 25%. ${kitPilotDescriptions.ward.skill1!}`, cooldown: 0, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
       skill2: { name: 'Tidal Shelter', description: 'Give every living ally 25 shield (lasts until broken; stacks).', cooldown: 0, strength: { shield: 25 } },
-      ultimate: { name: 'Last Flare: Ocean Memory', description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.ward.ultimate!}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } },
+      ultimate: { name: 'Convergent Light: Ocean Memory', description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.ward.ultimate!}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } },
     },
   },
   sprout: {
@@ -92,7 +92,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Briar Shot', description: `150% damage to one enemy with +20 percentage points critical chance. Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge.`, cooldown: 0, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
       skill2: { name: 'Verdant Renewal', description: "Restore 30 health to every living ally; cannot revive. Increase living allies' outgoing attack damage by 10% this and next player turn (refresh; does not stack).", cooldown: 0, strength: { healing: 30, attackBoostFraction: .1 } },
-      ultimate: { name: 'Last Flare: Worldseed', description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge.`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
+      ultimate: { name: 'Convergent Light: Worldseed', description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge.`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
     },
   },
   rosetta: {
@@ -102,7 +102,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Golden Thorn Volley', description: '170% damage to one enemy; reduce surviving targets\' attacks by 20% for two enemy phases.', cooldown: 0, strength: { damageMultiplier: 1.7, weakenFraction: .2 } },
       skill2: { name: 'Crimson Skyfall', description: '120% damage to every living enemy; weaken by 15% for two enemy phases.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.2, weakenFraction: .15 } },
-      ultimate: { name: 'Last Flare: Rose Beyond the Sun', description: '300% damage to every living enemy; weaken by 30% for two enemy phases. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3, weakenFraction: .3 } },
+      ultimate: { name: 'Convergent Light: Rose Beyond the Sun', description: '300% damage to every living enemy; weaken by 30% for two enemy phases. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3, weakenFraction: .3 } },
     },
   },
   thornia: {
@@ -112,7 +112,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Gilded Thorn Guard', description: 'Give every living ally 30 shield (lasts until broken; stacks).', cooldown: 0, targets: 'all-allies', strength: { shield: 30 } },
       skill2: { name: 'Shadow Rose Cleave', description: '180% damage to one enemy; weaken by 20% for two enemy phases.', cooldown: 0, strength: { damageMultiplier: 1.8, weakenFraction: .2 } },
-      ultimate: { name: 'Last Flare: Thousand-Rose Dominion', description: '240% damage to all enemies and 40 shield for allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.4, shield: 40 } },
+      ultimate: { name: 'Convergent Light: Thousand-Rose Dominion', description: '240% damage to all enemies and 40 shield for allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.4, shield: 40 } },
     },
   },
   crinso: {
@@ -122,7 +122,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Golden Edge', description: '180% damage to one enemy with +15 percentage points critical chance.', cooldown: 0, strength: { damageMultiplier: 1.8, critBonus: .15 } },
       skill2: { name: 'Crimson Rupture', description: '120% damage to every living enemy; burn for 9 on two enemy phases.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.2, burnMultiplier: 1 } },
-      ultimate: { name: 'Last Flare: Blossoming Cataclysm', description: '310% damage to every living enemy; burn for 14 on two enemy phases. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3.1, burnMultiplier: 1.5 } },
+      ultimate: { name: 'Convergent Light: Blossoming Cataclysm', description: '310% damage to every living enemy; burn for 14 on two enemy phases. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3.1, burnMultiplier: 1.5 } },
     },
   },
 };

@@ -162,7 +162,7 @@ export const warFighters: Record<WarCharacterId, FighterDefinition> = {
   },
   myrthen: {
     stats: { health: 220, defense: 11, damage: 44, crit: .22, shatterCapacity: 100, critMultiplier: 1.65, elementalDamage: 0 },
-    passive: { name: 'Turning Season', description: 'Skills advance Sprout, Bloom and Harvest; Harvest empowers the next Skill or Last Flare.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    passive: { name: 'Turning Season', description: 'Skills advance Sprout, Bloom and Harvest; Harvest empowers the next Skill or Convergent Light.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: 'Reaper’s Claim', description: 'Strike one enemy and mark it.', cooldown: 0, strength: { damageMultiplier: 2.72 } },
       skill2: { name: 'Turn the Bough', description: 'Strike all enemies.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.92 } },

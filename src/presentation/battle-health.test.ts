@@ -51,7 +51,7 @@ describe('impact-synchronized health presentation', () => {
       expect(recipients(state, 'skill2').targets.sort()).toEqual(['ember', 'sprout']);
     });
 
-    it('shows Tizu Last Flare shielding only on living allies, not enemies', () => {
+    it('shows Tizu Convergent Light shielding only on living allies, not enemies', () => {
       const state = createBattle(1729, ['tide', 'ember', 'sprout']);
       state.allies[0].shatter = 100;
       expect(recipients(state, 'ultimate').targets).toEqual([

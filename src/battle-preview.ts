@@ -36,7 +36,7 @@ host.innerHTML = `<header class="radiant-preview-heading"><h1>Radiant battle · 
     <option value="strikes">Tizu / Flora selected-enemy Masters</option></select></label>
   <button type="button" data-preview-reset>Reset preview encounter</button>
   <button type="button" data-preview-cycle>Charge cycle: normal / Glowing / Lustrous / Eternal</button>
-  <p>Available Flare tiers depend on each selected form.</p>
+  <p>Available Convergent Light tiers depend on each selected form.</p>
   <p data-preview-status role="status"></p>
   <details class="radiant-preview-cadence"><summary>Measure desktop frame delivery</summary>
     <p>In a visible browser on the desktop being reviewed, choose a formation and settings, then play normally during

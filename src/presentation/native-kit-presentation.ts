@@ -62,7 +62,7 @@ export function nativeActionHint(state: BattleState, actor: Combatant, action: A
   const self = action === 'skill2' && (actor.definitionId === 'razor' || actor.definitionId === 'orvella');
   const focusedFlare = phaseZeroStatsReady && actor.definitionId === 'ember' && action === 'ultimate' &&
     actor.masterConduit === 'master-ember-2';
-  const target = focusedFlare ? `Enemy: ${selected?.name ?? 'None'} · Focused Last Flare`
+  const target = focusedFlare ? `Enemy: ${selected?.name ?? 'None'} · Focused Convergent Light`
     : self ? actor.definitionId === 'orvella' ? 'Shared Foundation' : 'Self'
     : ability.targets === 'all-allies' ? 'All living allies'
     : ability.targets === 'all-enemies' ? 'All living enemies'

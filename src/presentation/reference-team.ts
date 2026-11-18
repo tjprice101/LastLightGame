@@ -167,7 +167,7 @@ function captureDetail(account: Account, id: string, tab = 'overview'): string {
       <section class="character-category mono-character-stats"><h3>Archived stats</h3>${stats(copy, undefined, false, account.conduitEquipment?.[id], account.conduitUpgrades)}</section>
       <section class="character-category character-combat"><h3>Archived skills</h3><div class="ref-ability-buttons">${(['skill1', 'skill2', 'ultimate'] as const).map(action => {
         const ability = kit.abilities[action];
-        const label = action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
+        const label = action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Convergent Light';
         const unavailable = kit.unavailableActions?.includes(action);
         return information(`creature-${id}-${action}`, unavailable ? label : ability.name,
           `<article class="hub-ability"><h3>${unavailable ? label : ability.name}</h3><p>Archived skill · not usable in Radiant combat.</p><p>${ability.description}</p>${unavailable ? '<p>This slot was unavailable for this Elemental-Devourer.</p>' : `<p class="hub-cost">Former cost: ${shatterGauge.costs[action]} Elemental Gauge · ${ability.cooldown ? `${ability.cooldown}-turn cooldown` : 'No cooldown'}.</p>`}</article>`, `${label} details`,

@@ -112,7 +112,7 @@ describe('D-382 replacement interactions', () => {
     }
   });
 
-  it('Funeral Engine removes captured Last Flare cooldown and recovery, but never Gauge floors or action limits', () => {
+  it('Funeral Engine removes captured Convergent Light cooldown and recovery, but never Gauge floors or action limits', () => {
     const copy = createCreatureCopy('infusion:abyss:5', infusionStageCount('abyss'));
     const state = createBattle(1729, [copy.instanceId, 'ember'], {}, {
       [copy.instanceId]: slots('calamitic-causality-funeral-engine'),

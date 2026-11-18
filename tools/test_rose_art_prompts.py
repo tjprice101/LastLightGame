@@ -132,7 +132,7 @@ class RoseArtPromptTests(unittest.TestCase):
                         self.assertIn("swirling", positive)
                         self.assertIn("full-body", positive)
 
-                icon_headings = re.findall(r"^### (?:Passive|Skill 1|Skill 2|Last Flare) - (.+)$", text, re.M)
+                icon_headings = re.findall(r"^### (?:Passive|Skill 1|Skill 2|Convergent Light) - (.+)$", text, re.M)
                 self.assertEqual(icon_headings, list(spec["skills"]))
                 for heading, body in zip(spec["skills"], bodies[6:10]):
                     self.assertIn(elements[name] + " ability icon", body)

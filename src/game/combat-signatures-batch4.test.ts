@@ -164,7 +164,7 @@ describe('Vespera: Signal', () => {
     expect(member(state, 'vespera').signature).toEqual({ kind: 'signal', signals: [
       { holderId: 'bruno', value: Math.max(empowered, .35 * support), remaining: 2 }] });
   });
-  it('shares the Burn boost with Caldrex: both Flares add to Burn ticks from allies', () => {
+  it('shares the Burn boost with Caldrex: both Convergent Light add to Burn ticks from allies', () => {
     let state = charge(battle(['tide', 'vespera', 'caldrex']), 'vespera', 25);
     state = act(state, { type: 'skill', bearerId: 'vespera', slot: 1, targetId: 'enemy-0' }).state;
     const burn = state.enemies[0].debuffs.find(effect => effect.category === 'burn')!.magnitude;
@@ -195,7 +195,7 @@ describe('Ilyss: Severance', () => {
     expect(member(result.state, 'ilyss').signature).toEqual({ kind: 'severance', count: 1, latch: true });
     expect(member(nextTurn(result.state).state, 'ilyss').signature).toMatchObject({ count: 1, latch: false });
   });
-  it('spends all Severance on its Flare (+10% heal each), then earns 1 back from the Weaken it removes', () => {
+  it('spends all Severance on its Convergent Light (+10% heal each), then earns 1 back from the Weaken it removes', () => {
     const state = charge(battle(['bruno', 'ilyss']), 'ilyss', 100);
     member(state, 'ilyss').signature = { kind: 'severance', count: 2, latch: false };
     state.bearers.forEach(entry => { entry.hp = 1; });
@@ -224,7 +224,7 @@ describe('Asteriel: Path', () => {
       state = act(charge(nextTurn(state).state, 'asteriel', 40), { type: 'skill', bearerId: 'asteriel', slot }).state;
     expect(member(state, 'asteriel').signature).toEqual({ kind: 'path', count: 3, path: 'shelter' });
   });
-  it('Flare grants Shields with no path (or in Shelter) and Attack Up in Flourish, spending Promise and keeping the path', () => {
+  it('Convergent Light grants Shields with no path (or in Shelter) and Attack Up in Flourish, spending Promise and keeping the path', () => {
     const plain = charge(battle(['tide', 'asteriel']), 'asteriel', 100);
     const shelter = act(plain, { type: 'flare', bearerId: 'asteriel' });
     expect(of(shelter.events, 'shield').find(event => event.targetId === 'tide')!.amount)

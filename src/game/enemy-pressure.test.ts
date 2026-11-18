@@ -160,7 +160,7 @@ describe('actual bounded action-driven radiant pressure', () => {
     expect(result.metrics.personalGranted).toBeGreaterThan(0);
     expect(result.metrics.currency).toBeLessThanOrEqual(enemies.reduce((sum, e) => sum + e.currencyBudget, 0));
   });
-  it('flare-saving holds Luminosity for the Flare where balanced spends it on skills', () => {
+  it('flare-saving holds Luminosity for the Convergent Light where balanced spends it on skills', () => {
     const loadouts = pressureStudyLoadouts(['ember', 'tide', 'sprout'], 60, 'common').loadouts;
     const harmless = opponents().map(enemy => ({ ...enemy, stats: { hp: 1000000, attack: .001, defense: 0, recovery: 0 } }));
     const run = { ...options, maximumRounds: 30, stalemateRounds: 30 };

@@ -163,7 +163,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(conduitActionCost(actor, 'skill1', state, 25)).toBe(25);
   });
 
-  it('uses the Throne only for an eligible once-per-turn extra skill after Last Flare', () => {
+  it('uses the Throne only for an eligible once-per-turn extra skill after Convergent Light', () => {
     const state = fixture();
     const [owner, ally] = state.allies;
     owner.conduits = ['calamitic-throne-borrowed-tomorrows', null, null, null, null, null, null, null];
@@ -175,7 +175,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(actionUnavailable(afterExtra, afterExtra.allies[1], 'skill2')).toBe('This character has already acted this turn.');
   });
 
-  it('keeps Causality Funeral Engine Last Flare recovery-free', () => {
+  it('keeps Causality Funeral Engine Convergent Light recovery-free', () => {
     const state = fixture();
     const owner = state.allies[0];
     owner.conduits = ['calamitic-causality-funeral-engine', null, null, null, null, null, null, null];
@@ -369,7 +369,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(contributor.shatter).toBe(10);
   });
 
-  it('removes Cinderstar consumed-Burn Gauge and focuses Last Flare damage instead', () => {
+  it('removes Cinderstar consumed-Burn Gauge and focuses Convergent Light damage instead', () => {
     const state = fixture(['ember', 'tide', 'sprout']);
     const [owner, first, second] = state.allies;
     owner.masterConduit = 'master-ember-2';
@@ -442,7 +442,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(second.hp).toBe(780);
   });
 
-  it('adds Bruno cover Defense and Gauge Gain and uses the revised Last Flare Shield', () => {
+  it('adds Bruno cover Defense and Gauge Gain and uses the revised Convergent Light Shield', () => {
     const state = fixture(['bruno', 'tide', 'sprout']);
     const [bruno, ally] = state.allies;
     bruno.masterConduit = 'master-bruno-2';
@@ -575,7 +575,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(second.hp).toBe(627);
   });
 
-  it('preserves Foundation and grants one-skill Efficiency after Master Orvella Last Flare', () => {
+  it('preserves Foundation and grants one-skill Efficiency after Master Orvella Convergent Light', () => {
     const state = fixture(['orvella', 'tide', 'sprout']);
     const [orvella, first, second] = state.allies;
     orvella.masterConduit = 'master-orvella-1';
@@ -806,7 +806,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(prepareConduitAction(critState, critAlly, 'skill1', 25, false).criticalBonus).toBe(.3);
   });
 
-  it('applies Survey Defense ignore and Master Crinso Last Flare Critical Damage', () => {
+  it('applies Survey Defense ignore and Master Crinso Convergent Light Critical Damage', () => {
     const surveyState = fixture(['nerithe', 'tide', 'sprout']);
     const [nerithe, ally] = surveyState.allies;
     const enemy = surveyState.enemies[0];

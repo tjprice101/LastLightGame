@@ -39,7 +39,7 @@ describe('linear allied DoT level scaling', () => {
       expect(gear(target).numbers[`cinderBase:${owner.id}`]).toBeCloseTo(25.73 * (1 + level / 30), 12);
     }
   });
-  it.each([0, 30, 60, 105])('applies Infernis skill and Last Flare Burn once at level%s, not their direct hits or clocks', level => {
+  it.each([0, 30, 60, 105])('applies Infernis skill and Convergent Light Burn once at level%s, not their direct hits or clocks', level => {
     for (const action of ['skill1', 'ultimate'] as const) {
       const state = fixture(level);
       const result = act(state, 'ember', action, state.enemies[0].id);

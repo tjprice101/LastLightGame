@@ -96,7 +96,7 @@ describe('Nerithe: Survey', () => {
     expect(() => act(charge(state, 'kaelith', 25), { type: 'skill', bearerId: 'kaelith', slot: 1, targetId: 'enemy-0' }))
       .toThrow('authored target set');
   });
-  it('spends all Survey with its Flare (20% Defense ignored each) and loses Survey when its enemy falls', () => {
+  it('spends all Survey with its Convergent Light (20% Defense ignored each) and loses Survey when its enemy falls', () => {
     const state = charge(battle(['bruno', 'nerithe'], 2, 400), 'nerithe', 100);
     member(state, 'nerithe').signature = { kind: 'survey', targetId: 'enemy-0', count: 3 };
     const attack = member(state, 'nerithe').stats.attack;
@@ -141,7 +141,7 @@ describe('Orvella: Foundation', () => {
     expect(member(act(state, { type: 'skill', bearerId: 'orvella', slot: 1, targetId: 'enemy-0' }).state, 'orvella').signature)
       .toMatchObject({ foundation: { durability: 60 } });
   });
-  it('spends the Foundation with its Flare for an exact strike of 3x durability on each enemy, then raises a new one', () => {
+  it('spends the Foundation with its Convergent Light for an exact strike of 3x durability on each enemy, then raises a new one', () => {
     const state = charge(battle(['tide', 'orvella'], 2), 'orvella', 100);
     member(state, 'orvella').signature = { kind: 'foundation', foundation: { durability: 500, max: 500, remaining: 1 } };
     const result = act(state, { type: 'flare', bearerId: 'orvella' });
@@ -173,7 +173,7 @@ describe('Vaelor: Beat', () => {
     const turn = nextTurn(battle(['tide', 'vaelor']));
     expect(of(turn.events, 'signature')).toEqual([{ type: 'signature', bearerId: 'vaelor', op: 'beat', amount: 1 }]);
   });
-  it('gives Forked Cadence +30% on Tune, Attack Up on Rise and the 1500% Flare on Crescendo', () => {
+  it('gives Forked Cadence +30% on Tune, Attack Up on Rise and the 1500% Convergent Light on Crescendo', () => {
     let state = charge(battle(['tide', 'vaelor']), 'vaelor', 25);
     const attack = member(state, 'vaelor').stats.attack;
     expect(total(act(state, { type: 'skill', bearerId: 'vaelor', slot: 1, targetId: 'enemy-0' }).events, 'skill'))
@@ -204,7 +204,7 @@ describe('Caldrex: Heat', () => {
     }
     expect(member(state, 'caldrex').signature).toMatchObject({ count: 3 });
   });
-  it('spends all Heat on Cinder Discharge (+25% each) and its Flare (+5% Shield each)', () => {
+  it('spends all Heat on Cinder Discharge (+25% each) and its Convergent Light (+5% Shield each)', () => {
     const state = charge(battle(['tide', 'caldrex']), 'caldrex', 100);
     member(state, 'caldrex').signature = { kind: 'heat', count: 2, latch: false };
     const attack = member(state, 'caldrex').stats.attack;
@@ -245,7 +245,7 @@ describe('Solenne: Stillness', () => {
     expect(of(held.events, 'damage')[0].offered).toBe(full - Math.round(full * .2));
     expect(member(held.state, 'solenne').signature).toMatchObject({ count: 1 });
   });
-  it('caps Stillness at 4 and spends it all on its Flare (+45% damage and +5% Shield each)', () => {
+  it('caps Stillness at 4 and spends it all on its Convergent Light (+45% damage and +5% Shield each)', () => {
     const state = charge(battle(['tide', 'solenne']), 'solenne', 100);
     member(state, 'solenne').signature = { kind: 'stillness', count: 3, latch: false };
     expect(member(act(charge(structuredClone(state), 'solenne', 40), { type: 'skill', bearerId: 'solenne', slot: 2 }).state,
@@ -272,7 +272,7 @@ describe('Myrthen: Season', () => {
     expect(total(harvest.events, 'skill', 'enemy-1')).toBe(radiantDirectDamage(attack, 400 * .8, 2.5 * 1.5 * 1.35));
     expect(member(harvest.state, 'myrthen').signature).toMatchObject({ count: 0 });
   });
-  it('keeps the Season through a Flare outside Harvest and resets it after a Flare in Harvest', () => {
+  it('keeps the Season through a Convergent Light outside Harvest and resets it after a Convergent Light in Harvest', () => {
     const state = charge(battle(['tide', 'myrthen']), 'myrthen', 100);
     member(state, 'myrthen').signature = { kind: 'season', count: 1, latch: false };
     expect(member(act(state, { type: 'flare', bearerId: 'myrthen', targetId: 'enemy-0' }).state, 'myrthen').signature)
@@ -363,7 +363,7 @@ describe('Velmira: Crosscut', () => {
     state = act(charge(nextTurn(state).state, 'velmira', 40), { type: 'skill', bearerId: 'velmira', slot: 2 }).state;
     expect(member(state, 'velmira').signature).toMatchObject({ count: 1 });
   });
-  it('ignores 20% Defense with Turn the Other Edge at 2+ Crosscut and spends all on its Flare (+90% each)', () => {
+  it('ignores 20% Defense with Turn the Other Edge at 2+ Crosscut and spends all on its Convergent Light (+90% each)', () => {
     const state = charge(battle(['tide', 'velmira'], 1, 400), 'velmira', 100);
     const attack = member(state, 'velmira').stats.attack;
     member(state, 'velmira').signature = { kind: 'crosscut', count: 1, latch: false };

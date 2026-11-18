@@ -7,7 +7,7 @@ import { conduitGlossary } from '../content/conduit-glossary';
 describe('bracketed reference formatting', () => {
   it('canonicalizes legacy Health names, full ability names and plural traps without nesting', () => {
     const input = "HP, [HP], maximum HP, [Maximum HP], Empowered Thorn Traps and Dawnfire.";
-    const expected = '[Health], [Health], maximum [Health], maximum [Health], [Empowered Thorn Traps] and [Last Flare: Dawnfire].';
+    const expected = '[Health], [Health], maximum [Health], maximum [Health], [Empowered Thorn Traps] and [Convergent Light: Dawnfire].';
     expect(bracketReferences(input, false)).toBe(expected);
     expect(bracketReferences(expected, false)).toBe(expected);
   });
@@ -17,8 +17,8 @@ describe('bracketed reference formatting', () => {
   });
 
   it('is idempotent and never nests brackets', () => {
-    const once = bracketReferences('<p>Null-Prismatica and [Last Flare] after Last Flare.</p>');
-    expect(once).toBe('<p>[Null-Prismatica] and [Last Flare] after [Last Flare].</p>');
+    const once = bracketReferences('<p>Null-Prismatica and [Convergent Light] after Convergent Light.</p>');
+    expect(once).toBe('<p>[Null-Prismatica] and [Convergent Light] after [Convergent Light].</p>');
     expect(bracketReferences(once)).toBe(once);
   });
 

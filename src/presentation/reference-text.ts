@@ -21,7 +21,7 @@ const aliases: Record<string, string> = {
 
 const fixedNames = ['Roselius', 'Prismatica', 'Null-Prismatica', 'Broken Mechanical Components', "Machine's Master Chest",
   'Calamitic Tokens', 'Story', 'Training', 'Calamity', 'Elemental War', 'Awaken the Machines', 'Passion of Crimson Roses',
-  'Elemental Gauge', 'Normal Attack', 'Skill 1', 'Skill 2', 'Last Flare', 'Burn', 'Weaken',
+  'Elemental Gauge', 'Normal Attack', 'Skill 1', 'Skill 2', 'Convergent Light', 'Burn', 'Weaken',
   ...Object.values(phaseZeroStatLabels), ...conduitGlossary.map(entry => entry.term),
   'HP', 'Maximum HP', 'Elemental Damage', 'Elemental Crit', 'Critical Hit', 'Critical Hits',
   'Global', 'Single-target', 'Skill-created', 'Skill', 'Skills', 'Shields', 'Shielded', 'Debuff', 'Debuffs',
@@ -49,8 +49,8 @@ function referenceMatcher(): { pattern: RegExp; names: Map<string, string>; elem
     add(fighter.passive?.name);
     for (const ability of Object.values(fighter.abilities)) {
       add(ability.name);
-      if (ability.name.startsWith('Last Flare: '))
-        names.set(ability.name.slice('Last Flare: '.length).toLowerCase(), ability.name);
+      if (ability.name.startsWith('Convergent Light: '))
+        names.set(ability.name.slice('Convergent Light: '.length).toLowerCase(), ability.name);
     }
   }
   conduits.forEach(conduit => add(conduit.name));

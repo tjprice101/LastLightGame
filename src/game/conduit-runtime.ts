@@ -1148,7 +1148,7 @@ export function nativeShield(state: BattleState, owner: Combatant, target: Comba
   const finalOffer = offer * (plate ? .5 : 1);
   const list = layers(target);
   const existing = target.shield - (plate ? list.filter(layer => layer.plate).reduce((sum, layer) => sum + layer.amount, 0) : 0);
-  // D-434: every shield lasts until broken; skill/Last Flare shields also stack on repeat casts.
+  // D-434: every shield lasts until broken; skill/Convergent Light shields also stack on repeat casts.
   const gained = options.stack ? Math.max(0, finalOffer) : Math.max(0, finalOffer - existing);
   const owned = list.filter(layer => layer.native && layer.owner === owner.id && layer.amount > 0);
   const throughPhase = options.throughPhase;

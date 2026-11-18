@@ -276,7 +276,7 @@ describe('authority-ready frozen run and settled encounter Haul', () => {
     expect(result.response.account.fractalis - before.state.account.fractalis).toBe(local.run.state.currencyEarned);
     expect(result.response.account.receipts.filter(receipt => receipt.startsWith('radiant-study:v2:'))).toHaveLength(1);
   });
-  it('settle replays device Skill 1 / Skill 2 / Flare choices exactly and rejects the retired Defend choice (D-473)', () => {
+  it('settle replays device Skill 1 / Skill 2 / Convergent Light choices exactly and rejects the retired Defend choice (D-473)', () => {
     const before = entered(3), run = structuredClone(before.state.radiantStudy!), actions: RadiantTurnAction[] = [];
     while (run.state.phase === 'player' && actions.length < 1000) {
       const actor = run.state.bearers.find(unit => unit.hp > 0 && !run.state.acted.includes(unit.loadout.id))!;

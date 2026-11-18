@@ -1,5 +1,37 @@
 # Current state and handoff
 
+## Convergent Light rename; Spectacle step 1 rules drafted (2026-11-18)
+
+- **Convergent Light label everywhere.** Kits, glossary, tooltips, the skill
+  menu and docs say "Convergent Light" instead of "Flare". Internal IDs
+  (`flare`, `radiantFlareText`, save keys) are unchanged.
+- **Battle capture harness.** `tools/capture_frames.mjs --battle
+  attack|skill1|skill2|flare [--leader id] [--encounter id] [--member n]`
+  drives the in-memory dev preview (`battle-preview.html`, no saves). It
+  charges the gauge as needed and records frames from the input.
+- **Visual rules drafted.**
+  [Step 1 proposal](Future%20Plans/battle-flurry-overhaul.md#step-1-proposal-visual-rules-draft-awaiting-owner-approval)
+  (R1 to R8, tier time budgets). Baseline captures show weak, uniform
+  effects. **Awaiting owner approval; nothing in the battle changed.**
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Full `npx vitest run`: 10,736 of 10,737 passed. The one failure was the
+  known 20 s timeout in `acquisition-surfaces.test.ts` under full-suite load.
+- Capture runs for all four tiers against Story 25 and Elemental War Nerithe
+  final boss: frames saved, no page errors.
+- **Not verified:** hosted build (not pushed).
+
+**Known:**
+- The preview charge fixture fills at most two layers, so `--battle flare`
+  shows a Sparkling Convergent Light, never Ultimate. Preview only.
+- The preview page shifts scroll between frames.
+
+**Next:**
+- Owner approves or edits rules R1 to R8.
+- Then step 2, the GPU effect foundation (Opus, Plan mode).
+- Owner decides the Warden Lv.177 / Training 120 source fix (Opus).
+
 ## Battle Spectacle setup: VFX library, Playwright, plan (2026-11-18)
 
 **Owner direction (D-482).** Spectacle phase next, before Phase 4.

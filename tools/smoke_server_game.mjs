@@ -1152,7 +1152,7 @@ async function smokeConduitRework(firstClient, firstId, firstUsername) {
       game = expected.game;
     }
   }
-  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules11 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
+  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules11 static/runtime parity, healing/Shield/Convergent Light/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
 }
 
 async function smokeOmnicRefresh(firstClient, firstId, firstUsername) {
@@ -1254,7 +1254,7 @@ async function smokeOmnicRefresh(firstClient, firstId, firstUsername) {
     assert.deepEqual(checkpoint.session, response.session);
     assert.deepEqual(checkpoint.account, response.account);
   }
-  console.log(`Hosted Omnic refresh passed: all45 ordinary Omnics at +0/+5 and all48 fixed Masters across ${fixtures.length} disposable fixtures, exact Normal/Last Flare/enemy-phase authority parity, frozen investments after menu unequips, idempotent retries and persistent checkpoints.`);
+  console.log(`Hosted Omnic refresh passed: all45 ordinary Omnics at +0/+5 and all48 fixed Masters across ${fixtures.length} disposable fixtures, exact Normal/Convergent Light/enemy-phase authority parity, frozen investments after menu unequips, idempotent retries and persistent checkpoints.`);
 }
 
 async function smokeCalamityTuning(client, userId, username) {
@@ -2153,11 +2153,11 @@ async function smokeLastFlare(firstClient, firstId, firstUsername) {
       username = `flare_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
       const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
       const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
-      if (made.error || !made.data.user) throw new Error('Last Flare smoke identity creation failed.');
+      if (made.error || !made.data.user) throw new Error('Convergent Light smoke identity creation failed.');
       userId = made.data.user.id;
       ids.push(userId);
       client = createClient(url, clientKey, { auth: { persistSession: false } });
-      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('Last Flare smoke authentication failed.');
+      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('Convergent Light smoke authentication failed.');
     }
     let game = freshGame(username);
     game.starterId = 'ember';
@@ -2186,7 +2186,7 @@ async function smokeLastFlare(firstClient, firstId, firstUsername) {
     assert.equal(seeded.error, null);
     async function invoke(operation, revision, requestId = randomUUID()) {
       const response = await client.functions.invoke('game-operation', { body: { operation, expectedRevision: revision, requestId } });
-      if (response.error) throw new Error(`Hosted Last Flare ${operation.kind} failed (${response.error.context?.status ?? 'transport'}).`);
+      if (response.error) throw new Error(`Hosted Convergent Light ${operation.kind} failed (${response.error.context?.status ?? 'transport'}).`);
       return response.data;
     }
     const operation = { kind: 'act', runId: game.run.session.runId, actorId, action: 'ultimate', targetId: target.id };
@@ -2202,7 +2202,7 @@ async function smokeLastFlare(firstClient, firstId, firstUsername) {
     const persisted = await invoke({ kind: 'read' }, actual.revision);
     assert.deepEqual(persisted.session.state, actual.session.state);
   }
-  console.log('Hosted Last Flare smoke passed: all16 characters, exact client/server damage/support and stored follow-ups, unchanged costs/recovery, persisted snapshots and idempotent retries. No owner accounts modified.');
+  console.log('Hosted Convergent Light smoke passed: all16 characters, exact client/server damage/support and stored follow-ups, unchanged costs/recovery, persisted snapshots and idempotent retries. No owner accounts modified.');
 }
 
 async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly = false, captureRate = false) {

@@ -64,7 +64,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Razor Gale', description: '180% damage to one enemy.', cooldown: 0, strength: { damageMultiplier: 1.8 } },
       skill2: { name: 'Cyclone Weave', description: '120% damage to every living enemy.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.2 } },
-      ultimate: { name: 'Last Flare: Sky Without End', description: '290% damage to every living enemy. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.9 } },
+      ultimate: { name: 'Convergent Light: Sky Without End', description: '290% damage to every living enemy. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.9 } },
     },
   },
   aurora: {
@@ -73,7 +73,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Gleamseal', description: '140% damage to one enemy; weaken by 30% for two enemy phases.', cooldown: 0, strength: { damageMultiplier: 1.4, weakenFraction: .3 } },
       skill2: { name: 'Eclipse Mandate', description: '90% damage to every living enemy; weaken by 25% for two enemy phases.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: .9, weakenFraction: .25 } },
-      ultimate: { name: 'Last Flare: Final Dawn Verdict', description: '220% damage to every living enemy; weaken by 40% for two enemy phases. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.2, weakenFraction: .4 } },
+      ultimate: { name: 'Convergent Light: Final Dawn Verdict', description: '220% damage to every living enemy; weaken by 40% for two enemy phases. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.2, weakenFraction: .4 } },
     },
   },
   bliss: {
@@ -83,7 +83,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Warfeather Cut', description: '175% damage to one enemy with +15 percentage points critical chance.', cooldown: 0, strength: { damageMultiplier: 1.75, critBonus: .15 } },
       skill2: { name: 'Quietstorm Flourish', description: '125% damage to every living enemy with +10 percentage points critical chance; restore 12 health to every living ally, no revival.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.25, critBonus: .1, healing: 12 } },
-      ultimate: { name: 'Last Flare: Thousandfeather Stillness', description: '300% damage to every living enemy with +20 percentage points critical chance. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3, critBonus: .2 } },
+      ultimate: { name: 'Convergent Light: Thousandfeather Stillness', description: '300% damage to every living enemy with +20 percentage points critical chance. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3, critBonus: .2 } },
     },
   },
   bruno: {
@@ -92,7 +92,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Seismic Hammerfall', description: '155% damage to one enemy; weaken by 20% for two enemy phases.', cooldown: 0, strength: { damageMultiplier: 1.55, weakenFraction: .2 } },
       skill2: { name: 'Citadel Mantle', description: 'Give every living ally 32 shield (lasts until broken; stacks).', cooldown: 0, targets: 'all-allies', strength: { shield: 32 } },
-      ultimate: { name: 'Last Flare: Worldwall Ascendant', description: '230% damage to every living enemy and 45 shield for allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.3, shield: 45 } },
+      ultimate: { name: 'Convergent Light: Worldwall Ascendant', description: '230% damage to every living enemy and 45 shield for allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.3, shield: 45 } },
     },
   },
   disciple: {
@@ -101,7 +101,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Thoughtspark Benediction', description: '150% damage to one enemy; increase living allies\' outgoing attack damage by 20% this and next player turn (refresh; does not stack).', cooldown: 0, strength: { damageMultiplier: 1.5, attackBoostFraction: .2 } },
       skill2: { name: 'Concord of Chaos', description: 'Increase living allies\' outgoing attack damage by 30% this and next player turn and give 20 shield (lasts until broken; stacks).', cooldown: 0, targets: 'all-allies', strength: { attackBoostFraction: .3, shield: 20 } },
-      ultimate: { name: 'Last Flare: Unbound Mindcrown', description: 'Increase living allies\' outgoing attack damage by 40% this and next player turn and give 40 shield (lasts until broken; stacks). Recover next turn.', cooldown: 0, targets: 'all-allies', strength: { attackBoostFraction: .4, shield: 40 } },
+      ultimate: { name: 'Convergent Light: Unbound Mindcrown', description: 'Increase living allies\' outgoing attack damage by 40% this and next player turn and give 40 shield (lasts until broken; stacks). Recover next turn.', cooldown: 0, targets: 'all-allies', strength: { attackBoostFraction: .4, shield: 40 } },
     },
   },
   elise: {
@@ -111,7 +111,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Voltstar Cut', description: '170% damage to one enemy with +20 percentage points critical chance.', cooldown: 0, strength: { damageMultiplier: 1.7, critBonus: .2 } },
       skill2: { name: 'Crosscurrent Volley', description: '115% damage to every living enemy.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.15 } },
-      ultimate: { name: 'Last Flare: Infinite Thunderwheel', description: '285% damage to every living enemy with +15 percentage points critical chance. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.85, critBonus: .15 } },
+      ultimate: { name: 'Convergent Light: Infinite Thunderwheel', description: '285% damage to every living enemy with +15 percentage points critical chance. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.85, critBonus: .15 } },
     },
   },
   razor: {
@@ -120,7 +120,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Nightcleave', description: '165% damage to one enemy; weaken by 25% for two enemy phases.', cooldown: 0, strength: { damageMultiplier: 1.65, weakenFraction: .25 } },
       skill2: { name: 'Eclipse Bastion', description: 'Give every living ally 35 shield (lasts until broken; stacks).', cooldown: 0, targets: 'all-allies', strength: { shield: 35 } },
-      ultimate: { name: 'Last Flare: Unbroken Midnight', description: '240% damage to every living enemy and 50 shield for allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.4, shield: 50 } },
+      ultimate: { name: 'Convergent Light: Unbroken Midnight', description: '240% damage to every living enemy and 50 shield for allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.4, shield: 50 } },
     },
   },
 };

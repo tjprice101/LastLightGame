@@ -535,7 +535,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         ally.native ??= {};
         ally.native.signal = { owner: owner.id, bonus: equipped(owner, 'master-vespera-1') ? .5 : .35,
           throughRound: state.round + 1 + activation.skillDuration };
-        status(state, events, owner, ally, `${ally.name}: Signal is ready for their next damaging Skill or Last Flare.`);
+        status(state, events, owner, ally, `${ally.name}: Signal is ready for their next damaging Skill or Convergent Light.`);
       } else if (action === 'ultimate') {
         const spent = memory.beacon ?? 0;
         memory.beacon = 0;
@@ -2070,15 +2070,15 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
           value: `${Math.round(memory.repair[unit.id].amount)} heals on player turn ${memory.repair[unit.id].dueRound}` });
       if (unit.native?.signal && unit.native.signal.throughRound >= state.round)
         markers.push({ id: 'signal', owner: unit.native.signal.owner, label: 'Signal',
-          value: `next damaging Skill or Last Flare +${Math.round(unit.native.signal.bonus * 100)}% · through player turn ${unit.native.signal.throughRound}`,
+          value: `next damaging Skill or Convergent Light +${Math.round(unit.native.signal.bonus * 100)}% · through player turn ${unit.native.signal.throughRound}`,
           icon: 'moon-vespera-signal' });
       if (unit.native?.moonflower && unit.native.moonflower.throughRound >= state.round)
         markers.push({ id: 'moonflower', owner: unit.native.moonflower.owner, label: 'Moonflower',
-          value: `next damaging Skill or Last Flare +${Math.round(unit.native.moonflower.bonus * 100)}% · through player turn ${unit.native.moonflower.throughRound}`,
+          value: `next damaging Skill or Convergent Light +${Math.round(unit.native.moonflower.bonus * 100)}% · through player turn ${unit.native.moonflower.throughRound}`,
           icon: 'moon-asteriel-moonflower' });
       if (unit.native?.openRoute)
         markers.push({ id: 'open-route', owner: unit.native.openRoute.owner, label: 'Open Route',
-          value: `next damaging Skill or Last Flare ignores ${Math.round(unit.native.openRoute.pierce * 100)}% Defense · through player turn ${unit.native.openRoute.throughRound}` });
+          value: `next damaging Skill or Convergent Light ignores ${Math.round(unit.native.openRoute.pierce * 100)}% Defense · through player turn ${unit.native.openRoute.throughRound}` });
       if (unit.native?.accord && unit.native.accord.throughRound >= state.round)
         markers.push({ id: 'accord', owner: unit.native.accord.owner, label: 'Accord', value: `boost against Terms · through player turn ${unit.native.accord.throughRound}` });
       if (unit.native?.ceasefire && unit.native.ceasefire.throughPhase >= state.round)
@@ -2129,11 +2129,11 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
       `${recipient.name}; once per encounter while Ozriel is alive; a lethal hit leaves 1 HP, never revives.`, ['calamitic-refusal']);
   if (unit.definitionId === 'neralis')
     add('Current', `${memory.current ?? 0}/${phase2CounterCap(unit, 1)}`,
-      'Gain once per action from effective Normal damage or native healing. Skill2 and Last Flare spend Current.',
+      'Gain once per action from effective Normal damage or native healing. Skill2 and Convergent Light spend Current.',
       ['native-phase2-current'], true);
   if (unit.definitionId === 'varkhel')
     add('Tension', `${memory.tension ?? 0}/${phase2CounterCap(unit, 1)}`,
-      'Gain from effective enemy direct Health or Shield damage once per enemy phase, or an effective Normal Attack. Skill2 and Last Flare spend Tension.',
+      'Gain from effective enemy direct Health or Shield damage once per enemy phase, or an effective Normal Attack. Skill2 and Convergent Light spend Tension.',
       ['native-phase2-tension'], true);
   if (unit.definitionId === 'seravelle')
     add('Cadence', `${memory.cadence ?? 0}/${phase2CounterCap(unit, 1)}`,
@@ -2141,30 +2141,30 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
       ['native-phase2-cadence'], true);
   if (unit.definitionId === 'velmira')
     add('Crosscut', `${memory.crosscut ?? 0}/${phase2CounterCap(unit, 1)}`,
-      `Ordinary Skill sequence: ${memory.previousSkill ?? 'not started'}. Only alternating ordinary Skills add Crosscut; Last Flare spends it.`,
+      `Ordinary Skill sequence: ${memory.previousSkill ?? 'not started'}. Only alternating ordinary Skills add Crosscut; Convergent Light spends it.`,
       ['native-phase2-crosscut'], true);
   if (unit.definitionId === 'maerion') {
     const capacity = unit.stats.health * (equipped(unit, 'master-maerion-1') ? .85 : .45);
     const recordsShieldAbsorption = equipped(unit, 'master-maerion-1');
     add('Unreturned', `${Math.round(memory.unreturned ?? 0)}/${Math.round(capacity)}`,
-      `Stores allies’ actual direct Health loss${recordsShieldAbsorption ? ' and direct Shield absorption' : ''} while Maerion lives; redirected damage and damage-over-time do not count. Skill2 and Last Flare spend it.`,
+      `Stores allies’ actual direct Health loss${recordsShieldAbsorption ? ' and direct Shield absorption' : ''} while Maerion lives; redirected damage and damage-over-time do not count. Skill2 and Convergent Light spend it.`,
       ['moon-maerion-unreturned'], true);
   }
   if (unit.definitionId === 'caevren')
     add('Load', `${memory.load ?? 0}/${equipped(unit, 'master-caevren-1') ? 5 : 3}`,
-      'Gain 1 when an enemy direct attack damages Caevren’s Health or Shield, once per enemy phase. Redirected hits count; Last Flare spends Load.',
+      'Gain 1 when an enemy direct attack damages Caevren’s Health or Shield, once per enemy phase. Redirected hits count; Convergent Light spends Load.',
       ['moon-caevren-load'], true);
   if (unit.definitionId === 'vespera')
     add('Beacon', `${memory.beacon ?? 0}/${equipped(unit, 'master-vespera-1') ? 4 : 3}`,
-      'Gain 1 when another living ally spends Vespera’s Signal, once per player turn. Last Flare spends Beacon.',
+      'Gain 1 when another living ally spends Vespera’s Signal, once per player turn. Convergent Light spends Beacon.',
       ['moon-vespera-beacon'], true);
   if (unit.definitionId === 'ilyss')
     add('Severance', `${memory.severance ?? 0}/${equipped(unit, 'master-ilyss-1') ? 4 : 3}`,
-      'Gain 1 when Ilyss removes one Burn or Weaken application with a Skill or Last Flare, once per player turn. Last Flare spends Severance.',
+      'Gain 1 when Ilyss removes one Burn or Weaken application with a Skill or Convergent Light, once per player turn. Convergent Light spends Severance.',
       ['moon-ilyss-severance'], true);
   if (unit.definitionId === 'asteriel') {
     add('Promise', `${memory.promise ?? 0}/${equipped(unit, 'master-asteriel-1') ? 4 : 3}`,
-      'Switching between Shelter and Flourish grants 1 Promise. Last Flare spends Promise and preserves the current path.',
+      'Switching between Shelter and Flourish grants 1 Promise. Convergent Light spends Promise and preserves the current path.',
       ['moon-asteriel-promise'], true);
     const path = memory.path;
     const pathIcon = path === 'shelter' ? 'moon-asteriel-shelter'
@@ -2175,7 +2175,7 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
   }
   if (unit.definitionId === 'serapha')
     add('Interval', `${memory.interval ?? 0}/${equipped(unit, 'master-serapha-1') ? 4 : 3}`,
-      'Gain 1 when an enemy carrying Serapha’s Weaken makes a direct attack, once per enemy phase. Last Flare spends Interval.',
+      'Gain 1 when an enemy carrying Serapha’s Weaken makes a direct attack, once per enemy phase. Convergent Light spends Interval.',
       ['moon-serapha-interval'], true);
   for (const [id, mark] of Object.entries(memory.fateMarks ?? {})) if (mark.throughPhase >= state.round)
     add('Fate-seared Mark', `${mark.stacks}/5`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${mark.stacks * 10}% damage taken and +45% Severed Prophecy; through enemy phase ${mark.throughPhase}.`, ['calamitic-fate-mark']);
@@ -2206,7 +2206,7 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
       blades.map(id => state.enemies.some(enemy => enemy.id === id) ? 'native-elise-lodged-blade' : 'native-elise-held-blade'), true);
   }
   if (unit.definitionId === 'crinso') add('Combo', `${memory.combo ?? 0} · ${memory.edge === 'gold' ? 'Last: Golden Edge' : memory.edge === 'crimson' ? 'Last: Crimson Rupture' : 'New chain'}`,
-    'Alternate Golden Edge and Crimson Rupture to build Combo; Last Flare spends it.',
+    'Alternate Golden Edge and Crimson Rupture to build Combo; Convergent Light spends it.',
     ['native-crinso-combo', ...(memory.edge ? [`native-crinso-${memory.edge}-edge` as const] : [])], true);
   if (unit.definitionId === 'vaelor') add('Beat', ['Tune', 'Rise', 'Crescendo'][memory.beat ?? 0],
     'Advances every global player turn, including recovery.', [(['native-vaelor-tune', 'native-vaelor-rise', 'native-vaelor-crescendo'] as const)[memory.beat ?? 0]], true);
@@ -2221,7 +2221,7 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
   }
   if (unit.definitionId === 'myrthen') {
     const season = memory.season ?? 'sprout';
-    add('Season', `${season[0].toUpperCase()}${season.slice(1)}`, 'Skills advance Sprout, Bloom, then Harvest; Harvest empowers the next Skill or Last Flare.', [], true);
+    add('Season', `${season[0].toUpperCase()}${season.slice(1)}`, 'Skills advance Sprout, Bloom, then Harvest; Harvest empowers the next Skill or Convergent Light.', [], true);
     if (memory.claim && memory.claim.throughPhase >= state.round) add('Reaper’s Claim', state.enemies.find(enemy => enemy.id === memory.claim?.target)?.name ?? '', `+12% direct damage taken through enemy phase ${memory.claim.throughPhase}.`);
   }
   if (memory.defenseBuff && memory.defenseBuff.throughRound >= state.round) add('Gate Ward', `Defense +${Math.round(memory.defenseBuff.fraction * 100)}%`, `Through player turn ${memory.defenseBuff.throughRound}.`, ['ward']);
@@ -2240,16 +2240,16 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
   }
   if (unit.definitionId === 'thessara')
     add('Reserve', `${memory.reserve ?? 0}/${equipped(unit, 'master-thessara-1') ? 5 : 4}`,
-      'Normal Attacks and Skill1 that hit directly gain one Reserve. Skill2 and Last Flare spend it.');
+      'Normal Attacks and Skill1 that hit directly gain one Reserve. Skill2 and Convergent Light spend it.');
   if (unit.definitionId === 'elaris' && memory.branchTarget)
     add('Branch', `${memory.branches ?? 0}/${equipped(unit, 'master-elaris-1') ? 4 : 3}`,
-      `${state.enemies.find(enemy => enemy.id === memory.branchTarget)?.name ?? ''}; Normal Attacks and Skill1 build Branch. Skill2 and Last Flare spend it.`);
+      `${state.enemies.find(enemy => enemy.id === memory.branchTarget)?.name ?? ''}; Normal Attacks and Skill1 build Branch. Skill2 and Convergent Light spend it.`);
   if (unit.definitionId === 'veyr' && memory.faultTarget)
     add('Fault', `${memory.faultCount ?? 0}/${equipped(unit, 'master-veyr-1') ? 4 : 3}`,
       `${state.enemies.find(enemy => enemy.id === memory.faultTarget)?.name ?? ''}; Defense −${Math.min(40, (memory.faultCount ?? 0) * 8)}% · through enemy phase ${memory.faultThroughPhase}.`);
   if (unit.definitionId === 'aureth') {
     add('Momentum', `${memory.momentum ?? 0}/${equipped(unit, 'master-aureth-1') ? 4 : 3}`,
-      'Moving Lead to a different ally grants one Momentum, once per player turn. Last Flare spends Momentum.');
+      'Moving Lead to a different ally grants one Momentum, once per player turn. Convergent Light spends Momentum.');
     add('Lead', state.allies.find(ally => ally.id === memory.leadTarget)?.name ?? 'Unassigned',
       'The Lead holder takes reduced enemy direct damage while Aureth lives.');
   }

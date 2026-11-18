@@ -141,7 +141,7 @@ export function runRadiantPressure(
     if (action.type === 'flare') {
       const member = state.gauge.members.find(member => member.id === action.bearerId)!;
 
-      if (!readyFlare(state.gauge, member.id)) throw new Error('Pressure Flare is not ready.');
+      if (!readyFlare(state.gauge, member.id)) throw new Error('Pressure Convergent Light is not ready.');
       spent = radiantFlareCost(member);
     }
     const result = applyRadiantCombatAction(state, action);

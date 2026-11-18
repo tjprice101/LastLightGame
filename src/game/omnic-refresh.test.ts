@@ -239,7 +239,7 @@ describe('D-383 complete Omnic and Master refresh', () => {
     expect(recipient.stats.skillPower).toBe(1);
   });
 
-  it('focuses real Infernis Last Flare packets and Burn on the selected enemy, not the whole field', () => {
+  it('focuses real Infernis Convergent Light packets and Burn on the selected enemy, not the whole field', () => {
     const state = withMasterLoadouts(fixture(), { ember: 'master-ember-2' });
     const result = act(state, state.allies[0].id, 'ultimate', state.enemies[1].id);
     expect(result.state.enemies.map(unit => unit.burn.turns > 0)).toEqual([false, true, false]);

@@ -151,7 +151,7 @@ describe('MasterVFXEngine Orchestration', () => {
     const engine = new MasterVFXEngine(canvas, 'aurora', 'skill1');
     expect(engine.getArchetype()).toBe('beam');
 
-    // Switch to Last Flare -> Cataclysm
+    // Switch to Convergent Light -> Cataclysm
     engine.setAbility('ultimate');
     expect(engine.getArchetype()).toBe('cataclysm');
 

@@ -41,7 +41,7 @@ describe('native identity authoritative parity and restart', () => {
     expect(result.response.result).toBeUndefined();
     expect(game).toEqual(before);
   });
-  it.each(nativeIdentityIds)('matches %s strengthened Last Flare and frozen state online', id => {
+  it.each(nativeIdentityIds)('matches %s strengthened Convergent Light and frozen state online', id => {
     const game = ready([id, id === 'ember' ? 'tide' : 'ember']);
     const targetId = game.run!.session.state.enemies[0].id;
     const local = actAndAdvanceTurn(game.run!.session.state, id, 'ultimate', targetId);

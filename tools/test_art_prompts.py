@@ -189,7 +189,7 @@ class ArtPromptTests(unittest.TestCase):
                         self.assertNotRegex(body.split(" --", 1)[0], r"\b(?:cute|cutesy|adorable|baby|toy-like)\b")
                 for anchor in ("supreme", "transcendent", "fully prismatic-armored", signature):
                     self.assertIn(anchor, bodies[5])
-                for slot, body in zip(("Passive", "Skill 1", "Skill 2", "Last Flare", "Normal Attack", "Defense"), bodies[6:12]):
+                for slot, body in zip(("Passive", "Skill 1", "Skill 2", "Convergent Light", "Normal Attack", "Defense"), bodies[6:12]):
                     self.assertIn(f" - {slot}", text)
                     corrected_icons = {"Atmoso": "wind", "Aurora": "light", "Bliss": "peace",
                                        "Bruno": "earth", "Disciple": "chaotic", "Elise": "electricity",

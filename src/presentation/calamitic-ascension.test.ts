@@ -64,7 +64,7 @@ describe('Calamitic Ascension presentation', () => {
     expect(document.body.textContent).not.toMatch(/before|Requires|unlock/i);
     expect(writes).toBe(0);
   });
-  it('reveals the live Radiant passive, leader and Flare imbues only after stats are saved', () => {
+  it('reveals the live Radiant passive, leader and Convergent Light imbues only after stats are saved', () => {
     account.characters.ember!.ascension = { stats: true };
     const html = ascensionContents(starter, account);
     expect(html).toContain(radiantBearerKits.ember.passive.name);

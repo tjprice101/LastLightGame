@@ -455,7 +455,7 @@ function skills(): string {
   }
   const icons = abilityIcons[state.selected];
   return detailShell(`<div class="skill-grid">${abilityCard('passive', 'Passive', icons.passive ? image(`abilities/${icons.passive}`) : uiIcon('summon'), kit.passive.name, kit.passive.description, kitResource(kit, state.selected), 'Automatic while alive / no Gauge')}
-    ${(['skill1', 'skill2', 'ultimate'] as const).map((key, i) => abilityCard(key, ['Skill 1', 'Skill 2', 'Last Flare'][i], icons[key] ? image(`abilities/${icons[key]}`) : uiIcon('summon'), kit.abilities[key].name, kit.abilities[key].description,
+    ${(['skill1', 'skill2', 'ultimate'] as const).map((key, i) => abilityCard(key, ['Skill 1', 'Skill 2', 'Convergent Light'][i], icons[key] ? image(`abilities/${icons[key]}`) : uiIcon('summon'), kit.abilities[key].name, kit.abilities[key].description,
       abilityStatuses(kit.abilities[key].strength, state.selected, key),
       `${shatterGauge.costs[key]} Elemental Gauge${kit.abilities[key].cooldown ? ` / ${kit.abilities[key].cooldown}-turn cooldown` : ''}${key === 'ultimate' ? ' / Recover next turn' : ''}`)).join('')}</div>`);
 }

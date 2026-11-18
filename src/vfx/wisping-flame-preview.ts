@@ -93,7 +93,7 @@ function init() {
     { id: 'light', label: 'Normal' },
     { id: 'skill1', label: 'Skill 1' },
     { id: 'skill2', label: 'Skill 2' },
-    { id: 'ultimate', label: 'Last Flare' },
+    { id: 'ultimate', label: 'Convergent Light' },
   ];
 
   let currentTier: AbilityTier = 'skill1';

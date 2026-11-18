@@ -44,7 +44,7 @@ describe('automatic enemy turn after the final available action', () => {
     expect(result.events.filter((event) => event.kind === 'attack' && event.source !== 'ember')).toHaveLength(6);
     expect(teamCanAct(result.state)).toBe(true);
   });
-  it('waits for a ready teammate even when the other teammate uses Last Flare', () => {
+  it('waits for a ready teammate even when the other teammate uses Convergent Light', () => {
     const state = battle(['ember', 'tide']);
     state.allies[0].shatter = 100;
     const first = actAndAdvanceTurn(state, 'ember', 'ultimate', state.enemies[0].id);

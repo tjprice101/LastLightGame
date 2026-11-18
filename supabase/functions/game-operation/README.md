@@ -463,7 +463,7 @@ owner account edits or retroactive grants. This deployment also activates D-300.
 
 The shared engine removes Skill1/Skill2 cooldowns for Element-Bearers and
 captured squad members, including old readiness dates in resumed snapshots.
-Gauge costs, one action per turn, Last Flare recovery/ultimate cooldowns,
+Gauge costs, one action per turn, Convergent Light recovery/ultimate cooldowns,
 enemy schedules and saved capture intervals remain unchanged.
 Regenerate with `node tools\bundle_server_game.mjs` and deploy the function
 alongside the client for online parity. No database migration or load-time

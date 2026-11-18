@@ -95,7 +95,7 @@ describe('Caldrex, Solenne and Myrthen native kits', () => {
     expect(owner.native?.season).toBe('bloom');
   });
 
-  it('Cadence grants 7% Gauge once per phase and exactly 3% per charge to other allies on Last Flare', () => {
+  it('Cadence grants 7% Gauge once per phase and exactly 3% per charge to other allies on Convergent Light', () => {
     const state = encounter('solenne', 'ember'), owner = state.allies[0];
     owner.masterConduit = 'master-solenne-3'; owner.native = { stillness: 4 };
     state.allies.forEach(ally => { ally.shatter = 0; ally.stats.shatterCapacity = 100; });
@@ -233,7 +233,7 @@ describe('Caldrex, Solenne and Myrthen native kits', () => {
     expect(debuffSnapshot(state.enemies[0]).weakened ?? 0).toBe(0);
   });
 
-  it('Myrthen Last Flare uses exact authored scale without the roster-wide tripling', () => {
+  it('Myrthen Convergent Light uses exact authored scale without the roster-wide tripling', () => {
     const light = use(encounter('myrthen'), 'myrthen', 'light').events.find(event => event.kind === 'damage')!;
     const ult = use(encounter('myrthen'), 'myrthen', 'ultimate').events.filter(event => event.kind === 'damage');
     expect(light.amount).toBeGreaterThan(0);

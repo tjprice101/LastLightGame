@@ -76,7 +76,7 @@ describe('distinct flagship native identities', () => {
     expect(recall.state.allies[0].native?.blades).toEqual([null, null]);
   });
 
-  it('Elise split placement covers separate targets but Last Flare remains one direct target', () => {
+  it('Elise split placement covers separate targets but Convergent Light remains one direct target', () => {
     let state = use(encounter('elise'), 'elise', 'skill1').state;
     state = use(state, 'elise', 'skill1', state.enemies[1].id).state;
     const flare = use(state, 'elise', 'ultimate');

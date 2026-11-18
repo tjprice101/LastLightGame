@@ -354,7 +354,7 @@ try {
     const ranked = solo.filter(row => row.level === level && row.profile === 'ceiling').sort((a, b) => b.offensive.sustained - a.offensive.sustained);
     const best = ranked[0], median = (ranked[7].offensive.sustained + ranked[8].offensive.sustained) / 2;
     const planned = solo.find(row => row.level === level && row.profile === 'planned' && row.id === best.id);
-    lines.push(`- Lv.${level}: ${name(best.id)} leads sampled ceiling solo output at **${fmt(best.offensive.sustained)} DPR**, ${fmt(best.offensive.sustained / median)}x roster ceiling median and ${fmt(best.offensive.sustained / planned.offensive.sustained)}x its own planned build. Seed spread ${fmt(best.offensive.minSustained)}-${fmt(best.offensive.maxSustained)}. ${best.offensive.actions} mean actions/${rounds} cycles; ${best.offensive.flares} mean Last Flares.`);
+    lines.push(`- Lv.${level}: ${name(best.id)} leads sampled ceiling solo output at **${fmt(best.offensive.sustained)} DPR**, ${fmt(best.offensive.sustained / median)}x roster ceiling median and ${fmt(best.offensive.sustained / planned.offensive.sustained)}x its own planned build. Seed spread ${fmt(best.offensive.minSustained)}-${fmt(best.offensive.maxSustained)}. ${best.offensive.actions} mean actions/${rounds} cycles; ${best.offensive.flares} mean Convergent Lights.`);
   }
   lines.push('', '### Longer-run consistency checks', '',
     'The leading measured solo, duo and trio in each of planned/ceiling were rerun for90 cycles across ten seeds. These test duration/crit consistency, not all possible rotations. The90-cycle metric uses only the final45 cycles.',

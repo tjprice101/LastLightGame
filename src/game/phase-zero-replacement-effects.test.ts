@@ -190,7 +190,7 @@ describe('Phase 0 Master token lifetimes', () => {
     });
   });
 
-  it('does not accumulate Crinso critical tokens across separate Last Flares', () => {
+  it('does not accumulate Crinso critical tokens across separate Convergent Lights', () => {
     const state = fixture('master-crinso-1', 0, ['crinso', 'ember', 'tide']);
     state.allies[0].native = { combo: 2 };
     const first = act(state, state.allies[0].id, 'ultimate', state.enemies[0].id).state;
@@ -573,7 +573,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(injured.conduitRuntime?.layers?.every(layer => !('expiresAfterPhase' in layer)) ?? true).toBe(true);
   });
 
-  it('Skythread selects Gauge percentage, refreshes one ordinary-skill discount and does not discount Last Flare', () => {
+  it('Skythread selects Gauge percentage, refreshes one ordinary-skill discount and does not discount Convergent Light', () => {
     const state = setup('atmospheric-skythread-rudder', level);
     const [, first, second] = state.allies;
     first.shatter = 40;
@@ -618,7 +618,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
       prepareConduitAction(state, support, 'skill1', 25, false), false).skillPowerBonus).toBe(0);
   });
 
-  it('Storm Clock counts critical Attack Actions, not AoE impacts, and holds one next-Last-Flare discount', () => {
+  it('Storm Clock counts critical Attack Actions, not AoE impacts, and holds one next-Last-Convergent Light discount', () => {
     const state = setup('atmospheric-storm-clock', level);
     const ally = state.allies[1];
     finishHit(state, 'skill1', true, 100, true);

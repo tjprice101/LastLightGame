@@ -55,7 +55,7 @@ describe('Adventure damage and turns', () => {
     expect(() => use(supported, 'tide', 'light')).toThrow('already acted');
     expect(supported.allies[2].spent).toBe(false);
   });
-  it('Last Flare blocks exactly the next full turn', () => {
+  it('Convergent Light blocks exactly the next full turn', () => {
     let state = use(controlled(), 'ember', 'ultimate');
     expect(state.round).toBe(1);
     expect(state.allies[0].recoverThrough).toBe(2);
@@ -481,7 +481,7 @@ describe('starter abilities and passives', () => {
     });
   });
   it.each(starters)('$name has two implemented abilities and a consistently named ultimate', (starter) => {
-    expect(fighters[starter.id].abilities.ultimate.name).toMatch(/^Last Flare: .+/);
+    expect(fighters[starter.id].abilities.ultimate.name).toMatch(/^Convergent Light: .+/);
     expect(use(controlled(), starter.id, 'skill1').allies.find((unit) => unit.id === starter.id)?.spent).toBe(true);
     expect(use(controlled(), starter.id, 'skill2').allies.find((unit) => unit.id === starter.id)?.spent).toBe(true);
     expect(use(controlled(), starter.id, 'ultimate').allies.find((unit) => unit.id === starter.id)?.recoverThrough).toBe(2);

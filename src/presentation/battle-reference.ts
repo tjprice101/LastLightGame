@@ -24,8 +24,8 @@ export function radiantBattleReference(loadout: RadiantLoadout, baseCost: number
     <p>Stat ascension ${loadout.ascension.stats ? '×1.5 active' : 'inactive'}; weapon rank ${loadout.weaponRank}
     (${percent(.02 * loadout.weaponRank)} grown Attack). Frozen four-stat values include equipped stat Conduits;
     living squad passives, Weaken and Attack boosts apply dynamically in combat.</p>
-    <p>Kit text shows base values. In combat, Skill Power scales skills and Flares, and Flare power (form, rank, Imbues and
-    personal Master enhancements) scales Flares. Defense, elemental matchups, the living leader and equipped Conduits determine actual damage.</p>
+    <p>Kit text shows base values. In combat, Skill Power scales skills and Convergent Light, and Convergent Light power (form, rank, Imbues and
+    personal Master enhancements) scales Convergent Light. Defense, elemental matchups, the living leader and equipped Conduits determine actual damage.</p>
     <p>Ability-applied Burn snapshots elemental matchups and applicable Burn bonuses when applied; later leader defeats do not change that snapshot.</p>
     <p>    Effects use this frozen run's gear/ranks, not current menu equipment. Gear-generated output never triggers native or further gear effects.
     Luminosity is personal to each Element-Bearer; there is no shared meter.

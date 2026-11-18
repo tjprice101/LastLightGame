@@ -15,13 +15,13 @@ function fixture() {
   host.innerHTML = '<button data-radiant-actor="tide">Tizu</button>';
   document.body.append(host);
   const button = host.querySelector('button')!;
-  const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Lustrous Flare'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
+  const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Lustrous Convergent Light'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
   const binding = bindRadiantPortraitGestures(host, options); bindings.push(binding);
   return { host, button, binding, options };
 }
 afterEach(() => { bindings.splice(0).forEach(binding => binding.dispose()); vi.useRealTimers(); document.body.replaceChildren(); });
 describe('Radiant charged portrait gestures', () => {
-  it('leaves a tap to the native button as an immediate attack, with no selection step or Flare', () => {
+  it('leaves a tap to the native button as an immediate attack, with no selection step or Convergent Light', () => {
     const { button, binding, options } = fixture();
     pointer(button, 'pointerdown'); expect(button.classList.contains('is-arming')).toBe(true);
     pointer(button, 'pointerup'); expect(button.classList.contains('is-arming')).toBe(false);
@@ -55,7 +55,7 @@ describe('Radiant charged portrait gestures', () => {
     const { button, binding, options } = fixture(); options.ready.mockReturnValue(null);
     pointer(button, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
     pointer(button, 'pointerup', 50, 100 - gestureThreshold);
-    expect(options.cast).not.toHaveBeenCalled(); expect(options.notice).toHaveBeenLastCalledWith('Flare is not ready; no action spent.');
+    expect(options.cast).not.toHaveBeenCalled(); expect(options.notice).toHaveBeenLastCalledWith('Convergent Light is not ready; no action spent.');
     expect(binding.consumeClick(button)).toBe(true);
   });
   it.each(['pointercancel', 'lostpointercapture', 'escape', 'blur', 'dispose', 'disabled'] as const)(
@@ -88,7 +88,7 @@ describe('Radiant charged portrait gestures', () => {
     document.body.append(host);
     const card = host.querySelector<HTMLElement>('[data-radiant-card]')!;
     const actor = host.querySelector<HTMLButtonElement>('[data-radiant-actor]')!;
-    const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
+    const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Convergent Light'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
     const binding = bindRadiantPortraitGestures(host, options); bindings.push(binding);
     const stats = host.querySelector<HTMLElement>('[data-stats] dd')!;
     pointer(stats, 'pointerdown');
@@ -110,7 +110,7 @@ describe('Radiant charged portrait gestures', () => {
     const host = document.createElement('div');
     host.innerHTML = '<article data-radiant-card><button data-radiant-actor="tide">Tizu</button><p>Body</p></article>';
     document.body.append(host);
-    const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
+    const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Convergent Light'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
     bindings.push(bindRadiantPortraitGestures(host, options));
     const body = host.querySelector<HTMLElement>('p')!, card = host.querySelector<HTMLElement>('article')!;
     pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
@@ -122,7 +122,7 @@ describe('Radiant charged portrait gestures', () => {
     pointer(body, 'pointermove', 50, 100 - gestureThreshold); pointer(body, 'pointerup', 50, 100 - gestureThreshold);
     expect(options.cast).toHaveBeenCalledTimes(1); expect(vi.getTimerCount()).toBe(0);
   });
-  it('marks a held card unready without priming when no Flare is available', () => {
+  it('marks a held card unready without priming when no Convergent Light is available', () => {
     vi.useFakeTimers();
     const host = document.createElement('div');
     host.innerHTML = '<article data-radiant-card><button data-radiant-actor="tide">Tizu</button><p>Body</p></article>';
@@ -140,10 +140,10 @@ describe('Radiant charged portrait gestures', () => {
       vi.useFakeTimers();
       const host = document.createElement('div');
       host.innerHTML = `<article data-radiant-card><div data-radiant-fan><button data-radiant-skill="1">One</button>
-        <button data-radiant-skill="2">Two</button><button data-radiant-skill="flare">Flare</button></div>
+        <button data-radiant-skill="2">Two</button><button data-radiant-skill="flare">Convergent Light</button></div>
         <button data-radiant-actor="tide">Tizu</button><p>Body</p></article>`;
       document.body.append(host);
-      const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
+      const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Convergent Light'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
       const binding = bindRadiantPortraitGestures(host, options); bindings.push(binding);
       const at = vi.fn((): Element | null => null);
       Object.defineProperty(document, 'elementFromPoint', { configurable: true, value: at });

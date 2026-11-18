@@ -16,7 +16,7 @@ export class CataclysmVFXSystem implements BaseVFXSystem {
 
     if (t >= apexTime && !this.hasTriggeredApex) {
       this.hasTriggeredApex = true;
-      shakeCallback(32); // Massive screen shake for Last Flare apex
+      shakeCallback(32); // Massive screen shake for Convergent Light apex
     }
   }
 

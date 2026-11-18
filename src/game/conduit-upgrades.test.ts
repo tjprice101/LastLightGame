@@ -295,7 +295,7 @@ describe('account-wide five-step Conduit restoration', () => {
     expect(captured.damage).toBeCloseTo(capturedBase.damage);
     expect(captured.health).toBeCloseTo(capturedBase.health * .79);
     expect(resolveFighter('ember', progress).stats).toEqual(base);
-    expect(legacyConduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toContain('+70% [Last Flare] Direct Damage; -21% maximum HP.');
+    expect(legacyConduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toContain('+70% [Convergent Light] Direct Damage; -21% maximum HP.');
     expect(conduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toBe(radiantConduitEffectText('worldbreaker-drive', 5));
   });
   const destinations = [undefined, ...playableDungeons.map((element) => ({ element, stage: 1 })),

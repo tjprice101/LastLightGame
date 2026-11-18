@@ -35,7 +35,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Parallax Relay",
     "rarity": "Common",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "+50% [Health] and +10% [Last Flare] [Direct Damage]."
+    "ability": "+50% [Health] and +10% [Convergent Light] [Direct Damage]."
   },
   "precision-escapement": {
     "name": "Precision Escapement",
@@ -185,7 +185,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Horizon Heartcase",
     "rarity": "Legendary",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. Gain +20% [Health] and +10% [Defense] while it is blocked by insufficient [Elemental Gauge], [Cooldown] or [Recovery]."
+    "ability": "Your [Convergent Light] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. Gain +20% [Health] and +10% [Defense] while it is blocked by insufficient [Elemental Gauge], [Cooldown] or [Recovery]."
   },
   "immortal-vessel": {
     "name": "Immortal Vessel",
@@ -245,7 +245,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Worldbreaker Drive",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "Your [Last Flare] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage]."
+    "ability": "Your [Convergent Light] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage]."
   },
   "master-ozriel-2": {
     "name": "Absolution Planetary Suppressor",
@@ -353,7 +353,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Cinderstar Genesis Engine",
     "rarity": "Omnic (Master)",
     "element": "Infernic (named bearer's actual element; Master for Infernis only)",
-    "ability": "Infernis' [Last Flare] now targets one enemy and gains +125% [Direct Damage]. Infernis also gains +55% [Health], +65% [Defense], and +40% [Skill Power]."
+    "ability": "Infernis' [Convergent Light] now targets one enemy and gains +125% [Direct Damage]. Infernis also gains +55% [Health], +65% [Defense], and +40% [Skill Power]."
   },
   "master-disciple-2": {
     "name": "Concord Planet Thoughtforge",
@@ -413,7 +413,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Eclipse Mantle",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Last Flare] [Direct Damage]."
+    "ability": "Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Convergent Light] [Direct Damage]."
   },
   "master-razor-2": {
     "name": "Eclipse Planet Watchtower",
@@ -605,13 +605,13 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Ouroboros Core",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "+40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health]."
+    "ability": "+40% [Elemental Gauge Capacity]. After [Convergent Light], all living allies gain a [Shield] worth 10% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health]."
   },
   "chaotic-paradox-spindle": {
     "name": "Paradox Spindle",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "While you recover from [Last Flare], your other allies gain +40% [Skill Power] and +20% [Skill Efficiency]. +35% [Defense] and +20% [Skill Efficiency]."
+    "ability": "While you recover from [Convergent Light], your other allies gain +40% [Skill Power] and +20% [Skill Efficiency]. +35% [Defense] and +20% [Skill Efficiency]."
   },
   "emberlife-kiln": {
     "name": "Phoenix Lifeforge",
@@ -647,7 +647,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Quarry Planet Gravitas",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Bruno only)",
-    "ability": "Bruno's [Last Flare] [Shield] uses the larger of 375% of his effective [Defense] or 37.5% of his maximum [Health], before [Skill Power]. Allies under his [Cover] gain +25% [Elemental Gauge Gain]. Bruno gains +65% [Health] and +65% [Defense]."
+    "ability": "Bruno's [Convergent Light] [Shield] uses the larger of 375% of his effective [Defense] or 37.5% of his maximum [Health], before [Skill Power]. Allies under his [Cover] gain +25% [Elemental Gauge Gain]. Bruno gains +65% [Health] and +65% [Defense]."
   },
   "master-bliss-3": {
     "name": "Quiet Heaven Fanforge",
@@ -659,13 +659,13 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Quiet-Arc Shelter Projector",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Solenne only)",
-    "ability": "After Solenne uses either Skill or her Last Flare, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power]."
+    "ability": "After Solenne uses either Skill or her Convergent Light, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power]."
   },
   "master-myrthen-3": {
     "name": "Reaping-Tide Recovery Dynamo",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
-    "ability": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power]."
+    "ability": "When Myrthen's Normal Attack, Skill or Convergent Light directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power]."
   },
   "master-varkhel-3": {
     "name": "Recoil-Star Compression Turbine",
@@ -689,7 +689,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Rosefault Precision Sovereign",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "While [Shielded], gain +50% [Critical Damage Multiplier]. Your first critical [Attack Action] each [Player Turn] grants your [Shield]'s provider +20% [Skill Power] for their next [Skill]. +70% [Last Flare] [Direct Damage] and +55% [Health]."
+    "ability": "While [Shielded], gain +50% [Critical Damage Multiplier]. Your first critical [Attack Action] each [Player Turn] grants your [Shield]'s provider +20% [Skill Power] for their next [Skill]. +70% [Convergent Light] [Direct Damage] and +55% [Health]."
   },
   "ruinselect-prism": {
     "name": "Ruinselect Fracture Parliament",
@@ -719,7 +719,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Seedtrace Pursuit Distributor",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
-    "ability": "After using either Skill or her Last Flare, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate]."
+    "ability": "After using either Skill or her Convergent Light, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate]."
   },
   "luminous-seraph-mirror": {
     "name": "Seraph Mirror",
@@ -791,7 +791,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Stillhour Carillon",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "At the start of each [Player Turn] you spend in [Last Flare] [Recovery], heal every living ally for 8% of their own maximum [Health] and grant them 10% [Elemental Gauge]. +120% [Health] and +30% [Elemental Gauge Gain]."
+    "ability": "At the start of each [Player Turn] you spend in [Convergent Light] [Recovery], heal every living ally for 8% of their own maximum [Health] and grant them 10% [Elemental Gauge]. +120% [Health] and +30% [Elemental Gauge Gain]."
   },
   "master-bliss-2": {
     "name": "Stillplume Planetary Ballet",
@@ -821,7 +821,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Tempest Return Chronarch",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Every third critical [Attack Action] you perform grants all living allies +25% [Skill Efficiency] for their next [Last Flare]. Store at most one discount per ally. +35% [Critical Rate] and +75% [Elemental Gauge Capacity]."
+    "ability": "Every third critical [Attack Action] you perform grants all living allies +25% [Skill Efficiency] for their next [Convergent Light]. Store at most one discount per ally. +35% [Critical Rate] and +75% [Elemental Gauge Capacity]."
   },
   "pressurecrest-governor": {
     "name": "Tempest Shelter Sovereign",
@@ -1007,7 +1007,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Causality Funeral Engine",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]."
+    "ability": "+50% [Skill Efficiency]. Your [Convergent Light] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]."
   },
   "calamitic-choir-array-of-branded-stars": {
     "name": "Choir-Array of Branded Stars",
@@ -1049,7 +1049,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Throne of Borrowed Tomorrows",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense]."
+    "ability": "Your [Convergent Light] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Convergent Light] [Recovery] are ineligible. +45% [Health] and +45% [Defense]."
   },
   "calamitic-throne-of-the-lone-apostate": {
     "name": "Throne of the Lone Apostate",

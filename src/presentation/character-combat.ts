@@ -126,7 +126,7 @@ export function radiantFlareArticle(loadout: RadiantLoadout, tier: ConvergentLig
   return `<article class="hub-ability radiant-flare info-ability${unlocked ? '' : ' is-locked'}" data-radiant-flare="${tier}" data-radiant-reference-tier="${tier}"><h4 class="ability-heading">${abilityIcon(loadout.starter, 'ultimate')}<span>${radiantFlareTierNames[tier]} · ${escape(radiantSkillName(loadout.starter, 'flare'))}</span></h4>
     <p class="info-label">${unlocked ? 'Unlocked' : 'Locked'} · Rank ${tierRank[tier]}+ and Evo.${displayEvolution(loadout.starter, tierForm[tier])}.</p>
     <p data-radiant-kit-text="flare">${escape(radiantFlareText(loadout.starter, tier))}</p>
-    <p class="info-price">Costs ${flareCost(loadout, tier)}. Rank ${loadout.convergenceRank} of 20. Flare power ×${number(radiantFlarePower(loadout))} from form, rank (+1% per rank above Rank 1) and Imbues.</p></article>`;
+    <p class="info-price">Costs ${flareCost(loadout, tier)}. Rank ${loadout.convergenceRank} of 20. Convergent Light power ×${number(radiantFlarePower(loadout))} from form, rank (+1% per rank above Rank 1) and Imbues.</p></article>`;
 }
 
 /** Effective Luminosity cost of Skill 1 or Skill 2 after this loadout's Skill Efficiency (N2). */
@@ -145,14 +145,14 @@ export function radiantRoleTrait(id: RadiantBearerId): string {
   const role = radiantBearerKits[id].role;
   if (role === 'Tank') return `Tank: enemies target this Element-Bearer more often (weight ${radiantTankTargetWeight} against 1 for single-target attacks); +50% Defense.`;
   if (role === 'Attacker') return `Attacker: +${percent(radiantRoleSkillPower.Attacker)} Skill Power.`;
-  return `Support: +50% Health, +${percent(radiantRoleSkillPower.Support)} Skill Power. Each skill and Flare also heals all allies (${percent(radiantSupportSquadHeal)} of max Health; not scaled by Skill Power).`;
+  return `Support: +50% Health, +${percent(radiantRoleSkillPower.Support)} Skill Power. Each skill and Convergent Light also heals all allies (${percent(radiantSupportSquadHeal)} of max Health; not scaled by Skill Power).`;
 }
 
 /** N4 Skill stats for this loadout: per-slot Skill Power, Efficiency and cost, plus Duration and Gauge Gain. */
 export function radiantSkillStatsPanel(loadout: RadiantLoadout): string {
   const rows = ([1, 2, 'flare'] as const).map(slot => {
     const stats = radiantLoadoutSkillStats(loadout, slot);
-    const label = slot === 'flare' ? 'Flare' : `Skill ${slot}`;
+    const label = slot === 'flare' ? 'Convergent Light' : `Skill ${slot}`;
     const cost = slot === 'flare' ? flareCost(loadout, convergentLightTier(loadout.convergenceRank)) : `${radiantSkillCostFor(loadout, slot)} Luminosity`;
     return `<div data-radiant-skill-stat="${slot}"><dt>${label}</dt><dd><strong>${percent(stats.skillPower)}</strong> Skill Power · ${percent(stats.skillEfficiency)} Skill Efficiency · ${cost}</dd></div>`;
   }).join('');
@@ -160,7 +160,7 @@ export function radiantSkillStatsPanel(loadout: RadiantLoadout): string {
   return `<dl class="info-stat-table radiant-skill-stats" aria-label="Skill stats">${rows}
     <div data-radiant-skill-stat="duration"><dt>Skill Duration</dt><dd><strong>+${shared.skillDuration} turns</strong> on timed skill effects (max ${radiantMaximumDuration} turns)</dd></div>
     <div data-radiant-skill-stat="gauge"><dt>Gauge Gain</dt><dd><strong>${percent(shared.gaugeGain)}</strong> of every Luminosity gain</dd></div></dl>
-    <p class="info-label">Skill Power scales skill and Flare damage, Burn, heals, Shields and buff and debuff strength. It does not scale Normal Attack, fills or Conduit-generated effects. Skill Efficiency discounts costs (max 50%; Flares cost at least 70).</p>`;
+    <p class="info-label">Skill Power scales skill and Convergent Light damage, Burn, heals, Shields and buff and debuff strength. It does not scale Normal Attack, fills or Conduit-generated effects. Skill Efficiency discounts costs (max 50%; Convergent Light cost at least 70).</p>`;
 }
 
 export function radiantConvergenceRankPanel(loadout: RadiantLoadout, account: Account): string {
@@ -237,9 +237,9 @@ export function radiantKitGlossary(): string {
     <div><dt>Burn</dt><dd>Deals damage based on the caster's Attack at the end of each enemy phase, ignoring Defense. No cap.</dd></div>
     <div><dt>Weaken</dt><dd>Lowers the holder's Attack.</dd></div>
     <div><dt>Expose</dt><dd>Raises the direct damage the enemy takes.</dd></div>
-    <div><dt>Shield</dt><dd>Absorbs damage until broken. Shields from skills and Flares stack. Kit heals and Shields are a percentage of the recipient's max Health.</dd></div>
+    <div><dt>Shield</dt><dd>Absorbs damage until broken. Shields from skills and Convergent Light stack. Kit heals and Shields are a percentage of the recipient's max Health.</dd></div>
     <div><dt>Targets</dt><dd>One-enemy skills hit the current target. Ally skills reach all allies, the other allies, the caster, or the ally with the lowest Health.</dd></div>
-    <div><dt>Luminosity</dt><dd>Normal Attack hits fill ${radiantChargeRules.normal}; each enemy hit taken fills ${radiantChargeRules.incomingAttack}. Skill 1 costs 25, Skill 2 costs 40, a Flare costs 100 (Sparkling) or 200 (Glimmering and Ultimate). Skills and Flares fill none.</dd></div>
+    <div><dt>Luminosity</dt><dd>Normal Attack hits fill ${radiantChargeRules.normal}; each enemy hit taken fills ${radiantChargeRules.incomingAttack}. Skill 1 costs 25, Skill 2 costs 40, a Convergent Light costs 100 (Sparkling) or 200 (Glimmering and Ultimate). Skills and Convergent Light fill none.</dd></div>
     <div><dt>Health mote</dt><dd>Each defeated enemy heals the Element-Bearer who defeated it (${percent(radiantHealthMote)} of max Health; the Burn's caster for a Burn defeat). Motes never revive.</dd></div>
   </dl>`;
 }

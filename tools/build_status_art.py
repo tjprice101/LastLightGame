@@ -41,9 +41,9 @@ NOTES = {
     "tempest": "Atmospheric family: Atmoso/Elise/Vaelor personal Atmospheric Charge and wind/storm equipment benefits share art. Personal Atmospheric Charge uses effective critical Normal/ordinary skills; equipment rules stay separate.",
     "focus": "Tranquilitic family: critical precision and sight/focus equipment effects share art. Show exact percentage, source and expiry/consumption; no new buff is created.",
     "suppression": "Chaotic family: actual Weaken and equipment Fracture Mark/pierce share art, not mechanics. Preserve exact debuff type, strength, owner, stacks and clock; a shared family never makes all targets Weakened.",
-    "rose-grace": "Rosetta intrinsic effective authored-healing resource; Skill1 Weaken versus Last Flare damage, maximum three.",
-    "thorn-aegis": "Thornia intrinsic authored-shield absorption resource; Skill2 Weaken versus Last Flare shield, maximum three.",
-    "rose-duality": "Crinso intrinsic own effective Burn resource; Skill1 versus Last Flare damage, maximum three. Not equipment Ember Seals.",
+    "rose-grace": "Rosetta intrinsic effective authored-healing resource; Skill1 Weaken versus Convergent Light damage, maximum three.",
+    "thorn-aegis": "Thornia intrinsic authored-shield absorption resource; Skill2 Weaken versus Convergent Light shield, maximum three.",
+    "rose-duality": "Crinso intrinsic own effective Burn resource; Skill1 versus Convergent Light damage, maximum three. Not equipment Ember Seals.",
 }
 
 
@@ -85,7 +85,7 @@ def document():
         "Rose Grace specializes Botanic Renewal, Thorn Aegis specializes Oceanic Protection and Rose Duality specializes Infernic Embers; "
         "their unique symbols and native rules remain.",
         "## Removed from generation, not from essential gameplay\n\n"
-        "Do not generate separate icons for Attack Boost, Defense, Last Flare Recovery, Elemental Gauge, "
+        "Do not generate separate icons for Attack Boost, Defense, Convergent Light Recovery, Elemental Gauge, "
         "Skill Cooldown, Normal Momentum, Rift Echo, Undertide Reprise or Storm Clock. "
         "Keep exact live text, meters, timers and equipment feedback; instant cooldown feedback "
         "is not a lingering elemental status. All existing owned Conduit effects remain functional. "

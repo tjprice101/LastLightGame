@@ -32,7 +32,7 @@ export type VFXArchetype =
   | 'slam'            // Hammer impacts, seismic ground fissures, basalt spire eruptions
   | 'vortex'          // Tornadoes, air blades, black hole singularities, whirlpools
   | 'volley'          // Multi-projectile flurries, bouncing shurikens, rapid thrusts
-  | 'cataclysm';       // Full-screen cinematic Last Flare ultimates
+  | 'cataclysm';       // Full-screen cinematic Convergent Light ultimates
 
 export interface AbilityVFXDefinition {
   name: string;

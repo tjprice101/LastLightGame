@@ -250,7 +250,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "Your abilities cost 7% -> 14% less [Elemental Gauge] (rounded down). [Last Flare] cannot drop below 70 [Elemental Gauge].",
+    "description": "Your abilities cost 7% -> 14% less [Elemental Gauge] (rounded down). [Convergent Light] cannot drop below 70 [Elemental Gauge].",
     "ranges": [
       {
         "base": 7,
@@ -283,7 +283,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "worldbreaker-drive": {
-    "description": "+35% -> +70% [Last Flare] Direct Damage; -6% -> -21% maximum HP.",
+    "description": "+35% -> +70% [Convergent Light] Direct Damage; -6% -> -21% maximum HP.",
     "ranges": [
       {
         "base": 35,
@@ -332,7 +332,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "judgment-lens": {
-    "description": "[Skill 1], [Skill 2] and [Last Flare] deal +40% -> +80% critical Direct Damage; [Normal Attack] cannot critically hit.",
+    "description": "[Skill 1], [Skill 2] and [Convergent Light] deal +40% -> +80% critical Direct Damage; [Normal Attack] cannot critically hit.",
     "ranges": [
       {
         "base": 40,
@@ -535,7 +535,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "chaotic-ouroboros-core": {
-    "description": "[Last Flare] converts your [Elemental Gauge] above its cost into a [Shield] of 0.3% -> 0.6% of your maximum HP per [Elemental Gauge].",
+    "description": "[Convergent Light] converts your [Elemental Gauge] above its cost into a [Shield] of 0.3% -> 0.6% of your maximum HP per [Elemental Gauge].",
     "ranges": [
       {"base":0.3,"maximum":0.6,"percent":true,"step":false}
 
@@ -621,7 +621,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tranquilitic-stillhour-carillon": {
-    "description": "At the start of each [Last Flare] recovery turn, gain 15 -> 30 [Elemental Gauge] and give the same amount to the other ally with the lowest [Elemental Gauge].",
+    "description": "At the start of each [Convergent Light] recovery turn, gain 15 -> 30 [Elemental Gauge] and give the same amount to the other ally with the lowest [Elemental Gauge].",
     "ranges": [
       {
         "base": 15,
@@ -632,7 +632,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "chaotic-paradox-spindle": {
-    "description": "During [Last Flare] recovery, you can use [Normal Attack] at 50% -> 75% Direct Damage.",
+    "description": "During [Convergent Light] recovery, you can use [Normal Attack] at 50% -> 75% Direct Damage.",
     "ranges": [
       {
         "base": 50,
@@ -823,7 +823,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "atmospheric-storm-clock": {
-    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Last Flare] cost by 15 -> 30 [Elemental Gauge]. [Last Flare] spends all charges.",
+    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Convergent Light] cost by 15 -> 30 [Elemental Gauge]. [Convergent Light] spends all charges.",
     "ranges": [
       {
         "base": 15,
@@ -890,7 +890,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 [Elemental Gauge].",
+    "description": "The first [Convergent Light: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 [Elemental Gauge].",
     "ranges": []
   },
   "master-atmoso-1": {
@@ -910,7 +910,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-aurora-2": {
-    "description": "[Aurora]'s [Last Flare] applies a [Judgment Seal] to each surviving enemy for two Enemy Turns. Enemies with [Judgment Seal] cannot critically hit.",
+    "description": "[Aurora]'s [Convergent Light] applies a [Judgment Seal] to each surviving enemy for two Enemy Turns. Enemies with [Judgment Seal] cannot critically hit.",
     "ranges": []
   },
   "master-aurora-3": {
@@ -926,7 +926,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-bliss-3": {
-    "description": "[Bliss]'s [Last Flare] gives the other ally with the lowest [Elemental Gauge] a [Quiet Feather]: their next [Skill 1] costs no [Elemental Gauge].",
+    "description": "[Bliss]'s [Convergent Light] gives the other ally with the lowest [Elemental Gauge] a [Quiet Feather]: their next [Skill 1] costs no [Elemental Gauge].",
     "ranges": []
   },
   "master-bruno-1": {
@@ -934,7 +934,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-bruno-2": {
-    "description": "[Bruno]'s [Last Flare] grants himself a [Shield] equal to 200% of his Defense, or 20% of his maximum HP if higher. [Cover] is unchanged.",
+    "description": "[Bruno]'s [Convergent Light] grants himself a [Shield] equal to 200% of his Defense, or 20% of his maximum HP if higher. [Cover] is unchanged.",
     "ranges": []
   },
   "master-bruno-3": {
@@ -946,7 +946,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-disciple-2": {
-    "description": "After [Last Flare], allies are linked for two player Rounds: [Elemental Gauge] gained by a linked ally is split equally among all linked allies.",
+    "description": "After [Convergent Light], allies are linked for two player Rounds: [Elemental Gauge] gained by a linked ally is split equally among all linked allies.",
     "ranges": []
   },
   "master-disciple-3": {
@@ -958,7 +958,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-elise-2": {
-    "description": "[Last Flare] strikes each target four times at 30% Direct Damage each.",
+    "description": "[Convergent Light] strikes each target four times at 30% Direct Damage each.",
     "ranges": []
   },
   "master-elise-3": {
@@ -970,7 +970,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-razor-2": {
-    "description": "Before [Last Flare], [Razor] consumes his [Shield] for +2% Direct Damage per 1% of maximum HP it held.",
+    "description": "Before [Convergent Light], [Razor] consumes his [Shield] for +2% Direct Damage per 1% of maximum HP it held.",
     "ranges": []
   },
   "master-razor-3": {
@@ -986,7 +986,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-rosetta-3": {
-    "description": "Each [Last Flare] adds a [Golden Opening] to the [Quarry]. Each one gives another ally's next hit on it +40% Direct Damage, then is consumed. Openings stack.",
+    "description": "Each [Convergent Light] adds a [Golden Opening] to the [Quarry]. Each one gives another ally's next hit on it +40% Direct Damage, then is consumed. Openings stack.",
     "ranges": []
   },
   "master-thornia-1": {
@@ -1010,7 +1010,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-crinso-3": {
-    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]: [Golden Edge] deals +30% Direct Damage; [Crimson Rupture] heals [Crinso] for 20% of its HP damage. [Last Flare: Blossoming Cataclysm] gets both bonuses and restarts the order at [Golden Edge].",
+    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]: [Golden Edge] deals +30% Direct Damage; [Crimson Rupture] heals [Crinso] for 20% of its HP damage. [Convergent Light: Blossoming Cataclysm] gets both bonuses and restarts the order at [Golden Edge].",
     "ranges": []
   },
   "master-nerithe-1": {
@@ -1066,7 +1066,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-solenne-2": {
-    "description": "After Solenne uses either Skill or her Last Flare, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power].",
+    "description": "After Solenne uses either Skill or her Convergent Light, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power].",
     "ranges": []
   },
   "master-solenne-3": {
@@ -1078,11 +1078,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-myrthen-2": {
-    "description": "After using either Skill or her Last Flare, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate].",
+    "description": "After using either Skill or her Convergent Light, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate].",
     "ranges": []
   },
   "master-myrthen-3": {
-    "description": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power].",
+    "description": "When Myrthen's Normal Attack, Skill or Convergent Light directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power].",
     "ranges": []
   },
   "master-ozriel-1": {

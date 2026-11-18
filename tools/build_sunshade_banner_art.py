@@ -212,7 +212,7 @@ def document():
         "Cores/reflections inherit the palette; green key is background only. Designs/prompts complete, "
         "all actual generated artwork still pending; no gameplay change.",
         "## Inventory",
-        "| Category | Images |\n|---|---:|\n| Six-form portraits |36|\n| Passive/Skill1/Skill2/Last Flare |24|\n"
+        "| Category | Images |\n|---|---:|\n| Six-form portraits |36|\n| Passive/Skill1/Skill2/Convergent Light |24|\n"
         "| Personal Masters |18|\n| Native/Master status pictograms |10|\n| Banner/splash, header, arena |3|\n"
         "| Optional signature-equipment showcases |6|\n| Total |97|",
         "Six Solcarapace portraits and six Dawnforge materials are in the separate event pack, "

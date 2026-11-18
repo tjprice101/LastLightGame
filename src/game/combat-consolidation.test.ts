@@ -54,7 +54,7 @@ describe('consolidated live combat contract', () => {
     expect(state.gauge.members.every(member => member.charge === 0)).toBe(true);
   });
 
-  it('does not roll random bonuses or grant skill, Flare, defeat or personal round charge', () => {
+  it('does not roll random bonuses or grant skill, Convergent Light, defeat or personal round charge', () => {
     const roll = vi.fn(() => 0);
     expect(radiantHitDrop('normal', 0, roll)).toEqual({ amount: 15, bonusRolls: 0, bonusOffered: 0 });
     expect(radiantHitDrop('flare', 0, roll).amount).toBe(0);

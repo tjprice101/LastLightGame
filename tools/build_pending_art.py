@@ -201,7 +201,7 @@ def native_document():
 
 **{len(STATUSES)} delivered pictograms**, not new ability portraits or UI screenshots.
 These cover the D-316 native states alongside their accurate live text.
-Existing character-specific passive/Skill1/Skill2/Last Flare images remain
+Existing character-specific passive/Skill1/Skill2/Convergent Light images remain
 installed; all Normal/Defense actions already use the two universal images.
 Do not regenerate64 ability images just because mechanics changed.
 

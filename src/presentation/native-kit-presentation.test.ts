@@ -49,12 +49,12 @@ afterEach(() => {
   Reflect.deleteProperty(Element.prototype, 'animate');
 });
 
-it('shows the selected enemy rather than a Global hint for Cinderstar Last Flare', () => {
+it('shows the selected enemy rather than a Global hint for Cinderstar Convergent Light', () => {
   const state = createBattle(1729, ['ember']);
   state.allies[0].masterConduit = 'master-ember-2';
   const hint = nativeActionHint(state, state.allies[0], 'ultimate', state.enemies[1].id);
   expect(hint).toContain(`Enemy: ${state.enemies[1].name}`);
-  expect(hint).toContain('Focused Last Flare');
+  expect(hint).toContain('Focused Convergent Light');
   expect(hint).not.toContain('All living enemies');
 });
 

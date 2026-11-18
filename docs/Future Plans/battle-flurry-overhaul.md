@@ -226,6 +226,67 @@ hosted build:
 Separately, small and first: label the Flare **Convergent Light** in every
 menu (internal IDs unchanged; Sonnet).
 
+#### Step 1 proposal: visual rules (draft, awaiting owner approval)
+
+Status: **proposed, not approved, not implemented.** Baseline captured
+2026-11-18 with `node tools/capture_frames.mjs --battle <tier> --encounter
+nerithe-10 --frames 40 --every 50` against the dev preview:
+- casters never move;
+- Normal Attack is barely visible;
+- impacts are small sparks the size of the target;
+- no screen shake, flash, dim or zoom;
+- Skill 2 and Convergent Light read alike (about 1 s of sparks plus a number);
+  only the cut-in banner separates them.
+
+**R1. Four beats.** Every player action plays wind-up, travel, impact,
+aftermath. Melee kits lunge or dash to the target. Ranged kits fire a
+projectile or beam. Support kits pulse from the caster to allies.
+
+**R2. Tier escalation and time budget** (battle speed 1; speed 2 and 3
+divide every time):
+
+| Tier | Wind-up | Travel | Impact | Aftermath | Total | Screen tools |
+|---|---|---|---|---|---|---|
+| Normal Attack | 100 ms | 100 ms | 150 ms | 100 ms | ~0.45 s | lunge, element spark, 2 px shake |
+| Skill 1 | 200 ms | 150 ms | 300 ms | 200 ms | ~0.85 s | afterimages, layered burst, 3 px shake, 40 ms hit-stop |
+| Skill 2 | 300 ms | 200 ms | 450 ms | 250 ms | ~1.2 s | soft flash, burst on every target, 5 px shake, 60 ms hit-stop |
+| Convergent Light | cut-in plus 30-55% dim | multi-hit | finisher | 300 ms | 1.5 / 1.9 / 2.4 s | dim, 1.06 zoom, full flash on finisher, 8 px shake, 90 ms hit-stop |
+
+The Convergent Light totals are for Sparkling, Glimmering and Ultimate.
+
+**R3. Element language.** Particles, trails and bursts are tinted per element
+from the VFX texture library. Each element has a shape grammar:
+- Infernic: embers and flame tongues;
+- Oceanic: arcs and spray;
+- Atmospheric: bolts and streaks;
+- Botanic: petals and vines;
+- Tranquilitic: rings and glyphs;
+- Chaotic: fractures and smoke.
+
+Per-bearer signature layers sit on top (step 4).
+
+**R4. Hits feel heavy.** Damage numbers land on the impact frame. Multi-hit
+numbers count up in sync with the hits. The target recoils, flashes white
+briefly and keeps its knock-back within its tile.
+
+**R5. Enemies telegraph.** A 250 ms wind-up glow and lean before each attack.
+Boss specials get a 30% dim and a name callout.
+
+**R6. Safety and comfort.**
+- Never more than three full flashes per second (WCAG 2.3.1).
+- Effects are pointer-transparent, finite and disposed on Skip, Exit or Retry.
+- Hit-stop and timing never change outcomes or RNG.
+- Reduce motion: no lunge, shake, zoom, flash or dim. Each impact shows one
+  static element ring and its number, 200 ms or less.
+- Skip finishes the action at once.
+
+**R7. Performance.** One GPU layer with a capped particle budget. Low-power
+devices fall back to fewer particles, not to a different look.
+
+**R8. Review method.** Every step is judged from timed captures of all four
+tiers (plus an enemy turn) before and after, then an owner feel review of
+the hosted build.
+
 ## Skill language
 
 One fixed phrase order: **[hits] [element] attack on [target] ([power]%),**

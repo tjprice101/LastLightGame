@@ -125,7 +125,7 @@ describe('real four-stat and action modifiers', () => {
         ? (control.events.find(event => event.type === 'damage') as Extract<typeof hit, { type: 'damage' }>).healthLoss : 0);
     expect(result.state.chargeSeed).toBe(control.state.chargeSeed);
   });
-  it('Flare offense, support healing and native shield amplification affect actual results', () => {
+  it('Convergent Light offense, support healing and native shield amplification affect actual results', () => {
     const cast = (id?: ConduitId, starter: RadiantBearerId = 'ember') => {
       const state = ready(fixture(id ? [id] : [], starter, ['rosetta']));
       state.bearers.forEach(ally => { ally.hp = 1; });

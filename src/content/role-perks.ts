@@ -18,7 +18,7 @@ export function rolePerkText(id: string, captured = false): string {
   switch (intrinsicRole(id, captured)) {
     case 'Tank': return 'Tank perk: Enemies target this character more often. +50% Defense.';
     case 'Attacker': return 'Attacker perk: +100% Direct Damage, +50% Skill Power.';
-    case 'Support': return 'Support perk: Skills and Last Flare heal the squad for 4% max Health. +50% Health, +25% Skill Power.';
+    case 'Support': return 'Support perk: Skills and Convergent Light heal the squad for 4% max Health. +50% Health, +25% Skill Power.';
     default: return '';
   }
 }

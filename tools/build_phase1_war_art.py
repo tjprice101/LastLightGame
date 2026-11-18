@@ -59,7 +59,7 @@ DESIGNS = (
             ("Passive", "Banked Heat", "three amber rectangular heat cells held in a black brass-riveted gauntlet housing, orange pressure traces confined inside"),
             ("Skill 1", "Close the Kiln", "two floating black forge gauntlets locked into one brass-edged furnace-gate shield, three small attached orange shielding arcs"),
             ("Skill 2", "Cinder Discharge", "one floating open brass furnace gauntlet ejecting a compact fan of solid orange cutting wedges, three emptied amber heat cells"),
-            ("Last Flare", "Nothing Beyond These Gates", "one immense closed black furnace gate shield, nested brass braces and orange heat channels curling around its rim, dense interlocking plate detail"),
+            ("Convergent Light", "Nothing Beyond These Gates", "one immense closed black furnace gate shield, nested brass braces and orange heat channels curling around its rim, dense interlocking plate detail"),
         ),
         masters=(
             ("Banked-Sun Pressure Accumulator", "a squat black pressure engine, three amber crystal heat cartridges linked by brass piston manifolds, interlocking valve jaws, stepped radiator shutters", "Heat storage and Defense-per-Heat concept"),
@@ -91,7 +91,7 @@ DESIGNS = (
             ("Passive", "Held Stillness", "four flat rose-ivory silence plates nested inside a silver crescent clamp, one unstruck bell clapper suspended at center"),
             ("Skill 1", "Answer the Bell", "one floating bronze-and-rose-ivory bell with two chain grips, three solid lilac vibration arcs converging on its rim"),
             ("Skill 2", "Circle of Repose", "three overlapping silver crescent shield plates enclosing a rose-ivory bell clapper, an opaque lilac ribbon fastening the circle"),
-            ("Last Flare", "The Last Reverberation", "one ornate bell shield inside seven overlapping silver mechanical hoops, four rose-ivory silence plates unfolding into dense lilac vibration arcs"),
+            ("Convergent Light", "The Last Reverberation", "one ornate bell shield inside seven overlapping silver mechanical hoops, four rose-ivory silence plates unfolding into dense lilac vibration arcs"),
         ),
         masters=(
             ("Stillpoint Inertial Governor", "a low silver gyroscopic engine, four flat rose-ivory damping plates around a lilac crystal flywheel, gold counterweight gears and black articulated stabilizers", "Stillness mitigation concept"),
@@ -123,7 +123,7 @@ DESIGNS = (
             ("Passive", "Turning Season", "one triangular growth-ring medallion with three distinct sectors: jade sprout, pink blossom and amber grain head, a white edge marking the return"),
             ("Skill 1", "Reaper's Claim", "two floating jade sickles linked by one brown chain enclosing an amber seed-shaped target notch, one pink petal caught on a blade"),
             ("Skill 2", "Turn the Bough", "one jade sprout curling through a pink blossom into an amber grain sickle, three interlocked flat botanical segments"),
-            ("Last Flare", "All That Ripens", "two floating ornate jade sickles crossing around a dense amber harvest knot, pink petals and white rime twigs bound inside a three-part growth-ring frame"),
+            ("Convergent Light", "All That Ripens", "two floating ornate jade sickles crossing around a dense amber harvest knot, pink petals and white rime twigs bound inside a three-part growth-ring frame"),
         ),
         masters=(
             ("Seasonwheel Harvest Transmission", "a jade three-lobed transmission engine, pink crystal germination cartridge and amber harvest rotor connected by bark-brown planetary gears, white faceted timing teeth", "Harvest strength and retained-season concept"),

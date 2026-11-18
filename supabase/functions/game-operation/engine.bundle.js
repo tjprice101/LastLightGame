@@ -335,7 +335,7 @@ var approvedConduitCatalog = {
     "name": "Parallax Relay",
     "rarity": "Common",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "+50% [Health] and +10% [Last Flare] [Direct Damage]."
+    "ability": "+50% [Health] and +10% [Convergent Light] [Direct Damage]."
   },
   "precision-escapement": {
     "name": "Precision Escapement",
@@ -485,7 +485,7 @@ var approvedConduitCatalog = {
     "name": "Horizon Heartcase",
     "rarity": "Legendary",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. Gain +20% [Health] and +10% [Defense] while it is blocked by insufficient [Elemental Gauge], [Cooldown] or [Recovery]."
+    "ability": "Your [Convergent Light] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. Gain +20% [Health] and +10% [Defense] while it is blocked by insufficient [Elemental Gauge], [Cooldown] or [Recovery]."
   },
   "immortal-vessel": {
     "name": "Immortal Vessel",
@@ -545,7 +545,7 @@ var approvedConduitCatalog = {
     "name": "Worldbreaker Drive",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "Your [Last Flare] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage]."
+    "ability": "Your [Convergent Light] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage]."
   },
   "master-ozriel-2": {
     "name": "Absolution Planetary Suppressor",
@@ -653,7 +653,7 @@ var approvedConduitCatalog = {
     "name": "Cinderstar Genesis Engine",
     "rarity": "Omnic (Master)",
     "element": "Infernic (named bearer's actual element; Master for Infernis only)",
-    "ability": "Infernis' [Last Flare] now targets one enemy and gains +125% [Direct Damage]. Infernis also gains +55% [Health], +65% [Defense], and +40% [Skill Power]."
+    "ability": "Infernis' [Convergent Light] now targets one enemy and gains +125% [Direct Damage]. Infernis also gains +55% [Health], +65% [Defense], and +40% [Skill Power]."
   },
   "master-disciple-2": {
     "name": "Concord Planet Thoughtforge",
@@ -713,7 +713,7 @@ var approvedConduitCatalog = {
     "name": "Eclipse Mantle",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Last Flare] [Direct Damage]."
+    "ability": "Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Convergent Light] [Direct Damage]."
   },
   "master-razor-2": {
     "name": "Eclipse Planet Watchtower",
@@ -905,13 +905,13 @@ var approvedConduitCatalog = {
     "name": "Ouroboros Core",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "+40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health]."
+    "ability": "+40% [Elemental Gauge Capacity]. After [Convergent Light], all living allies gain a [Shield] worth 10% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health]."
   },
   "chaotic-paradox-spindle": {
     "name": "Paradox Spindle",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "While you recover from [Last Flare], your other allies gain +40% [Skill Power] and +20% [Skill Efficiency]. +35% [Defense] and +20% [Skill Efficiency]."
+    "ability": "While you recover from [Convergent Light], your other allies gain +40% [Skill Power] and +20% [Skill Efficiency]. +35% [Defense] and +20% [Skill Efficiency]."
   },
   "emberlife-kiln": {
     "name": "Phoenix Lifeforge",
@@ -947,7 +947,7 @@ var approvedConduitCatalog = {
     "name": "Quarry Planet Gravitas",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Bruno only)",
-    "ability": "Bruno's [Last Flare] [Shield] uses the larger of 375% of his effective [Defense] or 37.5% of his maximum [Health], before [Skill Power]. Allies under his [Cover] gain +25% [Elemental Gauge Gain]. Bruno gains +65% [Health] and +65% [Defense]."
+    "ability": "Bruno's [Convergent Light] [Shield] uses the larger of 375% of his effective [Defense] or 37.5% of his maximum [Health], before [Skill Power]. Allies under his [Cover] gain +25% [Elemental Gauge Gain]. Bruno gains +65% [Health] and +65% [Defense]."
   },
   "master-bliss-3": {
     "name": "Quiet Heaven Fanforge",
@@ -959,13 +959,13 @@ var approvedConduitCatalog = {
     "name": "Quiet-Arc Shelter Projector",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Solenne only)",
-    "ability": "After Solenne uses either Skill or her Last Flare, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power]."
+    "ability": "After Solenne uses either Skill or her Convergent Light, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power]."
   },
   "master-myrthen-3": {
     "name": "Reaping-Tide Recovery Dynamo",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
-    "ability": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power]."
+    "ability": "When Myrthen's Normal Attack, Skill or Convergent Light directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power]."
   },
   "master-varkhel-3": {
     "name": "Recoil-Star Compression Turbine",
@@ -989,7 +989,7 @@ var approvedConduitCatalog = {
     "name": "Rosefault Precision Sovereign",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "While [Shielded], gain +50% [Critical Damage Multiplier]. Your first critical [Attack Action] each [Player Turn] grants your [Shield]'s provider +20% [Skill Power] for their next [Skill]. +70% [Last Flare] [Direct Damage] and +55% [Health]."
+    "ability": "While [Shielded], gain +50% [Critical Damage Multiplier]. Your first critical [Attack Action] each [Player Turn] grants your [Shield]'s provider +20% [Skill Power] for their next [Skill]. +70% [Convergent Light] [Direct Damage] and +55% [Health]."
   },
   "ruinselect-prism": {
     "name": "Ruinselect Fracture Parliament",
@@ -1019,7 +1019,7 @@ var approvedConduitCatalog = {
     "name": "Seedtrace Pursuit Distributor",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
-    "ability": "After using either Skill or her Last Flare, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate]."
+    "ability": "After using either Skill or her Convergent Light, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate]."
   },
   "luminous-seraph-mirror": {
     "name": "Seraph Mirror",
@@ -1091,7 +1091,7 @@ var approvedConduitCatalog = {
     "name": "Stillhour Carillon",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "At the start of each [Player Turn] you spend in [Last Flare] [Recovery], heal every living ally for 8% of their own maximum [Health] and grant them 10% [Elemental Gauge]. +120% [Health] and +30% [Elemental Gauge Gain]."
+    "ability": "At the start of each [Player Turn] you spend in [Convergent Light] [Recovery], heal every living ally for 8% of their own maximum [Health] and grant them 10% [Elemental Gauge]. +120% [Health] and +30% [Elemental Gauge Gain]."
   },
   "master-bliss-2": {
     "name": "Stillplume Planetary Ballet",
@@ -1121,7 +1121,7 @@ var approvedConduitCatalog = {
     "name": "Tempest Return Chronarch",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Every third critical [Attack Action] you perform grants all living allies +25% [Skill Efficiency] for their next [Last Flare]. Store at most one discount per ally. +35% [Critical Rate] and +75% [Elemental Gauge Capacity]."
+    "ability": "Every third critical [Attack Action] you perform grants all living allies +25% [Skill Efficiency] for their next [Convergent Light]. Store at most one discount per ally. +35% [Critical Rate] and +75% [Elemental Gauge Capacity]."
   },
   "pressurecrest-governor": {
     "name": "Tempest Shelter Sovereign",
@@ -1307,7 +1307,7 @@ var approvedConduitCatalog = {
     "name": "Causality Funeral Engine",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]."
+    "ability": "+50% [Skill Efficiency]. Your [Convergent Light] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]."
   },
   "calamitic-choir-array-of-branded-stars": {
     "name": "Choir-Array of Branded Stars",
@@ -1349,7 +1349,7 @@ var approvedConduitCatalog = {
     "name": "Throne of Borrowed Tomorrows",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense]."
+    "ability": "Your [Convergent Light] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Convergent Light] [Recovery] are ineligible. +45% [Health] and +45% [Defense]."
   },
   "calamitic-throne-of-the-lone-apostate": {
     "name": "Throne of the Lone Apostate",
@@ -1491,20 +1491,20 @@ var moonArtRevisions = {
 var masterEffects = {
   "maerion-1": "+75% Health | +25 percentage points Skill Power. [Unreturned] capacity becomes 85% of Maerion\u2019s maximum Health; direct Shield absorption contributes, redirected damage does not.",
   "maerion-2": "+50% Health | +35 percentage points Skill Power. Convert [A Place on the Ferry] healing overflow into a Shield for its target, up to 35% of that ally\u2019s maximum Health.",
-  "maerion-3": "+40% Health | +20 percentage points Skill Efficiency. When Maerion\u2019s Skills or Last Flare heal an ally from below 50% to at least 50% Health, grant 15% Elemental Gauge, once per ally per player turn.",
+  "maerion-3": "+40% Health | +20 percentage points Skill Efficiency. When Maerion\u2019s Skills or Convergent Light heal an ally from below 50% to at least 50% Health, grant 15% Elemental Gauge, once per ally per player turn.",
   "caevren-1": "+60% Health | +60% Defense. Increase maximum [Load] to 5; gain +10% Defense per stored [Load].",
-  "caevren-2": "+75% Health | +25 percentage points Skill Power. Increase [Counterweight Covenant] Shield and damage redirection from 30% to 55%; Last Flare redirection is unchanged.",
+  "caevren-2": "+75% Health | +25 percentage points Skill Power. Increase [Counterweight Covenant] Shield and damage redirection from 30% to 55%; Convergent Light redirection is unchanged.",
   "caevren-3": "+50% Defense | +40% Direct Attack. After an enemy direct attack damages Caevren\u2019s Health or Shield, deal 100% of his Direct Attack to that attacker, once per enemy phase. Can critically strike; redirected damage qualifies.",
   "vespera-1": "+50% Health | +30 percentage points Skill Power. Increase maximum [Beacon] to 4; [Keep the Last Beacon] [Signal] grants 50% more direct damage instead of 35%.",
   "vespera-2": "+40% Direct Attack | +30 percentage points Skill Power. [Burn] deals 30% more damage. When another ally spends [Signal] against an enemy carrying Vespera\u2019s [Burn], that attack ignores 15% Defense.",
   "vespera-3": "+60% Health | +20 percentage points Skill Efficiency. When another ally spends Vespera\u2019s [Signal], grant that ally 10 Elemental Gauge after the attack resolves, once per player turn.",
-  "ilyss-1": "+50% Health | +35 percentage points Skill Power. Increase maximum [Severance] to 4; each [Severance] spent by Last Flare adds 13% maximum-Health healing instead of 10%.",
-  "ilyss-2": "+75% Health | +20 percentage points Skill Power. When Ilyss removes [Burn] or [Weaken] with a Skill or Last Flare, Shield that ally for 15% of their maximum Health, once per ally per player turn.",
+  "ilyss-1": "+50% Health | +35 percentage points Skill Power. Increase maximum [Severance] to 4; each [Severance] spent by Convergent Light adds 13% maximum-Health healing instead of 10%.",
+  "ilyss-2": "+75% Health | +20 percentage points Skill Power. When Ilyss removes [Burn] or [Weaken] with a Skill or Convergent Light, Shield that ally for 15% of their maximum Health, once per ally per player turn.",
   "ilyss-3": "+40% Health | +20 percentage points Skill Efficiency. After [Unbind the Living] removes a debuff, grant its target +25 percentage points Skill Power for two player turns; refreshes rather than stacks.",
   "asteriel-1": "+60% Health | +30 percentage points Skill Power. Increase maximum [Promise] to 4; gain +5 percentage points Skill Power per stored [Promise].",
   "asteriel-2": "+75% Health | +25 percentage points Skill Power. After Asteriel enters [Shelter], heal the living squad member with the lowest Health percentage for 20% of their maximum Health, once per player turn.",
   "asteriel-3": "+40% Health | +20 percentage points Skill Efficiency. When another ally spends Asteriel\u2019s [Moonflower], grant that ally 8 Elemental Gauge after the attack resolves, once per player turn.",
-  "serapha-1": "+60% Health | +35 percentage points Skill Power. Increase maximum [Interval] to 4; each [Interval] spent by Last Flare also adds 5% maximum-Health healing.",
+  "serapha-1": "+60% Health | +35 percentage points Skill Power. Increase maximum [Interval] to 4; each [Interval] spent by Convergent Light also adds 5% maximum-Health healing.",
   "serapha-2": "+50% Health | +40% Defense. After [Ceasefire] reduces an enemy direct hit, heal its holder for 12% of maximum Health, once per ally per enemy phase.",
   "serapha-3": "+40% Health | +20 percentage points Skill Efficiency. When an enemy carrying Serapha\u2019s [Weaken] uses a direct attack, grant 10 Elemental Gauge to the living ally with the lowest Health percentage, once per enemy phase.",
   "rhaziel-1": "+60% Health | +35 percentage points Skill Power. [Repair] stores 35% of absorbed damage instead of 20%, up to 30% of its holder\u2019s maximum Health.",
@@ -1518,11 +1518,11 @@ var masterEffects = {
   "thessara-3": "+40% Health | +20 percentage points Skill Efficiency. Increase [Deliver What Was Promised] Gauge grant from 8 to 10 per [Reserve], and [No Village Omitted] grant from 6 to 8 per [Reserve].",
   "elaris-1": "+60% Direct Attack | +30 percentage points Skill Power. Increase maximum [Branch] to 4.",
   "elaris-2": "+45% Direct Attack | +25 percentage points Critical Rate. [Mark the Firebreak] grants 2 [Branch] instead of 1.",
-  "elaris-3": "+40% Direct Attack | +30 percentage points Skill Power. After Elaris spends [Branch], give every other living ally [Open Route]: their next damaging Skill or Last Flare ignores 15% Defense through the next player turn; refreshes rather than stacks.",
+  "elaris-3": "+40% Direct Attack | +30 percentage points Skill Power. After Elaris spends [Branch], give every other living ally [Open Route]: their next damaging Skill or Convergent Light ignores 15% Defense through the next player turn; refreshes rather than stacks.",
   "veyr-1": "+60% Direct Attack | +30 percentage points Skill Power. Increase maximum [Fault] to 4; its total Defense reduction cannot exceed 40%.",
   "veyr-2": "+45% Direct Attack | +25 percentage points Skill Power. After Veyr spends [Fault] on a surviving marked enemy, place [Aftershock] dealing 100% Direct Attack per [Fault] spent after the next enemy phase while Veyr lives. Replaces his existing [Aftershock].",
   "veyr-3": "+40% Direct Attack | +50% Health. When Veyr spends [Fault], Shield every living squad member for 5% of their maximum Health per [Fault] spent.",
-  "aureth-1": "+60% Health | +60% Defense. Increase maximum [Momentum] to 4; each [Momentum] spent by Last Flare also adds 5% maximum-Health Shield.",
+  "aureth-1": "+60% Health | +60% Defense. Increase maximum [Momentum] to 4; each [Momentum] spent by Convergent Light also adds 5% maximum-Health Shield.",
   "aureth-2": "+75% Health | +25 percentage points Skill Power. Increase [Lead] direct-damage reduction from 20% to 30%.",
   "aureth-3": "+50% Defense | +20 percentage points Skill Efficiency. When an enemy direct attack damages the [Lead] holder\u2019s Health or Shield, grant that ally 8 Elemental Gauge, once per enemy phase."
 };
@@ -1957,7 +1957,7 @@ var conduitRedesign = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "Your abilities cost 7% -> 14% less [Elemental Gauge] (rounded down). [Last Flare] cannot drop below 70 [Elemental Gauge].",
+    "description": "Your abilities cost 7% -> 14% less [Elemental Gauge] (rounded down). [Convergent Light] cannot drop below 70 [Elemental Gauge].",
     "ranges": [
       {
         "base": 7,
@@ -1990,7 +1990,7 @@ var conduitRedesign = {
     ]
   },
   "worldbreaker-drive": {
-    "description": "+35% -> +70% [Last Flare] Direct Damage; -6% -> -21% maximum HP.",
+    "description": "+35% -> +70% [Convergent Light] Direct Damage; -6% -> -21% maximum HP.",
     "ranges": [
       {
         "base": 35,
@@ -2039,7 +2039,7 @@ var conduitRedesign = {
     ]
   },
   "judgment-lens": {
-    "description": "[Skill 1], [Skill 2] and [Last Flare] deal +40% -> +80% critical Direct Damage; [Normal Attack] cannot critically hit.",
+    "description": "[Skill 1], [Skill 2] and [Convergent Light] deal +40% -> +80% critical Direct Damage; [Normal Attack] cannot critically hit.",
     "ranges": [
       {
         "base": 40,
@@ -2236,7 +2236,7 @@ var conduitRedesign = {
     ]
   },
   "chaotic-ouroboros-core": {
-    "description": "[Last Flare] converts your [Elemental Gauge] above its cost into a [Shield] of 0.3% -> 0.6% of your maximum HP per [Elemental Gauge].",
+    "description": "[Convergent Light] converts your [Elemental Gauge] above its cost into a [Shield] of 0.3% -> 0.6% of your maximum HP per [Elemental Gauge].",
     "ranges": [
       { "base": 0.3, "maximum": 0.6, "percent": true, "step": false }
     ]
@@ -2320,7 +2320,7 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-stillhour-carillon": {
-    "description": "At the start of each [Last Flare] recovery turn, gain 15 -> 30 [Elemental Gauge] and give the same amount to the other ally with the lowest [Elemental Gauge].",
+    "description": "At the start of each [Convergent Light] recovery turn, gain 15 -> 30 [Elemental Gauge] and give the same amount to the other ally with the lowest [Elemental Gauge].",
     "ranges": [
       {
         "base": 15,
@@ -2331,7 +2331,7 @@ var conduitRedesign = {
     ]
   },
   "chaotic-paradox-spindle": {
-    "description": "During [Last Flare] recovery, you can use [Normal Attack] at 50% -> 75% Direct Damage.",
+    "description": "During [Convergent Light] recovery, you can use [Normal Attack] at 50% -> 75% Direct Damage.",
     "ranges": [
       {
         "base": 50,
@@ -2518,7 +2518,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "atmospheric-storm-clock": {
-    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Last Flare] cost by 15 -> 30 [Elemental Gauge]. [Last Flare] spends all charges.",
+    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Convergent Light] cost by 15 -> 30 [Elemental Gauge]. [Convergent Light] spends all charges.",
     "ranges": [
       {
         "base": 15,
@@ -2584,7 +2584,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 [Elemental Gauge].",
+    "description": "The first [Convergent Light: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 [Elemental Gauge].",
     "ranges": []
   },
   "master-atmoso-1": {
@@ -2604,7 +2604,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-aurora-2": {
-    "description": "[Aurora]'s [Last Flare] applies a [Judgment Seal] to each surviving enemy for two Enemy Turns. Enemies with [Judgment Seal] cannot critically hit.",
+    "description": "[Aurora]'s [Convergent Light] applies a [Judgment Seal] to each surviving enemy for two Enemy Turns. Enemies with [Judgment Seal] cannot critically hit.",
     "ranges": []
   },
   "master-aurora-3": {
@@ -2620,7 +2620,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-bliss-3": {
-    "description": "[Bliss]'s [Last Flare] gives the other ally with the lowest [Elemental Gauge] a [Quiet Feather]: their next [Skill 1] costs no [Elemental Gauge].",
+    "description": "[Bliss]'s [Convergent Light] gives the other ally with the lowest [Elemental Gauge] a [Quiet Feather]: their next [Skill 1] costs no [Elemental Gauge].",
     "ranges": []
   },
   "master-bruno-1": {
@@ -2628,7 +2628,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-bruno-2": {
-    "description": "[Bruno]'s [Last Flare] grants himself a [Shield] equal to 200% of his Defense, or 20% of his maximum HP if higher. [Cover] is unchanged.",
+    "description": "[Bruno]'s [Convergent Light] grants himself a [Shield] equal to 200% of his Defense, or 20% of his maximum HP if higher. [Cover] is unchanged.",
     "ranges": []
   },
   "master-bruno-3": {
@@ -2640,7 +2640,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-disciple-2": {
-    "description": "After [Last Flare], allies are linked for two player Rounds: [Elemental Gauge] gained by a linked ally is split equally among all linked allies.",
+    "description": "After [Convergent Light], allies are linked for two player Rounds: [Elemental Gauge] gained by a linked ally is split equally among all linked allies.",
     "ranges": []
   },
   "master-disciple-3": {
@@ -2652,7 +2652,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-elise-2": {
-    "description": "[Last Flare] strikes each target four times at 30% Direct Damage each.",
+    "description": "[Convergent Light] strikes each target four times at 30% Direct Damage each.",
     "ranges": []
   },
   "master-elise-3": {
@@ -2664,7 +2664,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-razor-2": {
-    "description": "Before [Last Flare], [Razor] consumes his [Shield] for +2% Direct Damage per 1% of maximum HP it held.",
+    "description": "Before [Convergent Light], [Razor] consumes his [Shield] for +2% Direct Damage per 1% of maximum HP it held.",
     "ranges": []
   },
   "master-razor-3": {
@@ -2680,7 +2680,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-rosetta-3": {
-    "description": "Each [Last Flare] adds a [Golden Opening] to the [Quarry]. Each one gives another ally's next hit on it +40% Direct Damage, then is consumed. Openings stack.",
+    "description": "Each [Convergent Light] adds a [Golden Opening] to the [Quarry]. Each one gives another ally's next hit on it +40% Direct Damage, then is consumed. Openings stack.",
     "ranges": []
   },
   "master-thornia-1": {
@@ -2704,7 +2704,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-crinso-3": {
-    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]: [Golden Edge] deals +30% Direct Damage; [Crimson Rupture] heals [Crinso] for 20% of its HP damage. [Last Flare: Blossoming Cataclysm] gets both bonuses and restarts the order at [Golden Edge].",
+    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]: [Golden Edge] deals +30% Direct Damage; [Crimson Rupture] heals [Crinso] for 20% of its HP damage. [Convergent Light: Blossoming Cataclysm] gets both bonuses and restarts the order at [Golden Edge].",
     "ranges": []
   },
   "master-nerithe-1": {
@@ -2760,7 +2760,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-solenne-2": {
-    "description": "After Solenne uses either Skill or her Last Flare, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power].",
+    "description": "After Solenne uses either Skill or her Convergent Light, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power].",
     "ranges": []
   },
   "master-solenne-3": {
@@ -2772,11 +2772,11 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-myrthen-2": {
-    "description": "After using either Skill or her Last Flare, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate].",
+    "description": "After using either Skill or her Convergent Light, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate].",
     "ranges": []
   },
   "master-myrthen-3": {
-    "description": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power].",
+    "description": "When Myrthen's Normal Attack, Skill or Convergent Light directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power].",
     "ranges": []
   },
   "master-ozriel-1": {
@@ -4753,7 +4753,7 @@ var flagshipFighters = {
     abilities: {
       skill1: { name: "Razor Gale", description: "180% damage to one enemy.", cooldown: 0, strength: { damageMultiplier: 1.8 } },
       skill2: { name: "Cyclone Weave", description: "120% damage to every living enemy.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.2 } },
-      ultimate: { name: "Last Flare: Sky Without End", description: "290% damage to every living enemy. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.9 } }
+      ultimate: { name: "Convergent Light: Sky Without End", description: "290% damage to every living enemy. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.9 } }
     }
   },
   aurora: {
@@ -4762,7 +4762,7 @@ var flagshipFighters = {
     abilities: {
       skill1: { name: "Gleamseal", description: "140% damage to one enemy; weaken by 30% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.4, weakenFraction: 0.3 } },
       skill2: { name: "Eclipse Mandate", description: "90% damage to every living enemy; weaken by 25% for two enemy phases.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 0.9, weakenFraction: 0.25 } },
-      ultimate: { name: "Last Flare: Final Dawn Verdict", description: "220% damage to every living enemy; weaken by 40% for two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.2, weakenFraction: 0.4 } }
+      ultimate: { name: "Convergent Light: Final Dawn Verdict", description: "220% damage to every living enemy; weaken by 40% for two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.2, weakenFraction: 0.4 } }
     }
   },
   bliss: {
@@ -4772,7 +4772,7 @@ var flagshipFighters = {
     abilities: {
       skill1: { name: "Warfeather Cut", description: "175% damage to one enemy with +15 percentage points critical chance.", cooldown: 0, strength: { damageMultiplier: 1.75, critBonus: 0.15 } },
       skill2: { name: "Quietstorm Flourish", description: "125% damage to every living enemy with +10 percentage points critical chance; restore 12 health to every living ally, no revival.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.25, critBonus: 0.1, healing: 12 } },
-      ultimate: { name: "Last Flare: Thousandfeather Stillness", description: "300% damage to every living enemy with +20 percentage points critical chance. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3, critBonus: 0.2 } }
+      ultimate: { name: "Convergent Light: Thousandfeather Stillness", description: "300% damage to every living enemy with +20 percentage points critical chance. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3, critBonus: 0.2 } }
     }
   },
   bruno: {
@@ -4781,7 +4781,7 @@ var flagshipFighters = {
     abilities: {
       skill1: { name: "Seismic Hammerfall", description: "155% damage to one enemy; weaken by 20% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.55, weakenFraction: 0.2 } },
       skill2: { name: "Citadel Mantle", description: "Give every living ally 32 shield (lasts until broken; stacks).", cooldown: 0, targets: "all-allies", strength: { shield: 32 } },
-      ultimate: { name: "Last Flare: Worldwall Ascendant", description: "230% damage to every living enemy and 45 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.3, shield: 45 } }
+      ultimate: { name: "Convergent Light: Worldwall Ascendant", description: "230% damage to every living enemy and 45 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.3, shield: 45 } }
     }
   },
   disciple: {
@@ -4790,7 +4790,7 @@ var flagshipFighters = {
     abilities: {
       skill1: { name: "Thoughtspark Benediction", description: "150% damage to one enemy; increase living allies' outgoing attack damage by 20% this and next player turn (refresh; does not stack).", cooldown: 0, strength: { damageMultiplier: 1.5, attackBoostFraction: 0.2 } },
       skill2: { name: "Concord of Chaos", description: "Increase living allies' outgoing attack damage by 30% this and next player turn and give 20 shield (lasts until broken; stacks).", cooldown: 0, targets: "all-allies", strength: { attackBoostFraction: 0.3, shield: 20 } },
-      ultimate: { name: "Last Flare: Unbound Mindcrown", description: "Increase living allies' outgoing attack damage by 40% this and next player turn and give 40 shield (lasts until broken; stacks). Recover next turn.", cooldown: 0, targets: "all-allies", strength: { attackBoostFraction: 0.4, shield: 40 } }
+      ultimate: { name: "Convergent Light: Unbound Mindcrown", description: "Increase living allies' outgoing attack damage by 40% this and next player turn and give 40 shield (lasts until broken; stacks). Recover next turn.", cooldown: 0, targets: "all-allies", strength: { attackBoostFraction: 0.4, shield: 40 } }
     }
   },
   elise: {
@@ -4800,7 +4800,7 @@ var flagshipFighters = {
     abilities: {
       skill1: { name: "Voltstar Cut", description: "170% damage to one enemy with +20 percentage points critical chance.", cooldown: 0, strength: { damageMultiplier: 1.7, critBonus: 0.2 } },
       skill2: { name: "Crosscurrent Volley", description: "115% damage to every living enemy.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.15 } },
-      ultimate: { name: "Last Flare: Infinite Thunderwheel", description: "285% damage to every living enemy with +15 percentage points critical chance. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.85, critBonus: 0.15 } }
+      ultimate: { name: "Convergent Light: Infinite Thunderwheel", description: "285% damage to every living enemy with +15 percentage points critical chance. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.85, critBonus: 0.15 } }
     }
   },
   razor: {
@@ -4809,7 +4809,7 @@ var flagshipFighters = {
     abilities: {
       skill1: { name: "Nightcleave", description: "165% damage to one enemy; weaken by 25% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.65, weakenFraction: 0.25 } },
       skill2: { name: "Eclipse Bastion", description: "Give every living ally 35 shield (lasts until broken; stacks).", cooldown: 0, targets: "all-allies", strength: { shield: 35 } },
-      ultimate: { name: "Last Flare: Unbroken Midnight", description: "240% damage to every living enemy and 50 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.4, shield: 50 } }
+      ultimate: { name: "Convergent Light: Unbroken Midnight", description: "240% damage to every living enemy and 50 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.4, shield: 50 } }
     }
   }
 };
@@ -5078,7 +5078,7 @@ var warFighters = {
   },
   myrthen: {
     stats: { health: 220, defense: 11, damage: 44, crit: 0.22, shatterCapacity: 100, critMultiplier: 1.65, elementalDamage: 0 },
-    passive: { name: "Turning Season", description: "Skills advance Sprout, Bloom and Harvest; Harvest empowers the next Skill or Last Flare.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    passive: { name: "Turning Season", description: "Skills advance Sprout, Bloom and Harvest; Harvest empowers the next Skill or Convergent Light.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: "Reaper\u2019s Claim", description: "Strike one enemy and mark it.", cooldown: 0, strength: { damageMultiplier: 2.72 } },
       skill2: { name: "Turn the Bough", description: "Strike all enemies.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.92 } },
@@ -5404,37 +5404,37 @@ var moonSunshadeNativeIdentities = {
     abilities: {
       skill1: ability("Crescent Triage", "Deal 200% Direct Attack damage to one enemy and heal the living ally with the lowest Health percentage for 25% of their maximum Health.", 2),
       skill2: ability("A Place on the Ferry", "Heal one chosen living ally for 45% of maximum Health plus all stored [Unreturned], then spend it.", void 0, "one-ally"),
-      ultimate: ability("Last Flare: Bring Every Name Home", "Heal all living squad members for 70% of maximum Health. Split stored [Unreturned] evenly among them as extra healing, then spend it. Recover next turn.", void 0, "all-allies")
+      ultimate: ability("Convergent Light: Bring Every Name Home", "Heal all living squad members for 70% of maximum Health. Split stored [Unreturned] evenly among them as extra healing, then spend it. Recover next turn.", void 0, "all-allies")
     }
   },
   caevren: {
     role: "Counterweight interception tank",
-    playLoop: "Take enemy hits to build [Load], then spend it to strengthen Caevren\u2019s Last Flare Shield.",
+    playLoop: "Take enemy hits to build [Load], then spend it to strengthen Caevren\u2019s Convergent Light Shield.",
     passive: { name: "Weight of the Watch", description: "When an enemy direct attack damages Caevren\u2019s Health or Shield, gain 1 [Load] (max 3), once per enemy phase. Redirected hits count." },
     abilities: {
       skill1: ability("Hold the Meridian", "Deal 280% Direct Attack damage to one enemy and taunt eligible attacks through the next enemy phase.", 2.8),
       skill2: ability("Counterweight Covenant", "Give one chosen other living ally Shield equal to 30% of maximum Health. For two enemy phases, redirect 30% of their incoming enemy direct damage to Caevren while he lives.", void 0, "one-ally"),
-      ultimate: ability("Last Flare: The Night Shall Not Fall", "Spend all [Load]. Shield Caevren for 60% of maximum Health plus 12% per [Load] spent. For two enemy phases, redirect 30% of every other living ally\u2019s incoming enemy direct damage to Caevren. Recover next turn.")
+      ultimate: ability("Convergent Light: The Night Shall Not Fall", "Spend all [Load]. Shield Caevren for 60% of maximum Health plus 12% per [Load] spent. For two enemy phases, redirect 30% of every other living ally\u2019s incoming enemy direct damage to Caevren. Recover next turn.")
     }
   },
   vespera: {
     role: "Signal and team-offense support",
-    playLoop: "[Signal] boosts an ally\u2019s next damaging Skill; when it is spent, gain [Beacon] for Vespera\u2019s Last Flare.",
+    playLoop: "[Signal] boosts an ally\u2019s next damaging Skill; when it is spent, gain [Beacon] for Vespera\u2019s Convergent Light.",
     passive: { name: "Someone Still Beyond the Walls", description: "When another living ally spends Vespera\u2019s [Signal], gain 1 [Beacon] (max 3), once per player turn." },
     abilities: {
       skill1: { ...ability("Whitefire Dispatch", "Deal 220% Direct Attack damage to one enemy and Burn it for 25% of Vespera\u2019s Direct Attack per enemy phase for three enemy phases. Burn ignores Defense.", 2.2), strength: { damageMultiplier: 2.2, burnMultiplier: 0.25 } },
-      skill2: ability("Keep the Last Beacon", "Give one other living ally [Signal]: their next damaging Skill or Last Flare deals 35% more direct damage, through the next player turn. Reapplying refreshes it rather than stacking.", void 0, "one-ally", true),
-      ultimate: ability("Last Flare: None Left in the Dark", "Spend all [Beacon]. Deal 480% Direct Attack damage to all enemies, then Signal every other living ally for 50% more direct damage plus 10% per [Beacon] spent, through the next player turn. Recover next turn.", 4.8, "all-enemies", true)
+      skill2: ability("Keep the Last Beacon", "Give one other living ally [Signal]: their next damaging Skill or Convergent Light deals 35% more direct damage, through the next player turn. Reapplying refreshes it rather than stacking.", void 0, "one-ally", true),
+      ultimate: ability("Convergent Light: None Left in the Dark", "Spend all [Beacon]. Deal 480% Direct Attack damage to all enemies, then Signal every other living ally for 50% more direct damage plus 10% per [Beacon] spent, through the next player turn. Recover next turn.", 4.8, "all-enemies", true)
     }
   },
   ilyss: {
     role: "Debuff-cleansing healer",
     playLoop: "Remove harmful statuses to build [Severance], then spend it to strengthen team healing.",
-    passive: { name: "What Need Not Remain", description: "When Ilyss removes one [Burn] or [Weaken] application with a Skill or Last Flare, gain 1 [Severance] (max 3), once per player turn." },
+    passive: { name: "What Need Not Remain", description: "When Ilyss removes one [Burn] or [Weaken] application with a Skill or Convergent Light, gain 1 [Severance] (max 3), once per player turn." },
     abilities: {
       skill1: { ...ability("Cut the Harmful Thread", "Deal 220% Direct Attack damage to one enemy and Weaken it by 25% for two enemy phases.", 2.2), strength: { damageMultiplier: 2.2, weakenFraction: 0.25 } },
       skill2: ability("Unbind the Living", "Heal one chosen living ally for 45% of maximum Health. Remove one chosen [Burn] or [Weaken] application from them, if present.", void 0, "one-ally"),
-      ultimate: ability("Last Flare: No Promise of Resurrection", "Spend all [Severance]. Heal every living squad member for 65% of maximum Health plus 10% per [Severance] spent. Remove one [Burn] from each member, if present; otherwise remove one [Weaken]. Recover next turn.", void 0, "all-allies")
+      ultimate: ability("Convergent Light: No Promise of Resurrection", "Spend all [Severance]. Heal every living squad member for 65% of maximum Health plus 10% per [Severance] spent. Remove one [Burn] from each member, if present; otherwise remove one [Weaken]. Recover next turn.", void 0, "all-allies")
     }
   },
   asteriel: {
@@ -5443,8 +5443,8 @@ var moonSunshadeNativeIdentities = {
     passive: { name: "Futures Given Freely", description: "Begin without a path. Skill1 enters [Shelter]; Skill2 enters [Flourish]. Switching between paths grants 1 [Promise] (max 3)." },
     abilities: {
       skill1: ability("Lend the Quiet Seed", "Enter [Shelter] and Shield every living squad member for 25% of maximum Health.", void 0, "all-allies"),
-      skill2: ability("Open the Night Library", "Enter [Flourish] and give every living squad member [Moonflower]: their next damaging Skill or Last Flare deals 30% more direct damage, through the next player turn. Reapplying refreshes it rather than stacking.", void 0, "all-allies"),
-      ultimate: ability("Last Flare: Every Orbit Bears a Future", "Spend all [Promise]. In [Shelter], Shield every living squad member for 45% of maximum Health plus 8% per [Promise] spent. In [Flourish], give every living member [Moonflower] for 50% more direct damage plus 10% per [Promise] spent. With no path, use [Shelter]. Keep the current path. Recover next turn.")
+      skill2: ability("Open the Night Library", "Enter [Flourish] and give every living squad member [Moonflower]: their next damaging Skill or Convergent Light deals 30% more direct damage, through the next player turn. Reapplying refreshes it rather than stacking.", void 0, "all-allies"),
+      ultimate: ability("Convergent Light: Every Orbit Bears a Future", "Spend all [Promise]. In [Shelter], Shield every living squad member for 45% of maximum Health plus 8% per [Promise] spent. In [Flourish], give every living member [Moonflower] for 50% more direct damage plus 10% per [Promise] spent. With no path, use [Shelter]. Keep the current path. Recover next turn.")
     }
   },
   serapha: {
@@ -5454,7 +5454,7 @@ var moonSunshadeNativeIdentities = {
     abilities: {
       skill1: { ...ability("Terms of Mercy", "Deal 240% Direct Attack damage to one enemy and Weaken it by 20% for two enemy phases.", 2.4), strength: { damageMultiplier: 2.4, weakenFraction: 0.2 } },
       skill2: ability("A Passage Left Open", "Heal every living squad member for 30% of maximum Health. Give each [Ceasefire], reducing their next enemy direct hit by 20%. It expires after the next enemy phase; reapplying refreshes it rather than stacking.", void 0, "all-allies"),
-      ultimate: ability("Last Flare: Let Them Leave Alive", "Spend all [Interval]. Heal every living squad member for 70% of maximum Health. Give each [Ceasefire] to reduce one next enemy direct hit by 20% plus 5% per [Interval] spent; it expires after two enemy phases. Recover next turn.", void 0, "all-allies")
+      ultimate: ability("Convergent Light: Let Them Leave Alive", "Spend all [Interval]. Heal every living squad member for 70% of maximum Health. Give each [Ceasefire] to reduce one next enemy direct hit by 20% plus 5% per [Interval] spent; it expires after two enemy phases. Recover next turn.", void 0, "all-allies")
     }
   },
   rhaziel: {
@@ -5464,17 +5464,17 @@ var moonSunshadeNativeIdentities = {
     abilities: {
       skill1: ability("Mend Before the Break", "Shield one chosen living ally for 35% of their maximum Health.", void 0, "one-ally"),
       skill2: ability("Leave the Dents Remembered", "Heal every living squad member for 20% of their maximum Health and shield each for 20% of their maximum Health.", void 0, "all-allies"),
-      ultimate: ability("Last Flare: A Defense Worth Returning To", "Heal every living squad member for 45% of their maximum Health and shield each for 55% of their maximum Health. Recover next turn.", void 0, "all-allies")
+      ultimate: ability("Convergent Light: A Defense Worth Returning To", "Heal every living squad member for 45% of their maximum Health and shield each for 55% of their maximum Health. Recover next turn.", void 0, "all-allies")
     }
   },
   oryn: {
     role: "Single-target agreement support",
-    playLoop: "[Terms] and [Accord] coordinate one attack each turn; the Last Flare broadens coverage without stacking defense.",
+    playLoop: "[Terms] and [Accord] coordinate one attack each turn; the Convergent Light broadens coverage without stacking defense.",
     passive: { name: "Terms Both Sides Can Leave", description: "Maintain [Terms] on one enemy and [Accord] on one ally. Once per player turn, an ally carrying Oryn\u2019s [Accord] deals 30% more direct damage with a Normal Attack or ability against his [Terms] target." },
     abilities: {
       skill1: { ...ability("The Seal Remains Unstruck", "Deal 240% Direct Attack to one enemy. Apply 25% [Weaken] and [Terms] for two enemy phases, replacing Oryn\u2019s previous [Terms] target.", 2.4), strength: { damageMultiplier: 2.4, weakenFraction: 0.25 } },
       skill2: ability("An Exit in the Agreement", "Give one chosen living ally +30% Defense and [Accord] for two player turns, replacing Oryn\u2019s previous [Accord] holder. Refreshes rather than stacks.", void 0, "one-ally"),
-      ultimate: ability("Last Flare: No Victory Requires This", "Apply 30% [Weaken] to all enemies for two enemy phases. Preserve any existing [Terms] target and refresh its duration. Give every living squad member +20% Defense and [Accord] for two player turns, replacing the single-ally [Accord]. Recover next turn.", void 0, "all-enemies")
+      ultimate: ability("Convergent Light: No Victory Requires This", "Apply 30% [Weaken] to all enemies for two enemy phases. Preserve any existing [Terms] target and refresh its duration. Give every living squad member +20% Defense and [Accord] for two player turns, replacing the single-ally [Accord]. Recover next turn.", void 0, "all-enemies")
     }
   },
   thessara: {
@@ -5484,7 +5484,7 @@ var moonSunshadeNativeIdentities = {
     abilities: {
       skill1: ability("Follow the Empty Channel", "Deal 240% Direct Attack to one enemy. Gain 1 [Reserve] if it hits.", 2.4),
       skill2: ability("Deliver What Was Promised", "Spend all [Reserve]. Heal one chosen living ally for 20% of their maximum Health, plus 10% per [Reserve] spent. Grant them 8 Elemental Gauge per [Reserve] spent.", void 0, "one-ally"),
-      ultimate: ability("Last Flare: No Village Omitted", "Spend all [Reserve]. Heal every living squad member for 50% of their maximum Health, plus 5% per [Reserve] spent. Grant every other living squad member 6 Elemental Gauge per [Reserve] spent. Recover next turn.", void 0, "all-allies")
+      ultimate: ability("Convergent Light: No Village Omitted", "Spend all [Reserve]. Heal every living squad member for 50% of their maximum Health, plus 5% per [Reserve] spent. Grant every other living squad member 6 Elemental Gauge per [Reserve] spent. Recover next turn.", void 0, "all-allies")
     }
   },
   elaris: {
@@ -5494,7 +5494,7 @@ var moonSunshadeNativeIdentities = {
     abilities: {
       skill1: ability("Mark the Firebreak", "Deal 280% Direct Attack to one enemy, then place 1 [Branch] on a surviving target.", 2.8),
       skill2: ability("Branching Escape", "Spend all [Branch]. Deal 240% Direct Attack to all enemies. Against the previously marked target, ignore 8% Defense per [Branch] spent.", 2.4, "all-enemies"),
-      ultimate: ability("Last Flare: A Grove Beyond the Burning Walls", "Spend all [Branch]. Deal 1050% Direct Attack to one enemy, plus 90% per [Branch] spent if it was the marked target. Against that target, ignore 10% Defense per [Branch] spent. Recover next turn.", 10.5)
+      ultimate: ability("Convergent Light: A Grove Beyond the Burning Walls", "Spend all [Branch]. Deal 1050% Direct Attack to one enemy, plus 90% per [Branch] spent if it was the marked target. Against that target, ignore 10% Defense per [Branch] spent. Recover next turn.", 10.5)
     }
   },
   veyr: {
@@ -5504,7 +5504,7 @@ var moonSunshadeNativeIdentities = {
     abilities: {
       skill1: ability("Find the Load-Bearing Lie", "Deal 320% Direct Attack to one enemy, then place 1 [Fault] on a surviving target.", 3.2),
       skill2: ability("Dismantle the Occupied Engine", "Spend all [Fault]. Deal 240% Direct Attack to all enemies and an additional 200% Direct Attack per [Fault] spent to the previously marked target.", 2.4, "all-enemies"),
-      ultimate: ability("Last Flare: What Remains Standing", "Spend all [Fault]. Deal 1050% Direct Attack to one enemy, plus 200% per [Fault] spent if it was the marked target. Recover next turn.", 10.5)
+      ultimate: ability("Convergent Light: What Remains Standing", "Spend all [Fault]. Deal 1050% Direct Attack to one enemy, plus 200% per [Fault] spent if it was the marked target. Recover next turn.", 10.5)
     }
   },
   aureth: {
@@ -5514,7 +5514,7 @@ var moonSunshadeNativeIdentities = {
     abilities: {
       skill1: ability("Take the Sheltered Route", "Shield one chosen living ally for 35% of their maximum Health. Move [Lead] to them and refresh its duration.", void 0, "one-ally"),
       skill2: ability("Turn the Ashwind Aside", "Deal 240% Direct Attack to all enemies. Move [Lead] to Aureth and taunt eligible attacks for the next enemy phase.", 2.4, "all-enemies"),
-      ultimate: ability("Last Flare: Hold the Burning Sky Open", "Spend all [Momentum]. Shield every living squad member for 60% of their maximum Health and grant +10% Defense per [Momentum] spent for two player turns. Move [Lead] to Aureth and taunt for the next enemy phase. Recover next turn.", void 0, "all-allies")
+      ultimate: ability("Convergent Light: Hold the Burning Sky Open", "Spend all [Momentum]. Shield every living squad member for 60% of their maximum Health and grant +10% Defense per [Momentum] spent for two player turns. Move [Lead] to Aureth and taunt for the next enemy phase. Recover next turn.", void 0, "all-allies")
     }
   }
 };
@@ -5578,42 +5578,42 @@ var sharedNativeEffects = {
 // src/content/kit-pilots.ts
 var kitPilotDescriptions = {
   ember: {
-    passive: `While you are alive, Burn from your own abilities grants one charge of ${elementalEffectFamilies.burn.label} when it deals damage. Charges have no limit. Save these charges to strengthen Flame Arc or Last Flare.`,
+    passive: `While you are alive, Burn from your own abilities grants one charge of ${elementalEffectFamilies.burn.label} when it deals damage. Charges have no limit. Save these charges to strengthen Flame Arc or Convergent Light.`,
     skill2: `Spends all ${elementalEffectFamilies.burn.label} charges for +8% outgoing damage per charge; one spend for the whole activation.`,
     ultimate: `Spends all ${elementalEffectFamilies.burn.label} charges for +12% outgoing damage per charge; one spend for the whole activation.`,
-    resource: { label: elementalEffectFamilies.burn.label, key: "ember", summary: "Gain a charge each time your own Burn deals damage while you are alive. Flame Arc spends them for +8% damage each; Last Flare spends them for +12% each.", detail: `${elementalEffectFamilies.burn.label}: Skill 2 +8% outgoing damage per charge or Last Flare +12% per charge.`, effect: sharedNativeEffects.ember }
+    resource: { label: elementalEffectFamilies.burn.label, key: "ember", summary: "Gain a charge each time your own Burn deals damage while you are alive. Flame Arc spends them for +8% damage each; Convergent Light spends them for +12% each.", detail: `${elementalEffectFamilies.burn.label}: Skill 2 +8% outgoing damage per charge or Convergent Light +12% per charge.`, effect: sharedNativeEffects.ember }
   },
   ward: {
-    passive: `While you are alive, shields from your own abilities grant one charge of ${elementalEffectFamilies.ward.label} when they absorb a direct enemy hit. Charges have no limit. Save these charges to strengthen Undertow Thrust's Weaken or Last Flare's team shield.`,
+    passive: `While you are alive, shields from your own abilities grant one charge of ${elementalEffectFamilies.ward.label} when they absorb a direct enemy hit. Charges have no limit. Save these charges to strengthen Undertow Thrust's Weaken or Convergent Light's team shield.`,
     skill1: `Spends all ${elementalEffectFamilies.ward.label} charges for +5 percentage points Weaken per charge.`,
     ultimate: `Spends all ${elementalEffectFamilies.ward.label} charges to increase this ability's team shield by 5% of your maximum Health per charge. The shield lasts until broken and adds to any shield the ally already has.`,
-    resource: { label: elementalEffectFamilies.ward.label, key: "ward", summary: "Gain a charge each time your ability shield absorbs a direct enemy hit while you are alive. Skill 1 spends them to strengthen Weaken; Last Flare spends them for a larger team shield.", detail: `${elementalEffectFamilies.ward.label}: Skill 1 +5 percentage points Weaken per charge or Last Flare adds a shield worth 5% of caster maximum Health per charge.`, effect: sharedNativeEffects.ward }
+    resource: { label: elementalEffectFamilies.ward.label, key: "ward", summary: "Gain a charge each time your ability shield absorbs a direct enemy hit while you are alive. Skill 1 spends them to strengthen Weaken; Convergent Light spends them for a larger team shield.", detail: `${elementalEffectFamilies.ward.label}: Skill 1 +5 percentage points Weaken per charge or Convergent Light adds a shield worth 5% of caster maximum Health per charge.`, effect: sharedNativeEffects.ward }
   },
   bloom: {
-    passive: `While you are alive, healing from your own abilities or passive grants one charge of ${elementalEffectFamilies.bloom.label} when it restores missing HP. Charges have no limit. Full-health targets and Conduit healing do not count. Save these charges to strengthen Skill 1 or Last Flare.`,
-    resource: { label: elementalEffectFamilies.bloom.label, key: "bloom", summary: "Gain a charge each time your own kit restores missing HP. Skill 1 spends them for extra damage. Last Flare spends them for extra healing (Flora) or team shield (Bliss). Conduit healing does not earn charges.", detail: `${elementalEffectFamilies.bloom.label}: Skill 1 spends charges for extra damage; Last Flare spends them for extra healing (Flora) or team shield (Bliss).`, effect: sharedNativeEffects.bloom }
+    passive: `While you are alive, healing from your own abilities or passive grants one charge of ${elementalEffectFamilies.bloom.label} when it restores missing HP. Charges have no limit. Full-health targets and Conduit healing do not count. Save these charges to strengthen Skill 1 or Convergent Light.`,
+    resource: { label: elementalEffectFamilies.bloom.label, key: "bloom", summary: "Gain a charge each time your own kit restores missing HP. Skill 1 spends them for extra damage. Convergent Light spends them for extra healing (Flora) or team shield (Bliss). Conduit healing does not earn charges.", detail: `${elementalEffectFamilies.bloom.label}: Skill 1 spends charges for extra damage; Convergent Light spends them for extra healing (Flora) or team shield (Bliss).`, effect: sharedNativeEffects.bloom }
   },
   tempest: {
-    passive: `A critical Normal Attack, Skill 1 or Skill 2 that deals damage grants one charge of ${elementalEffectFamilies.tempest.label}, once per use even against multiple enemies. Charges have no limit. Last Flare grants none. Save these charges for the charge-spending skill or Last Flare's damage bonus.`,
-    resource: { label: elementalEffectFamilies.tempest.label, key: "tempest", summary: "Gain a charge from each damaging critical Normal Attack or skill use; Last Flare earns none. Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends them for +8% damage each; Last Flare spends them for +12% each.", detail: `${elementalEffectFamilies.tempest.label}: Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends charges for +8% damage each; Last Flare spends them for +12% each.`, effect: sharedNativeEffects.tempest }
+    passive: `A critical Normal Attack, Skill 1 or Skill 2 that deals damage grants one charge of ${elementalEffectFamilies.tempest.label}, once per use even against multiple enemies. Charges have no limit. Convergent Light grants none. Save these charges for the charge-spending skill or Convergent Light's damage bonus.`,
+    resource: { label: elementalEffectFamilies.tempest.label, key: "tempest", summary: "Gain a charge from each damaging critical Normal Attack or skill use; Convergent Light earns none. Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends them for +8% damage each; Convergent Light spends them for +12% each.", detail: `${elementalEffectFamilies.tempest.label}: Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends charges for +8% damage each; Convergent Light spends them for +12% each.`, effect: sharedNativeEffects.tempest }
   },
   "rose-grace": {
     passive: "While Rosetta is alive, her abilities or passive grant one Rose Grace charge when they restore missing HP. Charges have no limit. Full-health targets and Conduit healing do not count.",
     skill1: "Spends all Rose Grace for +5 percentage points Weaken each.",
     ultimate: "Spends all Rose Grace for +10% outgoing damage each; one spend for the whole activation.",
-    resource: { label: "Rose Grace", key: "roseGrace", summary: "Gain a charge each time Rosetta's own kit restores missing HP while she is alive. Skill 1 spends them for stronger Weaken; Last Flare spends them for +10% damage each. Conduit healing does not earn charges.", detail: "Rose Grace: Skill 1 +5 percentage points Weaken each or Last Flare +10% outgoing damage each.", effect: { family: "bloom", kind: "healing", origin: "rose", source: "living-self-authored-healing" } }
+    resource: { label: "Rose Grace", key: "roseGrace", summary: "Gain a charge each time Rosetta's own kit restores missing HP while she is alive. Skill 1 spends them for stronger Weaken; Convergent Light spends them for +10% damage each. Conduit healing does not earn charges.", detail: "Rose Grace: Skill 1 +5 percentage points Weaken each or Convergent Light +10% outgoing damage each.", effect: { family: "bloom", kind: "healing", origin: "rose", source: "living-self-authored-healing" } }
   },
   "thorn-aegis": {
     passive: "While Thornia is alive, shields from her abilities grant one Thorn Aegis charge when they absorb a direct enemy hit. Charges have no limit. Conduit shields do not count.",
     skill2: "Spends all Thorn Aegis for +5 percentage points Weaken each.",
     ultimate: "Spends all Thorn Aegis to add shield points equal to 5% of your maximum Health per charge, before this ability's shield modifiers. The shield lasts until broken and adds to any shield the ally already has.",
-    resource: { label: "Thorn Aegis", key: "thornAegis", summary: "Gain a charge each time Thornia's ability shield absorbs a direct enemy hit while she is alive. Skill 2 spends them for stronger Weaken; Last Flare spends them for a larger team shield. Conduit shields do not earn charges.", detail: "Thorn Aegis: Skill 2 +5 percentage points Weaken each or Last Flare adds 5% caster maximum Health shield each.", effect: { family: "ward", kind: "shield-absorption", origin: "rose", source: "living-self-authored-shield" } }
+    resource: { label: "Thorn Aegis", key: "thornAegis", summary: "Gain a charge each time Thornia's ability shield absorbs a direct enemy hit while she is alive. Skill 2 spends them for stronger Weaken; Convergent Light spends them for a larger team shield. Conduit shields do not earn charges.", detail: "Thorn Aegis: Skill 2 +5 percentage points Weaken each or Convergent Light adds 5% caster maximum Health shield each.", effect: { family: "ward", kind: "shield-absorption", origin: "rose", source: "living-self-authored-shield" } }
   },
   "rose-duality": {
     passive: "While Crinso is alive, Burn from his abilities grants one Rose Duality charge when it deals damage. Charges have no limit. The charges are not Burn and are separate from the Ember Seals granted by the Cinder Testament Conduit.",
     skill1: "Spends all Rose Duality for +8% outgoing damage each; one spend for the whole activation.",
     ultimate: "Spends all Rose Duality for +12% outgoing damage each; one spend for the whole activation.",
-    resource: { label: "Rose Duality", key: "duality", summary: "Gain a charge each time Crinso's own Burn deals damage while he is alive. Skill 1 spends them for +8% damage each; Last Flare spends them for +12% each. Separate from Conduit charges.", detail: "Rose Duality: Skill 1 +8% outgoing damage each or Last Flare +12% each.", effect: { family: "burn", kind: "burn", origin: "rose", source: "living-self-authored-burn" } }
+    resource: { label: "Rose Duality", key: "duality", summary: "Gain a charge each time Crinso's own Burn deals damage while he is alive. Skill 1 spends them for +8% damage each; Convergent Light spends them for +12% each. Separate from Conduit charges.", detail: "Rose Duality: Skill 1 +8% outgoing damage each or Convergent Light +12% each.", effect: { family: "burn", kind: "burn", origin: "rose", source: "living-self-authored-burn" } }
   }
 };
 
@@ -5778,7 +5778,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Cinder Cleave", "160% direct damage to one enemy, then apply [Burn] dealing 25% of [Infernis]\u2019s Attack per enemy phase for three enemy phases.", 1.6),
       skill2: ability2("Flame Arc", "110% direct damage to all enemies. Each surviving enemy carrying [Infernis]\u2019s [Burn] immediately takes the damage of up to two of its remaining [Burn] phases, and those phases are removed. [Burn] applied by other characters is unaffected.", 1.1, "all-enemies"),
-      ultimate: ability2("Last Flare: Dawnfire", "200% direct damage to all enemies, then apply [Burn] dealing 135% of [Infernis]\u2019s Attack per enemy phase for three enemy phases.", 2, "all-enemies")
+      ultimate: ability2("Convergent Light: Dawnfire", "200% direct damage to all enemies, then apply [Burn] dealing 135% of [Infernis]\u2019s Attack per enemy phase for three enemy phases.", 2, "all-enemies")
     }
   },
   tide: {
@@ -5791,7 +5791,7 @@ var nativeIdentities = {
     abilities: {
       skill1: { ...ability2("Undertow Thrust", "150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase.", 1.5), strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
       skill2: ability2("Tidal Shelter", `Grant one living ally a Shield equal to ${nativeBalance.tizu.shelter * 100}% of its maximum Health.`, void 0, "one-ally"),
-      ultimate: ability2("Last Flare: Ocean Memory", `Grant all living allies a Shield equal to ${nativeBalance.tizu.oceanMemory * 100}% of their maximum Health. Reduce the first direct hit each ally takes while this Shield remains by 45%.`, void 0, "all-allies")
+      ultimate: ability2("Convergent Light: Ocean Memory", `Grant all living allies a Shield equal to ${nativeBalance.tizu.oceanMemory * 100}% of their maximum Health. Reduce the first direct hit each ally takes while this Shield remains by 45%.`, void 0, "all-allies")
     }
   },
   sprout: {
@@ -5804,7 +5804,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Briar Shot", "140% direct damage to one enemy, then plant a [Seed] on the living ally with the lowest Health percentage.", 1.4),
       skill2: ability2("Verdant Renewal", `Harvest existing [Seeds], healing their holders for ${nativeBalance.flora.seed * 100}% maximum Health (${nativeBalance.flora.empoweredSeed * 100}% for [Empowered Seeds]). Then plant a [Seed] on each living ally, preserving any pending [Empowered Seed].`, void 0, "all-allies"),
-      ultimate: ability2("Last Flare: Worldseed", `Every living ally immediately heals ${nativeBalance.flora.immediateHeal * 100}% of its maximum HP, then receives an [Empowered Seed] that restores ${nativeBalance.flora.empoweredSeed * 100}% at the start of the next player turn while [Flora] is alive.`, void 0, "all-allies")
+      ultimate: ability2("Convergent Light: Worldseed", `Every living ally immediately heals ${nativeBalance.flora.immediateHeal * 100}% of its maximum HP, then receives an [Empowered Seed] that restores ${nativeBalance.flora.empoweredSeed * 100}% at the start of the next player turn while [Flora] is alive.`, void 0, "all-allies")
     }
   },
   atmoso: {
@@ -5817,7 +5817,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Razor Gale", "180% direct damage to one enemy. If a [Cyclone] exists, it releases immediately on all living enemies and ends.", 1.8),
       skill2: ability2("Cyclone Weave", "Release any existing [Cyclone], then create one with 0 [Gust]. After two enemy phases, it releases on all living enemies for 70% of [Atmoso]\u2019s Attack plus 30% per [Gust]. [Atmoso] must be alive for a release.", void 0, "all-enemies"),
-      ultimate: ability2("Last Flare: Sky Without End", "Release any active [Cyclone] at its current [Gust] count for three times its normal release damage, then deal 200% direct damage to all enemies.", 2, "all-enemies")
+      ultimate: ability2("Convergent Light: Sky Without End", "Release any active [Cyclone] at its current [Gust] count for three times its normal release damage, then deal 200% direct damage to all enemies.", 2, "all-enemies")
     }
   },
   elise: {
@@ -5830,7 +5830,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Voltstar Cut", "Throw one held [Shuriken] for 110% direct damage to the selected enemy; it lodges in that enemy. With no [Shuriken] held, deal 140% direct damage instead and neither [Shuriken] moves. Both [Shuriken] can lodge in the same enemy.", 1.1),
       skill2: ability2("Crosscurrent Volley", "Recall every lodged [Shuriken]: each strikes its enemy for 90% of [Elise]\u2019s Attack. If both were in the same enemy, it takes one extra 60% strike. If both [Shuriken] are already held, deal 140% direct damage to the selected enemy instead. Recalled strikes generate no Gauge.", 1.4),
-      ultimate: ability2("Last Flare: Infinite Thunderwheel", "Recall every lodged [Shuriken] with 270% strikes and a 180% same-enemy strike, then deal 260% direct damage to the selected enemy.", 2.6)
+      ultimate: ability2("Convergent Light: Infinite Thunderwheel", "Recall every lodged [Shuriken] with 270% strikes and a 180% same-enemy strike, then deal 260% direct damage to the selected enemy.", 2.6)
     }
   },
   bliss: {
@@ -5843,7 +5843,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Warfeather Cut", "170% direct damage to one enemy. [Opening]: +25 percentage points Critical Rate for this attack. [Closing]: heal the most injured other living ally for 6% of its maximum HP. [Passing]: no bonus.", 1.7),
       skill2: ability2("Quietstorm Flourish", "120% direct damage to all enemies. [Opening]: living allies deal 10% more direct damage this player turn. [Closing]: grant all living allies a Shield equal to 6% of their maximum Health.", 1.2, "all-enemies"),
-      ultimate: ability2("Last Flare: Thousandfeather Stillness", "250% direct damage to all enemies. [Opening]: +45 percentage points Critical Rate for this attack. [Closing]: heal other living allies for 15% of their maximum HP. [Passing]: no bonus.", 2.5, "all-enemies")
+      ultimate: ability2("Convergent Light: Thousandfeather Stillness", "250% direct damage to all enemies. [Opening]: +45 percentage points Critical Rate for this attack. [Closing]: heal other living allies for 15% of their maximum HP. [Passing]: no bonus.", 2.5, "all-enemies")
     }
   },
   bruno: {
@@ -5856,7 +5856,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Seismic Hammerfall", "190% direct damage to one enemy.", 1.9),
       skill2: ability2("Citadel Mantle", "Place [Cover] on another living ally until the next enemy phase ends: 50% of the direct damage it takes, after Defense, is redirected to [Bruno]. Only one ally can hold this [Cover]; recasting moves it. If [Bruno] is the only living ally, he instead takes 20% less direct damage for that phase. Redirected damage cannot be redirected again.", void 0, "one-ally", true),
-      ultimate: ability2("Last Flare: Worldwall Ascendant", "Place [Cover] on every other living ally for two enemy phases, redirecting 60% of each direct hit to [Bruno]; this replaces single-ally [Cover]. Grant [Bruno] a Shield equal to 30% of his maximum Health.", void 0, "all-allies")
+      ultimate: ability2("Convergent Light: Worldwall Ascendant", "Place [Cover] on every other living ally for two enemy phases, redirecting 60% of each direct hit to [Bruno]; this replaces single-ally [Cover]. Grant [Bruno] a Shield equal to 30% of his maximum Health.", void 0, "all-allies")
     }
   },
   disciple: {
@@ -5869,12 +5869,12 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Thoughtspark Benediction", "Give one living ally [Strike]: its next action deals 30% more direct damage.", void 0, "one-ally"),
       skill2: ability2("Concord of Chaos", "Give one living ally [Shelter]: its next action heals and Shields for 35% more. Does not increase Conduit-generated healing or Shields.", void 0, "one-ally"),
-      ultimate: ability2("Last Flare: Unbound Mindcrown", "Give [Resolve] to all living allies, replacing their current [Instruction]. Each ally\u2019s next action gains [Strike] (45% more direct damage), [Shelter] (52.5% more healing and shields) or both, matching what that action does. [Resolve] expires at the end of the next player turn.", void 0, "all-allies")
+      ultimate: ability2("Convergent Light: Unbound Mindcrown", "Give [Resolve] to all living allies, replacing their current [Instruction]. Each ally\u2019s next action gains [Strike] (45% more direct damage), [Shelter] (52.5% more healing and shields) or both, matching what that action does. [Resolve] expires at the end of the next player turn.", void 0, "all-allies")
     }
   },
   aurora: {
     role: "Hostile skill forecaster",
-    playLoop: "[Aurora] reveals when each enemy\u2019s next special skill is due; [Seal] and [Last Flare: Final Dawn Verdict] reduce its damage.",
+    playLoop: "[Aurora] reveals when each enemy\u2019s next special skill is due; [Seal] and [Convergent Light: Final Dawn Verdict] reduce its damage.",
     passive: {
       name: "Lens of Diminishment",
       description: "The battle menu shows each living enemy\u2019s next scheduled special skill or ultimate and the enemy phase it is due, or states that none is scheduled."
@@ -5882,7 +5882,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Gleamseal", "Place a [Seal] on one enemy for three enemy phases. Its next scheduled special skill or ultimate deals 40% less direct damage and consumes the [Seal]. Recasting refreshes it and keeps the stronger reduction."),
       skill2: ability2("Eclipse Mandate", "100% direct damage to all enemies, then place a 25% [Seal] on each survivor, following the same rules as [Gleamseal].", 1, "all-enemies"),
-      ultimate: ability2("Last Flare: Final Dawn Verdict", "For two enemy phases, all living allies take 75% less direct damage from enemy ultimates. Enemy [Normal Attack] and other skills are unaffected.", void 0, "all-allies")
+      ultimate: ability2("Convergent Light: Final Dawn Verdict", "For two enemy phases, all living allies take 75% less direct damage from enemy ultimates. Enemy [Normal Attack] and other skills are unaffected.", void 0, "all-allies")
     }
   },
   razor: {
@@ -5895,7 +5895,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Nightcleave", "160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack.", 1.6),
       skill2: ability2("Eclipse Bastion", "[Razor] takes 30% less direct damage during the next enemy phase, then gains a Shield equal to the Health he lost to direct hits during that phase."),
-      ultimate: ability2("Last Flare: Unbroken Midnight", "220% direct damage to one enemy, then spend all [Wounds] for an extra strike dealing three times the damage of a strike using twice the spent amount as its Attack, reduced by Defense.", 2.2)
+      ultimate: ability2("Convergent Light: Unbroken Midnight", "220% direct damage to one enemy, then spend all [Wounds] for an extra strike dealing three times the damage of a strike using twice the spent amount as its Attack, reduced by Defense.", 2.2)
     }
   },
   rosetta: {
@@ -5908,7 +5908,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Golden Thorn Volley", "160% direct damage to one enemy and mark it as [Quarry] until it is defeated or [Rosetta] marks another enemy. This hit counts as her contribution. Marking the same enemy again keeps this turn\u2019s count; marking a different enemy resets it.", 1.6),
       skill2: ability2("Crimson Skyfall", "200% direct damage to a living [Quarry], plus 25% for each other ally who hit it this player turn. With no living [Quarry], deal 160% direct damage to the selected enemy.", 2),
-      ultimate: ability2("Last Flare: Rose Beyond the Sun", "300% direct damage to the [Quarry], or to the selected enemy if there is none. If at least two different allies hit the [Quarry] this player turn, heal those allies for 15% of their maximum Health.", 3)
+      ultimate: ability2("Convergent Light: Rose Beyond the Sun", "300% direct damage to the [Quarry], or to the selected enemy if there is none. If at least two different allies hit the [Quarry] this player turn, heal those allies for 15% of their maximum Health.", 3)
     }
   },
   thornia: {
@@ -5921,20 +5921,20 @@ var nativeIdentities = {
     abilities: {
       skill1: ability2("Gilded Thorn Guard", "Place a [Thorn Trap] with three charges on the selected enemy for three enemy phases. Recasting refreshes its charges and duration, preserving an [Empowered Thorn Trap]."),
       skill2: ability2("Shadow Rose Cleave", "170% direct damage to one enemy. If it has a [Thorn Trap], spend one charge for an extra strike of 80% of [Thornia]\u2019s Attack.", 1.7),
-      ultimate: ability2("Last Flare: Thousand-Rose Dominion", "140% direct damage to all enemies, then place an [Empowered Thorn Trap] with three charges on each survivor for three enemy phases. Its strikes deal 270% of [Thornia]\u2019s Attack.", 1.4, "all-enemies")
+      ultimate: ability2("Convergent Light: Thousand-Rose Dominion", "140% direct damage to all enemies, then place an [Empowered Thorn Trap] with three charges on each survivor for three enemy phases. Its strikes deal 270% of [Thornia]\u2019s Attack.", 1.4, "all-enemies")
     }
   },
   crinso: {
     role: "Alternating-edge combo duelist",
-    playLoop: "Alternating [Golden Edge] and [Crimson Rupture] builds [Combo]; [Last Flare: Blossoming Cataclysm] spends it.",
+    playLoop: "Alternating [Golden Edge] and [Crimson Rupture] builds [Combo]; [Convergent Light: Blossoming Cataclysm] spends it.",
     passive: {
       name: "Rose Duality",
-      description: "Alternating [Golden Edge] and [Crimson Rupture] adds 1 [Combo]. Repeating either skill resets [Combo] to 0. The first use after battle starts or [Last Flare: Blossoming Cataclysm] begins a new chain at 0. [Normal Attack] does not affect the chain."
+      description: "Alternating [Golden Edge] and [Crimson Rupture] adds 1 [Combo]. Repeating either skill resets [Combo] to 0. The first use after battle starts or [Convergent Light: Blossoming Cataclysm] begins a new chain at 0. [Normal Attack] does not affect the chain."
     },
     abilities: {
       skill1: ability2("Golden Edge", "160% direct damage to one enemy. If [Crinso]\u2019s previous skill was [Crimson Rupture], this attack ignores 20% of the target\u2019s Defense. Then updates [Combo] as described in [Rose Duality].", 1.6),
       skill2: ability2("Crimson Rupture", "200% direct damage to one enemy, increased by 40% (240% total) if [Crinso]\u2019s previous skill was [Golden Edge]. Then updates [Combo] as described in [Rose Duality].", 2),
-      ultimate: ability2("Last Flare: Blossoming Cataclysm", "260% direct damage to one enemy plus 45% per [Combo]. At 3 or more [Combo], the attack also ignores 30% of the target\u2019s Defense. Uses up all [Combo] and ends the chain, so the next [Golden Edge] or [Crimson Rupture] starts a new one.", 2.6)
+      ultimate: ability2("Convergent Light: Blossoming Cataclysm", "260% direct damage to one enemy plus 45% per [Combo]. At 3 or more [Combo], the attack also ignores 30% of the target\u2019s Defense. Uses up all [Combo] and ends the chain, so the next [Golden Edge] or [Crimson Rupture] starts a new one.", 2.6)
     }
   },
   nerithe: {
@@ -6004,10 +6004,10 @@ var nativeIdentities = {
   },
   myrthen: {
     role: "Seasonal reaper",
-    playLoop: "[Myrthen] turns through [Sprout], [Bloom] and [Harvest] with Skills; [Harvest] empowers her next Skill or Last Flare.",
+    playLoop: "[Myrthen] turns through [Sprout], [Bloom] and [Harvest] with Skills; [Harvest] empowers her next Skill or Convergent Light.",
     passive: {
       name: "Turning Season",
-      description: "Each battle starts in [Sprout]. Using a Skill advances [Sprout] to [Bloom] to [Harvest]. In [Harvest], the next Skill or Last Flare deals 35% more direct damage, then returns to [Sprout]. Normal Attacks never advance the season; a Last Flare outside [Harvest] preserves it."
+      description: "Each battle starts in [Sprout]. Using a Skill advances [Sprout] to [Bloom] to [Harvest]. In [Harvest], the next Skill or Convergent Light deals 35% more direct damage, then returns to [Sprout]. Normal Attacks never advance the season; a Convergent Light outside [Harvest] preserves it."
     },
     abilities: {
       skill1: ability2("Reaper\u2019s Claim", "272% direct damage to one enemy, then mark it with [Reaper\u2019s Claim] for 2 enemy phases: it takes 12% more native direct damage from squad attacks and abilities, not Conduit-generated damage or periodic damage. Only one enemy is marked at a time. In [Harvest], ignores 20% of the target\u2019s Defense.", 2.72),
@@ -6030,7 +6030,7 @@ var nativeIdentities = {
   },
   varkhel: {
     role: "Infernic tension tank",
-    playLoop: "Shield and Taunt to build [Tension] from incoming hits, then spend it on a piercing strike or a squad-shielding Last Flare.",
+    playLoop: "Shield and Taunt to build [Tension] from incoming hits, then spend it on a piercing strike or a squad-shielding Convergent Light.",
     passive: {
       name: "Tension Held",
       description: "Gain 1 [Tension], up to 4, when an enemy direct attack effectively damages Varkhel\u2019s Health or Shield, once per enemy phase. His damaging Normal Attack also grants 1 [Tension]. [Faultstar Chain Accumulator] raises the cap to 5."
@@ -6043,7 +6043,7 @@ var nativeIdentities = {
   },
   seravelle: {
     role: "Infernic convoy support",
-    playLoop: "Squad Normal Attacks build [Cadence]. Spend it to strengthen the squad; Last Flare gives other allies Gauge and Skill Power.",
+    playLoop: "Squad Normal Attacks build [Cadence]. Spend it to strengthen the squad; Convergent Light gives other allies Gauge and Skill Power.",
     passive: {
       name: "Convoy Cadence",
       description: "The first squad Normal Attack that damages an enemy each round grants 1 [Cadence], up to 3, while Seravelle is alive. Seravelle\u2019s own Normal Attack counts. The whole squad can earn only 1 per round; triggered attacks do not count. With [Ashroad Cadence Transmission], the cap is 4."
@@ -6056,10 +6056,10 @@ var nativeIdentities = {
   },
   velmira: {
     role: "Chaotic alternating-edge attacker",
-    playLoop: "Alternate [Open the Seam] and [Turn the Other Edge] to build [Crosscut]. Keep it for area Defense-piercing or spend it on Last Flare.",
+    playLoop: "Alternate [Open the Seam] and [Turn the Other Edge] to build [Crosscut]. Keep it for area Defense-piercing or spend it on Convergent Light.",
     passive: {
       name: "Alternating Edge",
-      description: "After using a different Skill from Velmira\u2019s previous Skill, gain 1 [Crosscut], up to 3. The first Skill grants no stack. Repeating a Skill keeps existing stacks but grants none. Normal Attacks and Last Flare do not change which Skill comes next in the sequence. With [Twin-Edge Sequence Orrery], the cap is 4 and the first Skill grants 1 [Crosscut] after resolving."
+      description: "After using a different Skill from Velmira\u2019s previous Skill, gain 1 [Crosscut], up to 3. The first Skill grants no stack. Repeating a Skill keeps existing stacks but grants none. Normal Attacks and Convergent Light do not change which Skill comes next in the sequence. With [Twin-Edge Sequence Orrery], the cap is 4 and the first Skill grants 1 [Crosscut] after resolving."
     },
     abilities: {
       skill1: ability2("Open the Seam", "Deal 280% direct Attack to one enemy. Apply [Weaken] for 2 enemy phases, reducing its direct damage by 25%. [Goldseam Precision Fracturer] deals 35% more direct damage against a Weakened enemy.", 2.8),
@@ -6480,7 +6480,7 @@ var fighters = {
     abilities: {
       skill1: { name: "Cinder Cleave", description: "160% damage to one enemy; burn for 8 damage on its next two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.6, burnMultiplier: 1 } },
       skill2: { name: "Flame Arc", description: `110% damage to every living enemy. ${kitPilotDescriptions.ember.skill2}`, cooldown: 0, strength: { damageMultiplier: 1.1 } },
-      ultimate: { name: "Last Flare: Dawnfire", description: `280% damage to every enemy; burn surviving targets for 6 damage on their next two enemy phases. Recover next turn. ${kitPilotDescriptions.ember.ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.8, burnMultiplier: 0.75 } }
+      ultimate: { name: "Convergent Light: Dawnfire", description: `280% damage to every enemy; burn surviving targets for 6 damage on their next two enemy phases. Recover next turn. ${kitPilotDescriptions.ember.ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.8, burnMultiplier: 0.75 } }
     }
   },
   tide: {
@@ -6490,7 +6490,7 @@ var fighters = {
     abilities: {
       skill1: { name: "Undertow Thrust", description: `150% damage to one enemy; reduce its next two enemy-phase attacks by 25%. ${kitPilotDescriptions.ward.skill1}`, cooldown: 0, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
       skill2: { name: "Tidal Shelter", description: "Give every living ally 25 shield (lasts until broken; stacks).", cooldown: 0, strength: { shield: 25 } },
-      ultimate: { name: "Last Flare: Ocean Memory", description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.ward.ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } }
+      ultimate: { name: "Convergent Light: Ocean Memory", description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.ward.ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } }
     }
   },
   sprout: {
@@ -6500,7 +6500,7 @@ var fighters = {
     abilities: {
       skill1: { name: "Briar Shot", description: `150% damage to one enemy with +20 percentage points critical chance. Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge.`, cooldown: 0, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
       skill2: { name: "Verdant Renewal", description: "Restore 30 health to every living ally; cannot revive. Increase living allies' outgoing attack damage by 10% this and next player turn (refresh; does not stack).", cooldown: 0, strength: { healing: 30, attackBoostFraction: 0.1 } },
-      ultimate: { name: "Last Flare: Worldseed", description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge.`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } }
+      ultimate: { name: "Convergent Light: Worldseed", description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge.`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } }
     }
   },
   rosetta: {
@@ -6510,7 +6510,7 @@ var fighters = {
     abilities: {
       skill1: { name: "Golden Thorn Volley", description: "170% damage to one enemy; reduce surviving targets' attacks by 20% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.7, weakenFraction: 0.2 } },
       skill2: { name: "Crimson Skyfall", description: "120% damage to every living enemy; weaken by 15% for two enemy phases.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.2, weakenFraction: 0.15 } },
-      ultimate: { name: "Last Flare: Rose Beyond the Sun", description: "300% damage to every living enemy; weaken by 30% for two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3, weakenFraction: 0.3 } }
+      ultimate: { name: "Convergent Light: Rose Beyond the Sun", description: "300% damage to every living enemy; weaken by 30% for two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3, weakenFraction: 0.3 } }
     }
   },
   thornia: {
@@ -6520,7 +6520,7 @@ var fighters = {
     abilities: {
       skill1: { name: "Gilded Thorn Guard", description: "Give every living ally 30 shield (lasts until broken; stacks).", cooldown: 0, targets: "all-allies", strength: { shield: 30 } },
       skill2: { name: "Shadow Rose Cleave", description: "180% damage to one enemy; weaken by 20% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.8, weakenFraction: 0.2 } },
-      ultimate: { name: "Last Flare: Thousand-Rose Dominion", description: "240% damage to all enemies and 40 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.4, shield: 40 } }
+      ultimate: { name: "Convergent Light: Thousand-Rose Dominion", description: "240% damage to all enemies and 40 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.4, shield: 40 } }
     }
   },
   crinso: {
@@ -6530,7 +6530,7 @@ var fighters = {
     abilities: {
       skill1: { name: "Golden Edge", description: "180% damage to one enemy with +15 percentage points critical chance.", cooldown: 0, strength: { damageMultiplier: 1.8, critBonus: 0.15 } },
       skill2: { name: "Crimson Rupture", description: "120% damage to every living enemy; burn for 9 on two enemy phases.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.2, burnMultiplier: 1 } },
-      ultimate: { name: "Last Flare: Blossoming Cataclysm", description: "310% damage to every living enemy; burn for 14 on two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3.1, burnMultiplier: 1.5 } }
+      ultimate: { name: "Convergent Light: Blossoming Cataclysm", description: "310% damage to every living enemy; burn for 14 on two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3.1, burnMultiplier: 1.5 } }
     }
   }
 };
@@ -9529,7 +9529,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
           bonus: equipped(owner, "master-vespera-1") ? 0.5 : 0.35,
           throughRound: state.round + 1 + activation.skillDuration
         };
-        status3(state, events, owner, ally, `${ally.name}: Signal is ready for their next damaging Skill or Last Flare.`);
+        status3(state, events, owner, ally, `${ally.name}: Signal is ready for their next damaging Skill or Convergent Light.`);
       } else if (action === "ultimate") {
         const spent = memory.beacon ?? 0;
         memory.beacon = 0;
@@ -13588,7 +13588,7 @@ function actionUnavailable(state, actor2, action, targetId) {
   const calamiticReason = calamiticActionReason(state, actor2, action);
   if (calamiticReason) return calamiticReason;
   if (conduitActionBlocked(actor2, state)) return "This character cannot take another action this turn.";
-  if (actor2.recoverThrough >= state.round && !calamiticNoLastFlareRecovery(actor2) && !(action === "light" && recoveryNormal(actor2))) return "Recovering this turn after Last Flare.";
+  if (actor2.recoverThrough >= state.round && !calamiticNoLastFlareRecovery(actor2) && !(action === "light" && recoveryNormal(actor2))) return "Recovering this turn after Convergent Light.";
   if (action === "ultimate" && !calamiticNoLastFlareRecovery(actor2) && (actor2.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor2.readyRound.ultimate}.`;
   const gaugeCost = actionGaugeCost(actor2, action, state, targetId);
   if (actor2.shatter < gaugeCost) return `Requires ${gaugeCost} Elemental Gauge.`;
@@ -14058,7 +14058,7 @@ function newTurn(state, events) {
       if (target) nativeHeal(state, ally, target, target.stats.health * (target.hp < target.stats.health * 0.5 ? 0.12 : 0.06), events, false);
     } else healTeam(state, ally, ally.kit.passive.healFraction, events, true);
   }
-  events.push({ kind: "turn", source: "", target: "", amount: state.round, critical: false, message: `Turn ${state.round}. Only Last Flare forces next-turn recovery.` });
+  events.push({ kind: "turn", source: "", target: "", amount: state.round, critical: false, message: `Turn ${state.round}. Only Convergent Light forces next-turn recovery.` });
   refreshConduitStats(state);
   attachNativeView(state, events[events.length - 1]);
 }

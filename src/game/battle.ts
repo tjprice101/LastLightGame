@@ -485,7 +485,7 @@ export function actionUnavailable(state: BattleState, actor: Combatant, action: 
   if (calamiticReason) return calamiticReason;
   if (conduitActionBlocked(actor, state)) return 'This character cannot take another action this turn.';
   if (actor.recoverThrough >= state.round && !calamiticNoLastFlareRecovery(actor) &&
-      !(action === 'light' && recoveryNormal(actor))) return 'Recovering this turn after Last Flare.';
+      !(action === 'light' && recoveryNormal(actor))) return 'Recovering this turn after Convergent Light.';
   if (action === 'ultimate' && !calamiticNoLastFlareRecovery(actor) &&
       (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
   const gaugeCost = actionGaugeCost(actor, action, state, targetId);
@@ -920,7 +920,7 @@ function newTurn(state: BattleState, events: BattleEvent[]): void {
       if (target) nativeHeal(state, ally, target, target.stats.health * (target.hp < target.stats.health * .5 ? .12 : .06), events, false);
     } else healTeam(state, ally, ally.kit.passive.healFraction, events, true);
   }
-  events.push({ kind: 'turn', source: '', target: '', amount: state.round, critical: false, message: `Turn ${state.round}. Only Last Flare forces next-turn recovery.` });
+  events.push({ kind: 'turn', source: '', target: '', amount: state.round, critical: false, message: `Turn ${state.round}. Only Convergent Light forces next-turn recovery.` });
   refreshConduitStats(state);
   attachNativeView(state, events[events.length - 1]);
 }

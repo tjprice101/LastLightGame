@@ -25,7 +25,7 @@ const previousDirect: Partial<Record<StarterId, number>> = {
   rosetta: 4.8, thornia: 2.24, crinso: 4.16, nerithe: 4.48, orvella: 3.2, vaelor: 4.16,
 };
 
-describe('Last Flare roster-wide potency', () => {
+describe('Convergent Light roster-wide potency', () => {
   it.each(nativeIdentityIds.filter(id => !isCalamiticCharacter(id) && !exactDirectDamageIds.includes(id)))('%s triples direct damage without changing Gauge, recovery or targets', id => {
     const state = fixture(id);
     state.allies[1].spent = true;
@@ -101,7 +101,7 @@ describe('Last Flare roster-wide potency', () => {
     }
   });
 
-  it('triples a Last Flare Cyclone release without changing an ordinary release', () => {
+  it('triples a Convergent Light Cyclone release without changing an ordinary release', () => {
     const state = fixture('atmoso');
     state.allies[0].native = { cyclone: { gusts: 2, phases: 2, contributors: {}, skillPower: 1 } };
     for (const action of ['skill1', 'ultimate'] as const) {

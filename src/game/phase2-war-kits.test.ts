@@ -227,7 +227,7 @@ describe('Phase 2 native War kits', () => {
     expect(firstSkill.state.allies[0].native?.crosscut).toBe(4);
   });
 
-  it('gates Velmira Master damage on pre-existing Weaken and applies funded Last Flare recovery after cost', () => {
+  it('gates Velmira Master damage on pre-existing Weaken and applies funded Convergent Light recovery after cost', () => {
     const state = encounter('velmira', 'tide');
     const owner = state.allies[0];
     owner.masterConduit = 'master-velmira-2';

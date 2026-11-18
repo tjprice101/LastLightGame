@@ -67,7 +67,7 @@ export function radiantSourceLabel(source: RadiantSource, run: FrozenRadiantRun)
     if (id === null || !Object.hasOwn(radiantMasters, id)) throw new Error('Status Master source is missing.');
     return `${name} · ${getMasterConduit(id).name}`;
   }
-  const kinds: Record<typeof source.kind, string> = { normal: 'Normal Attack', skill: 'Skill', flare: 'Flare',
+  const kinds: Record<typeof source.kind, string> = { normal: 'Normal Attack', skill: 'Skill', flare: 'Convergent Light',
     passive: 'Passive', role: 'Role trait' };
   return `${name} · ${kinds[source.kind]}`;
 }
