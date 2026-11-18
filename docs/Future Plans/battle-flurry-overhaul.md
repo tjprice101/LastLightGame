@@ -190,6 +190,42 @@ overrode base fighter kits; no Leader effects existed then.
   Health-threshold phases, a small set of original afflictions with ward
   Conduits.
 
+### F. Battle Spectacle (runs before Phase 4)
+
+Owner-approved order (D-482): after the Phase 3 release, before Phase 4.
+Problem (owner, 2026-11-18): every character and enemy animation feels weak.
+The bar is real firepower and visual prowess (Brave Frontier inspiration,
+never copied). Proposed steps; each ends with an owner feel review of the
+hosted build:
+
+1. **Visual rules and capture harness (Opus, Plan mode).** Tier escalation
+   Normal Attack < Skill 1 < Skill 2 < Convergent Light. Every action has
+   wind-up, travel, impact and aftermath. Tools: bearer lunge/dash,
+   afterimages, screen flash, hit-stop on heavy hits, camera shake and zoom,
+   element-tinted particles and trails, layered impact bursts, background dim
+   for Convergent Light. Time budget per tier so battles stay brisk; Reduce
+   motion gives static feedback and Skip stays. Extend
+   `tools/capture_frames.mjs` to reach a battle and record each tier.
+2. **GPU effect foundation (Opus).** One Phaser particle/shader layer that
+   uses the VFX texture library (`public/assets/vfx`, grayscale, tinted per
+   element), replacing the current canvas effects. Device performance check
+   (the open GPU item).
+3. **Six element base sets.** Projectile, impact and aura language per
+   element.
+4. **Per-bearer signature layers in batches of about 8** (32 bearers), each
+   built from the bearer's signature equipment, trim and power geometry.
+   Owner approves each batch in game.
+5. **Convergent Light cinematics.** Art cut-in, multi-hit choreography and
+   finisher, escalating across its three tiers.
+6. **Enemy attacks.** Telegraphed wind-ups, per-family attack animations,
+   heavier boss specials.
+7. **Skill menu polish** (keep the hold-a-card mechanic): animated option
+   bloom, clear costs, ready glow, element-tinted aim highlight, room for the
+   "Convergent Light" label, charged look when Convergent Light is ready.
+
+Separately, small and first: label the Flare **Convergent Light** in every
+menu (internal IDs unchanged; Sonnet).
+
 ## Skill language
 
 One fixed phrase order: **[hits] [element] attack on [target] ([power]%),**
@@ -253,6 +289,7 @@ skills auto-target; one signature mechanic per bearer at most.
 | 1 | Device-run encounters + `settle` replay; squad cap 3; tap-order player phase; Haul saved per encounter | Opus, Plan mode | Approve plan; approve authority deploy; play-test hosted build |
 | 2 | Flurry presentation, VFX wiring, drop pour, electrified gauges, speed setting | Opus (Sonnet for polish rounds) | Feel review in game |
 | 3 | Skill 1/2 + Skill-stat family + buff categories; all kits in batches; 3-bearer enemy retune | Opus | Approve each kit batch; approve deploy |
+| Spectacle | Visual rules, GPU effect foundation, element sets, per-bearer signatures, Convergent Light cinematics, enemy attacks, skill menu polish (D-482) | Opus for rules and foundation; Sonnet for batches | Approve visual rules; feel review after each step |
 | 4 | Conduit callouts and contribution summary; Conduit re-anchoring; later depth systems | Sonnet / Opus | Approve Conduit remap; separate approval for depth systems |
 
 Each phase updates its live system docs, validation guidance, decision log

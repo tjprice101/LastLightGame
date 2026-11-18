@@ -1,0 +1,1592 @@
+{
+  "library": "MagnumOpus VFX texture library (owner-authored)",
+  "approval": "D-482 (2026-11-18): owner approved copying and renaming for Last Light battle effects",
+  "policy": "grayscale additive textures tinted at runtime; resize only; supplied alpha preserved",
+  "sizes": {
+    "particles": 128,
+    "glow": 256,
+    "flares": 256,
+    "projectiles": 256,
+    "impacts": 512,
+    "beams": 512,
+    "slashes": 512,
+    "trails": 512,
+    "smoke": 512,
+    "noise": 256
+  },
+  "assets": [
+    {
+      "asset": "particles/star-hard",
+      "origin": "MagnumOpus/Assets/Particles Asset Library/Stars/4PointedStarHard.png",
+      "source": "Art/source/vfx/particles/star-hard.png",
+      "source_sha256": "57c953069815380e028859733e163260ee3724e30a46d327e962e93662ad9be4",
+      "runtime": "public/assets/vfx/particles/star-hard.png",
+      "runtime_sha256": "1d73cfd3b2f378c7be059bffac6e8ded7bf948412136921cc124e5d8df41b1cb",
+      "runtime_size": [
+        32,
+        32
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "particles/star-soft",
+      "origin": "MagnumOpus/Assets/Particles Asset Library/Stars/4PointedStarSoft.png",
+      "source": "Art/source/vfx/particles/star-soft.png",
+      "source_sha256": "7dd5d65dd3644d936ae50560255036fbcda6b10de5de368effa2564444eefd88",
+      "runtime": "public/assets/vfx/particles/star-soft.png",
+      "runtime_sha256": "9692c3194f06b773db452c05c637be293edb749958e8b7603379a61357db1aeb",
+      "runtime_size": [
+        32,
+        32
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "particles/star-thin",
+      "origin": "MagnumOpus/Assets/Particles Asset Library/Stars/ThinTall4PointedStar.png",
+      "source": "Art/source/vfx/particles/star-thin.png",
+      "source_sha256": "e5ac977c8d7b19ca70a53509baa476a735d2005e7533138e689d47ef86cbcecb",
+      "runtime": "public/assets/vfx/particles/star-thin.png",
+      "runtime_sha256": "283cc4d38d7d62e2c711287f26e59480fdcf62a4106cb62d99ad2712bd775063",
+      "runtime_size": [
+        32,
+        32
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "particles/ember-drop",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Particles/ER Rising Ember.png",
+      "source": "Art/source/vfx/particles/ember-drop.png",
+      "source_sha256": "7f96575e0b93455bb95f9b5f1a9c6053adf9eac8f75d0d2925406680d441e733",
+      "runtime": "public/assets/vfx/particles/ember-drop.png",
+      "runtime_sha256": "61e80a11c30367ccfce9f7aa902719d4b361852c85e79ca2ce7e6151e3b046ea",
+      "runtime_size": [
+        128,
+        128
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "particles/rock-shard",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Dies Irae/Particles/DI Ash Flake.png",
+      "source": "Art/source/vfx/particles/rock-shard.png",
+      "source_sha256": "13823c89b2755d493352a09f73200f2e980bab44ae0065b1cd990321c46a3f02",
+      "runtime": "public/assets/vfx/particles/rock-shard.png",
+      "runtime_sha256": "60ff3bdf0712cad9a16da40f2485fdc1f3341b1349865a2577812e2609e1d6ea",
+      "runtime_size": [
+        128,
+        128
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/chain-link",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Dies Irae/Particles/DI Judgment Chain Link.png",
+      "source": "Art/source/vfx/particles/chain-link.png",
+      "source_sha256": "45c7d89a6e6214a61bb91fbc7a09af5af2ad027d3e1228d783514b70f8569db2",
+      "runtime": "public/assets/vfx/particles/chain-link.png",
+      "runtime_sha256": "5d3dd4c6b786f4382d34b0212e99b4106c1c9f53332d6a6324871d768178adbf",
+      "runtime_size": [
+        128,
+        85
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/petal",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Particles/ER Sakura Petal (Unique to Eroica).png",
+      "source": "Art/source/vfx/particles/petal.png",
+      "source_sha256": "123a16e5ebfbf4c2df9b55f9a053c8f77ca17de75fab436e256fa3b4a9d47ec7",
+      "runtime": "public/assets/vfx/particles/petal.png",
+      "runtime_sha256": "0451233e15165b66ad929a5936e0668bec352d0c825c9f512f0042e719973839",
+      "runtime_size": [
+        128,
+        128
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/leaf-sprig",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Particles/ER Laurel Leaf.png",
+      "source": "Art/source/vfx/particles/leaf-sprig.png",
+      "source_sha256": "41ae8398bb5408d27571d88d5cba633bb67586bb4b6eb0a85f33f346ac40894a",
+      "runtime": "public/assets/vfx/particles/leaf-sprig.png",
+      "runtime_sha256": "96686015343a7762e7018c8581725af9edc35cb33af17c70917d4d6220d9c19a",
+      "runtime_size": [
+        128,
+        64
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/rose-bloom",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Projectiles/OJ Rose Petal.png",
+      "source": "Art/source/vfx/particles/rose-bloom.png",
+      "source_sha256": "e06c6b8c210cda2c3706d89a6b28b590aff6a909476d5334c422cdc8d7b42618",
+      "runtime": "public/assets/vfx/particles/rose-bloom.png",
+      "runtime_sha256": "977a021fd2fdac504b50f485414807480b9a305d17040998cc2d5678ef899802",
+      "runtime_size": [
+        128,
+        128
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/thorn",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Particles/OJ Thorn Fragment.png",
+      "source": "Art/source/vfx/particles/thorn.png",
+      "source_sha256": "0c3f8b3e3d8a5e897929566973345ee61b76181301666b79e2f3af3f2615f2de",
+      "runtime": "public/assets/vfx/particles/thorn.png",
+      "runtime_sha256": "b5cb2a20309eb970cfd7a5490865f8759b2bcffe6e6e3a77910288a9a043ecf7",
+      "runtime_size": [
+        128,
+        128
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/crystal-shard",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Swan Lake/Particles/SL Crystal Shard.png",
+      "source": "Art/source/vfx/particles/crystal-shard.png",
+      "source_sha256": "45465330d7b7a04fb2575805e8e98c8af7c6c00a0ed96b63b77bf37d681522d9",
+      "runtime": "public/assets/vfx/particles/crystal-shard.png",
+      "runtime_sha256": "5599d2375ac4421e41c350a802c9c9d48e0f28910e4dff0241c3be18a48928a8",
+      "runtime_size": [
+        128,
+        64
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/crescent",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Moonlight Sonata/Particles/MS Crescent Moon.png",
+      "source": "Art/source/vfx/particles/crescent.png",
+      "source_sha256": "577f5f1d51a3cca21d20947b45e671dbdb31041040def36f84ea35a6ff9e8dfc",
+      "runtime": "public/assets/vfx/particles/crescent.png",
+      "runtime_sha256": "90fba3b9f0e32c088a8e3504ed35e7dc9022e1965de87d67e0494d5975d673c3",
+      "runtime_size": [
+        128,
+        128
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/mist-wisp",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Moonlight Sonata/Particles/MS Tidal Mist Wisp.png",
+      "source": "Art/source/vfx/particles/mist-wisp.png",
+      "source_sha256": "b5379df99911ffdbfd50450b6dfc0b5b19a35efaf5e3dd3a3fbca50ac7203023",
+      "runtime": "public/assets/vfx/particles/mist-wisp.png",
+      "runtime_sha256": "075d9b205af0c5113dcf5a6873ea72f708de96b515aebab365862de61fb6196c",
+      "runtime_size": [
+        128,
+        64
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/gear-fragment",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Clair de Lune/Particles/CL Clock Gear Fragment.png",
+      "source": "Art/source/vfx/particles/gear-fragment.png",
+      "source_sha256": "477ef9c73c5619fb665aea8f4655e065483f2f2e5f6e82be8dbf375b873881d7",
+      "runtime": "public/assets/vfx/particles/gear-fragment.png",
+      "runtime_sha256": "261f48be70750e826f379f982ed12492825abfa6e294395528155b65b195100b",
+      "runtime_size": [
+        128,
+        128
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "particles/gear-shard",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Clair de Lune/Particles/CL Clock Face Shard.png",
+      "source": "Art/source/vfx/particles/gear-shard.png",
+      "source_sha256": "0815576453bbc5497837548a27b0d43c5b9fbe24cb9687dadaac2deba747864a",
+      "runtime": "public/assets/vfx/particles/gear-shard.png",
+      "runtime_sha256": "eef3ae1b1a6e61c6d4a48bd8a161d525d4a7e1c50990968b5dbca9db6b311786",
+      "runtime_size": [
+        128,
+        128
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "glow/glow-orb",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/GlowAndBloom/GlowOrb.png",
+      "source": "Art/source/vfx/glow/glow-orb.png",
+      "source_sha256": "9600333957a29561b1cbb3639558212269d2c1ae59a2757974df0a2dc8f1c712",
+      "runtime": "public/assets/vfx/glow/glow-orb.png",
+      "runtime_sha256": "6b890b10029088fdb06bfdec9196c47180a5a940e17191cfe9bc294f63cb27f5",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "glow/lens-flare",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/GlowAndBloom/LensFlare.png",
+      "source": "Art/source/vfx/glow/lens-flare.png",
+      "source_sha256": "c426c96b599e2c78f6854cce293464b87bef0ee455eb36e32c8376eee953e3ac",
+      "runtime": "public/assets/vfx/glow/lens-flare.png",
+      "runtime_sha256": "6a00fabc41c3d1189b134f70eec74da87cba8b96f876af0b98e1c71c105d9f63",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "glow/point-bloom",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/GlowAndBloom/PointBloom.png",
+      "source": "Art/source/vfx/glow/point-bloom.png",
+      "source_sha256": "8e81a6e83121a3f9ea1cbfb37180c1e8e553e20935bb390931a3d1cd5a48d76b",
+      "runtime": "public/assets/vfx/glow/point-bloom.png",
+      "runtime_sha256": "d4af5bb3c8197bcc88cc72fd6925c9a7c5551812b5ace53b8e090c016d91b448",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "glow/soft-glow",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/GlowAndBloom/SoftGlow.png",
+      "source": "Art/source/vfx/glow/soft-glow.png",
+      "source_sha256": "ab0eed74f412781669d0838c50b495374141f99b26dc4723f4ef71ef1dd16f42",
+      "runtime": "public/assets/vfx/glow/soft-glow.png",
+      "runtime_sha256": "0bc069b8aa3394f5c826def50c39cb15903a8f60ba5f1b09a909dd44803d4b09",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "glow/soft-glow-core",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/GlowAndBloom/SoftGlowBrightAndLargerMiddle.png",
+      "source": "Art/source/vfx/glow/soft-glow-core.png",
+      "source_sha256": "5161244df1d27ebacd36996dad6c06d77608d3d5f48c91e420a67411c0e9f718",
+      "runtime": "public/assets/vfx/glow/soft-glow-core.png",
+      "runtime_sha256": "1508fb53d9f6d888d0f2c39ef96e945e00e64baaa4408c1d117449b1f0624b31",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "glow/radial-bloom",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/GlowAndBloom/SoftRadialBloom.png",
+      "source": "Art/source/vfx/glow/radial-bloom.png",
+      "source_sha256": "9360ad5da8de67377fd30536659ce20e3f5c0396f1652e16e854b4b9bd782930",
+      "runtime": "public/assets/vfx/glow/radial-bloom.png",
+      "runtime_sha256": "9c9e7e69495d91847b0459900359749fd9f109795663c936d7c0d58177ade9d0",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "glow/star-flare",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/GlowAndBloom/StarFlare.png",
+      "source": "Art/source/vfx/glow/star-flare.png",
+      "source_sha256": "ce4fe82079c85f2a77173a6efab187e8c594c6c3ee6867ecf69e2e775255efdb",
+      "runtime": "public/assets/vfx/glow/star-flare.png",
+      "runtime_sha256": "09234150be18a8f970b29a63213e3dc2cf5f5049351f4e44bd041c0afdc81248",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "glow/halo-bloom",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Moonlight Sonata/Glow and Bloom/MS Glow Orb.png",
+      "source": "Art/source/vfx/glow/halo-bloom.png",
+      "source_sha256": "e3f239bd8aa508a823c0877fd491afe2282d5573a73e709fc788d07c43c3a8f3",
+      "runtime": "public/assets/vfx/glow/halo-bloom.png",
+      "runtime_sha256": "5672e27ceec9b7b7dacd17476852b5e6fdf6ec5961efa890db599a036fd8bf17",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "glow/crescent-flare",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Moonlight Sonata/Glow and Bloom/MS Star Flare.png",
+      "source": "Art/source/vfx/glow/crescent-flare.png",
+      "source_sha256": "be55de3ee6ec8069a0d5e96056814300a84e7f5d844464227a76890ae5f3f82d",
+      "runtime": "public/assets/vfx/glow/crescent-flare.png",
+      "runtime_sha256": "61ce6a1dc7533778a93e83682478c62c214f17c3ed6d590cccfb62e83cfe32cc",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "flares/star-4point",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Projectiles/4PointStarShiningProjectile.png",
+      "source": "Art/source/vfx/flares/star-4point.png",
+      "source_sha256": "6de55a7f5eb2f8ec7850e566e23485030a945a83359e93eaccca4d60a74bf12a",
+      "runtime": "public/assets/vfx/flares/star-4point.png",
+      "runtime_sha256": "6c0a771f3a55598d96faf77f75b0764bd8911c561a82ec7925813e39c9209aae",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "flares/starburst-8point",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Projectiles/8-Point Starburst Flare.png",
+      "source": "Art/source/vfx/flares/starburst-8point.png",
+      "source_sha256": "e5adc562b39ad2acc390cfb893958d34ce4d97843f3f80c313ae07e9b3d9546e",
+      "runtime": "public/assets/vfx/flares/starburst-8point.png",
+      "runtime_sha256": "d6d212021e3bb4351b8bb011b707e444b261b7d35f29fc2e91009d4931251a71",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "flares/star-bright-a",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Projectiles/BrightStarProjectile1.png",
+      "source": "Art/source/vfx/flares/star-bright-a.png",
+      "source_sha256": "c92db2af893194c8247faf707745685140aeb8372f478f592d991cae032afbe9",
+      "runtime": "public/assets/vfx/flares/star-bright-a.png",
+      "runtime_sha256": "4e29a22d9c7a1550e0b52ae480e656e47035f3b921a47268f96c7be68407b217",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "flares/star-bright-b",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Projectiles/BrightStarProjectile2.png",
+      "source": "Art/source/vfx/flares/star-bright-b.png",
+      "source_sha256": "12fa20d238ec8614333f2d9f36bc7ac0537645a7af8c143b4f2c487011ea667c",
+      "runtime": "public/assets/vfx/flares/star-bright-b.png",
+      "runtime_sha256": "e986c3ce67b45945a18023c15fdda574db41b79cf2cb991c8b7e4935826a2c0f",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "flares/star-spiked",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Dies Irae/Projectiles/DI Star Flare.png",
+      "source": "Art/source/vfx/flares/star-spiked.png",
+      "source_sha256": "c60c8aa9ed186f407fdf796607e0d271c551b14d223d3ec1efca147516f9c368",
+      "runtime": "public/assets/vfx/flares/star-spiked.png",
+      "runtime_sha256": "eabf8a075267e08a5a88209115c87e40eabe346237102b60d0d9e3f559a61372",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "flares/star-sparkle-cross",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Impact Effects/ER Radial Slash Star Impact.png",
+      "source": "Art/source/vfx/flares/star-sparkle-cross.png",
+      "source_sha256": "2eb2dc078e5aca773244f8e1866878a2514ee20a9b2d832f68362856238dc757",
+      "runtime": "public/assets/vfx/flares/star-sparkle-cross.png",
+      "runtime_sha256": "2e5a5d7462b33625f88facb1721df5b174d0d896477966239779fccaaf10ab9c",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "flares/star-wisp",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/La Campanella/Impact Effects/LC Radial Slash Star Impact.png",
+      "source": "Art/source/vfx/flares/star-wisp.png",
+      "source_sha256": "9157e1b57e5377bd8f0309e17ea859e9f9808eb50c54382f39c6f67847201582",
+      "runtime": "public/assets/vfx/flares/star-wisp.png",
+      "runtime_sha256": "56bce3bb0402c6ca6c8fcf4ec071d52f3ab7c5b3955a5db6f532ea028b9b36ce",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "flares/supernova",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Fate/Particles/FA Supernova Core.png",
+      "source": "Art/source/vfx/flares/supernova.png",
+      "source_sha256": "abd008ae82f81ad9b4a46817307c82eea604867272e3be68c2f29990ef405b59",
+      "runtime": "public/assets/vfx/flares/supernova.png",
+      "runtime_sha256": "6933cf8ef94e2d29cb7d2563bcbcbffb71cec2553c5915b07d42a76103e370c5",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "flares/star-glint",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Nachtmusik/Particles/NK Lens Flare.png",
+      "source": "Art/source/vfx/flares/star-glint.png",
+      "source_sha256": "7881911938641b17cab7b4d6842249a148652025562705c9929f6d6e57556514",
+      "runtime": "public/assets/vfx/flares/star-glint.png",
+      "runtime_sha256": "59ca2e5d7f6dd41b2ece7cb1e70199f954745eb17e8674401bad4cfa6046bf54",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "flares/star-sharp",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Nachtmusik/Impact Effects/NK Comet.png",
+      "source": "Art/source/vfx/flares/star-sharp.png",
+      "source_sha256": "8d9a94ecb534f4162b5dd42943bd9fff4f6b93c53b26e61540ebd88b9d6e0800",
+      "runtime": "public/assets/vfx/flares/star-sharp.png",
+      "runtime_sha256": "9002d2ebb41a9f3ed135cbf99a7444be51e9ca07331ae6aedf33af2f082a1f82",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "projectiles/gyre-orb",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Projectiles/Gyratory Orb.png",
+      "source": "Art/source/vfx/projectiles/gyre-orb.png",
+      "source_sha256": "71e5a91c87f0fd6dfe035cba49b273f9677399a98d8850200c28b52963b39ea2",
+      "runtime": "public/assets/vfx/projectiles/gyre-orb.png",
+      "runtime_sha256": "203ca4431fe9cac6df48ecda89c5c873c6dd3797f9ab686ed0759c9821c7302f",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "projectiles/orbit-sphere",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Projectiles/Orbiting Energy Sphere.png",
+      "source": "Art/source/vfx/projectiles/orbit-sphere.png",
+      "source_sha256": "8b6a3fa29356e4e5fd2c99d6ecb39a041f184a549d51872ebd3b01fc1d797bc0",
+      "runtime": "public/assets/vfx/projectiles/orbit-sphere.png",
+      "runtime_sha256": "99c8079887c6c588b0ac7e4e93a45be30ab44eff7b53c3e70902cf4d78dc8457",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/flare-burst",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/ImpactEffects/BeamLensFlareExplosionImpact.png",
+      "source": "Art/source/vfx/impacts/flare-burst.png",
+      "source_sha256": "6d11cd63e4dbd384a6abb764acdf8a13062842001ebf2c1f1c49e20259004036",
+      "runtime": "public/assets/vfx/impacts/flare-burst.png",
+      "runtime_sha256": "1e15a2a49e9a7a53bae22150812c997135c2aac433afb6d55803a38da2405c1d",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/shatter-burst",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/ImpactEffects/Crumbling Shatter Burst.png",
+      "source": "Art/source/vfx/impacts/shatter-burst.png",
+      "source_sha256": "24338684905586b658cd5c44057f0e71cd356f300061356fca20c03b8af2e8d7",
+      "runtime": "public/assets/vfx/impacts/shatter-burst.png",
+      "runtime_sha256": "f0da95290a7388608e85ac5351228c6f69460df8030a2173b58cd8838338bba8",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/resonance-wave",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/ImpactEffects/Harmonic Resonance Wave Impact.png",
+      "source": "Art/source/vfx/impacts/resonance-wave.png",
+      "source_sha256": "7cffbcf96d85965b605cb31475ae0c1bc053e84195899ef383872746f958ee33",
+      "runtime": "public/assets/vfx/impacts/resonance-wave.png",
+      "runtime_sha256": "207e51f78aaa028831fa502a1c7cdefbc26c00f4c8efef1696b9472446e9638a",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "impacts/impact-ellipse",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/ImpactEffects/ImpactEllipse.png",
+      "source": "Art/source/vfx/impacts/impact-ellipse.png",
+      "source_sha256": "abd7b8e4567008b558b7e3a678e4df5a5f681fac4a02c0f62597ee2ff2520bd4",
+      "runtime": "public/assets/vfx/impacts/impact-ellipse.png",
+      "runtime_sha256": "919747292f3ad601b5a11e21c0cc9cf6377bdb272e4b909497833c8cf63cf4f1",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "impacts/power-ring",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/ImpactEffects/PowerEffectRing.png",
+      "source": "Art/source/vfx/impacts/power-ring.png",
+      "source_sha256": "3d7f388cb772e3a0ae541584e2307a56dec3e0db513d09aed08a9b827b101e75",
+      "runtime": "public/assets/vfx/impacts/power-ring.png",
+      "runtime_sha256": "a530d0d0844a505afa398dd08f75d753062caa34663313ed810c4baa8d8f0aa4",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGBA"
+    },
+    {
+      "asset": "impacts/slash-star",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/ImpactEffects/Radial Slash Star Impact.png",
+      "source": "Art/source/vfx/impacts/slash-star.png",
+      "source_sha256": "889012060fb5edcaad05af3ed9ae9128b4793c06ee6a40348ed923ea31c252a3",
+      "runtime": "public/assets/vfx/impacts/slash-star.png",
+      "runtime_sha256": "abf04560ce74ceef4109c01ec76e130d490d3d9e6bbef372d4670a8cb8cbad88",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/x-cross",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/ImpactEffects/X-ShapedImpactCross.png",
+      "source": "Art/source/vfx/impacts/x-cross.png",
+      "source_sha256": "e1c314b23eae7343b45e52ec356ea62d613e26aa87ef1f490b2ba8b186c716ae",
+      "runtime": "public/assets/vfx/impacts/x-cross.png",
+      "runtime_sha256": "30f57dd76aceff45a17ca9e8ca4d2c0719e2573ef207f318946bf4db45938c9e",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/radial-streaks-fade",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/RadialBurstFadeStreaksLensFlare.png",
+      "source": "Art/source/vfx/impacts/radial-streaks-fade.png",
+      "source_sha256": "48ce6fd7170e489a59df149472cb01c197ab9b957540b3f83533e1b091651631",
+      "runtime": "public/assets/vfx/impacts/radial-streaks-fade.png",
+      "runtime_sha256": "79d09ac49e08c1b8a7933396b5f511f2177be489e2b6b5f716e86e325372db3f",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/radial-streaks-heavy",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/RadialBurstHeavyStreaksLensFlare.png",
+      "source": "Art/source/vfx/impacts/radial-streaks-heavy.png",
+      "source_sha256": "c0e22cb802edae071353632396ea452e38784ee2ab0ec6fc32c35ec5a56427af",
+      "runtime": "public/assets/vfx/impacts/radial-streaks-heavy.png",
+      "runtime_sha256": "ec3db0f89259029c3d5a2eb8b64e2ac05ca47226823f5f691ebe061a2ee20ce5",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "impacts/ring-fire",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/InfernalBeamRing.png",
+      "source": "Art/source/vfx/impacts/ring-fire.png",
+      "source_sha256": "41cf282f5a1050969ddc60d975ec8c9a6b3be31c08528016f9638d320c73993e",
+      "runtime": "public/assets/vfx/impacts/ring-fire.png",
+      "runtime_sha256": "076a43e340e588b9f004be9e9774d9322eee9aef0ace9ea9c4258b7244c473a5",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGBA"
+    },
+    {
+      "asset": "impacts/radial-spikes",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Beam Textures/ER Radial Burst Heavy Streaks.png",
+      "source": "Art/source/vfx/impacts/radial-spikes.png",
+      "source_sha256": "db3484719149f451bc32c965afad14b95f0fb1d26e44682ac8249dc8bce187f6",
+      "runtime": "public/assets/vfx/impacts/radial-spikes.png",
+      "runtime_sha256": "e29feb13e169341a9a6e478b4c0df11b4f57b72e872d3715c29407ffd01395c9",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/shatter-web",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Impact Effects/ER Crumbling Shatter Burst.png",
+      "source": "Art/source/vfx/impacts/shatter-web.png",
+      "source_sha256": "ddabaa05b076229cb04a8676191dfed95b8f5c28496cdd1ef495c2b2cd4885a2",
+      "runtime": "public/assets/vfx/impacts/shatter-web.png",
+      "runtime_sha256": "a36f57304335d2b7e1200f9983d3d882edd618f7936458130729eed26a70f4f8",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-flare",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Impact Effects/ER Harmonic Resonance Wave Impact.png",
+      "source": "Art/source/vfx/impacts/ring-flare.png",
+      "source_sha256": "19faa1a9f255ce29bd427dde9583feb3836144d9c9bdf821bccdd64e63943aaa",
+      "runtime": "public/assets/vfx/impacts/ring-flare.png",
+      "runtime_sha256": "00465a86996562749198ea899c828b615b58c19f5743edc52a8498b2a41ed359",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-thorned",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Impact Effects/ER Power Effect Ring.png",
+      "source": "Art/source/vfx/impacts/ring-thorned.png",
+      "source_sha256": "968e3500fdcee63605aa73a88a2371dabe944e3850b1f8a8619a5dab92d4cee4",
+      "runtime": "public/assets/vfx/impacts/ring-thorned.png",
+      "runtime_sha256": "c159fc3af8ba0a0637e555f174dfd0ed3935dab4987090e9c8c43496ec2d0d8c",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-runic",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Enigma/Impact Effects/EN Power Effect Ring.png",
+      "source": "Art/source/vfx/impacts/ring-runic.png",
+      "source_sha256": "91e4eb8516f70f8a98f8030b15a4e51a75fac51f263bd5e893c7dec484369b9c",
+      "runtime": "public/assets/vfx/impacts/ring-runic.png",
+      "runtime_sha256": "bdf6711b332ff1621d4344cecacbb0a2204d98ded31d392907d2bb9eef820d01",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-solar",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/La Campanella/Impact Effects/LC Power Effect Ring.png",
+      "source": "Art/source/vfx/impacts/ring-solar.png",
+      "source_sha256": "c828f8d1858af9ff8e35b8babb8662172e1bccac1cee2ec12d77e821304f7ef4",
+      "runtime": "public/assets/vfx/impacts/ring-solar.png",
+      "runtime_sha256": "f484d7ff70b8fbffe62f383456c99be787fb38ca19b32b902f56aaaef9dbe2b6",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-dripping",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/La Campanella/Beam Textures/LC Infernal Beam Ring.png",
+      "source": "Art/source/vfx/impacts/ring-dripping.png",
+      "source_sha256": "b3c4d4358f0df8b41693189efa231ff48cd1c09c1af545017f06eea52d83ca49",
+      "runtime": "public/assets/vfx/impacts/ring-dripping.png",
+      "runtime_sha256": "27cbd8e9ef3d796d8fa8f3bd0b8c89307515a8270b23690111585d9781358c37",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-eclipse",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/La Campanella/Projectiles/LC Bright Star Projectile 2.png",
+      "source": "Art/source/vfx/impacts/ring-eclipse.png",
+      "source_sha256": "a648aa8ced32dd96926213fe3c8fb4a2fd21e4fc0139c30046cc92de6778aedc",
+      "runtime": "public/assets/vfx/impacts/ring-eclipse.png",
+      "runtime_sha256": "cb5e7d51e51fdcb799a99cd4ebeef31e7aa0f91fc584b9d453ab6a641937e075",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "impacts/ring-concentric",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Moonlight Sonata/Impacts/MS Harmonic Resonance Wave Impact.png",
+      "source": "Art/source/vfx/impacts/ring-concentric.png",
+      "source_sha256": "11333476375d3dd735ee45bb72b155b6b5c2610bdb50419e9697d6aa94f5449b",
+      "runtime": "public/assets/vfx/impacts/ring-concentric.png",
+      "runtime_sha256": "67d922d3d6eb4a9492fdb441b9bbf797dc84a3e62a098c840d9467ba6b17afa6",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-crescent",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Moonlight Sonata/Impacts/MS Power Effect Ring.png",
+      "source": "Art/source/vfx/impacts/ring-crescent.png",
+      "source_sha256": "75d939c2e440c7c9d5435a50b8bab9f604495a7134e9724902acfe91461f3584",
+      "runtime": "public/assets/vfx/impacts/ring-crescent.png",
+      "runtime_sha256": "2fbd34993234a6daac51ec4081d84f4f6b8c2be4f7ee2af0dc42d9135a998476",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "impacts/ring-sparkle",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Nachtmusik/Particles/NK Power Effect Ring.png",
+      "source": "Art/source/vfx/impacts/ring-sparkle.png",
+      "source_sha256": "d5ca8a12a7a01a7d897aedfbe6ddc38dcca6105adba6a51a8fa4f4c9dd20619c",
+      "runtime": "public/assets/vfx/impacts/ring-sparkle.png",
+      "runtime_sha256": "e6049f1c25278115a321c772f53cd13e1e9bf882dc10447759c6eccbd4e4d54a",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-stone",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Dies Irae/Impact Effects/DI Power Effect Ring.png",
+      "source": "Art/source/vfx/impacts/ring-stone.png",
+      "source_sha256": "96c41782768a20637b3c1918c8ba29b0fc4dd407098001cfd567efe4e07447e6",
+      "runtime": "public/assets/vfx/impacts/ring-stone.png",
+      "runtime_sha256": "57c91ab7487cac889aad8d4b3a35ea5d4dfa5cabb7cbff88ae7fc8647f3e753d",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ground-ripple",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Dies Irae/Impact Effects/DI Harmonic Resonance Wave Impact.png",
+      "source": "Art/source/vfx/impacts/ground-ripple.png",
+      "source_sha256": "fc5fb269ea7efaf43c51f6cfb113866f7744845272db34fcc0a2f1f6a89d32af",
+      "runtime": "public/assets/vfx/impacts/ground-ripple.png",
+      "runtime_sha256": "5bf21c9a705217cdfed97bb39951f7dcce65fe03d78db29e9cae9663e9045576",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/crack-burst",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Dies Irae/Impact Effects/DI Radial Slash Star Impact.png",
+      "source": "Art/source/vfx/impacts/crack-burst.png",
+      "source_sha256": "743dc9cbe2b684f1a57a797afb9114be83f18417630f5213a10db42115a304d1",
+      "runtime": "public/assets/vfx/impacts/crack-burst.png",
+      "runtime_sha256": "0eaa265d9653250dab6299e4af51684d468e938c436d2575364d2bbcd5dc7668",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/sigil-circle",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Fate/Particles/FA Celestial Glyph.png",
+      "source": "Art/source/vfx/impacts/sigil-circle.png",
+      "source_sha256": "b0561f46d451fb76aca19b6b564c7405555cf1946efcbbabecf28278b4b83d3b",
+      "runtime": "public/assets/vfx/impacts/sigil-circle.png",
+      "runtime_sha256": "ff5b34c5fa258903651eef54a57e8384331df9b835f7bdc6ddaaaafa3caa9a37",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/petal-burst-a",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Impact Effects/OJ Harmonic Resonance Beam Surge Impact.png",
+      "source": "Art/source/vfx/impacts/petal-burst-a.png",
+      "source_sha256": "9c17d390f0f5b49b4a21a2d98bd83c86f795f12ce5cafe651d139caa1de314b9",
+      "runtime": "public/assets/vfx/impacts/petal-burst-a.png",
+      "runtime_sha256": "30ce4d1bd5544c8cdab1a08eff2514c7b5d6d27c512de35ac82904995b5542bb",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/petal-burst-b",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Impact Effects/OJ Harmonic Resonance Wave Impact 2 (Floral).png",
+      "source": "Art/source/vfx/impacts/petal-burst-b.png",
+      "source_sha256": "9afb83e0b9bf445004347566d173db73e5dd5cab4b9d0e84e2c1a4d627e91ce4",
+      "runtime": "public/assets/vfx/impacts/petal-burst-b.png",
+      "runtime_sha256": "8c09396f70b770e29a25e8fec6b4404a957e2ba394063ea4b9983aceba8d740e",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/petal-burst-c",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Impact Effects/OJ Harmonic Resonance Wave Impact.png",
+      "source": "Art/source/vfx/impacts/petal-burst-c.png",
+      "source_sha256": "b8a12835dbe26d210b781898320e4da0be9144a340abf6cc2d90b83ec92bb07a",
+      "runtime": "public/assets/vfx/impacts/petal-burst-c.png",
+      "runtime_sha256": "d3ae48bf78cdb95315b28359d59a0ebfa98619335dd801af0dfcdda661fc1ff5",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/bloom-flower",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Particles/OJ Blossom Sparkle.png",
+      "source": "Art/source/vfx/impacts/bloom-flower.png",
+      "source_sha256": "8c1879a2a2af34f0389be904a850f06c8f6839fba6db5342c9a675e52b1a8494",
+      "runtime": "public/assets/vfx/impacts/bloom-flower.png",
+      "runtime_sha256": "ce42ad3820cdd447f053d427d9edfa6e060c8ad9631788df54ae68c067c84d4d",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "impacts/dust-ring",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Impact Effects/OJ Power Effect Ring.png",
+      "source": "Art/source/vfx/impacts/dust-ring.png",
+      "source_sha256": "9a923b064ad176d09b0f0409c16e0154d5c10775162a95da7879cefa881ee3f2",
+      "runtime": "public/assets/vfx/impacts/dust-ring.png",
+      "runtime_sha256": "efad6f7cb26e4faa87c57797220824ac448ff66e63839783e4f1075573ab1712",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/vortex-rings",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Swan Lake/Impact Effects/SL Harmonic Resonance Wave Impact.png",
+      "source": "Art/source/vfx/impacts/vortex-rings.png",
+      "source_sha256": "e69501d73d39175cee509b45aa0cb258fca1de5faa029f2ab78a8df68d7cf642",
+      "runtime": "public/assets/vfx/impacts/vortex-rings.png",
+      "runtime_sha256": "d1e32796b3fc22fde5c27c1b016842a195a8aca34c67eb41902a93bd006086d1",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-feathered",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Swan Lake/Impact Effects/SL Power Effect Ring.png",
+      "source": "Art/source/vfx/impacts/ring-feathered.png",
+      "source_sha256": "998dce60c0e4f161c64f6f7bfb4d80a3ef5a1987a2c03356a634c6b093fc49a3",
+      "runtime": "public/assets/vfx/impacts/ring-feathered.png",
+      "runtime_sha256": "96dbecaa4414064c41574796fe066182bdd6033bf26ab130945c8ba1578bf943",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "impacts/ring-cosmic",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Fate/Beam Textures/FA Power Effect Ring.png",
+      "source": "Art/source/vfx/impacts/ring-cosmic.png",
+      "source_sha256": "7b8d54328a9991f8c82068df3790796587dede466e284795d98b9b6fc157ab32",
+      "runtime": "public/assets/vfx/impacts/ring-cosmic.png",
+      "runtime_sha256": "7b2f63dbc2c94d5f5c32bd20b2af2b6a6af3c63652b35d82633c5dbdb8ff5def",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/helix",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/Braided Energy Helix Beam.png",
+      "source": "Art/source/vfx/beams/helix.png",
+      "source_sha256": "e79ea18dc5b4cb9a04f662276727471e0150e4959d387532121e6ed9bcc91391",
+      "runtime": "public/assets/vfx/beams/helix.png",
+      "runtime_sha256": "d7883487e94d6420b2af611eaee33c4d3d7f24835d0a1fa35f0d28fbe2be43f4",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "beams/fissure",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/Cracking Energy Fissure Beam.png",
+      "source": "Art/source/vfx/beams/fissure.png",
+      "source_sha256": "db9a36560b0f1d6e50f3d524874039c8e0f085d0dc9c256b592a15867ab795b5",
+      "runtime": "public/assets/vfx/beams/fissure.png",
+      "runtime_sha256": "96d96fd4e9461d96f6d81e4d38df09623af6dfd0ad75baf68776159d0e5dff30",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/energy-motion",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/EnergyMotion.png",
+      "source": "Art/source/vfx/beams/energy-motion.png",
+      "source_sha256": "260a577a7f5217d9f6fa3da1a24136cc6f144577b132806cce8ff21aa5e4e2ea",
+      "runtime": "public/assets/vfx/beams/energy-motion.png",
+      "runtime_sha256": "e8f5bd19c8005680b83612c0bafb99f28b9b3e83f470432ce68ba351e94de04d",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/surge",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/EnergySurgeBeam.png",
+      "source": "Art/source/vfx/beams/surge.png",
+      "source_sha256": "9fbd02a445edb312cee064b7b34a1dbcdc5ef28fdcaebb3b84988b567f441d3e",
+      "runtime": "public/assets/vfx/beams/surge.png",
+      "runtime_sha256": "34f4ade329ac18a5c7c2f1864cc87e5ae6769a64ed6cc1c6a33ccc4d36d215a9",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/streak",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/HorizontalBeamStreakSegment.png",
+      "source": "Art/source/vfx/beams/streak.png",
+      "source_sha256": "a9c8c23f73b4dd25052fcf677bcd0709ca97966ee99b92adcdc878459a15a2e9",
+      "runtime": "public/assets/vfx/beams/streak.png",
+      "runtime_sha256": "ca7c46dff61ab27665af4990f4f4cba61166e4595dbb51f1ea382b087177b12d",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "beams/wave",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/Oscillating Frequency Wave Beam.png",
+      "source": "Art/source/vfx/beams/wave.png",
+      "source_sha256": "dcac27067841f5fdf1d7b335481833e9070a836a64ac3b0faff00327589b5a9b",
+      "runtime": "public/assets/vfx/beams/wave.png",
+      "runtime_sha256": "4a674221e8cf7efb222f158683d1511d70dc87acba351e8be66c9d3c3e66d3e3",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/linear-glow",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/ThinLinearGlow.png",
+      "source": "Art/source/vfx/beams/linear-glow.png",
+      "source_sha256": "85b182c0e4e42045df9b32eb9ff715680c10d04ae3acd9a6b8b6d0b716df6deb",
+      "runtime": "public/assets/vfx/beams/linear-glow.png",
+      "runtime_sha256": "b4eb788548602f2a0bbf27201fc0c2bbdf853a263de6091fa2e35a84f7029d30",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "beams/plasma-core",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/BeamTextures/Turbulent Plasma Core Segment.png",
+      "source": "Art/source/vfx/beams/plasma-core.png",
+      "source_sha256": "da234d8142ae4e2c31be86d72b0438cc0d25f52f32b88bcbfc047aa7a5fab432",
+      "runtime": "public/assets/vfx/beams/plasma-core.png",
+      "runtime_sha256": "ac770951b8699981335c635199cf746b89030871c0dbec0c0a88c3cc93b2836d",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/lightning",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Lightning/LightningSurge.png",
+      "source": "Art/source/vfx/beams/lightning.png",
+      "source_sha256": "f4bc49cb1742292e660ea5db32bb7e90cb8844f715a240aa38f1f022675cc668",
+      "runtime": "public/assets/vfx/beams/lightning.png",
+      "runtime_sha256": "2c97908c5b7640c21fccb3ece18e1fe564e52e68e0848d8b372773ee57e037ad",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/chain",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Dies Irae/Beam Textures/DI Braided Energy Helix Beam (Chain-link).png",
+      "source": "Art/source/vfx/beams/chain.png",
+      "source_sha256": "13a5ba4b2dbdc24f3f3b161026299194ce9cdbda4752afdcfdcabed038026bf2",
+      "runtime": "public/assets/vfx/beams/chain.png",
+      "runtime_sha256": "d9360431e834ad742190b1b7eefbe9000c3c45cb2753a773424ee570814f2d95",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/rubble",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Dies Irae/Trails and Ribbons/DI Rocky Hell Trail.png",
+      "source": "Art/source/vfx/beams/rubble.png",
+      "source_sha256": "0e593221fec33fa5185f1add66519f10e2abee9ca9e5787666e981a9e64fb854",
+      "runtime": "public/assets/vfx/beams/rubble.png",
+      "runtime_sha256": "ce430f0773ee30bcd750ce01d1c529ff040051e140dcc100deaa8b57fc80de3e",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/storm",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Enigma/Beam Textures/EN Energy Motion Beam.png",
+      "source": "Art/source/vfx/beams/storm.png",
+      "source_sha256": "80413e6f16f852cae1b499e0334b292eaff3e50bab7dc72cb2f165d74b03757f",
+      "runtime": "public/assets/vfx/beams/storm.png",
+      "runtime_sha256": "45360b9bdcd246f67b05a0f0e6c7ba5ae170da5c782485c722c104291bd83ff9",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/glyph-stream",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Enigma/Beam Textures/EN Energy Surge Beam.png",
+      "source": "Art/source/vfx/beams/glyph-stream.png",
+      "source_sha256": "8716da18f5ac05ac977950fe314ab1c2ad214a00aab23f59a62797e2149ff4d2",
+      "runtime": "public/assets/vfx/beams/glyph-stream.png",
+      "runtime_sha256": "6752a2c29eb15c300d55d40bce0c3fc4af885f8919f1d1ebf9f91f4f9038f541",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/flare-line",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Beam Textures/ER Energy Surge Beam.png",
+      "source": "Art/source/vfx/beams/flare-line.png",
+      "source_sha256": "3e028831c6b65b3bf70ad215fbd60aafbccd8d3120e1ecd4e5e8264e554d34a0",
+      "runtime": "public/assets/vfx/beams/flare-line.png",
+      "runtime_sha256": "940e50b80e7efc42c52020a09f3a11c6c6eb749c86ea7f2c02aba2fd5d7bbc6a",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/smoke-stream",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Eroica/Beam Textures/ER Energy Motion Beam.png",
+      "source": "Art/source/vfx/beams/smoke-stream.png",
+      "source_sha256": "b1525982a19faa2f5d1a2577a0e2653d4cbd5c930cb9dce5824d5d05dac5b77a",
+      "runtime": "public/assets/vfx/beams/smoke-stream.png",
+      "runtime_sha256": "9c4eb562ea6d05428610654b38c2be46fbd83755619b2d53ca6b7645f75f137b",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "beams/petal-stream",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Beam Textures/OJ Energy Motion Beam.png",
+      "source": "Art/source/vfx/beams/petal-stream.png",
+      "source_sha256": "68b36dbfba4c33a89ec7bc6315e897207c35621b69d7627a6bb550324043170c",
+      "runtime": "public/assets/vfx/beams/petal-stream.png",
+      "runtime_sha256": "5a3b2ebcb961bf6fd0aaa96dfe2b002acfcef42880794d249e2f6d77028cfee9",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "beams/bloom-lance",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Beam Textures/OJ Energy Surge Beam.png",
+      "source": "Art/source/vfx/beams/bloom-lance.png",
+      "source_sha256": "5474ebad118ce7ba40183b242ebeef8c2165c440a885a7c8c98f1c829d21439f",
+      "runtime": "public/assets/vfx/beams/bloom-lance.png",
+      "runtime_sha256": "02ebdeb50b9dbd175ff0bfeacebdc419966a4332d0b634b7409f94c21e2585ff",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "beams/tide",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Swan Lake/Beam Textures/SL Energy Surge Beam.png",
+      "source": "Art/source/vfx/beams/tide.png",
+      "source_sha256": "4686451710a0902c343da1b6d128c76c219b34c4c3aae4a0ba1bcd4878410d1b",
+      "runtime": "public/assets/vfx/beams/tide.png",
+      "runtime_sha256": "8a55cddae926d590a34e50a4ec34255d43f8dc96f1741f01241fe2afe624dd79",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "slashes/arc-flame",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/SlashArcs/FlamingSwordArcSmear.png",
+      "source": "Art/source/vfx/slashes/arc-flame.png",
+      "source_sha256": "a45607474b1bc9d24df3adfd64077d66180cbb0e4fbcb914a5d856cdd6c0d276",
+      "runtime": "public/assets/vfx/slashes/arc-flame.png",
+      "runtime_sha256": "4aae51e4d06de572c95a4353dc94eb11f9a73f6f7bb153cccfaa2ed7d624f8fd",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGBA"
+    },
+    {
+      "asset": "slashes/arc-flame-thin",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/SlashArcs/FlamingSwordArcSmear2.png",
+      "source": "Art/source/vfx/slashes/arc-flame-thin.png",
+      "source_sha256": "977f8aa3889714916dba1682603a153ed85b08f607ed5cb44c05ad769cb59135",
+      "runtime": "public/assets/vfx/slashes/arc-flame-thin.png",
+      "runtime_sha256": "dbf8c4aadfb4c7a05780afdca30307de2f7ceeedc124d1032225ccee4eeffbcb",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGBA"
+    },
+    {
+      "asset": "slashes/arc-full-circle",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/SlashArcs/FullCircleSwordArcSlash.png",
+      "source": "Art/source/vfx/slashes/arc-full-circle.png",
+      "source_sha256": "d6c467f285df2a223a4516137fa1fab0a02520fe355fa05d39634d2f96b9b269",
+      "runtime": "public/assets/vfx/slashes/arc-full-circle.png",
+      "runtime_sha256": "7b93352ea6c1610a7cc7f65f7047807576a832a1ec9cf71b1250dfe0b00b6490",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGBA"
+    },
+    {
+      "asset": "slashes/arc-smear",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/SlashArcs/SwordArcSmear.png",
+      "source": "Art/source/vfx/slashes/arc-smear.png",
+      "source_sha256": "95ef09e0df73272bde0dda0f93e1a735c20a4a33f0a2e7fb398f10035e57e46a",
+      "runtime": "public/assets/vfx/slashes/arc-smear.png",
+      "runtime_sha256": "9c726a43b52645ecf97efa5ed5a78ca9bfd091123bfee07f57a31ad660343599",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGBA"
+    },
+    {
+      "asset": "trails/trail-basic",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/TrailsAndRibbons/BasicTrail.png",
+      "source": "Art/source/vfx/trails/trail-basic.png",
+      "source_sha256": "a9c8c23f73b4dd25052fcf677bcd0709ca97966ee99b92adcdc878459a15a2e9",
+      "runtime": "public/assets/vfx/trails/trail-basic.png",
+      "runtime_sha256": "ca7c46dff61ab27665af4990f4f4cba61166e4595dbb51f1ea382b087177b12d",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "trails/ribbon-standing-wave",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/TrailsAndRibbons/Harmonic Standing Wave Ribbon.png",
+      "source": "Art/source/vfx/trails/ribbon-standing-wave.png",
+      "source_sha256": "13c5385c69c3b7e923295547477e5cb75cacf3243ff161f0db4fc153528e5294",
+      "runtime": "public/assets/vfx/trails/ribbon-standing-wave.png",
+      "runtime_sha256": "1a130440c8a269c4f6bc9e4f0dca4867c4108cb63149963b685574e3c4a2b4de",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "trails/vortex-strip",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/TrailsAndRibbons/Spiraling Vortex Energy Strip.png",
+      "source": "Art/source/vfx/trails/vortex-strip.png",
+      "source_sha256": "d8137bd2db31e051680c48c6fb41c7670c66159983a6223a1051ed85e1384197",
+      "runtime": "public/assets/vfx/trails/vortex-strip.png",
+      "runtime_sha256": "f16d176ab985ab44f9d27a7053f66d64c5c4f8eda36e9366b9ddd9845d242e23",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "trails/sparkle-spray",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Clair de Lune/Trails and Ribbons/CL Basic Trail.png",
+      "source": "Art/source/vfx/trails/sparkle-spray.png",
+      "source_sha256": "af13b71ffd173e21675e4cb3b4ff171975bdc5ffa1877c240baad025b0f63865",
+      "runtime": "public/assets/vfx/trails/sparkle-spray.png",
+      "runtime_sha256": "c0417e77633d6bc8ffbbff68df116b299f19d33eb5534e4d79f4125bd59f1c48",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "trails/dust-streak",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Fate/Trails and Ribbons/FA Basic Trail.png",
+      "source": "Art/source/vfx/trails/dust-streak.png",
+      "source_sha256": "dec6c8dafe2e045040c4e3075f23c3f4e4b98cf03ec5eea1af1b4be0da95e22b",
+      "runtime": "public/assets/vfx/trails/dust-streak.png",
+      "runtime_sha256": "c0f3aa8345fe76043c788da1d1ec8cb846148bc0685a4351ebee76c62f0ff0bf",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "trails/petal-spray",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Trails and Ribbons/OJ Basic Trail.png",
+      "source": "Art/source/vfx/trails/petal-spray.png",
+      "source_sha256": "40b4e13c9c401287342742adefc6debbb6c879b870bd3033205cff22b651780e",
+      "runtime": "public/assets/vfx/trails/petal-spray.png",
+      "runtime_sha256": "bf4b8585d713dd8da2ef5632a2060a96135020bf577b557c92bf0c14e59f3a4f",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "trails/ribbon-weave",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Moonlight Sonata/Trails and Ribbons/MS Harmonic Standing Wave Ribbon.png",
+      "source": "Art/source/vfx/trails/ribbon-weave.png",
+      "source_sha256": "8e0bc161b4677e48cf303503d999aa4a6d2f3363d579edce76f8373d33672847",
+      "runtime": "public/assets/vfx/trails/ribbon-weave.png",
+      "runtime_sha256": "65b5f304d5b0d7ef7807d8921180d6844ecae9d7021c67bb6d6e5d47b7321238",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "trails/ribbon-silk",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Swan Lake/Trails and Ribbons/SL Basic Trail.png",
+      "source": "Art/source/vfx/trails/ribbon-silk.png",
+      "source_sha256": "2bc7c4626ab9dcec7adc99274efb617f6fc9ba1ad711fb0c844560eefa4984b4",
+      "runtime": "public/assets/vfx/trails/ribbon-silk.png",
+      "runtime_sha256": "4ea9f45a8612ea13dc71998990ec5f42e59db4052323548c4c080ea8249655f3",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "trails/wave-thread",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/La Campanella/Trails and Ribbons/LC Basic Trail.png",
+      "source": "Art/source/vfx/trails/wave-thread.png",
+      "source_sha256": "829f754057d4d5909adb6edfaa5b952bfe414287b6f61608697294e728875bd9",
+      "runtime": "public/assets/vfx/trails/wave-thread.png",
+      "runtime_sha256": "99fd3c47f0f471d6dead2c93ccf3b4703296783b0ceaca0f6bc7eaa915fd4499",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "smoke/smoke-puff",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/SmokePuffCloud.png",
+      "source": "Art/source/vfx/smoke/smoke-puff.png",
+      "source_sha256": "509f8d445ae648e72e81e53dffeb6b6aa45e323ec9630d350bcadf70b77f56fe",
+      "runtime": "public/assets/vfx/smoke/smoke-puff.png",
+      "runtime_sha256": "b5391760192f791e98a309377f0407b09e3b7784e8897734bd8d8b3cbfff236b",
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_mode": "RGBA"
+    },
+    {
+      "asset": "smoke/smoke-sheet",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/SmokeRender3x6GRID.png",
+      "source": "Art/source/vfx/smoke/smoke-sheet.png",
+      "source_sha256": "4ba7f115f41eb0c2d9a4c79ef39cff6f93dd1b9277c22f0e45122a6b76773a0d",
+      "runtime": "public/assets/vfx/smoke/smoke-sheet.png",
+      "runtime_sha256": "c8162902b6b11eef1e93903818148b208f1d062ad4bc909e8ceb98e999883d6d",
+      "runtime_size": [
+        231,
+        512
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "noise/maelstrom",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/Churning Maelstrom Turbulence.png",
+      "source": "Art/source/vfx/noise/maelstrom.png",
+      "source_sha256": "b60d7ce41cc10511ecc8274665c61e2991ce576e4625aaa2dcdc301632dbc5ea",
+      "runtime": "public/assets/vfx/noise/maelstrom.png",
+      "runtime_sha256": "f0450c50905b4205c09dfebff530ddde2030c802bffe7f60ec0086f8aa12e292",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "RGB"
+    },
+    {
+      "asset": "noise/vortex",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/CosmicEnergyVortex.png",
+      "source": "Art/source/vfx/noise/vortex.png",
+      "source_sha256": "0438228fc7f5fd1ded0939c3e5689f63f105634cb4576ba2409951015f616dc3",
+      "runtime": "public/assets/vfx/noise/vortex.png",
+      "runtime_sha256": "7a24cbdfb63f89609f6dca33e754e66674c929fe253f26aa4dc976cfeccce402",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/nebula",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/CosmicNebulaClouds.png",
+      "source": "Art/source/vfx/noise/nebula.png",
+      "source_sha256": "6282a71190952cb2a1ca414006d458ae5fa327679a0e7c3cae219dc9ad9c9a62",
+      "runtime": "public/assets/vfx/noise/nebula.png",
+      "runtime_sha256": "865668d6501f1d697bd292d5f355093f116b450a03d66a2a7944d2a80e2277db",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/thread-web",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/DestinyThreadPattern.png",
+      "source": "Art/source/vfx/noise/thread-web.png",
+      "source_sha256": "bd2647a08dab90b831828d2e66dbecd9f977a5cb0fd5c8039c1d20bf1daacfd4",
+      "runtime": "public/assets/vfx/noise/thread-web.png",
+      "runtime_sha256": "7c9a670824e756301bd7a454b3ebd2dff5815bfc7aaf5f65e18715333e0b1b3d",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/wisp",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/NebulaWispNoise.png",
+      "source": "Art/source/vfx/noise/wisp.png",
+      "source_sha256": "21621d386899302b73467ec79dab5d9700641fe2cdf5405171701f5c824f8398",
+      "runtime": "public/assets/vfx/noise/wisp.png",
+      "runtime_sha256": "4dcfc94ca33aa291c7f7e0534cdc6cba9ddc5f6c2309e05e1c51c3a5a983836d",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/smoke",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/NoiseSmoke.png",
+      "source": "Art/source/vfx/noise/smoke.png",
+      "source_sha256": "ea2436051f6205584c0b59b77fca541607f5d4da03b582ef42b3c8ade9d7388b",
+      "runtime": "public/assets/vfx/noise/smoke.png",
+      "runtime_sha256": "cc0c89c4a761e49c6adb2d2d77a7385372e278988a79662bc8028cff766f6ccc",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/perlin",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/PerlinNoise.png",
+      "source": "Art/source/vfx/noise/perlin.png",
+      "source_sha256": "540eab02f14b48a6925003ff40cba40745134a0547c0a4ef99ebc6a1a9e42f1a",
+      "runtime": "public/assets/vfx/noise/perlin.png",
+      "runtime_sha256": "7da7cf73d110475a0ae07be1960a674820869764b910933cd4b3ff58c2571c5c",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/crack",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/RealityCrackPattern.png",
+      "source": "Art/source/vfx/noise/crack.png",
+      "source_sha256": "023114b9374ce9f8ed405e5cf5eb0eea771b37f6ed7c02f5e6d9a9fe3f61e7ca",
+      "runtime": "public/assets/vfx/noise/crack.png",
+      "runtime_sha256": "d83174817a5b7a034777388dc2811abfb63d32459119808b7898fa7fd6074232",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/caustics",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/SoftCircularCaustics.png",
+      "source": "Art/source/vfx/noise/caustics.png",
+      "source_sha256": "3c1f95665ae3e4b51af20f4e5c1dd8efe7a548d7363a116526808f7f7fbec6c9",
+      "runtime": "public/assets/vfx/noise/caustics.png",
+      "runtime_sha256": "bd7e28142be1aa37498b4b94d22bd32be45ed812243c6544d376542aceb7fb65",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/starfield",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/StarFieldScatter.png",
+      "source": "Art/source/vfx/noise/starfield.png",
+      "source_sha256": "8fd7fb06618d0ce8b05f550a49df5fb172bbf4cd579d7af0252137b33f0400f0",
+      "runtime": "public/assets/vfx/noise/starfield.png",
+      "runtime_sha256": "7b1a736f65b75ee0f8e2d2a6aeb1e05572b1f7f87741d30478909bc734c48bd4",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/fbm",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/TileableFBMNoise.png",
+      "source": "Art/source/vfx/noise/fbm.png",
+      "source_sha256": "618d653d880916d1c28b453bf8867c392981e8796a93ffb28cffdd013c695def",
+      "runtime": "public/assets/vfx/noise/fbm.png",
+      "runtime_sha256": "a89c3730b6f7b9f243dc7fe27d43dcb22125f3366d195c6bf69ed07a20257286",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/marble",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/TileableMarbleNoise.png",
+      "source": "Art/source/vfx/noise/marble.png",
+      "source_sha256": "88e4a6e8d05aea2268b2220960183f59cc3bfcf61c1fe16eb2acdd65eef67a6d",
+      "runtime": "public/assets/vfx/noise/marble.png",
+      "runtime_sha256": "e485f78f6bb8827fa72d60654e5b84e8a2e025e47c5dcdc2268fcf12a37e41a9",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/uv-distortion",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/UVDistortionMap.png",
+      "source": "Art/source/vfx/noise/uv-distortion.png",
+      "source_sha256": "25545b3a5b2cabf1f09d18897391c3b05751cb63899df5bf0bda2e489d89faa0",
+      "runtime": "public/assets/vfx/noise/uv-distortion.png",
+      "runtime_sha256": "5fe089d7a95c4f86e865491e7109fef2ec5f5f6bb1197a6ef1958f3b60938f6e",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/radial-flow",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/UniversalRadialFlowNoise.png",
+      "source": "Art/source/vfx/noise/radial-flow.png",
+      "source_sha256": "617644fa9cbf36b0a8db77d0be3e32c5ae9e0b48ab8a703fac30e4aac598a41a",
+      "runtime": "public/assets/vfx/noise/radial-flow.png",
+      "runtime_sha256": "247e1497feff64fff70f06b9c507683b47cf44fa8e17f82c1237c6ee545d49e5",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/voronoi-edge",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/NoiseTextures/VornoiEdgeNoise.png",
+      "source": "Art/source/vfx/noise/voronoi-edge.png",
+      "source_sha256": "8550b643cecbfeb9a95a7fd950e7d6bf5928c60be535a51b37f28119c88cbfed",
+      "runtime": "public/assets/vfx/noise/voronoi-edge.png",
+      "runtime_sha256": "a46112d41bc114ab79d43d7a84da90b09d454851a95b5c14603a41b764a03916",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "LA"
+    },
+    {
+      "asset": "noise/cracked-earth",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Dies Irae/Noise/DI Unique Theme Noise \u2014 Cracked Earth Pattern.png",
+      "source": "Art/source/vfx/noise/cracked-earth.png",
+      "source_sha256": "9efa9d8c56ff6cfc7a33395095a1f2491e67c39d5b87a28a9ff015c57ed019b1",
+      "runtime": "public/assets/vfx/noise/cracked-earth.png",
+      "runtime_sha256": "72520e398666d40400e99e1fe426f1b893c0cb9f9cb5c00458a1ef322a42c157",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/constellation",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Nachtmusik/Noise/NK Constellation Fragment Noise.png",
+      "source": "Art/source/vfx/noise/constellation.png",
+      "source_sha256": "51ec08aed7c3d86e33a65c44f20b65730d42bd585970f18314183e1207a9da1d",
+      "runtime": "public/assets/vfx/noise/constellation.png",
+      "runtime_sha256": "ff7e19ae84422858c8df36a85d99b4d0af03a48733932630c1f16ff075c7aca5",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/spiral",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/La Campanella/Noise Textures/LC Cosmic Energy Vortex.png",
+      "source": "Art/source/vfx/noise/spiral.png",
+      "source_sha256": "570953fe6ab707a19a5560e50debfd2d983e43f00c9c161fd7d8f84973c7101f",
+      "runtime": "public/assets/vfx/noise/spiral.png",
+      "runtime_sha256": "4875f5451417057d910ebbb138f9f714b40e9aa34173adb64bfa48a7592ab02f",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    },
+    {
+      "asset": "noise/petal-scatter",
+      "origin": "MagnumOpus/Assets/VFX Asset Library/Theme Specific/Ode to Joy/Noise/OJ Unique Theme Noise \u2014 Petal Scatter Pattern.png",
+      "source": "Art/source/vfx/noise/petal-scatter.png",
+      "source_sha256": "354ddca4459da559b2322c5c70d1f089eed7c37c4309ad8cf6afbf3d12f4d26d",
+      "runtime": "public/assets/vfx/noise/petal-scatter.png",
+      "runtime_sha256": "865c125bc40de109f94adac21904022fac637a2347ef239581244ca8d2baa8ba",
+      "runtime_size": [
+        256,
+        256
+      ],
+      "runtime_mode": "L"
+    }
+  ]
+}

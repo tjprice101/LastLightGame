@@ -6129,6 +6129,611 @@
    "bytes": 1402398,
    "avif": 421088,
    "thumb": 105852
+  },
+  "vfx/beams/bloom-lance.png": {
+   "source": "02ebdeb50b9dbd175ff0bfeacebdc419966a4332d0b634b7409f94c21e2585ff",
+   "bytes": 144166,
+   "avif": 21756
+  },
+  "vfx/beams/chain.png": {
+   "source": "d9360431e834ad742190b1b7eefbe9000c3c45cb2753a773424ee570814f2d95",
+   "bytes": 31375,
+   "avif": 20827
+  },
+  "vfx/beams/energy-motion.png": {
+   "source": "e8f5bd19c8005680b83612c0bafb99f28b9b3e83f470432ce68ba351e94de04d",
+   "bytes": 81394,
+   "avif": 32261
+  },
+  "vfx/beams/fissure.png": {
+   "source": "96d96fd4e9461d96f6d81e4d38df09623af6dfd0ad75baf68776159d0e5dff30",
+   "bytes": 31779,
+   "avif": 9865
+  },
+  "vfx/beams/flare-line.png": {
+   "source": "940e50b80e7efc42c52020a09f3a11c6c6eb749c86ea7f2c02aba2fd5d7bbc6a",
+   "bytes": 62897,
+   "avif": 21547
+  },
+  "vfx/beams/glyph-stream.png": {
+   "source": "6752a2c29eb15c300d55d40bce0c3fc4af885f8919f1d1ebf9f91f4f9038f541",
+   "bytes": 78315,
+   "avif": 38490
+  },
+  "vfx/beams/helix.png": {
+   "source": "d7883487e94d6420b2af611eaee33c4d3d7f24835d0a1fa35f0d28fbe2be43f4",
+   "bytes": 144615,
+   "avif": 18730
+  },
+  "vfx/beams/lightning.png": {
+   "source": "2c97908c5b7640c21fccb3ece18e1fe564e52e68e0848d8b372773ee57e037ad",
+   "bytes": 78884,
+   "avif": 31561
+  },
+  "vfx/beams/linear-glow.png": {
+   "source": "b4eb788548602f2a0bbf27201fc0c2bbdf853a263de6091fa2e35a84f7029d30",
+   "bytes": 3149,
+   "avif": 1530
+  },
+  "vfx/beams/petal-stream.png": {
+   "source": "5a3b2ebcb961bf6fd0aaa96dfe2b002acfcef42880794d249e2f6d77028cfee9",
+   "bytes": 137778,
+   "avif": 33791
+  },
+  "vfx/beams/plasma-core.png": {
+   "source": "ac770951b8699981335c635199cf746b89030871c0dbec0c0a88c3cc93b2836d",
+   "bytes": 66573,
+   "avif": 27548
+  },
+  "vfx/beams/rubble.png": {
+   "source": "ce430f0773ee30bcd750ce01d1c529ff040051e140dcc100deaa8b57fc80de3e",
+   "bytes": 77928,
+   "avif": 30113
+  },
+  "vfx/beams/smoke-stream.png": {
+   "source": "9c4eb562ea6d05428610654b38c2be46fbd83755619b2d53ca6b7645f75f137b",
+   "bytes": 38006,
+   "avif": 18250
+  },
+  "vfx/beams/storm.png": {
+   "source": "45360b9bdcd246f67b05a0f0e6c7ba5ae170da5c782485c722c104291bd83ff9",
+   "bytes": 71988,
+   "avif": 37495
+  },
+  "vfx/beams/streak.png": {
+   "source": "ca7c46dff61ab27665af4990f4f4cba61166e4595dbb51f1ea382b087177b12d",
+   "bytes": 2979,
+   "avif": 855
+  },
+  "vfx/beams/surge.png": {
+   "source": "34f4ade329ac18a5c7c2f1864cc87e5ae6769a64ed6cc1c6a33ccc4d36d215a9",
+   "bytes": 74259,
+   "avif": 27870
+  },
+  "vfx/beams/tide.png": {
+   "source": "8a55cddae926d590a34e50a4ec34255d43f8dc96f1741f01241fe2afe624dd79",
+   "bytes": 62164,
+   "avif": 22511
+  },
+  "vfx/beams/wave.png": {
+   "source": "4a674221e8cf7efb222f158683d1511d70dc87acba351e8be66c9d3c3e66d3e3",
+   "bytes": 64595,
+   "avif": 14044
+  },
+  "vfx/flares/star-4point.png": {
+   "source": "6c0a771f3a55598d96faf77f75b0764bd8911c561a82ec7925813e39c9209aae",
+   "bytes": 13023,
+   "avif": 3382
+  },
+  "vfx/flares/star-bright-a.png": {
+   "source": "4e29a22d9c7a1550e0b52ae480e656e47035f3b921a47268f96c7be68407b217",
+   "bytes": 11126,
+   "avif": 3005
+  },
+  "vfx/flares/star-bright-b.png": {
+   "source": "e986c3ce67b45945a18023c15fdda574db41b79cf2cb991c8b7e4935826a2c0f",
+   "bytes": 14229,
+   "avif": 2819
+  },
+  "vfx/flares/star-glint.png": {
+   "source": "59ca2e5d7f6dd41b2ece7cb1e70199f954745eb17e8674401bad4cfa6046bf54",
+   "bytes": 21122,
+   "avif": 4374
+  },
+  "vfx/flares/star-sharp.png": {
+   "source": "9002d2ebb41a9f3ed135cbf99a7444be51e9ca07331ae6aedf33af2f082a1f82",
+   "bytes": 9848,
+   "avif": 4284
+  },
+  "vfx/flares/star-sparkle-cross.png": {
+   "source": "2e5a5d7462b33625f88facb1721df5b174d0d896477966239779fccaaf10ab9c",
+   "bytes": 5882,
+   "avif": 3834
+  },
+  "vfx/flares/star-spiked.png": {
+   "source": "eabf8a075267e08a5a88209115c87e40eabe346237102b60d0d9e3f559a61372",
+   "bytes": 14865,
+   "avif": 5880
+  },
+  "vfx/flares/star-wisp.png": {
+   "source": "56bce3bb0402c6ca6c8fcf4ec071d52f3ab7c5b3955a5db6f532ea028b9b36ce",
+   "bytes": 6359,
+   "avif": 3587
+  },
+  "vfx/flares/starburst-8point.png": {
+   "source": "d6d212021e3bb4351b8bb011b707e444b261b7d35f29fc2e91009d4931251a71",
+   "bytes": 12832,
+   "avif": 4107
+  },
+  "vfx/flares/supernova.png": {
+   "source": "6933cf8ef94e2d29cb7d2563bcbcbffb71cec2553c5915b07d42a76103e370c5",
+   "bytes": 26060,
+   "avif": 11820
+  },
+  "vfx/glow/crescent-flare.png": {
+   "source": "61ce6a1dc7533778a93e83682478c62c214f17c3ed6d590cccfb62e83cfe32cc",
+   "bytes": 23994,
+   "avif": 2301
+  },
+  "vfx/glow/glow-orb.png": {
+   "source": "6b890b10029088fdb06bfdec9196c47180a5a940e17191cfe9bc294f63cb27f5",
+   "bytes": 14714,
+   "avif": 1418
+  },
+  "vfx/glow/halo-bloom.png": {
+   "source": "5672e27ceec9b7b7dacd17476852b5e6fdf6ec5961efa890db599a036fd8bf17",
+   "bytes": 19217,
+   "avif": 3353
+  },
+  "vfx/glow/lens-flare.png": {
+   "source": "6a00fabc41c3d1189b134f70eec74da87cba8b96f876af0b98e1c71c105d9f63",
+   "bytes": 8718,
+   "avif": 1439
+  },
+  "vfx/glow/point-bloom.png": {
+   "source": "d4af5bb3c8197bcc88cc72fd6925c9a7c5551812b5ace53b8e090c016d91b448",
+   "bytes": 2214,
+   "avif": 745
+  },
+  "vfx/glow/radial-bloom.png": {
+   "source": "9c9e7e69495d91847b0459900359749fd9f109795663c936d7c0d58177ade9d0",
+   "bytes": 7311,
+   "avif": 1056
+  },
+  "vfx/glow/soft-glow-core.png": {
+   "source": "1508fb53d9f6d888d0f2c39ef96e945e00e64baaa4408c1d117449b1f0624b31",
+   "bytes": 16915,
+   "avif": 1520
+  },
+  "vfx/glow/soft-glow.png": {
+   "source": "0bc069b8aa3394f5c826def50c39cb15903a8f60ba5f1b09a909dd44803d4b09",
+   "bytes": 13521,
+   "avif": 1168
+  },
+  "vfx/glow/star-flare.png": {
+   "source": "09234150be18a8f970b29a63213e3dc2cf5f5049351f4e44bd041c0afdc81248",
+   "bytes": 10484,
+   "avif": 2859
+  },
+  "vfx/impacts/bloom-flower.png": {
+   "source": "ce42ad3820cdd447f053d427d9edfa6e060c8ad9631788df54ae68c067c84d4d",
+   "bytes": 333642,
+   "avif": 79747
+  },
+  "vfx/impacts/crack-burst.png": {
+   "source": "0eaa265d9653250dab6299e4af51684d468e938c436d2575364d2bbcd5dc7668",
+   "bytes": 104128,
+   "avif": 61435
+  },
+  "vfx/impacts/dust-ring.png": {
+   "source": "efad6f7cb26e4faa87c57797220824ac448ff66e63839783e4f1075573ab1712",
+   "bytes": 142093,
+   "avif": 88617
+  },
+  "vfx/impacts/flare-burst.png": {
+   "source": "1e15a2a49e9a7a53bae22150812c997135c2aac433afb6d55803a38da2405c1d",
+   "bytes": 127873,
+   "avif": 48181
+  },
+  "vfx/impacts/ground-ripple.png": {
+   "source": "5bf21c9a705217cdfed97bb39951f7dcce65fe03d78db29e9cae9663e9045576",
+   "bytes": 85106,
+   "avif": 51572
+  },
+  "vfx/impacts/impact-ellipse.png": {
+   "source": "919747292f3ad601b5a11e21c0cc9cf6377bdb272e4b909497833c8cf63cf4f1",
+   "bytes": 4768,
+   "avif": 1243
+  },
+  "vfx/impacts/petal-burst-a.png": {
+   "source": "30ce4d1bd5544c8cdab1a08eff2514c7b5d6d27c512de35ac82904995b5542bb",
+   "bytes": 109168,
+   "avif": 34183
+  },
+  "vfx/impacts/petal-burst-b.png": {
+   "source": "8c09396f70b770e29a25e8fec6b4404a957e2ba394063ea4b9983aceba8d740e",
+   "bytes": 66928,
+   "avif": 23179
+  },
+  "vfx/impacts/petal-burst-c.png": {
+   "source": "d3ae48bf78cdb95315b28359d59a0ebfa98619335dd801af0dfcdda661fc1ff5",
+   "bytes": 74795,
+   "avif": 14792
+  },
+  "vfx/impacts/power-ring.png": {
+   "source": "a530d0d0844a505afa398dd08f75d753062caa34663313ed810c4baa8d8f0aa4",
+   "bytes": 168933,
+   "avif": 79845
+  },
+  "vfx/impacts/radial-spikes.png": {
+   "source": "e29feb13e169341a9a6e478b4c0df11b4f57b72e872d3715c29407ffd01395c9",
+   "bytes": 110929,
+   "avif": 62211
+  },
+  "vfx/impacts/radial-streaks-fade.png": {
+   "source": "79d09ac49e08c1b8a7933396b5f511f2177be489e2b6b5f716e86e325372db3f",
+   "bytes": 88971,
+   "avif": 18577
+  },
+  "vfx/impacts/radial-streaks-heavy.png": {
+   "source": "ec3db0f89259029c3d5a2eb8b64e2ac05ca47226823f5f691ebe061a2ee20ce5",
+   "bytes": 203534,
+   "avif": 16710
+  },
+  "vfx/impacts/resonance-wave.png": {
+   "source": "207e51f78aaa028831fa502a1c7cdefbc26c00f4c8efef1696b9472446e9638a",
+   "bytes": 394866,
+   "avif": 60063
+  },
+  "vfx/impacts/ring-concentric.png": {
+   "source": "67d922d3d6eb4a9492fdb441b9bbf797dc84a3e62a098c840d9467ba6b17afa6",
+   "bytes": 91077,
+   "avif": 38771
+  },
+  "vfx/impacts/ring-cosmic.png": {
+   "source": "7b2f63dbc2c94d5f5c32bd20b2af2b6a6af3c63652b35d82633c5dbdb8ff5def",
+   "bytes": 95191,
+   "avif": 51629
+  },
+  "vfx/impacts/ring-crescent.png": {
+   "source": "2fbd34993234a6daac51ec4081d84f4f6b8c2be4f7ee2af0dc42d9135a998476",
+   "bytes": 99235,
+   "avif": 19555
+  },
+  "vfx/impacts/ring-dripping.png": {
+   "source": "27cbd8e9ef3d796d8fa8f3bd0b8c89307515a8270b23690111585d9781358c37",
+   "bytes": 69385,
+   "avif": 26897
+  },
+  "vfx/impacts/ring-eclipse.png": {
+   "source": "cb5e7d51e51fdcb799a99cd4ebeef31e7aa0f91fc584b9d453ab6a641937e075",
+   "bytes": 123822,
+   "avif": 19187
+  },
+  "vfx/impacts/ring-feathered.png": {
+   "source": "96dbecaa4414064c41574796fe066182bdd6033bf26ab130945c8ba1578bf943",
+   "bytes": 61183,
+   "avif": 29978
+  },
+  "vfx/impacts/ring-fire.png": {
+   "source": "076a43e340e588b9f004be9e9774d9322eee9aef0ace9ea9c4258b7244c473a5",
+   "bytes": 247345,
+   "avif": 88299
+  },
+  "vfx/impacts/ring-flare.png": {
+   "source": "00465a86996562749198ea899c828b615b58c19f5743edc52a8498b2a41ed359",
+   "bytes": 106277,
+   "avif": 59042
+  },
+  "vfx/impacts/ring-runic.png": {
+   "source": "bdf6711b332ff1621d4344cecacbb0a2204d98ded31d392907d2bb9eef820d01",
+   "bytes": 107151,
+   "avif": 56185
+  },
+  "vfx/impacts/ring-solar.png": {
+   "source": "f484d7ff70b8fbffe62f383456c99be787fb38ca19b32b902f56aaaef9dbe2b6",
+   "bytes": 80437,
+   "avif": 42222
+  },
+  "vfx/impacts/ring-sparkle.png": {
+   "source": "e6049f1c25278115a321c772f53cd13e1e9bf882dc10447759c6eccbd4e4d54a",
+   "bytes": 89125,
+   "avif": 52600
+  },
+  "vfx/impacts/ring-stone.png": {
+   "source": "57c91ab7487cac889aad8d4b3a35ea5d4dfa5cabb7cbff88ae7fc8647f3e753d",
+   "bytes": 69059,
+   "avif": 38745
+  },
+  "vfx/impacts/ring-thorned.png": {
+   "source": "c159fc3af8ba0a0637e555f174dfd0ed3935dab4987090e9c8c43496ec2d0d8c",
+   "bytes": 68558,
+   "avif": 21729
+  },
+  "vfx/impacts/shatter-burst.png": {
+   "source": "f0da95290a7388608e85ac5351228c6f69460df8030a2173b58cd8838338bba8",
+   "bytes": 100788,
+   "avif": 50878
+  },
+  "vfx/impacts/shatter-web.png": {
+   "source": "a36f57304335d2b7e1200f9983d3d882edd618f7936458130729eed26a70f4f8",
+   "bytes": 117213,
+   "avif": 58811
+  },
+  "vfx/impacts/sigil-circle.png": {
+   "source": "ff5b34c5fa258903651eef54a57e8384331df9b835f7bdc6ddaaaafa3caa9a37",
+   "bytes": 128472,
+   "avif": 72665
+  },
+  "vfx/impacts/slash-star.png": {
+   "source": "abf04560ce74ceef4109c01ec76e130d490d3d9e6bbef372d4670a8cb8cbad88",
+   "bytes": 36332,
+   "avif": 10197
+  },
+  "vfx/impacts/vortex-rings.png": {
+   "source": "d1e32796b3fc22fde5c27c1b016842a195a8aca34c67eb41902a93bd006086d1",
+   "bytes": 76561,
+   "avif": 40051
+  },
+  "vfx/impacts/x-cross.png": {
+   "source": "30f57dd76aceff45a17ca9e8ca4d2c0719e2573ef207f318946bf4db45938c9e",
+   "bytes": 36780,
+   "avif": 18508
+  },
+  "vfx/noise/caustics.png": {
+   "source": "bd7e28142be1aa37498b4b94d22bd32be45ed812243c6544d376542aceb7fb65",
+   "bytes": 53242,
+   "avif": 31353
+  },
+  "vfx/noise/constellation.png": {
+   "source": "ff7e19ae84422858c8df36a85d99b4d0af03a48733932630c1f16ff075c7aca5",
+   "bytes": 44004,
+   "avif": 28852
+  },
+  "vfx/noise/crack.png": {
+   "source": "d83174817a5b7a034777388dc2811abfb63d32459119808b7898fa7fd6074232",
+   "bytes": 46113,
+   "avif": 27605
+  },
+  "vfx/noise/cracked-earth.png": {
+   "source": "72520e398666d40400e99e1fe426f1b893c0cb9f9cb5c00458a1ef322a42c157",
+   "bytes": 50471,
+   "avif": 34502
+  },
+  "vfx/noise/fbm.png": {
+   "source": "a89c3730b6f7b9f243dc7fe27d43dcb22125f3366d195c6bf69ed07a20257286",
+   "bytes": 46879,
+   "avif": 30490
+  },
+  "vfx/noise/maelstrom.png": {
+   "source": "f0450c50905b4205c09dfebff530ddde2030c802bffe7f60ec0086f8aa12e292",
+   "bytes": 153832,
+   "avif": 34894
+  },
+  "vfx/noise/marble.png": {
+   "source": "e485f78f6bb8827fa72d60654e5b84e8a2e025e47c5dcdc2268fcf12a37e41a9",
+   "bytes": 47791,
+   "avif": 25604
+  },
+  "vfx/noise/nebula.png": {
+   "source": "865668d6501f1d697bd292d5f355093f116b450a03d66a2a7944d2a80e2277db",
+   "bytes": 38109,
+   "avif": 20618
+  },
+  "vfx/noise/perlin.png": {
+   "source": "7da7cf73d110475a0ae07be1960a674820869764b910933cd4b3ff58c2571c5c",
+   "bytes": 48635,
+   "avif": 27784
+  },
+  "vfx/noise/petal-scatter.png": {
+   "source": "865c125bc40de109f94adac21904022fac637a2347ef239581244ca8d2baa8ba",
+   "bytes": 38348,
+   "avif": 22596
+  },
+  "vfx/noise/radial-flow.png": {
+   "source": "247e1497feff64fff70f06b9c507683b47cf44fa8e17f82c1237c6ee545d49e5",
+   "bytes": 45335,
+   "avif": 26200
+  },
+  "vfx/noise/smoke.png": {
+   "source": "cc0c89c4a761e49c6adb2d2d77a7385372e278988a79662bc8028cff766f6ccc",
+   "bytes": 48965,
+   "avif": 30942
+  },
+  "vfx/noise/spiral.png": {
+   "source": "4875f5451417057d910ebbb138f9f714b40e9aa34173adb64bfa48a7592ab02f",
+   "bytes": 47195,
+   "avif": 32047
+  },
+  "vfx/noise/starfield.png": {
+   "source": "7b1a736f65b75ee0f8e2d2a6aeb1e05572b1f7f87741d30478909bc734c48bd4",
+   "bytes": 45104,
+   "avif": 31378
+  },
+  "vfx/noise/thread-web.png": {
+   "source": "7c9a670824e756301bd7a454b3ebd2dff5815bfc7aaf5f65e18715333e0b1b3d",
+   "bytes": 48943,
+   "avif": 30686
+  },
+  "vfx/noise/uv-distortion.png": {
+   "source": "5fe089d7a95c4f86e865491e7109fef2ec5f5f6bb1197a6ef1958f3b60938f6e",
+   "bytes": 47073,
+   "avif": 25577
+  },
+  "vfx/noise/voronoi-edge.png": {
+   "source": "a46112d41bc114ab79d43d7a84da90b09d454851a95b5c14603a41b764a03916",
+   "bytes": 25797,
+   "avif": 6147
+  },
+  "vfx/noise/vortex.png": {
+   "source": "7a24cbdfb63f89609f6dca33e754e66674c929fe253f26aa4dc976cfeccce402",
+   "bytes": 44727,
+   "avif": 26960
+  },
+  "vfx/noise/wisp.png": {
+   "source": "4dcfc94ca33aa291c7f7e0534cdc6cba9ddc5f6c2309e05e1c51c3a5a983836d",
+   "bytes": 45738,
+   "avif": 29877
+  },
+  "vfx/particles/chain-link.png": {
+   "source": "5d3dd4c6b786f4382d34b0212e99b4106c1c9f53332d6a6324871d768178adbf",
+   "bytes": 3420,
+   "avif": 2367
+  },
+  "vfx/particles/crescent.png": {
+   "source": "90fba3b9f0e32c088a8e3504ed35e7dc9022e1965de87d67e0494d5975d673c3",
+   "bytes": 4308,
+   "avif": 1535
+  },
+  "vfx/particles/crystal-shard.png": {
+   "source": "5599d2375ac4421e41c350a802c9c9d48e0f28910e4dff0241c3be18a48928a8",
+   "bytes": 1211,
+   "avif": 917
+  },
+  "vfx/particles/ember-drop.png": {
+   "source": "61e80a11c30367ccfce9f7aa902719d4b361852c85e79ca2ce7e6151e3b046ea",
+   "bytes": 3477,
+   "avif": 468
+  },
+  "vfx/particles/gear-fragment.png": {
+   "source": "261f48be70750e826f379f982ed12492825abfa6e294395528155b65b195100b",
+   "bytes": 2648,
+   "avif": 1785
+  },
+  "vfx/particles/gear-shard.png": {
+   "source": "eef3ae1b1a6e61c6d4a48bd8a161d525d4a7e1c50990968b5dbca9db6b311786",
+   "bytes": 6178,
+   "avif": 4280
+  },
+  "vfx/particles/leaf-sprig.png": {
+   "source": "96686015343a7762e7018c8581725af9edc35cb33af17c70917d4d6220d9c19a",
+   "bytes": 3999,
+   "avif": 2755
+  },
+  "vfx/particles/mist-wisp.png": {
+   "source": "075d9b205af0c5113dcf5a6873ea72f708de96b515aebab365862de61fb6196c",
+   "bytes": 2646,
+   "avif": 1677
+  },
+  "vfx/particles/petal.png": {
+   "source": "0451233e15165b66ad929a5936e0668bec352d0c825c9f512f0042e719973839",
+   "bytes": 5682,
+   "avif": 3089
+  },
+  "vfx/particles/rock-shard.png": {
+   "source": "60ff3bdf0712cad9a16da40f2485fdc1f3341b1349865a2577812e2609e1d6ea",
+   "bytes": 7580,
+   "avif": 5288
+  },
+  "vfx/particles/rose-bloom.png": {
+   "source": "977a021fd2fdac504b50f485414807480b9a305d17040998cc2d5678ef899802",
+   "bytes": 6070,
+   "avif": 3470
+  },
+  "vfx/particles/star-hard.png": {
+   "source": "1d73cfd3b2f378c7be059bffac6e8ded7bf948412136921cc124e5d8df41b1cb",
+   "bytes": 353,
+   "avif": 708
+  },
+  "vfx/particles/star-soft.png": {
+   "source": "9692c3194f06b773db452c05c637be293edb749958e8b7603379a61357db1aeb",
+   "bytes": 181,
+   "avif": 478
+  },
+  "vfx/particles/star-thin.png": {
+   "source": "283cc4d38d7d62e2c711287f26e59480fdcf62a4106cb62d99ad2712bd775063",
+   "bytes": 143,
+   "avif": 470
+  },
+  "vfx/particles/thorn.png": {
+   "source": "b5cb2a20309eb970cfd7a5490865f8759b2bcffe6e6e3a77910288a9a043ecf7",
+   "bytes": 1905,
+   "avif": 1052
+  },
+  "vfx/projectiles/gyre-orb.png": {
+   "source": "203ca4431fe9cac6df48ecda89c5c873c6dd3797f9ab686ed0759c9821c7302f",
+   "bytes": 13330,
+   "avif": 4404
+  },
+  "vfx/projectiles/orbit-sphere.png": {
+   "source": "99c8079887c6c588b0ac7e4e93a45be30ab44eff7b53c3e70902cf4d78dc8457",
+   "bytes": 18469,
+   "avif": 5104
+  },
+  "vfx/slashes/arc-flame-thin.png": {
+   "source": "dbf8c4aadfb4c7a05780afdca30307de2f7ceeedc124d1032225ccee4eeffbcb",
+   "bytes": 97646,
+   "avif": 39427
+  },
+  "vfx/slashes/arc-flame.png": {
+   "source": "4aae51e4d06de572c95a4353dc94eb11f9a73f6f7bb153cccfaa2ed7d624f8fd",
+   "bytes": 154072,
+   "avif": 70850
+  },
+  "vfx/slashes/arc-full-circle.png": {
+   "source": "7b93352ea6c1610a7cc7f65f7047807576a832a1ec9cf71b1250dfe0b00b6490",
+   "bytes": 118274,
+   "avif": 61145
+  },
+  "vfx/slashes/arc-smear.png": {
+   "source": "9c726a43b52645ecf97efa5ed5a78ca9bfd091123bfee07f57a31ad660343599",
+   "bytes": 65542,
+   "avif": 18638
+  },
+  "vfx/smoke/smoke-puff.png": {
+   "source": "b5391760192f791e98a309377f0407b09e3b7784e8897734bd8d8b3cbfff236b",
+   "bytes": 158551,
+   "avif": 31583
+  },
+  "vfx/smoke/smoke-sheet.png": {
+   "source": "c8162902b6b11eef1e93903818148b208f1d062ad4bc909e8ceb98e999883d6d",
+   "bytes": 55628,
+   "avif": 26811
+  },
+  "vfx/trails/dust-streak.png": {
+   "source": "c0f3aa8345fe76043c788da1d1ec8cb846148bc0685a4351ebee76c62f0ff0bf",
+   "bytes": 84471,
+   "avif": 38769
+  },
+  "vfx/trails/petal-spray.png": {
+   "source": "bf4b8585d713dd8da2ef5632a2060a96135020bf577b557c92bf0c14e59f3a4f",
+   "bytes": 61616,
+   "avif": 29447
+  },
+  "vfx/trails/ribbon-silk.png": {
+   "source": "4ea9f45a8612ea13dc71998990ec5f42e59db4052323548c4c080ea8249655f3",
+   "bytes": 41953,
+   "avif": 11189
+  },
+  "vfx/trails/ribbon-standing-wave.png": {
+   "source": "1a130440c8a269c4f6bc9e4f0dca4867c4108cb63149963b685574e3c4a2b4de",
+   "bytes": 31928,
+   "avif": 7705
+  },
+  "vfx/trails/ribbon-weave.png": {
+   "source": "65b5f304d5b0d7ef7807d8921180d6844ecae9d7021c67bb6d6e5d47b7321238",
+   "bytes": 37723,
+   "avif": 10617
+  },
+  "vfx/trails/sparkle-spray.png": {
+   "source": "c0417e77633d6bc8ffbbff68df116b299f19d33eb5534e4d79f4125bd59f1c48",
+   "bytes": 89035,
+   "avif": 40513
+  },
+  "vfx/trails/trail-basic.png": {
+   "source": "ca7c46dff61ab27665af4990f4f4cba61166e4595dbb51f1ea382b087177b12d",
+   "bytes": 2979,
+   "avif": 855
+  },
+  "vfx/trails/vortex-strip.png": {
+   "source": "f16d176ab985ab44f9d27a7053f66d64c5c4f8eda36e9366b9ddd9845d242e23",
+   "bytes": 96832,
+   "avif": 38723
+  },
+  "vfx/trails/wave-thread.png": {
+   "source": "99fd3c47f0f471d6dead2c93ccf3b4703296783b0ceaca0f6bc7eaa915fd4499",
+   "bytes": 99090,
+   "avif": 8973
   }
  }
 }

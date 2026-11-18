@@ -1,5 +1,34 @@
 # Current state and handoff
 
+## Battle Spectacle setup: VFX library, Playwright, plan (2026-11-18)
+
+**Owner direction (D-482).** Spectacle phase next, before Phase 4.
+[Plan](Future%20Plans/battle-flurry-overhaul.md#f-battle-spectacle-runs-before-phase-4).
+- Installed 121 textures from the owner's MagnumOpus VFX library, renamed
+  (`tools/intake_vfx_library.py`;
+  [art workflow](art-workflow.md#battle-vfx-texture-library-d-482-2026-11-18)).
+  Not yet used by the game.
+- Added dev-only Playwright 1.56.1 with Chromium and
+  `tools/capture_frames.mjs` (timed frame sequences for motion review).
+- Convergent Light naming and skill menu polish recorded; not implemented.
+
+**Verified:**
+- `python tools/intake_vfx_library.py`: 121 textures validated after
+  `--apply`. `python -m unittest test_vfx_library` (in `tools`): 4 passed.
+- `node tools/build_avif.mjs --check`: current for 1265 PNGs.
+- `node tools/capture_frames.mjs` against the local dev server: title screen
+  frames saved, no page errors.
+- Full `npx vitest run`: 10,735 of 10,737 passed; the 2 failures were
+  timeouts under full-suite load (`acquisition-surfaces.test.ts`,
+  `archives-controls.test.ts`); both files pass alone (8 tests).
+- **Not verified:** capture does not yet drive into a battle.
+
+**Next:**
+- Convergent Light label rename in all menus (Sonnet, small).
+- Spectacle step 1: visual rules plus battle capture harness (Opus, Plan
+  mode; owner approves the rules).
+- Owner decides the Warden Lv.177 / Training 120 source fix (Opus).
+
 ## Battle Flurry Phase 3 released (2026-11-18)
 
 **Released and live (D-474 to D-481).** `main` and `overhaul/radiant-foundation`

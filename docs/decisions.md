@@ -1,8 +1,32 @@
 # Decision log
 
+## Battle Spectacle phase, VFX library and Convergent Light naming (D-482, 2026-11-18)
+
+Owner feedback after the Phase 3 release: every character and enemy
+animation feels weak; they want real firepower and visual prowess (Brave
+Frontier as inspiration only, never copied).
+
+- **Owner-approved:** a Battle Spectacle phase runs next, before the Phase 4
+  Conduit work. Plan:
+  [Spectacle phase](Future%20Plans/battle-flurry-overhaul.md#f-battle-spectacle-runs-before-phase-4).
+- **Owner-approved:** effects are built in code. Textures come from the
+  owner's own MagnumOpus VFX library (copied and renamed; 121 textures,
+  `tools/intake_vfx_library.py`, provenance
+  `Art/provenance/vfx-library-intake.json`). Midjourney stills only if a gap
+  remains. No frame-by-frame animation art.
+- **Owner-approved:** Playwright is a dev-only tool for motion review
+  (`tools/capture_frames.mjs`). It does not ship in the game.
+- **Owner direction:** the Flare *is* the Convergent Light ability and every
+  menu should label it **Convergent Light**. Internal IDs stay. Not yet
+  implemented.
+- **Owner direction:** keep the hold-a-card skill menu mechanic and polish it.
+- **Open:** the Spectacle visual rules and time budgets (step 1, needs
+  owner approval).
+
 ## Battle Flurry Phase 3 Step 4: live calibration `radiant-trio-v1` (D-481, 2026-11-18)
 
-On branch `battle-flurry-phase3`. **Not released.** Sheet:
+**Released 2026-11-18** (`main` and `overhaul/radiant-foundation`, authority
+deployed). Sheet:
 [owner answers](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#owner-answers-2026-11-18-d-481).
 
 - **Owner-approved:** candidate D is the live enemy calibration

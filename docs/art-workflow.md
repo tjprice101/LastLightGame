@@ -1,5 +1,26 @@
 # Art and asset workflow
 
+## Battle VFX texture library (D-482, 2026-11-18)
+
+Battle effects are built in code from the owner's own MagnumOpus VFX texture
+library (owner-approved reuse). `tools/intake_vfx_library.py` copies 121
+selected originals, renamed for Last Light, into `Art/source/vfx/<category>/`
+and exports downscaled runtime PNGs (and AVIF siblings) to
+`public/assets/vfx/<category>/`: particles, glow, flares, projectiles,
+impacts, beams, slashes, trails, smoke and noise. Provenance with origin path
+and hashes: `Art/provenance/vfx-library-intake.json`;
+`tools/test_vfx_library.py` checks it.
+
+- Textures are grayscale light on black for additive blending and are
+  tinted per element at runtime. A few keep a slight warm cast from the
+  source; tint or desaturate them in code.
+- Resize only; supplied alpha is preserved; nothing is keyed.
+- Excluded: MagnumOpus-specific motifs (music notes, clef orbs, the eye,
+  laurel wreath, music-wave patterns), plain masks and lines (drawn in code),
+  and the mod's `Sandbox*` and item folders.
+- To add one: add its origin to `LIBRARY`, run the tool, then `--apply`,
+  then `node tools/build_avif.mjs`.
+
 ## Derived compact face portraits: 192 released forms (2026-11-09)
 
 The Radiant branch contains 192 reviewed crops for 32 released bearers, six
