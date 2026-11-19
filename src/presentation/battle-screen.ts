@@ -27,12 +27,13 @@ import { characterChoreography } from './battle-effects';
 import { formatStat } from '../content/combat';
 import { lootArt, lootItems } from './battle-loot';
 import { radiantFormation, radiantFormationStyle } from './battle-formation';
-import { radiantFlareCutin } from './battle-cutin';
+import { radiantEnemyCutin, radiantFlareCutin } from './battle-cutin';
 import './battle-cutin.css';
 import { radiantBearerKits, radiantFlareName } from '../content/combat-kits';
 import { elementDamageMultiplier } from '../content/element-matchups';
-import { beatPlan, elementTint, enemyScreenTools, hitProgress, screenTools, spectacleTier, staticImpactMs, tintCss,
-  type FlashKind, type SpectacleBeats } from '../vfx/spectacle-timing';
+import { beatPlan, elementTint, enemyBeatPlan, enemyScreenTools, hitProgress, screenTools, spectacleTier, staticImpactMs, tintCss,
+  type FlashKind, type ScreenTools, type SpectacleBeats } from '../vfx/spectacle-timing';
+import { chargingSpecial, enemyActionCue, type EnemyActionCue } from '../vfx/enemy-cues';
 
 export { radiantActivityTitle };
 
@@ -49,7 +50,9 @@ export interface RadiantBattleEffects {
   /** `action` is the presented player action, or null for enemy-phase frames (no caster).
    * Resolves after this hit's slot in the impact beat; lingering particles are awaited through `idle`. */
   impact(frame: RadiantImpactFrame, action?: RadiantPlayerAction | null, state?: RadiantCombatState,
-    beats?: SpectacleBeats, finisher?: boolean, hitIndex?: number): Promise<void>;
+    beats?: SpectacleBeats, finisher?: boolean, hitIndex?: number, enemy?: EnemyActionCue | null): Promise<void>;
+  /** D-491: an enemy action's telegraph and travel toward the struck bearers; resolves when travel ends. */
+  enemyWindup?(cue: EnemyActionCue, targetIds: readonly string[], beats: SpectacleBeats): Promise<void>;
   /** D-490: light gathers onto the targets for `beats.gather` just before a Convergent Light finisher. */
   gather?(action: RadiantPlayerAction, state: RadiantCombatState, targetIds: readonly string[], beats: SpectacleBeats): Promise<void>;
   screen?(cue: RadiantScreenCue): void;
@@ -84,7 +87,8 @@ function radiantCardName(full: string): string {
 function affectedEnemyTarget(response: RadiantRunResponse, target: string | null): string | null {
   return target && response.events.some(event => 'targetId' in event && event.targetId === target) ? target : null;
 }
-const enemyLeadInMs = 320, enemyWindupMs = 420, enemyRecoveryMs = 260;
+/** D-491: one enemy action in an enemy phase: its cue, beats, tools and hit frames (one telegraph per action). */
+interface EnemyActionPlan { cue: EnemyActionCue; beats: SpectacleBeats; tools: ScreenTools; frames: number[]; targets: string[] }
 /** The enemy whose direct authored packet this frame shows, if any. */
 function enemyActor(frame: RadiantImpactFrame): string | null {
   for (const event of frame.events)
@@ -136,6 +140,8 @@ export class RadiantBattleView {
   private target: string | null;
   private disposed = false;
   private presenting = false;
+  /** D-491: enemy phases currently playing; the pre-turn charging markers hide meanwhile. */
+  private enemyPhasePlaying = 0;
   private skipped = false;
   private animations = new Set<Animation>();
   private effectsCleanup = new Set<() => void>();
@@ -245,12 +251,15 @@ export class RadiantBattleView {
           aria-label="Target ${escape(enemy.name)}, level ${enemy.level}"
           style="${radiantFormationStyle(enemies[index], index, false)}">
           <div class="radiant-unit-motion" data-radiant-art="${escape(enemy.id)}"><div class="radiant-unit-idle">${radiantEnemyArt(enemy)}</div></div>
+          <span class="radiant-charging" data-radiant-charging="${escape(enemy.id)}" data-element="${escape(enemy.elementId)}" aria-hidden="true" hidden>
+            <span class="radiant-charging-ring"></span><span class="radiant-charging-tag"></span></span>
         </button>`).join('')}</div>
       </section>
       <div class="radiant-enemy-banner">
         <div class="radiant-target-strip" role="region" aria-label="Selected enemy">
           ${run.enemies.map(enemy => `<div class="radiant-target-detail" data-radiant-target-detail="${escape(enemy.id)}" tabindex="0" hidden>
             <div class="radiant-target-name"><strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span></div>
+            <p class="radiant-charging-detail" data-radiant-charging-detail="${escape(enemy.id)}" hidden></p>
             ${this.healthMarkup(enemy.id)}</div>`).join('')}
           <p data-radiant-no-target hidden>No enemy target remains.</p>
         </div>
@@ -602,6 +611,7 @@ export class RadiantBattleView {
       const id = button.dataset.radiantTarget!;
       button.disabled = blocked || !run.state.enemies.some(enemy => enemy.id === id && enemy.hp > 0);
       button.setAttribute('aria-pressed', String(id === this.target));
+      this.renderCharging(run, button, id);
     }
     const impactTarget = this.presenting && this.impactTarget !== this.target ? this.impactTarget : null;
     const displayedTarget = impactTarget ?? this.target;
@@ -946,6 +956,7 @@ export class RadiantBattleView {
     const restoreScroll = this.revealBattlefield();
     this.presenting = true; this.skipped = false; this.activeReceipt = response; this.impactTarget = focusedTarget; this.render();
     const player = action.type === 'end-turn' ? null : action;
+    let enemyPhaseCounted = false;
     try {
       const frames = radiantImpactFrames(before, response.run.state, response.events);
       if (restoreScroll) {
@@ -965,6 +976,9 @@ export class RadiantBattleView {
       const finisherAt = finisherFrame === undefined ? undefined : hitFrames.indexOf(finisherFrame);
       const beats = tier ? beatPlan(tier, flareTier, hitFrames.length, finisherAt) : null;
       const tools = tier ? screenTools(tier, flareTier) : null;
+      // D-491: each enemy action in the enemy phase gets one telegraph, tiered beats and per-hit screen tools.
+      const enemyPlans = this.enemyPlans(frames, enemyStart, before, response.run);
+      const struckActions = new Set<EnemyActionPlan>();
       // D-490 combo: the Convergent Light's own damaging hits, counted and totalled as they land.
       const flareDamage = (frame: RadiantImpactFrame) => frame.events.reduce((sum, event) => sum +
         (player && event.type === 'damage' && event.source.kind === 'flare' && event.source.bearerId === player.bearerId
@@ -990,7 +1004,6 @@ export class RadiantBattleView {
         ]);
       }
       let shaken = false, enemyPhase = false;
-      let previousActor: string | null = null;
       for (const [frameIndex, frame] of frames.entries()) {
         if (!current()) break;
         if (!enemyPhase && enemyPhaseFrame(frame)) {
@@ -998,13 +1011,13 @@ export class RadiantBattleView {
           // The enemy phase plays once the whole flurry and its drops have settled.
           await Promise.all([...earlier, ...fx]);
           if (!current()) break;
+          this.enemyPhasePlaying++; enemyPhaseCounted = true; this.render(); // The charging markers clear as the phase starts.
         }
-        const actor = enemyActor(frame);
-        if (actor && !reducedMotion()) {
-          await this.enemyWindup(actor, actor !== previousActor);
+        const enemyHit = enemyPlans.get(frameIndex);
+        if (enemyHit && enemyHit.hitIndex === 0 && !reducedMotion()) {
+          await this.enemyTelegraph(enemyHit.plan, track);
           if (!current()) break;
         }
-        previousActor = actor;
         if (!reducedMotion() && player && beats && beats.gather > 0 && tier === 'flare' && frameIndex === finisherFrame) {
           // D-490: light gathers onto the targets, then the finisher lands.
           const targets = [...new Set(frame.events.filter(impactPacket).map(event => event.targetId))];
@@ -1021,6 +1034,7 @@ export class RadiantBattleView {
         const random = presentationRandom(`${response.revision}:${index}:${frameIndex}`);
         if (reducedMotion()) {
           // R6: one static element ring and the number per impact, 200 ms or less.
+          if (enemyHit?.hitIndex === 0) this.staticEnemyCallout(enemyHit.plan.cue);
           this.staticImpact(frame, before, random);
           if (comboShown && frameIndex === comboFrames.at(-1)) this.staticComboTotal(comboFrames.length,
             comboFrames.reduce((sum, index) => sum + flareDamage(frames[index]), 0));
@@ -1058,12 +1072,25 @@ export class RadiantBattleView {
           continue;
         }
         const defeat = frame.events.some(event => event.type === 'defeated');
-        if (!shaken && hit && (defeat || actor)) {
-          shaken = true; track(this.shakeField(defeat && !actor ? 7 : enemyScreenTools.shake));
+        if (enemyHit) {
+          // D-491: the action's first damaging hit carries its hit-stop, soft flash and full shake;
+          // later hits of a volley shake at half strength. A defeat still lands a medium shake.
+          const { plan, hitIndex } = enemyHit;
+          if (hit && !struckActions.has(plan)) {
+            struckActions.add(plan);
+            this.hitStop(plan.tools.hitStop);
+            if (plan.tools.flash !== 'none') this.effects?.screen?.({ flash: plan.tools.flash });
+            track(this.shakeField(defeat ? Math.max(7, plan.tools.shake) : plan.tools.shake));
+          } else if (hit) track(this.shakeField(defeat ? 7 : Math.max(1, plan.tools.shake / 2)));
+          track(this.fieldImpact(frame));
+          if (this.effects) await this.effects.impact(structuredClone(frame), null, structuredClone(before), plan.beats, false, hitIndex, plan.cue);
+          else { track(this.impact(frame)); await this.pause(plan.beats.slots[hitIndex] ?? plan.beats.hitInterval); }
+          if (hitIndex === plan.frames.length - 1 && current()) await this.pause(plan.beats.aftermath);
+          continue;
         }
+        if (!shaken && hit && defeat) { shaken = true; track(this.shakeField(7)); }
         await Promise.all([this.fieldImpact(frame), this.effects
           ? this.effects.impact(structuredClone(frame), enemyPhase ? null : player, structuredClone(before)) : this.impact(frame)]);
-        if (actor) await this.pause(enemyRecoveryMs);
       }
       // Aftermath beat: lingering particles finish before the action counts as settled.
       if (!reducedMotion() && current() && this.effects?.idle) track(this.effects.idle());
@@ -1077,6 +1104,7 @@ export class RadiantBattleView {
       throw error;
     } finally {
       restoreScroll?.();
+      if (enemyPhaseCounted) this.enemyPhasePlaying = Math.max(0, this.enemyPhasePlaying - 1);
     }
   }
   /** Marks the newest shown (action, frame); false if an overlapping newer frame is already shown. */
@@ -1194,18 +1222,170 @@ export class RadiantBattleView {
         { opacity: 0, transform: 'scale(1.7) translateY(-30%)' }], 820);
     }
   }
-  /** Paces enemy turns: a short beat before a new attacker, then a readable
-   * anticipation pull-back and lunge toward the squad before the impact. */
-  private async enemyWindup(enemyId: string, newAttacker: boolean): Promise<void> {
-    const art = this.host.querySelector<HTMLElement>(`[data-radiant-art="${enemyId}"]`);
-    if (newAttacker) await this.pause(enemyLeadInMs);
-    if (!art) return;
-    await this.animate(art, [
-      { transform: 'none', filter: 'brightness(1)' },
-      { transform: 'translateX(10px) scale(.97)', filter: 'brightness(1.25)', offset: .45 },
-      { transform: 'translateX(-22px) scale(1.04)', filter: 'brightness(1.4)', offset: .85 },
-      { transform: 'none', filter: 'brightness(1)' },
-    ], enemyWindupMs, { easing: 'cubic-bezier(.4,0,.2,1)' });
+  /** D-491 E4 pre-turn warning: an enemy whose Overdrive or boss special fires in this round's enemy phase
+   * shows a charging marker (never a target). Hidden while an enemy phase plays and once the enemy falls. */
+  private renderCharging(run: FrozenRadiantRun, button: HTMLElement, id: string): void {
+    const marker = button.querySelector<HTMLElement>('[data-radiant-charging]');
+    const detail = this.host.querySelector<HTMLElement>(`[data-radiant-charging-detail="${id}"]`);
+    const enemy = run.enemies.find(entry => entry.id === id);
+    const charging = enemy && run.state.phase === 'player' && !run.quit && !this.enemyPhasePlaying &&
+      (this.displayed.units[id]?.hp ?? 0) > 0 ? chargingSpecial(enemy, this.displayed.round) : null;
+    const base = enemy ? `Target ${enemy.name}, level ${enemy.level}` : button.getAttribute('aria-label') ?? '';
+    const label = charging ? `${base}. ${charging.label}` : base;
+    if (button.getAttribute('aria-label') !== label) button.setAttribute('aria-label', label);
+    if (marker) {
+      marker.hidden = !charging;
+      marker.dataset.tier = charging?.tier ?? '';
+      const tag = marker.querySelector<HTMLElement>('.radiant-charging-tag');
+      if (tag && tag.textContent !== (charging?.tag ?? '')) tag.textContent = charging?.tag ?? '';
+    }
+    if (detail) {
+      detail.hidden = !charging;
+      const text = charging ? `${charging.label}.` : '';
+      if (detail.textContent !== text) detail.textContent = text;
+    }
+  }
+  /** D-491 enemy actions in this response's enemy phase, keyed by their hit frames. Each enemy acts at most
+   * once per phase (`applyRadiantTurn`), so a new action starts whenever the acting enemy changes. */
+  private enemyPlans(frames: RadiantImpactFrame[], enemyStart: number, before: RadiantCombatState,
+    run: FrozenRadiantRun): Map<number, { plan: EnemyActionPlan; hitIndex: number }> {
+    const plans: EnemyActionPlan[] = [];
+    const byFrame = new Map<number, { plan: EnemyActionPlan; hitIndex: number }>();
+    if (enemyStart < 0) return byFrame;
+    let current: EnemyActionPlan | null = null;
+    for (let index = enemyStart; index < frames.length; index++) {
+      const actor = enemyActor(frames[index]);
+      if (!actor) continue;
+      if (!current || current.cue.enemyId !== actor) {
+        const definition = run.enemies.find(enemy => enemy.id === actor);
+        const cue: EnemyActionCue = definition ? enemyActionCue(definition, before.round)
+          : { enemyId: actor, tier: 'attack', skillName: null, family: 'devourer', starter: null,
+            elementId: before.enemies.find(enemy => enemy.id === actor)?.elementId ?? '' };
+        current = { cue, beats: enemyBeatPlan(cue.tier, 1), tools: enemyScreenTools(cue.tier), frames: [], targets: [] };
+        plans.push(current);
+      }
+      current.frames.push(index);
+      for (const event of frames[index].events)
+        if (event.type === 'damage' && event.source.kind === 'enemy' && event.source.enemyId === actor &&
+          !current.targets.includes(event.targetId) && !run.enemies.some(enemy => enemy.id === event.targetId))
+          current.targets.push(event.targetId);
+    }
+    for (const plan of plans) {
+      plan.beats = enemyBeatPlan(plan.cue.tier, plan.frames.length);
+      plan.frames.forEach((frame, hitIndex) => byFrame.set(frame, { plan, hitIndex }));
+    }
+    return byFrame;
+  }
+  /** D-491 telegraph, once per enemy action: a family pose, the GPU wind-up and travel, the skill name
+   * (a pill for Strike and Overdrive, the callout band for a boss special), a warning ring on the struck
+   * cards from Overdrive up, and the 30% field dim for a special. */
+  private async enemyTelegraph(plan: EnemyActionPlan, track: (effect: Promise<void>) => void): Promise<void> {
+    const { cue, beats, tools } = plan, lead = beats.windup + beats.travel;
+    if (tools.dim) this.effects?.screen?.({ dim: { alpha: tools.dim, inMs: beats.windup * .5,
+      holdMs: beats.windup * .5 + beats.travel + beats.impact, outMs: beats.aftermath } });
+    track(this.enemyPose(plan));
+    if (cue.tier === 'special') track(this.enemyCutin(cue, lead));
+    else if (cue.skillName) track(this.enemyCallout(cue, lead + beats.impact));
+    if (cue.tier === 'overdrive' || cue.tier === 'special') for (const id of plan.targets) track(this.targetWarning(id, lead));
+    await (this.effects?.enemyWindup ? this.effects.enemyWindup(cue, plan.targets, beats) : this.pause(lead));
+  }
+  /** D-491 family poses across telegraph and travel, returning through the impact and aftermath:
+   * Devourers crouch and pounce, Constructs brace and recoil, Calamity bosses rise, War forms follow their kit. */
+  private enemyPose(plan: EnemyActionPlan): Promise<void> {
+    const { cue, beats } = plan;
+    const art = this.host.querySelector<HTMLElement>(`[data-radiant-art="${cue.enemyId}"]`);
+    if (!art) return Promise.resolve();
+    const motion = cue.starter ? characterChoreography[cue.starter as keyof typeof characterChoreography]?.motion : undefined;
+    const ranged = cue.family === 'construct' || cue.family === 'calamity' ||
+      cue.family === 'war' && (motion === 'cast' || motion === 'bow');
+    const weight = cue.tier === 'attack' ? 1 : cue.tier === 'strike' ? 1.2 : cue.tier === 'overdrive' ? 1.4 : 1.7;
+    const px = (value: number) => (value * weight).toFixed(1);
+    const [poised, strike] = cue.family === 'calamity'
+      ? [`translateY(${px(-6)}px) scale(${(1 + .025 * weight).toFixed(3)})`, `translate(${px(-8)}px, ${px(-4)}px) scale(${(1 + .03 * weight).toFixed(3)})`]
+      : ranged ? [`translateX(${px(6)}px) scale(.98)`, `translateX(${px(9)}px)`]
+        : [`translateX(${px(10)}px) scale(1.04, .94)`, `translateX(${px(-24)}px) scale(1.05)`];
+    const glow = 1.25 + .15 * weight;
+    const lead = beats.windup + beats.travel, total = lead + Math.min(beats.impact, 300) + beats.aftermath;
+    const at = (ms: number) => Math.min(1, ms / total);
+    return this.animate(art, [
+      { offset: 0, transform: 'none', filter: 'brightness(1)', easing: 'cubic-bezier(.3,0,.4,1)' },
+      { offset: at(beats.windup * .85), transform: poised, filter: `brightness(${glow.toFixed(2)})`, easing: 'cubic-bezier(.5,0,.9,.6)' },
+      { offset: at(lead), transform: strike, filter: `brightness(${(glow + .2).toFixed(2)})`, easing: 'linear' },
+      { offset: at(lead + Math.min(beats.impact, 300) * .6), transform: strike, filter: 'brightness(1.1)', easing: 'cubic-bezier(.3,.7,.4,1)' },
+      { offset: 1, transform: 'none', filter: 'brightness(1)' },
+    ], total, { easing: 'linear' });
+  }
+  /** D-491 skill name pill over the enemy for Strike and Overdrive (finite, pointer-transparent, aria-hidden). */
+  private async enemyCallout(cue: EnemyActionCue, duration: number): Promise<void> {
+    const anchor = this.host.querySelector(`[data-radiant-art="${cue.enemyId}"]`);
+    if (!anchor || !cue.skillName || this.disposed) return;
+    const box = anchor.getBoundingClientRect();
+    const node = this.spawn('radiant-enemy-callout', box.left + box.width / 2, box.top + 4);
+    node.dataset.tier = cue.tier; node.dataset.element = cue.elementId;
+    node.textContent = cue.skillName;
+    try {
+      await this.animate(node, [
+        { opacity: 0, transform: 'translate(-50%, 6px) scale(.9)' },
+        { opacity: 1, transform: 'translate(-50%, -4px) scale(1)', offset: .18 },
+        { opacity: 1, transform: 'translate(-50%, -10px) scale(1)', offset: .78 },
+        { opacity: 0, transform: 'translate(-50%, -16px) scale(1.02)' },
+      ], Math.max(480, duration));
+    } finally { node.dispatchEvent(new Event('radiant-fx-done')); }
+  }
+  /** D-491 boss special callout band: the enemy art, "Boss Special" and the special's name, for the telegraph. */
+  private async enemyCutin(cue: EnemyActionCue, duration: number): Promise<void> {
+    const enemy = this.session.view().run?.enemies.find(entry => entry.id === cue.enemyId);
+    if (!enemy || !cue.skillName || this.disposed) return;
+    const panel = radiantEnemyCutin({ name: enemy.name, special: cue.skillName, art: radiantEnemyArt(enemy),
+      color: tintCss(elementTint(cue.elementId)), calamity: cue.family === 'calamity' });
+    this.fxLayer().append(panel);
+    const cleanup = () => panel.remove();
+    this.effectsCleanup.add(cleanup);
+    const part = (selector: string) => panel.querySelector(selector) ?? panel;
+    const linear = { easing: 'linear' };
+    try {
+      await Promise.all([
+        this.animate(panel, [
+          { opacity: 0, transform: 'translateX(14%) skewX(8deg)', easing: 'cubic-bezier(.2,.8,.2,1)' },
+          { opacity: 1, transform: 'translateX(0) skewX(0deg)', offset: .18, easing: 'linear' },
+          { opacity: 1, transform: 'translateX(-2%) skewX(0deg)', offset: .82, easing: 'cubic-bezier(.6,0,.9,.4)' },
+          { opacity: 0, transform: 'translateX(-12%) skewX(-6deg)' },
+        ], duration, linear),
+        this.animate(part('.cutin-portrait'), [{ translate: '5% 0', scale: '.96' }, { translate: '0 0', scale: '1.05' }], duration,
+          { easing: 'cubic-bezier(.2,.7,.3,1)' }),
+        this.animate(part('.cutin-sigil'), [{ rotate: '0deg' }, { rotate: '-70deg' }], duration, linear),
+        this.animate(part('.cutin-glint'), [{ translate: '110vw 0', opacity: 0 }, { translate: '110vw 0', opacity: 0, offset: .12 },
+          { opacity: 1, offset: .3 }, { translate: '-30vw 0', opacity: 0, offset: .72 }, { translate: '-30vw 0', opacity: 0 }], duration, linear),
+      ]);
+    } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
+  }
+  /** D-491 warning ring on a struck bearer's card through an Overdrive or special telegraph. */
+  private async targetWarning(id: string, duration: number): Promise<void> {
+    const card = this.host.querySelector<HTMLElement>(`[data-radiant-card][data-radiant-unit="${id}"]`);
+    if (!card || this.disposed) return;
+    const ring = document.createElement('span');
+    ring.className = 'radiant-target-warning'; ring.setAttribute('aria-hidden', 'true');
+    card.append(ring);
+    const cleanup = () => ring.remove();
+    this.effectsCleanup.add(cleanup);
+    try {
+      await this.animate(ring, [{ opacity: 0, scale: '1.12' }, { opacity: 1, scale: '1', offset: .3 },
+        { opacity: .75, scale: '1.02', offset: .65 }, { opacity: 1, scale: '1', offset: .9 }, { opacity: 0, scale: '.98' }], duration);
+    } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
+  }
+  /** D-491 under Reduce motion: an Overdrive or boss special still names itself, statically, over the enemy. */
+  private staticEnemyCallout(cue: EnemyActionCue): void {
+    if (!cue.skillName || (cue.tier !== 'overdrive' && cue.tier !== 'special')) return;
+    const anchor = this.host.querySelector(`[data-radiant-art="${cue.enemyId}"]`);
+    if (!anchor) return;
+    const box = anchor.getBoundingClientRect();
+    const node = document.createElement('span');
+    node.className = 'radiant-enemy-callout is-static';
+    node.dataset.tier = cue.tier; node.dataset.element = cue.elementId;
+    node.style.left = `${box.left + box.width / 2}px`; node.style.top = `${box.top + 4}px`;
+    node.textContent = cue.skillName;
+    this.fxLayer().append(node);
+    this.staticCue(node, 640);
   }
   private pause(duration: number): Promise<void> {
     return this.animate(this.element('.radiant-field'), [], duration);

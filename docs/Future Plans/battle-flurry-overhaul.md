@@ -186,7 +186,8 @@ overrode base fighter kits; no Leader effects existed then.
   allies. Cut interchangeable stat sticks and near-duplicate heal-on-X items.
   Stable IDs, ownership, ranks and art preserved.
 - Later depth (separate approval): Prismatic Convergence (bonus when
-  different-element allies hit one enemy in a turn), telegraphed boss intents,
+  different-element allies hit one enemy in a turn), telegraphed boss intents
+  (D-491 already shows a specials-only pre-turn marker without targets),
   Health-threshold phases, a small set of original afflictions with ward
   Conduits.
 
@@ -217,8 +218,8 @@ hosted build:
    Owner approves each batch in game.
 5. **Convergent Light cinematics. Done (D-490).** Art cut-in, multi-hit choreography and
    finisher, escalating across its three tiers (Ultimate 3.0 s, full-screen takeover).
-6. **Enemy attacks.** Telegraphed wind-ups, per-family attack animations,
-   heavier boss specials.
+6. **Enemy attacks. Done (D-491).** Telegraphed wind-ups, per-family attack animations,
+   heavier boss specials, and a pre-turn charging marker for specials.
 7. **Skill menu polish** (keep the hold-a-card mechanic): animated option
    bloom, clear costs, ready glow, element-tinted aim highlight, room for the
    "Convergent Light" label, charged look when Convergent Light is ready.
@@ -338,6 +339,20 @@ Open tuning, for Sonnet rounds after the review:
 - shard and glint visibility in the Glimmering band;
 - the Ultimate takeover's timing and the combo plate's size;
 - the GPU frame-time check, which matters more now that Ultimate is heavier.
+
+#### Step 6: enemy attacks (implemented, D-491)
+
+Status: **implemented 2026-11-19; owner feel review of the hosted build
+pending.** Enemy tiers (Attack, Strike, Overdrive, boss special), one
+telegraph per action, four families and the specials-only pre-turn marker.
+See the
+[combat spec](../combat.md#battle-spectacle-enemy-attacks-d-491-spectacle-step-6).
+
+Open tuning, for Sonnet rounds after the review:
+- pose distances and the marker's look on phone portrait;
+- the boss special band's timing against the 1.6 s budget;
+- an Overdrive preview fixture (no current fixture reaches an ordinary Lv.50+
+  enemy).
 
 ## Skill language
 

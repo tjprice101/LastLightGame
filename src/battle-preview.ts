@@ -3,7 +3,8 @@ import './presentation/battle-screen.css';
 import { RadiantSession } from './online/battle-session';
 import { resolveRadiantRun, type RadiantRunRequest, type RadiantRunResponse, type RadiantRunSnapshot } from './online/battle-run';
 import { RadiantBattleView } from './presentation/battle-screen';
-import { createRadiantReviewFixture, radiantReviewEncounters, setRadiantReviewCharge, type RadiantReviewFlareTier } from './presentation/battle-review-fixtures';
+import { createRadiantReviewFixture, radiantReviewEncounters, radiantReviewRounds, setRadiantReviewCharge, setRadiantReviewRound,
+  type RadiantReviewFlareTier } from './presentation/battle-review-fixtures';
 import { measureRadiantCadence, type RadiantCadenceOutcome } from './presentation/battle-preview-cadence';
 import { applyMotion } from './presentation/settings';
 import { applyBattleSpeed, parseBattleSpeed } from './presentation/battle-speed';
@@ -36,6 +37,8 @@ host.innerHTML = `<header class="radiant-preview-heading"><h1>Radiant battle · 
     <option value="strikes">Tizu / Flora selected-enemy Masters</option></select></label>
   <label>Convergent Light tier <select data-preview-flare-tier><option value="sparkling">Sparkling (rank 1)</option>
     <option value="glimmering">Glimmering (rank 6)</option><option value="ultimate">Ultimate (rank 11)</option></select></label>
+  <label>Enemy-phase round <select data-preview-round>${radiantReviewRounds.map(round =>
+    `<option value="${round}">Round ${round}</option>`).join('')}</select></label>
   <button type="button" data-preview-reset>Reset preview encounter</button>
   <button type="button" data-preview-cycle>Charge cycle: normal / Glowing / Lustrous / Eternal</button>
   <p>Available Convergent Light tiers depend on each selected form.</p>
@@ -78,6 +81,7 @@ function build(): void {
   // Explicit preview-only charge fixtures; never a route to a player account.
   const combat = entry.state.radiantStudy!.state;
   setRadiantReviewCharge(combat.gauge, cycle);
+  setRadiantReviewRound(combat, Number(host!.querySelector<HTMLSelectElement>('[data-preview-round]')!.value));
   let snapshot: RadiantRunSnapshot = { revision: entry.response.revision, state: entry.state };
   const receipts = new Map<string, RadiantRunResponse>();
   const transport = { read: async () => ({ revision: snapshot.revision,
@@ -150,6 +154,7 @@ host.querySelector('[data-preview-master]')!.addEventListener('change', build);
 host.querySelector('[data-preview-leader]')!.addEventListener('change', build);
 host.querySelector('[data-preview-form]')!.addEventListener('change', build);
 host.querySelector('[data-preview-flare-tier]')!.addEventListener('change', build);
+host.querySelector('[data-preview-round]')!.addEventListener('change', build);
 host.querySelector('[data-preview-encounter]')!.addEventListener('change', build);
 host.querySelector('[data-preview-cycle]')!.addEventListener('click', () => { cycle = (cycle + 1) % 4; build(); });
 window.addEventListener('pagehide', () => {

@@ -1,5 +1,52 @@
 # Current state and handoff
 
+## Spectacle step 6: enemy attacks (D-491, 2026-11-19)
+
+**Implemented on `battle-flurry-phase3`.** Presentation only; no server change
+and no deploy needed. Spec:
+[combat spec](combat.md#battle-spectacle-enemy-attacks-d-491-spectacle-step-6).
+- **Tiers from the enemy's scheduled skill:**
+  - Attack 0.65 s;
+  - Strike 0.85 s (name pill);
+  - Overdrive 1.1 s (pill, warning ring on struck cards, soft flash);
+  - boss special 1.6 s: a 30% dim and a "Boss Special" callout band.
+- **One telegraph per enemy action,** so volleys no longer re-lunge on every
+  hit. Hit-stop, flash and shake now land per hit, by tier.
+- **Four families:**
+  - Devourers crouch and claw;
+  - Constructs brace and fire;
+  - War forms fight with their bearer's signature from Strike up;
+  - Calamity bosses rise, and their heal or Shield refresh pulses from the boss.
+- **Pre-turn warning** (specials only): a pulsing element ring and a tag on
+  the enemy, the same text in its accessible label and target detail, and
+  never a target.
+- **Review tools:** the preview's "Enemy-phase round" picker, the `story-120`
+  fixture and `capture_frames.mjs --round`.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- `npx vite build`: succeeded (existing chunk advisory).
+- Full `npx vitest run`: 10,718 of 10,718 passed. The fixture round test was
+  added afterwards and passes alone. After the marker fix, the D-491 view tests
+  and the vfx tests were rerun and pass.
+- Timed `--stream` captures:
+  - Story 120 Last Ruin at round 6 on desktop: marker, then band and claw,
+    then impact and number. The marker clears as the phase starts;
+  - the Nerithe War special at round 6, 390x844 portrait: signature tide beam.
+
+**Not verified:**
+- the owner feel review of the hosted build;
+- an Overdrive capture (no preview fixture reaches an ordinary Lv.50+ enemy);
+- a Calamity capture (no Calamity preview fixture);
+- the desktop GPU frame-time check (still in Future Plans).
+
+**Known:** on phone portrait, long charging tags truncate with an ellipsis.
+The full name stays in the accessible label and the target detail.
+
+**Next:** owner feel review of steps 5 and 6 on the hosted build. Then
+Sonnet tuning rounds (pose distances, tag look, band timing). Then Spectacle
+step 7, skill menu polish.
+
 ## Spectacle step 5: Convergent Light cinematics (D-490, 2026-11-18)
 
 **Implemented on `battle-flurry-phase3`.** Presentation only; no server change

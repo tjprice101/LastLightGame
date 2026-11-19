@@ -280,7 +280,7 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
 .radiant-loot b { position: relative; font-size: 13px; color: #fff; text-shadow: 0 1px 2px #000, 0 0 6px #000; white-space: nowrap; }
 .radiant-loot[data-rarity="Legendary"] img, .radiant-loot[data-rarity="Omnic"] img, .radiant-loot[data-rarity="Calamitic"] img { width: 54px; height: 54px; }
 /* Reduce motion keeps only static cues (R6): one element ring and the number per impact. */
-html[data-motion="reduced"] .radiant-fx-layer > :not(.radiant-static-ring):not(.radiant-number.is-static):not(.radiant-combo.is-static) { display: none; }
+html[data-motion="reduced"] .radiant-fx-layer > :not(.radiant-static-ring):not(.radiant-number.is-static):not(.radiant-combo.is-static):not(.radiant-enemy-callout.is-static) { display: none; }
 .radiant-static-ring { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; pointer-events: none;
   border: 3px solid var(--ring, #fff); box-shadow: 0 0 14px var(--ring, #fff), inset 0 0 10px var(--ring, #fff); }
 /* Battle Spectacle GPU layer (D-484): pointer-transparent, between the field and the DOM effects. */
@@ -809,3 +809,46 @@ html[data-motion="reduced"] .radiant-battle .radiant-skill-choice.is-selected, h
   font-family: var(--display-font); font-weight: 700; font-size: 13px; letter-spacing: .04em; color: #fff; transform: translate(-50%, 0);
   border: 1px solid var(--gild-light); background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 45%, #1b1c24), #14151c);
   box-shadow: 0 0 18px -4px var(--accent); text-shadow: 0 1px 2px #000a; }
+
+/* D-491 Spectacle step 6: enemy attacks. Element accents follow the enemy; the frame metal is gold; no red. */
+.radiant-charging, .radiant-enemy-callout { --accent: #c9ccd4; }
+.radiant-charging[data-element="infernic"], .radiant-enemy-callout[data-element="infernic"] { --accent: #ff8a5c; }
+.radiant-charging[data-element="oceanic"], .radiant-enemy-callout[data-element="oceanic"] { --accent: #6cc4ff; }
+.radiant-charging[data-element="botanic"], .radiant-enemy-callout[data-element="botanic"] { --accent: #8fdc7a; }
+.radiant-charging[data-element="atmospheric"], .radiant-enemy-callout[data-element="atmospheric"] { --accent: #b9e6f2; }
+.radiant-charging[data-element="tranquilitic"], .radiant-enemy-callout[data-element="tranquilitic"] { --accent: #f2a9c4; }
+.radiant-charging[data-element="chaotic"], .radiant-enemy-callout[data-element="chaotic"] { --accent: #d48cff; }
+/* E4 pre-turn warning: a slow pulsing element ring behind the enemy and a short gilded tag above it. */
+.radiant-charging { position: absolute; inset: 0; z-index: 2; pointer-events: none; display: grid; justify-items: center; align-content: end; padding-bottom: 6px; }
+.radiant-charging[hidden] { display: none; }
+.radiant-charging-ring { position: absolute; left: 50%; top: 55%; width: 78%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; z-index: -1;
+  border: 2px solid color-mix(in srgb, var(--accent) 80%, #fff); outline: 1px solid var(--gild-hairline, #f3d98a55); outline-offset: 6px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 30%, transparent 70%);
+  box-shadow: 0 0 22px -4px var(--accent), inset 0 0 18px -6px var(--accent); animation: radiant-charging-pulse 1.6s ease-in-out infinite; }
+.radiant-charging[data-tier="special"] .radiant-charging-ring { border-width: 3px; border-style: double; animation-duration: 1.1s; }
+.radiant-charging-tag { max-width: 100%; padding: 2px 9px; border-radius: 999px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-family: var(--display-font); font-weight: 700; font-size: 11px; letter-spacing: .05em; color: #fff; text-shadow: 0 1px 2px #000a;
+  border: 1px solid var(--gild-light); background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 40%, #1b1c24), #14151c);
+  box-shadow: 0 0 14px -4px var(--accent); }
+@keyframes radiant-charging-pulse { 0%, 100% { opacity: .55; scale: .96; } 50% { opacity: 1; scale: 1.04; } }
+html[data-motion="reduced"] .radiant-charging-ring { animation: none; opacity: .85; }
+.radiant-battle.is-settings-open .radiant-charging-ring { animation-play-state: paused; }
+.radiant-charging-detail { margin: 2px 0 0; font-size: 12px; color: var(--text-secondary, #c9ccd4); }
+/* Strike and Overdrive name pill over the enemy (inside the effects layer). */
+.radiant-enemy-callout { position: absolute; z-index: 7; padding: 3px 12px; border-radius: 999px; pointer-events: none; white-space: nowrap;
+  font-family: var(--display-font); font-weight: 700; font-size: 13px; letter-spacing: .04em; color: #fff; transform: translate(-50%, 0);
+  border: 1px solid var(--gild-light); background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 45%, #1b1c24), #14151c);
+  box-shadow: 0 0 18px -4px var(--accent); text-shadow: 0 1px 2px #000a; }
+.radiant-enemy-callout[data-tier="overdrive"] { font-size: 14px; box-shadow: 0 0 24px -2px var(--accent); }
+.radiant-enemy-callout.is-static { transform: translate(-50%, -10px); }
+/* Overdrive and boss special: a warning ring on each struck bearer's card through the telegraph. */
+.radiant-target-warning { position: absolute; inset: -3px; z-index: 5; border-radius: inherit; pointer-events: none;
+  border: 2px solid #fff; box-shadow: 0 0 0 1px var(--gild-light), 0 0 18px 2px color-mix(in srgb, var(--accent, #fff) 70%, #fff); }
+/* Boss special band: mirrored enemy band at Glimmering weight with gold edges. */
+.radiant-fx-layer .cutin-enemy-special .cutin-portrait .radiant-enemy-art,
+.radiant-fx-layer .cutin-enemy-special .cutin-portrait .radiant-art-pending { width: 100%; height: 100%; object-fit: contain; object-position: center 15%; }
+.cutin-enemy-special { border-block-color: var(--gild-mid); clip-path: polygon(0 0, 100% 6%, 100% 100%, 0 94%);
+  background: radial-gradient(ellipse at 75% 55%, color-mix(in srgb, var(--element) 65%, transparent), transparent 58%),
+    linear-gradient(250deg, #0c0c16fa, color-mix(in srgb, var(--element) 28%, #10101b) 42%, #10101bfa 76%); }
+.cutin-enemy-special .cutin-edge { height: 2px; background: linear-gradient(90deg, transparent, var(--gild-mid), #fff, var(--gild-mid), transparent); }
+.cutin-enemy-special .cutin-divider { background: linear-gradient(270deg, var(--gild-mid), var(--gild-light), transparent); }

@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
-import { resolveRadiantRun, type RadiantRunRequest, type RadiantRunResponse, type RadiantRunSnapshot } from '../online/battle-run';
+import { resolveRadiantRun, type FrozenRadiantRun, type RadiantRunRequest, type RadiantRunResponse, type RadiantRunSnapshot } from '../online/battle-run';
+import type { EnemyActionCue } from '../vfx/enemy-cues';
 import { RadiantSession } from '../online/battle-session';
 import type { RadiantPlayerAction } from '../online/battle-run';
 import { releasedRadiantIds, type RadiantBearerId } from '../content/combat-kits';
@@ -19,7 +20,7 @@ let serial = 0;
 const uuid = () => `00000000-0000-4000-8000-${(++serial).toString(16).padStart(12, '0')}`;
 const disposed: RadiantBattleView[] = [];
 function fixture(count: number | RadiantBearerId[] = 3, form = 6, effects?: RadiantBattleEffects, stage = 25, onExit?: () => void,
-  masterId?: RadiantMasterId, charged = false, setup?: (state: RadiantCombatState) => void, activity?: Activity) {
+  masterId?: RadiantMasterId, charged = false, setup?: (state: RadiantCombatState, run: FrozenRadiantRun) => void, activity?: Activity) {
   const state = freshGame('battle-surface'); state.starterId = 'ember';
   state.account.storyCompleted = stage - 1;
   if (activity?.kind === 'dungeon') state.account.dungeonStages[activity.element] = activity.stage;
@@ -36,7 +37,7 @@ function fixture(count: number | RadiantBearerId[] = 3, form = 6, effects?: Radi
     runId: null, encounter: null, operation: { kind: 'start', activity: activity ?? { kind: 'story', stage },
       calibration: 'authored-control' } }, authority);
   if (charged) for (const member of entered.state.radiantStudy!.state.gauge.members) member.charge = member.baseCost;
-  setup?.(entered.state.radiantStudy!.state);
+  setup?.(entered.state.radiantStudy!.state, entered.state.radiantStudy!);
   let snapshot: RadiantRunSnapshot = { revision: 1, state: entered.state };
   const receipts = new Map<string, RadiantRunResponse>();
   const transport = { read: vi.fn(async () => ({ revision: snapshot.revision, account: snapshot.state.account,
@@ -368,7 +369,7 @@ describe('device-run three-member Radiant battle surface', () => {
       else Reflect.deleteProperty(Element.prototype, 'animate');
     }
   });
-  it.each([1, 3])('paces enemy attacks with lead-in, windup and recovery at %ix speed', async speed => {
+  it.each([1, 3])('paces each enemy action with one D-491 telegraph, its impact and aftermath at %ix speed', async speed => {
     const original = Object.getOwnPropertyDescriptor(Element.prototype, 'animate');
     const animations: { target: Element; frames: Keyframe[]; duration: number; animation: Animation }[] = [];
     Object.defineProperty(Element.prototype, 'animate', { configurable: true, value: function (
@@ -385,19 +386,79 @@ describe('device-run three-member Radiant battle surface', () => {
       animations.length = 0;
       const enemyIds = new Set(session.view().run!.state.enemies.map(enemy => enemy.id));
       await view.act('normal');
-      const windup = animations.findIndex(entry => entry.duration === 420 &&
+      // Round 1 schedules no skill, so every Story Devourer plays a plain Attack: 250 + 100 + 200 + 100 ms.
+      const poses = animations.flatMap((entry, index) => entry.duration === 650 &&
         enemyIds.has(entry.target.getAttribute('data-radiant-art') ?? '') &&
-        entry.frames.some(frame => frame.transform === 'translateX(-22px) scale(1.04)'));
-      expect(windup).toBeGreaterThan(0);
-      expect(animations[windup - 1]).toMatchObject({ duration: 320, frames: [] });
-      expect(animations.slice(windup + 1).some(entry => entry.duration === 260 &&
-        entry.frames.length === 0)).toBe(true);
-      expect(animations[windup].animation.playbackRate).toBe(speed);
-      expect(animations[windup - 1].animation.playbackRate).toBe(speed);
+        entry.frames.some(frame => frame.transform === 'translateX(-24.0px) scale(1.05)') ? [index] : []);
+      expect(poses.length).toBeGreaterThan(0);
+      // One telegraph per enemy action, never one per hit frame.
+      const posed = poses.map(index => animations[index].target.getAttribute('data-radiant-art'));
+      expect(new Set(posed).size).toBe(posed.length);
+      const pose = poses[0];
+      // Without the GPU layer the wind-up and travel beats are held by a speed-scaled pause.
+      expect(animations[pose + 1]).toMatchObject({ duration: 350, frames: [] });
+      expect(animations.slice(pose + 1).some(entry => entry.duration === 100 && entry.frames.length === 0)).toBe(true);
+      expect(animations[pose].animation.playbackRate).toBe(speed);
+      expect(animations[pose + 1].animation.playbackRate).toBe(speed);
+      // A plain Attack names nothing: no skill pill and no boss band.
+      expect(document.querySelector('.radiant-enemy-callout, .cutin-enemy-special')).toBeNull();
     } finally {
       if (original) Object.defineProperty(Element.prototype, 'animate', original);
       else Reflect.deleteProperty(Element.prototype, 'animate');
     }
+  });
+  /** D-491: the Story 120 regional boss (Lv.55) uses Last Ruin every 6 rounds; the encounter opens on round 6. */
+  const lastRuinRound = (state: RadiantCombatState) => { state.round = 6; };
+  const ruinName = (run: FrozenRadiantRun) => run.enemies[0].skills.find(skill => skill.action === 'ultimate')!.name;
+  /** Records effect-layer nodes added under `host` (they are removed again when they finish). */
+  function addedNodes(host: HTMLElement, selector: string): { texts: string[]; stop(): void } {
+    const texts: string[] = [];
+    const observer = new MutationObserver(records => {
+      for (const record of records) for (const node of Array.from(record.addedNodes))
+        if (node instanceof HTMLElement && node.matches(selector)) texts.push(node.textContent ?? '');
+    });
+    observer.observe(host, { childList: true, subtree: true });
+    return { texts, stop: () => observer.disconnect() };
+  }
+  it('warns before the turn, then plays a boss special with one telegraph, a 30% dim and its callout band (D-491)', async () => {
+    const screens: unknown[] = [], cues: EnemyActionCue[] = [];
+    const effects: RadiantBattleEffects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}),
+      screen: cue => { screens.push(cue); }, enemyWindup: vi.fn(async (cue: EnemyActionCue) => { cues.push(cue); }), cancel: vi.fn() };
+    const { view, host, session } = fixture(3, 6, effects, 120, undefined, undefined, false, lastRuinRound);
+    await view.finishEntrance();
+    const [charging, ...others] = session.view().run!.enemies.map(enemy => enemy.id);
+    const ruin = ruinName(session.view().run!);
+    expect(ruin).toMatch(/^Last Ruin: /);
+    const marker = host.querySelector<HTMLElement>(`[data-radiant-charging="${charging}"]`)!;
+    expect(marker.hidden).toBe(false);
+    expect(marker.dataset.tier).toBe('special');
+    expect(marker.textContent).toContain('Last Ruin');
+    expect(host.querySelector(`[data-radiant-target="${charging}"]`)!.getAttribute('aria-label')).toContain(`Charging ${ruin} this turn`);
+    expect(host.querySelector(`[data-radiant-charging-detail="${charging}"]`)!.textContent).toBe(`Charging ${ruin} this turn.`);
+    for (const id of others) expect(host.querySelector<HTMLElement>(`[data-radiant-charging="${id}"]`)!.hidden).toBe(true);
+    const bands = addedNodes(host, '.cutin-enemy-special');
+    controls(host, '[data-radiant-end-turn]').click();
+    await vi.waitFor(() => expect(host.querySelector('[data-radiant-round]')!.textContent).toBe('Round 7'));
+    bands.stop();
+    const special = cues.filter(cue => cue.enemyId === charging);
+    expect(special).toHaveLength(1);
+    expect(special[0]).toMatchObject({ tier: 'special', skillName: ruin, family: 'devourer' });
+    expect(new Set(cues.map(cue => cue.enemyId)).size).toBe(cues.length);
+    expect(screens).toContainEqual(expect.objectContaining({ dim: expect.objectContaining({ alpha: .3 }) }));
+    expect(screens.some(cue => (cue as { flash?: string }).flash === 'full')).toBe(false);
+    expect(bands.texts.some(text => text.includes('BOSS SPECIAL') && text.includes(ruin))).toBe(true);
+    // Round 7 schedules a Strike only, so the marker stays hidden after the enemy phase.
+    expect(marker.hidden).toBe(true);
+  });
+  it('names a boss special statically under Reduce motion (D-491)', async () => {
+    const { view, host, session } = fixture(3, 6, undefined, 120, undefined, undefined, false, lastRuinRound);
+    applyMotion('reduced'); await view.finishEntrance();
+    const pills = addedNodes(host, '.radiant-enemy-callout.is-static');
+    controls(host, '[data-radiant-end-turn]').click();
+    await vi.waitFor(() => expect(host.querySelector('[data-radiant-round]')!.textContent).toBe('Round 7'));
+    pills.stop();
+    expect(pills.texts).toEqual([ruinName(session.view().run!)]);
+    expect(host.querySelector('.cutin-enemy-special')).toBeNull();
   });
   it('surfaces a missing Gauge recipient without losing the resolved action', async () => {
     const { view, session, host, acts } = fixture(['ember', 'caldrex']); await view.finishEntrance();

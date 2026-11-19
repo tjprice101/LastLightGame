@@ -77,3 +77,34 @@ export function radiantFlareCutin(input: RadiantFlareCutinInput): HTMLElement {
   panel.querySelector('.cutin-copy > span')!.textContent = input.flare;
   return panel;
 }
+
+export interface RadiantEnemyCutinInput {
+  /** The enemy's display name. */
+  name: string;
+  /** The boss special's name (Last Ruin or a Calamity ruin). */
+  special: string;
+  /** Trusted portrait markup from `radiantEnemyArt` (escaped at its source). */
+  art: string;
+  color: string;
+  calamity: boolean;
+}
+/**
+ * D-491 boss special callout band (Spectacle step 6): the mirrored enemy band with the enemy's art,
+ * "Boss Special" and the special's name. Presentation only, aria-hidden and pointer-transparent; the view
+ * animates it through the special's telegraph. Kept at Glimmering-band weight, below the Ultimate takeover.
+ */
+export function radiantEnemyCutin(input: RadiantEnemyCutinInput): HTMLElement {
+  const panel = document.createElement('div');
+  panel.className = `portrait-cutin cutin-enemy cutin-radiant cutin-enemy-special${input.calamity ? ' is-calamity' : ''}`;
+  panel.setAttribute('aria-hidden', 'true');
+  panel.style.setProperty('--element', input.color);
+  panel.style.setProperty('--cutin-power', '.55');
+  panel.innerHTML = `<span class="cutin-streaks"></span><span class="cutin-sigil"></span>
+    <span class="cutin-crest"><span></span></span><span class="cutin-edge cutin-edge-top"></span><span class="cutin-edge cutin-edge-bottom"></span>
+    <span class="cutin-portrait">${input.art}</span><span class="cutin-glint"></span>
+    <span class="cutin-copy"><small></small><strong></strong><span></span><i class="cutin-divider"></i></span>`;
+  panel.querySelector('.cutin-copy small')!.textContent = 'BOSS SPECIAL';
+  panel.querySelector('.cutin-copy strong')!.textContent = input.name;
+  panel.querySelector('.cutin-copy > span')!.textContent = input.special;
+  return panel;
+}

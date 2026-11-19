@@ -9,6 +9,7 @@ export const radiantReviewEncounters = [
   { id: 'story-25', label: 'Story 25 - Oceanic skirmish', activity: { kind: 'story', stage: 25 } },
   { id: 'story-1', label: 'Story 1 - Infernic skirmish', activity: { kind: 'story', stage: 1 } },
   { id: 'story-20', label: 'Story 20 - regional boss', activity: { kind: 'story', stage: 20 } },
+  { id: 'story-120', label: 'Story 120 - Lv.55 regional boss (Last Ruin every 6 rounds)', activity: { kind: 'story', stage: 120 } },
   { id: 'training', label: 'Training - wave 1', activity: { kind: 'training' } },
   { id: 'infernic-34', label: 'Infernic dungeon - floor 34', activity: { kind: 'dungeon', element: 'infernic', stage: 34 } },
   { id: 'machines-34', label: 'Awaken the Machines - stage 34', activity: { kind: 'infusion', mode: 'machines', stage: 34 } },
@@ -51,6 +52,14 @@ export function createRadiantReviewFixture(leader: RadiantBearerId, form: number
     game.account.masterEquipment = { tide: 'master-tide-3', sprout: 'master-sprout-2' };
   }
   return { game, activity: encounter.activity };
+}
+
+/** D-491 preview-only enemy-phase rounds: enemy skills follow `round % every`, so a chosen round reaches Strike,
+ * Overdrive or a boss special at once (capture review of enemy telegraphs; never a player account). */
+export const radiantReviewRounds = [1, 2, 3, 5, 6, 12] as const;
+export function setRadiantReviewRound(state: { round: number }, round: number): void {
+  if (!radiantReviewRounds.includes(round as (typeof radiantReviewRounds)[number])) throw new Error('Invalid Radiant review round.');
+  state.round = round;
 }
 
 export function setRadiantReviewCharge(gauge: RadiantGaugeState, cycle: number): void {

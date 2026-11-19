@@ -87,9 +87,37 @@ export function screenTools(tier: SpectacleTier, flare: FlareTier | null): Scree
   if (!flare) throw new Error('A Convergent Light presentation needs its tier.');
   return { ...flareFinisher[flare], flash: 'full', dim: flareDim[flare], zoom: 1.06 };
 }
-/** Enemy hits keep their Phase 2 weight until Step 6 adds telegraphs. */
-export const enemyScreenTools: ScreenTools = { shake: 4, hitStop: 0, flash: 'none', dim: 0, zoom: 1 };
-/** Enemy-phase impact pacing (ms at speed 1); the view adds the wind-up and recovery. */
+/**
+ * D-491 (Spectacle step 6): enemy action tiers, from the enemy's scheduled skill for the round
+ * (`scheduledEnemySkill`): no skill = Attack, `skill1` = Strike, `skill2` = Overdrive,
+ * `ultimate` = the boss special (Last Ruin or a Calamity ruin).
+ */
+export type EnemyTier = 'attack' | 'strike' | 'overdrive' | 'special';
+export const enemyTiers: readonly EnemyTier[] = ['attack', 'strike', 'overdrive', 'special'];
+/** Telegraph, travel, impact (split across the action's hits), aftermath; ms at speed 1.
+ * Totals ~0.65 / 0.85 / 1.1 / 1.6 s: the special stays below a Sparkling Convergent Light (owner, D-491). */
+export const enemyBeatTable: Record<EnemyTier, Beat> = {
+  attack: [250, 100, 200, 100],
+  strike: [300, 150, 250, 150],
+  overdrive: [400, 150, 350, 200],
+  special: [550, 200, 550, 300],
+};
+/** One telegraph per enemy action; the impact beat is split evenly across its hit frames. */
+export function enemyBeatPlan(tier: EnemyTier, hits: number): SpectacleBeats {
+  const [windup, travel, impact, aftermath] = enemyBeatTable[tier];
+  const count = Math.max(1, Math.floor(Number.isFinite(hits) ? hits : 1));
+  return { tier: 'normal', flare: null, windup, travel, impact, aftermath, hits: count, hitInterval: impact / count,
+    slots: Array.from({ length: count }, () => impact / count), finisherAt: count - 1, gather: 0,
+    total: windup + travel + impact + aftermath };
+}
+/** D-491 enemy screen tools, per hit. Enemy flashes are soft only; the special dims the field by 30% (R5). */
+export function enemyScreenTools(tier: EnemyTier): ScreenTools {
+  if (tier === 'attack') return { shake: 2, hitStop: 0, flash: 'none', dim: 0, zoom: 1 };
+  if (tier === 'strike') return { shake: 3, hitStop: 30, flash: 'none', dim: 0, zoom: 1 };
+  if (tier === 'overdrive') return { shake: 4, hitStop: 50, flash: 'soft', dim: 0, zoom: 1 };
+  return { shake: 6, hitStop: 70, flash: 'soft', dim: .3, zoom: 1 };
+}
+/** Enemy-phase pacing for frames with no enemy actor (periodic damage, clock ticks); ms at speed 1. */
 export const enemyImpactMs = 300;
 /** R6: Reduce motion shows one static ring and the number per impact, for at most this long. */
 export const staticImpactMs = 200;

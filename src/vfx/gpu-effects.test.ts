@@ -3,7 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RadiantImpactFrame } from '../presentation/battle-impact-frames';
 import type { RadiantCombatState } from '../game/combat-engine';
 import type { RadiantPlayerAction } from '../online/battle-run';
-import { beatPlan } from './spectacle-timing';
+import { beatPlan, enemyBeatPlan } from './spectacle-timing';
+import type { EnemyActionCue } from './enemy-cues';
+import { bearerElementStyle } from './bearer-signatures';
 
 function host(): HTMLElement {
   const element = document.createElement('div');
@@ -164,6 +166,36 @@ describe('GpuBattleEffects on the GPU layer', () => {
     const tideSkill: RadiantPlayerAction = { type: 'normal', bearerId: 'tide', targetId: 'e1' };
     await effects.windup(tideSkill, state, beatPlan('normal', null, 1));
     expect(scene.chargeAura.mock.calls.at(-1)![2].id).toBe('oceanic');
+  });
+  it('telegraphs enemy actions by family and escalates enemy bursts by tier (D-491)', async () => {
+    const { effects } = await mounted();
+    const cue = (over: Partial<EnemyActionCue>): EnemyActionCue => ({ enemyId: 'e1', tier: 'attack', skillName: null,
+      family: 'devourer', starter: null, elementId: 'oceanic', ...over });
+    // Devourer Strike: motes gather into the enemy with a sigil (power .3), then a claw cut across the struck bearer.
+    await effects.enemyWindup(cue({ tier: 'strike' }), ['ember'], enemyBeatPlan('strike', 1));
+    expect(scene.chargeAura).toHaveBeenLastCalledWith({ x: 210, y: 380 }, 300, expect.objectContaining({ id: 'oceanic' }), .3);
+    expect(scene.wait).toHaveBeenNthCalledWith(1, 300);
+    expect(scene.wait).toHaveBeenNthCalledWith(2, 150);
+    expect(scene.slash).toHaveBeenCalledTimes(1);
+    expect(scene.slash.mock.calls[0][0]).toEqual({ x: 880, y: 400 });
+    // Constructs fire; a War form's Strike and up use its bearer's signature layer.
+    await effects.enemyWindup(cue({ family: 'construct' }), ['ember'], enemyBeatPlan('attack', 1));
+    expect(scene.projectile).toHaveBeenCalledTimes(1);
+    await effects.enemyWindup(cue({ family: 'war', starter: 'nerithe', tier: 'special' }), ['ember'], enemyBeatPlan('special', 1));
+    expect(scene.chargeAura.mock.calls.at(-1)![2]).toEqual(bearerElementStyle('nerithe', 'oceanic'));
+    await effects.enemyWindup(cue({ family: 'war', starter: 'nerithe' }), ['ember'], enemyBeatPlan('attack', 1));
+    expect(scene.chargeAura.mock.calls.at(-1)![2].id).toBe('oceanic');
+    expect(scene.chargeAura.mock.calls.at(-1)![2]).not.toEqual(bearerElementStyle('nerithe', 'oceanic'));
+    // Bursts: Attack keeps the enemy size; Strike and Overdrive are scaled-down Skill 1; the special is Skill 2.
+    scene.burst.mockClear();
+    const struck = hit('ember', { kind: 'enemy', enemyId: 'e1' });
+    for (const tier of ['attack', 'strike', 'overdrive', 'special'] as const)
+      await effects.impact(struck, null, state, enemyBeatPlan(tier, 2), false, 1, cue({ tier }));
+    expect(scene.burst.mock.calls.map(call => [call[1], call[4]])).toEqual([['enemy', 1], ['skill1', .8], ['skill1', .92], ['skill2', 1]]);
+    expect(scene.wait).toHaveBeenLastCalledWith(enemyBeatPlan('special', 2).slots[1]);
+    // A cue for another enemy never restyles this packet.
+    await effects.impact(hit('ember', { kind: 'enemy', enemyId: 'e2' }), null, state, enemyBeatPlan('special', 1), false, 0, cue({ tier: 'special' }));
+    expect(scene.burst.mock.calls.at(-1)![1]).toBe('enemy');
   });
   it('routes screen cues through the flash governor and passes hit-stop to the GPU clocks', async () => {
     const { effects } = await mounted();

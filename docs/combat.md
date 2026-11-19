@@ -589,7 +589,7 @@ per-bearer glyphs are retired).
   - `FlashGovernor` allows at most three full flashes in any second
     (WCAG 2.3.1) and softens extra ones.
   - Flash and dim cover the field only, not the HUD.
-  - Enemy hits keep their Phase 2 shake until Step 6.
+  - Enemy hits use their D-491 tier tools (Spectacle step 6, below).
 - **Speed, Settings, Skip.** GPU time scale follows 1x, 2x and 3x, freezes
   while Settings is open and has no delta smoothing, so it stays in step with
   DOM animations after a frame stall. Skip, Exit, Retry and Continue cancel
@@ -645,8 +645,8 @@ layer. `src/vfx/element-styles.ts` holds one style per element plus
 - **Support.** The pulse uses the element's ring. Support and status
   particles always rise.
 - **Enemies (owner choice).** Enemy hits use the attacker's element set at
-  the enemy size, which is smaller than a player Skill 1. Telegraphs stay in
-  Step 6.
+  the enemy size, which is smaller than a player Skill 1. D-491 (step 6) adds
+  telegraphs and tiers; only the boss special reaches Skill 2 size.
 - **Unchanged.** Timing, screen tools, the flash governor, Reduce motion and
   the no-WebGL static rings (they use the HUD color), the particle caps and
   Skip are all as in D-484.
@@ -2044,7 +2044,8 @@ it on top of the element base (D-485) and caches the result.
   Skill 2, Convergent Light, the finisher and support. It never removes the
   element's layers and never changes the palette.
 - **Normal Attack, enemy hits and status cues keep the element base** (a test
-  enforces it), so Normal Attack stays brisk.
+  enforces it), so Normal Attack stays brisk. Exception (D-491): a War form's
+  Strike, Overdrive and boss special use its corrupted bearer's signature.
 - **Escalation.** Signature layers appear from Skill 1; Skill 2 and the
   finisher add at least as many as Skill 1. Added particles stay within 25% of
   the element base's count for the same kind.
@@ -2158,3 +2159,93 @@ outcome, RNG or receipt.
 - **Review captures:** `node tools/capture_frames.mjs --battle flare
   --flare-tier ultimate --encounter nerithe-10 --stream`. The Story bosses die
   in one or two hits, so use the Nerithe final boss to see a full hit run.
+
+## Battle Spectacle: enemy attacks (D-491, Spectacle step 6)
+
+Presentation only, so no server deploy. Rule R5 (D-483) is now implemented: enemy
+actions telegraph, escalate by tier and look different per enemy family. Each
+enemy action still plays the receipt's frames in order. Only the waits change,
+never an outcome, RNG or receipt.
+
+- **Tier** (`src/vfx/enemy-cues.ts` `enemyActionCue`). The tier comes from the
+  enemy's scheduled skill for the round, using `scheduledEnemySkill(skills,
+  round)`, the same call the engine uses for the coefficient (a test cross-checks
+  them). The round is fixed from the player phase through the enemy phase.
+
+  | Tier | Scheduled skill | Telegraph / travel / impact / aftermath | Total | Screen tools |
+  |---|---|---|---|---|
+  | Attack | none | 250 / 100 / 200 / 100 ms | 0.65 s | 2 px shake |
+  | Strike | `skill1` (a Strike, or a Calamity strike) | 300 / 150 / 250 / 150 ms | 0.85 s | 3 px, 30 ms hit-stop |
+  | Overdrive | `skill2` (Lv.50 and up) | 400 / 150 / 350 / 200 ms | 1.1 s | 4 px, 50 ms hit-stop, soft flash |
+  | Boss special | `ultimate` (Last Ruin or a Calamity ruin) | 550 / 200 / 550 / 300 ms | 1.6 s | 6 px, 70 ms hit-stop, soft flash, 30% field dim |
+
+  - Speed 2x and 3x divide every value, and Skip ends the action at once.
+  - The impact beat is split evenly across the action's hit frames.
+  - Enemy flashes are soft only and pass through the `FlashGovernor`.
+  - The special stays below Convergent Light by weight, not length: a soft
+    flash, and no heavier shake or hit-stop than a Sparkling finisher (owner
+    choice: about 1.6 s at Skill 2 weight).
+- **One telegraph per action.** `RadiantBattleView.enemyPlans` groups an enemy
+  phase's frames by acting enemy. Each enemy acts at most once per phase, so
+  multi-hit volleys play one telegraph and then one impact slot per hit. The
+  old 320 ms lead-in and the 420 ms lunge on every frame are gone.
+- **The telegraph:**
+  - a family pose;
+  - the GPU wind-up: element motes gather into the enemy, with a sigil from
+    Strike up;
+  - travel to each struck bearer;
+  - the skill name: a pill over the enemy for Strike and Overdrive, and for a
+    special the callout band (`radiantEnemyCutin`, the mirrored enemy band
+    with gold edges, "Boss Special", the enemy's art and the special's name);
+  - from Overdrive up, a warning ring on each struck bearer's card.
+- **Families** (`enemyFamily`, from the identity; unknown identities fall back to
+  Devourer):
+
+  | Family | Identities | Pose | Travel |
+  |---|---|---|---|
+  | Devourer | Story, Training, Dungeon and event or infusion creatures | crouch, then pounce | claw cut (element overlay) |
+  | Construct | `oblivion:*`, `infusion:machines:*` | brace and recoil | element orb or beam |
+  | War form | `war:<bearer>:<form>` | its kit motion (lunge or brace) | from Strike up, the bearer's signature travel and layers (D-486 exception); a plain Attack keeps the element base |
+  | Calamity | `calamity:*` | heavy rise | element orb or beam; volleys follow `pattern.hits` |
+
+  A Calamity boss's heal or Shield refresh before its attack pulses from the boss.
+- **Bursts** (`enemyBursts`):
+  - Attack: the D-485 `enemy` burst.
+  - Strike: player Skill 1 layers at 0.8x.
+  - Overdrive: player Skill 1 layers at 0.92x.
+  - Boss special: player Skill 2 layers at 1x.
+
+  A test enforces that Attack, Strike and Overdrive stay smaller than a player
+  Skill 1, and that the special is no larger than Skill 2, for every element and
+  for War signatures.
+- **Screen tools per hit.** The action's first damaging hit lands the hit-stop,
+  soft flash and full shake. Later hits of a volley shake at half strength. A
+  defeat shakes at least 7 px. Frames with no acting enemy (periodic damage,
+  clock ticks, Thorn Traps) keep the 300 ms pacing and a 7 px shake on a defeat.
+- **Pre-turn warning (owner choice: specials only).** During the player phase,
+  an enemy whose Overdrive or boss special fires in the coming enemy phase shows
+  a charging marker:
+  - a slow pulsing element ring with a gold outline;
+  - a short tag: "Overdrive", "Last Ruin" or the Calamity ruin's name.
+
+  The marker's text is mirrored in two places: the enemy button's accessible label
+  ("Charging … this turn") and the selected-enemy detail. It never names a
+  target, because targets are rolled in the enemy phase. It hides while an enemy
+  phase plays and when the enemy falls. Plain Attacks and Strikes get no marker.
+- **Reduce motion (R6).** No pose, wind-up, travel, dim, flash or shake. Each
+  impact keeps the static ring and number (200 ms or less). An Overdrive or
+  special still shows its name as a static pill for 640 ms (speed-scaled). The
+  charging ring stops pulsing.
+- **Safety.** Every effect is finite, pointer-transparent and registered for
+  Skip, Exit and Retry cleanup. The callout band, pills and warning rings are
+  `aria-hidden`; the charging warning is in the enemy's accessible label. No
+  texture was added (still 50 of 50).
+- **Review captures.** Use the preview's "Enemy-phase round" picker and the new
+  `story-120` fixture (a Lv.55 regional boss, Last Ruin every 6 rounds):
+  - `node tools/capture_frames.mjs --battle enemy --encounter story-120 --round 6 --stream`
+    for the boss special;
+  - `--round 2` for a Strike;
+  - `--encounter nerithe-10 --round 6` for a War form's signature special.
+
+  Overdrive needs an ordinary enemy of Lv.50 or higher, such as late Story
+  stages; no preview fixture reaches it yet.

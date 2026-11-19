@@ -67,7 +67,7 @@ describe('Element base sets (D-485, Spectacle step 3)', () => {
       for (const kind of burstKinds) expect(style.layers.finisher.length).toBeGreaterThanOrEqual(style.layers[kind].length);
     }
   });
-  it('keeps enemy impacts smaller than a player Skill 1 (telegraphs are Step 6)', () => {
+  it('keeps the plain enemy Attack burst smaller than a player Skill 1 (tiers: enemy-cues.test.ts, D-491)', () => {
     for (const style of styles) {
       expect(largest(style, 'enemy'), style.id).toBeLessThan(largest(style, 'skill1'));
       expect(particles(style, 'enemy'), style.id).toBeLessThan(particles(style, 'skill1'));

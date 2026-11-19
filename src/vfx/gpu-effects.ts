@@ -16,6 +16,7 @@ import { characterChoreography } from '../presentation/battle-effects';
 import { battleSpeed } from '../presentation/battle-speed';
 import { beatPlan, enemyImpactMs, FlashGovernor, hitProgress, spectacleTier, staticImpactMs, tintCss,
   type SpectacleBeats } from './spectacle-timing';
+import { enemyBursts, enemyPower, type EnemyActionCue } from './enemy-cues';
 import type { FlareTier } from '../game/combat-gauge';
 import { elementStyle, type ElementStyle } from './element-styles';
 import { bearerElementStyle } from './bearer-signatures';
@@ -125,6 +126,17 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     const unit = state.bearers.find(member => member.loadout.id === id);
     return unit ? bearerElementStyle(unit.loadout.starter, radiantBearerKits[unit.loadout.starter]?.elementId) : elementStyle(null);
   }
+  /** D-491: enemies draw their element base; War forms use their bearer's signature from Strike up. */
+  private enemyStyle(cue: EnemyActionCue): ElementStyle {
+    return cue.family === 'war' && cue.starter && cue.tier !== 'attack'
+      ? bearerElementStyle(cue.starter, cue.elementId) : elementStyle(cue.elementId);
+  }
+  /** D-491 melee families: Devourers claw, War forms follow their bearer's kit motion; Constructs and Calamity bosses fire. */
+  private static enemyMelee(cue: EnemyActionCue): boolean {
+    if (cue.family === 'devourer') return true;
+    if (cue.family !== 'war' || !cue.starter) return false;
+    return meleeMotions.has(characterChoreography[cue.starter as keyof typeof characterChoreography]?.motion ?? 'cast');
+  }
   private wait(ms: number): Promise<void> {
     const scene = this.scene();
     if (scene) return scene.wait(ms);
@@ -197,6 +209,29 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     }
     await scene.wait(plan.travel);
   }
+  /** D-491 enemy telegraph and travel: the element's motes gather into the enemy (a sigil turns from Strike up),
+   * then a claw cut, the signature travel or an orb or beam reaches each struck bearer. */
+  async enemyWindup(cue: EnemyActionCue, targetIds: readonly string[], beats: SpectacleBeats): Promise<void> {
+    if (this.disposed) return;
+    const scene = this.scene();
+    const caster = this.anchor(cue.enemyId);
+    if (!scene || !caster) { await this.wait(beats.windup + beats.travel); return; }
+    const style = this.enemyStyle(cue), power = enemyPower[cue.tier];
+    const from = GpuBattleEffects.centre(caster);
+    const generation = this.generation;
+    scene.chargeAura(from, beats.windup, style, power);
+    await scene.wait(beats.windup);
+    if (this.disposed || generation !== this.generation) return;
+    const melee = GpuBattleEffects.enemyMelee(cue);
+    for (const id of targetIds.slice(0, 6)) {
+      const rect = this.anchor(id);
+      if (!rect) continue;
+      const to = GpuBattleEffects.centre(rect);
+      if (melee) scene.slash(to, from, beats.travel, style, power, Math.min(rect.width, rect.height));
+      else scene.projectile(from, to, beats.travel, style, power);
+    }
+    await scene.wait(beats.travel);
+  }
   /** D-490 gather before a Convergent Light finisher: light pulls onto each target and the dim deepens. */
   async gather(action: RadiantPlayerAction, state: RadiantCombatState, targetIds: readonly string[], beats: SpectacleBeats): Promise<void> {
     if (this.disposed || beats.gather <= 0) return;
@@ -213,9 +248,10 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     await this.wait(beats.gather);
   }
   /** `action` null = enemy phase (no caster). Resolves after this hit's slot; particles linger (see `idle`).
-   * `hitIndex` (D-490) picks the hit's slot in `beats.slots` and its escalation. */
+   * `hitIndex` (D-490) picks the hit's slot in `beats.slots` and its escalation. `enemy` (D-491) is the
+   * acting enemy's cue: it picks the enemy burst tier and style, and `beats` its slot. */
   async impact(frame: RadiantImpactFrame, action?: RadiantPlayerAction | null, state?: RadiantCombatState,
-    beats?: SpectacleBeats, finisher = false, hitIndex?: number): Promise<void> {
+    beats?: SpectacleBeats, finisher = false, hitIndex?: number, enemy?: EnemyActionCue | null): Promise<void> {
     if (this.disposed) return;
     const packets = frame.events.filter((event): event is Packet =>
       event.type === 'damage' && event.healthLoss + event.absorbed > 0 ||
@@ -223,7 +259,8 @@ export class GpuBattleEffects implements RadiantBattleEffects {
       event.type === 'shield' && event.amount > 0 ||
       event.type === 'status' && !event.clockOnly && event.remaining > 0 && event.status !== 'weaken-removed');
     const plan = action ? beats ?? (state ? this.defaultBeats(action, state) : null) : null;
-    const slot = action ? (plan && hitIndex !== undefined ? plan.slots[hitIndex] : undefined) ?? plan?.hitInterval ?? 150 : enemyImpactMs;
+    const enemySlot = enemy && beats ? (hitIndex !== undefined ? beats.slots[hitIndex] : undefined) ?? beats.hitInterval : enemyImpactMs;
+    const slot = action ? (plan && hitIndex !== undefined ? plan.slots[hitIndex] : undefined) ?? plan?.hitInterval ?? 150 : enemySlot;
     if (!packets.length) return;
     const scene = this.scene();
     const tier = action ? spectacleTier(action) : null;
@@ -236,21 +273,27 @@ export class GpuBattleEffects implements RadiantBattleEffects {
       seen.add(packet.targetId);
       const rect = this.anchor(packet.targetId);
       if (!rect) continue;
-      // Enemy hits use the attacker's element base set at the smaller enemy size (owner choice, D-485).
-      const style = packet.source.kind === 'enemy'
-        ? elementStyle(state?.enemies.find(enemy => enemy.id === (packet.source as { enemyId: string }).enemyId)?.elementId)
+      // Enemy hits use the attacker's element base set at enemy size (owner choice, D-485), escalated by tier (D-491).
+      const acting = packet.source.kind === 'enemy' && enemy?.enemyId === packet.source.enemyId ? enemy : null;
+      const style = acting ? this.enemyStyle(acting) : packet.source.kind === 'enemy'
+        ? elementStyle(state?.enemies.find(unit => unit.id === (packet.source as { enemyId: string }).enemyId)?.elementId)
         : state ? this.bearerStyle(state, packet.source.bearerId) : elementStyle(null);
       if (!scene) { this.staticRing(rect, style.palette.main); continue; }
       const own = !!action && packet.source.kind !== 'enemy' && packet.source.bearerId === action.bearerId &&
         ['normal', 'skill', 'flare', 'master'].includes(packet.source.kind);
+      const enemyBurst = acting ? enemyBursts[acting.tier] : null;
       const kind: BurstKind = packet.type === 'status' ? 'status' : packet.type !== 'damage' ? 'support'
-        : packet.source.kind === 'enemy' ? 'enemy'
+        : packet.source.kind === 'enemy' ? enemyBurst?.kind ?? 'enemy'
           : !own || packet.origin !== 'direct' || !tier ? 'normal'
             : tier === 'flare' ? finisher ? 'finisher' : 'flare' : tier;
       const size = Math.min(rect.width, rect.height);
       let point = GpuBattleEffects.centre(rect);
       // D-490: Convergent Light hits grow through the run and never stamp the same spot twice.
-      const intensity = kind === 'finisher' && flare ? finisherIntensity[flare] : kind === 'flare' ? 1 + .25 * progress : 1;
+      const intensity = enemyBurst && packet.type === 'damage' ? enemyBurst.intensity
+        : kind === 'finisher' && flare ? finisherIntensity[flare] : kind === 'flare' ? 1 + .25 * progress : 1;
+      // D-491: a Calamity boss's heal or Shield refresh before its attack pulses from the boss itself.
+      if (acting && packet.type !== 'damage' && packet.targetId === acting.enemyId)
+        scene.pulse(GpuBattleEffects.centre(rect), Math.max(120, slot), style, .4);
       if (kind === 'flare') point = { x: point.x + (Math.random() - .5) * size * .24, y: point.y + (Math.random() - .5) * size * .24 };
       scene.burst(point, kind, style, size, intensity);
       if (finisher && own && flare && (kind === 'finisher' || kind === 'support'))

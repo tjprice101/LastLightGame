@@ -3,7 +3,8 @@ import { characterLevelCap } from '../content/progression';
 import { releasedRadiantIds } from '../content/combat-kits';
 import { readyFlare } from '../game/combat-gauge';
 import { resolveRadiantRun, type RadiantRunAuthority } from '../online/battle-run';
-import { createRadiantReviewFixture, radiantReviewEncounters, setRadiantReviewCharge } from './battle-review-fixtures';
+import { createRadiantReviewFixture, radiantReviewEncounters, radiantReviewRounds, setRadiantReviewCharge, setRadiantReviewRound } from './battle-review-fixtures';
+import { enemyActionCue } from '../vfx/enemy-cues';
 
 const authority: RadiantRunAuthority = {
   capability: 'isolated-radiant-study',
@@ -38,7 +39,7 @@ describe('isolated Radiant review fixtures', () => {
 
   it('enters each representative authored formation through the actual run resolver', () => {
     const sizes: Record<string, number> = {
-      'story-25': 2, 'story-1': 2, 'story-20': 1, training: 3,
+      'story-25': 2, 'story-1': 2, 'story-20': 1, 'story-120': 1, training: 3,
       'infernic-34': 6, 'machines-34': 6, 'nerithe-10': 1,
     };
     for (const encounter of radiantReviewEncounters) {
@@ -46,6 +47,21 @@ describe('isolated Radiant review fixtures', () => {
       expect(run.anchor.activity).toEqual(encounter.activity);
       expect(run.state.enemies, encounter.id).toHaveLength(sizes[encounter.id]);
     }
+  });
+
+  it('reaches enemy Strike, Overdrive and boss-special rounds for capture review only (D-491)', () => {
+    const run = enter(createRadiantReviewFixture('ember', 6, 'story-120', false));
+    const boss = run.enemies[0];
+    const tiers = radiantReviewRounds.map(round => {
+      const state = structuredClone(run.state);
+      setRadiantReviewRound(state, round);
+      return enemyActionCue(boss, state.round).tier;
+    });
+    expect(tiers).toEqual(['attack', 'strike', 'attack', 'attack', 'special', 'special']);
+    expect(() => setRadiantReviewRound(structuredClone(run.state), 4)).toThrow('Invalid Radiant review round');
+    const war = enter(createRadiantReviewFixture('ember', 6, 'nerithe-10', false)).enemies[0];
+    expect(enemyActionCue(war, 6)).toMatchObject({ family: 'war', starter: 'nerithe' });
+    expect(enemyActionCue(war, 6).tier).toBe('special');
   });
 
   it('reaches every Convergent Light tier for capture review only where the form has unlocked it', () => {

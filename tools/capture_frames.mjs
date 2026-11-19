@@ -13,7 +13,7 @@
 // (battle-preview.html: no sign-in, no saves) and starts capturing at the input:
 //   node tools/capture_frames.mjs --out <dir> --battle attack|skill1|skill2|flare
 //        [--leader <bearer id>] [--encounter story-20] [--member 0] [--frames 40] [--every 50] [--sheet]
-//        [--flare-tier sparkling|glimmering|ultimate] [--speed 1|2|3] [--reduced]
+//        [--flare-tier sparkling|glimmering|ultimate] [--round 1|2|3|5|6|12] [--speed 1|2|3] [--reduced]
 // flare first selects the Eternal charge fixture so Convergent Light is ready.
 // enemy presses End Turn so the enemy phase plays at once.
 // --stream records Chrome's screencast instead of screenshotting (screenshots stall rendering,
@@ -44,6 +44,7 @@ function parse(argv) {
     else if (key === '--encounter') opts.encounter = next();
     else if (key === '--member') opts.member = Number(next());
     else if (key === '--flare-tier') opts.flareTier = next();
+    else if (key === '--round') opts.round = next();
     else if (key === '--speed') opts.speed = next();
     else if (key === '--reduced') opts.reduced = true;
     else if (key === '--stream') opts.stream = true;
@@ -96,6 +97,8 @@ async function startBattleAction() {
   if (opts.leader) await page.selectOption('[data-preview-leader]', opts.leader);
   if (opts.encounter) await page.selectOption('[data-preview-encounter]', opts.encounter);
   if (opts.flareTier) await page.selectOption('[data-preview-flare-tier]', opts.flareTier);
+  // D-491: the enemy-phase round picks the scheduled enemy skill (Strike, Overdrive or a boss special).
+  if (opts.round) await page.selectOption('[data-preview-round]', opts.round);
   if (opts.speed) await page.selectOption('[data-preview-speed]', opts.speed);
   if (opts.reduced) await page.check('[data-preview-motion]');
   // Charge fixture: skills need Luminosity (Glowing is enough); flare needs Eternal.

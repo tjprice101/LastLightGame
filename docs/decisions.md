@@ -1,5 +1,31 @@
 # Decision log
 
+## Spectacle step 6: enemy attacks (D-491, 2026-11-19)
+
+- **Owner-approved plan (2026-11-19).** Enemy actions telegraph, escalate by
+  their scheduled skill and look different per family
+  ([combat spec](combat.md#battle-spectacle-enemy-attacks-d-491-spectacle-step-6)).
+- **Owner choices:**
+  - **pre-turn warning for specials only:** a charging marker for Overdrive,
+    Last Ruin and Calamity ruins. It never names a target;
+  - **four families:** Devourer, Construct, War form and Calamity. War forms
+    use their corrupted bearer's signature from Strike up (an exception to
+    D-486);
+  - **boss special at Skill 2 weight,** about 1.6 s, with a soft flash and a 30%
+    dim. It stays below Convergent Light in weight.
+- **Tiers:** Attack 0.65 s, Strike 0.85 s, Overdrive 1.1 s and boss special
+  1.6 s. There is one telegraph per action, which replaces the Phase 2 lead-in
+  and the lunge on every hit.
+- **Revises:**
+  - R5 (D-483) is now implemented;
+  - the D-484 enemy shake (4 px, once per presentation) becomes per-tier
+    tools;
+  - the D-485 "smaller than Skill 1" rule now covers Attack, Strike and
+    Overdrive, and the special may reach Skill 2.
+- **Added for review:** the preview's "Enemy-phase round" picker, the
+  `story-120` fixture and `capture_frames.mjs --round`. These are preview-only.
+- Presentation only: no rule, RNG, reward, save or authority change, no server deploy.
+
 ## Spectacle step 5: Convergent Light cinematics (D-490, 2026-11-18)
 
 - **Owner-approved plan (2026-11-18).** Each Convergent Light tier escalates in
