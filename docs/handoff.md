@@ -1,5 +1,21 @@
 # Current state and handoff
 
+## Spectacle step 7: skill menu polish (2026-11-19)
+
+**Implemented on `battle-flurry-phase3`.** Presentation only; no server change.
+- Fan opens with a staggered bloom (each option rises in turn); fixed the open
+  animation that slid in from the left (stale `translate(-50%)`).
+- Element-tinted aim highlight on hover, selection and keyboard focus.
+- Unaffordable options dim; charged Convergent Light arcs in its tier
+  (`data-ready-tier`), static under Reduce motion.
+- Cost text and the Convergent Light label were already in place.
+
+**Verified:** `npx tsc --noEmit` 0 errors; `npx vite build` succeeded; full
+`npx vitest run` 10,717 of 10,718 (the known 20 s `acquisition-surfaces.test.ts`
+timeout; passes alone). **Not verified:** a look in game.
+
+**Next:** owner feel review of steps 5 to 7, then the Sonnet tuning rounds.
+
 ## Spectacle step 6: enemy attacks (D-491, 2026-11-19)
 
 **Implemented on `battle-flurry-phase3`.** Presentation only; no server change

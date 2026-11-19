@@ -421,10 +421,17 @@ export class RadiantBattleView {
     fan.closest('.radiant-member')?.classList.add('has-fan');
     this.renderFan(run, id);
     if (!reducedMotion() && fan.animate) {
-      const animation = fan.animate([{ opacity: 0, transform: 'translate(-50%, 8px) scale(.94)' },
-        { opacity: 1, transform: 'translate(-50%, 0) scale(1)' }], { duration: 160, easing: 'cubic-bezier(.2,.8,.2,1)' });
-      this.animations.add(animation);
-      void animation.finished.catch(() => {}).finally(() => this.animations.delete(animation));
+      const track = (animation: Animation): void => {
+        this.animations.add(animation);
+        void animation.finished.catch(() => {}).finally(() => this.animations.delete(animation));
+      };
+      track(fan.animate([{ opacity: 0, transform: 'translateY(8px) scale(.94)' },
+        { opacity: 1, transform: 'translateY(0) scale(1)' }], { duration: 160, easing: 'cubic-bezier(.2,.8,.2,1)' }));
+      // Option bloom: each choice rises in turn, finite and pointer-transparent to timing.
+      Array.from(fan.querySelectorAll<HTMLElement>('[data-radiant-skill]')).forEach((choice, index) => {
+        if (choice.animate) track(choice.animate([{ opacity: 0, transform: 'translateY(10px) scale(.9)' },
+          { opacity: 1, transform: 'translateY(0) scale(1)' }], { duration: 220, delay: 40 + index * 45, easing: 'cubic-bezier(.2,.9,.25,1.15)', fill: 'backwards' }));
+      });
     }
     if (focus) fan.querySelector<HTMLButtonElement>('[data-radiant-skill]:not([aria-disabled="true"])')?.focus()
       ?? fan.querySelector<HTMLButtonElement>('[data-radiant-skill]')?.focus();
@@ -457,6 +464,7 @@ export class RadiantBattleView {
       }
       choice.setAttribute('aria-disabled', String(!ready));
       choice.classList.toggle('is-ready', ready);
+      if (slot === 'flare') { const tier = readyFlare(run.state.gauge, id); if (tier) choice.dataset.readyTier = tier; else delete choice.dataset.readyTier; }
       choice.querySelector<HTMLElement>('[data-radiant-skill-cost]')!.textContent = cost;
     }
   }

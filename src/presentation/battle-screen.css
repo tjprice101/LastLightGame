@@ -763,7 +763,7 @@ html[data-motion="reduced"] .radiant-member[data-ready-tier]:not([data-ready-tie
 
 /* Phase 3 Step 3 (D-479): Skill 1 / Skill 2 / Flare fan, gauge skill thresholds, signature counters and skill callouts. */
 .radiant-skill-fan { position: absolute; z-index: 6; left: 0; right: 0; bottom: calc(100% + 6px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px; padding: 5px; border: 1px solid var(--gild-line); border-radius: 12px; transform: translateX(0);
+  gap: 4px; padding: 5px; border: 1px solid var(--gild-line); border-radius: 12px;
   background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 16%, #14151cf2), #0e0f15f5);
   box-shadow: 0 0 0 1px #0008, 0 14px 30px -12px color-mix(in srgb, var(--accent) 70%, transparent); }
 .radiant-skill-fan[hidden] { display: none; }
@@ -784,11 +784,19 @@ html[data-motion="reduced"] .radiant-member[data-ready-tier]:not([data-ready-tie
 .radiant-skill-choice.is-ready .radiant-skill-cost { color: color-mix(in srgb, var(--accent) 45%, #fff); }
 .radiant-skill-choice.is-ready::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: linear-gradient(105deg, transparent 35%, #ffffff30 50%, transparent 65%) 200% 0 / 250% 100% no-repeat; animation: radiant-skill-sheen 2.6s ease-in-out infinite; }
-.radiant-battle .radiant-skill-choice.is-selected, .radiant-battle .radiant-skill-choice:hover { transform: translateY(-2px); border-color: var(--gild-light); }
+.radiant-battle .radiant-skill-choice.is-selected, .radiant-battle .radiant-skill-choice:hover, .radiant-battle .radiant-skill-choice:focus-visible { transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--gild-light)); box-shadow: 0 0 0 1px var(--gild-light), 0 0 16px -2px var(--accent); }
+.radiant-battle .radiant-skill-choice[aria-disabled="true"]:not(.is-ready) { opacity: .78; }
+/* Charged Convergent Light: the option itself arcs like the ready card, escalating with tier. */
+.radiant-skill-choice[data-radiant-skill="flare"][data-ready-tier] { border-color: #fff; animation: radiant-skill-charged 1.8s ease-in-out infinite; }
+.radiant-skill-choice[data-radiant-skill="flare"][data-ready-tier="glimmering"] { animation-duration: 1.4s; }
+.radiant-skill-choice[data-radiant-skill="flare"][data-ready-tier="ultimate"] { animation-duration: 1s; border-width: 2px; }
+@keyframes radiant-skill-charged { 0%, 100% { box-shadow: inset 0 0 0 1px #fff2, 0 0 8px -2px var(--accent); } 50% { box-shadow: inset 0 0 6px 0 color-mix(in srgb, var(--accent) 50%, transparent), 0 0 20px 0 var(--accent); } }
 .radiant-battle .radiant-skill-choice[aria-disabled="true"] { cursor: not-allowed; }
 @keyframes radiant-skill-sheen { 0%, 55% { background-position: 200% 0; } 100% { background-position: -100% 0; } }
 html[data-motion="reduced"] .radiant-skill-choice.is-ready::after { animation: none; background: none; }
-html[data-motion="reduced"] .radiant-battle .radiant-skill-choice.is-selected, html[data-motion="reduced"] .radiant-battle .radiant-skill-choice:hover { transform: none; }
+html[data-motion="reduced"] .radiant-battle .radiant-skill-choice.is-selected, html[data-motion="reduced"] .radiant-battle .radiant-skill-choice:hover, html[data-motion="reduced"] .radiant-battle .radiant-skill-choice:focus-visible { transform: none; }
+html[data-motion="reduced"] .radiant-skill-choice[data-ready-tier] { animation: none; }
 .radiant-member.has-fan { z-index: 5; box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent); }
 
 .radiant-energy-tick { position: absolute; z-index: 2; top: 1px; bottom: 1px; left: var(--tick); width: 2px; margin-left: -1px; border-radius: 1px;
