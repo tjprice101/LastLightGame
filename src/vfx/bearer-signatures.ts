@@ -251,6 +251,218 @@ export const bearerSignatures: Readonly<Record<string, BearerSignature>> = {
       finisher: [spark('particles/crystal-shard', 12, [260, 560], [380, 620], 38, { gravity: 240, rotate: 'random' })],
     },
   },
+  // Surveyor trident: a charting grid of crossing marks and survey rings closes on the target.
+  nerithe: {
+    overlay: 'beams/tide',
+    layers: {
+      skill1: [layer('impacts/x-cross', 1.2, 320, { spin: .3 }), layer('impacts/ring-concentric', 1.5, 340, { from: .2, alpha: .7 })],
+      skill2: [layer('impacts/x-cross', 1.5, 400, { spin: .3 }), layer('impacts/ring-concentric', 1.9, 420, { from: .2, delay: 60, alpha: .7 }), layer('impacts/ring-dripping', .8, 360, { from: .15, delay: 120 })],
+      flare: [layer('impacts/x-cross', 1.8, 360, { spin: .3 }), layer('impacts/ring-concentric', 2.2, 380, { from: .2, alpha: .7 }), layer('impacts/ring-dripping', .9, 340, { from: .15, delay: 80 })],
+      finisher: [layer('impacts/x-cross', 2.6, 560, { spin: .3 }), layer('impacts/ring-concentric', 3.2, 600, { from: .2, delay: 60, alpha: .7 }), layer('impacts/ground-ripple', 3.2, 700, { from: .3, delay: 120, tone: 'edge' })],
+    },
+  },
+  // Crescent polearm: a wide tide-crescent sweep and rings that roll outward behind it.
+  neralis: {
+    layers: {
+      skill1: [layer('particles/crescent', 2.4, 340, { spin: .8, tone: 'core', alpha: 1 })],
+      skill2: [layer('particles/crescent', 3, 420, { spin: .9, tone: 'core', alpha: 1 }), layer('impacts/ring-dripping', 1.2, 420, { from: .15, delay: 80 })],
+      flare: [layer('particles/crescent', 3.2, 380, { spin: 1, tone: 'core', alpha: 1 }), layer('impacts/ring-dripping', 1.4, 380, { from: .15, delay: 60 })],
+      finisher: [layer('particles/crescent', 4, 580, { spin: 1.1, tone: 'core', alpha: 1 }), layer('impacts/ring-dripping', 2, 600, { from: .15, delay: 70 }), layer('impacts/ground-ripple', 3, 680, { from: .3, delay: 130, tone: 'edge' })],
+      support: [layer('impacts/ring-dripping', 1.3, 520, { from: .15 })],
+    },
+  },
+  // Crystal mace: a thorned guard ring, then a crack as the mace lands, crystal thrown clear.
+  orvella: {
+    layers: {
+      skill1: [layer('impacts/ring-thorned', 1.4, 360, { spin: .2 })],
+      skill2: [layer('impacts/ring-thorned', 1.8, 460, { spin: .2 }), layer('impacts/crack-burst', 1.6, 420, { delay: 80 })],
+      flare: [layer('impacts/ring-thorned', 2.1, 400, { spin: .2 }), layer('impacts/crack-burst', 1.9, 380)],
+      finisher: [layer('impacts/ring-thorned', 3, 640, { spin: .2 }), layer('impacts/crack-burst', 3, 620, { delay: 70 }), layer('impacts/shatter-burst', 2.4, 560, { delay: 110, alpha: .6 })],
+      support: [layer('impacts/ring-thorned', 1.5, 540, { spin: .2 })],
+    },
+    sparks: {
+      skill2: [spark('particles/crystal-shard', 4, [160, 360], [300, 480], 32, { gravity: 300, rotate: 'random' })],
+      finisher: [spark('particles/crystal-shard', 12, [220, 540], [380, 640], 36, { gravity: 300, rotate: 'random' })],
+    },
+  },
+  // Chained sickles: two crescents sweep in opposite turns, petals and thorns shaken loose.
+  myrthen: {
+    layers: {
+      skill1: [layer('particles/crescent', 2, 320, { spin: 1, tone: 'core', alpha: 1 }), layer('particles/crescent', 2, 320, { spin: -1, delay: 40, alpha: 1 })],
+      skill2: [layer('particles/crescent', 2.6, 400, { spin: 1.1, tone: 'core', alpha: 1 }), layer('particles/crescent', 2.6, 400, { spin: -1.1, delay: 60, alpha: 1 })],
+      flare: [layer('particles/crescent', 2.8, 360, { spin: 1.2, tone: 'core', alpha: 1 }), layer('particles/crescent', 2.8, 360, { spin: -1.2, delay: 40, alpha: 1 })],
+      finisher: [layer('particles/crescent', 3.6, 560, { spin: 1.3, tone: 'core', alpha: 1 }), layer('particles/crescent', 3.6, 560, { spin: -1.3, delay: 50, alpha: 1 }), layer('impacts/petal-burst-a', 2.4, 580, { delay: 90, spin: .5 })],
+    },
+    sparks: {
+      skill2: [spark('particles/thorn', 5, [180, 400], [320, 520], 26, { gravity: 260, rotate: 'random' })],
+      finisher: [spark('particles/petal', 14, [180, 520], [420, 720], 26, { gravity: 140, rotate: 'spin' })],
+    },
+  },
+  // Resonance blade: a struck ring rings out again and again, wind streaks turn through it.
+  vaelor: {
+    layers: {
+      skill1: [layer('impacts/ring-sparkle', 1.3, 340, { from: .15 })],
+      skill2: [layer('impacts/ring-sparkle', 1.6, 400, { from: .15 }), layer('impacts/radial-streaks-fade', 1.6, 400, { spin: 3, delay: 60 })],
+      flare: [layer('impacts/ring-sparkle', 1.9, 360, { from: .15 }), layer('impacts/radial-streaks-fade', 1.9, 360, { spin: 3.4, delay: 40 })],
+      finisher: [layer('impacts/ring-sparkle', 2.6, 580, { from: .15 }), layer('impacts/ring-sparkle', 2, 560, { from: .15, delay: 80 }), layer('impacts/radial-streaks-fade', 2.6, 560, { spin: 3.8, delay: 50 })],
+    },
+    sparks: {
+      skill2: [spark('particles/star-thin', 5, [260, 600], [220, 380], 38)],
+      finisher: [spark('particles/star-thin', 14, [380, 880], [260, 460], 42)],
+    },
+  },
+  // Forge gauntlets: an anvil ring and a crack as the fist lands, embers drift up from the strike.
+  caldrex: {
+    layers: {
+      skill1: [layer('impacts/ring-concentric', 1.5, 360, { from: .2, alpha: .8 })],
+      skill2: [layer('impacts/ring-concentric', 2, 460, { from: .2, alpha: .8 }), layer('impacts/crack-burst', 1.6, 420, { delay: 70 })],
+      flare: [layer('impacts/ring-concentric', 2.3, 400, { from: .2, alpha: .8 }), layer('impacts/crack-burst', 2, 380)],
+      finisher: [layer('impacts/ring-concentric', 3.4, 680, { from: .2, alpha: .8 }), layer('impacts/crack-burst', 3, 620, { delay: 70 }), layer('impacts/ring-solar', 2.6, 600, { delay: 110, alpha: .6 })],
+    },
+    sparks: {
+      skill2: [spark('particles/star-soft', 5, [120, 320], [360, 560], 30, { gravity: -260 })],
+      finisher: [spark('particles/star-soft', 12, [160, 460], [420, 700], 34, { gravity: -260 })],
+    },
+  },
+  // Chained counterweight: a wide swung wheel of streaks, then the weight drops with a solar ring.
+  varkhel: {
+    layers: {
+      skill1: [layer('impacts/radial-streaks-fade', 1.6, 340, { spin: 2, tone: 'core' })],
+      skill2: [layer('impacts/radial-streaks-fade', 2, 420, { spin: 2.2, tone: 'core' }), layer('impacts/ring-solar', 1.6, 440, { from: .2, delay: 100, alpha: .8 })],
+      flare: [layer('impacts/radial-streaks-fade', 2.3, 380, { spin: 2.4, tone: 'core' }), layer('impacts/ring-solar', 1.9, 400, { from: .2, delay: 80, alpha: .8 })],
+      finisher: [layer('impacts/radial-streaks-fade', 3, 580, { spin: 2.6, tone: 'core' }), layer('impacts/ring-solar', 3, 640, { from: .2, delay: 100, alpha: .8 }), layer('impacts/crack-burst', 2.6, 600, { delay: 120 })],
+    },
+    sparks: {
+      skill2: [spark('particles/rock-shard', 4, [160, 380], [320, 520], 28, { gravity: 500, rotate: 'spin' })],
+      finisher: [spark('particles/rock-shard', 12, [200, 520], [380, 660], 32, { gravity: 500, rotate: 'spin' })],
+    },
+  },
+  // Temple bell shield: a runic ring tolls, a sigil answers, soft chimes ring out on support.
+  solenne: {
+    layers: {
+      skill1: [layer('impacts/ring-runic', 1.3, 380, { spin: .2 })],
+      skill2: [layer('impacts/ring-runic', 1.7, 480, { spin: .2 }), layer('impacts/sigil-circle', 1.4, 460, { spin: -.4, delay: 80 })],
+      flare: [layer('impacts/ring-runic', 2, 420, { spin: .2 }), layer('impacts/sigil-circle', 1.7, 420, { spin: -.4, delay: 50 })],
+      finisher: [layer('impacts/ring-runic', 2.9, 660, { spin: .2 }), layer('impacts/sigil-circle', 2.4, 640, { spin: -.4, delay: 70 }), layer('impacts/ring-sparkle', 3, 620, { from: .15, delay: 130 })],
+      support: [layer('impacts/ring-runic', 1.5, 540, { spin: .2 }), layer('impacts/ring-sparkle', 1.5, 520, { from: .15, delay: 80 })],
+    },
+    sparks: {
+      skill2: [spark('particles/star-soft', 4, [80, 200], [320, 520], 30, { gravity: -80 })],
+      finisher: [spark('particles/star-soft', 10, [100, 300], [380, 620], 34, { gravity: -80 })],
+    },
+  },
+  // Ferry lantern: rings of drifting water roll out one after another, soft mist trails behind the cast.
+  maerion: {
+    layers: {
+      skill1: [layer('impacts/ring-dripping', 1.1, 360, { from: .15 })],
+      skill2: [0, 90, 180].map(delay => layer('impacts/ring-dripping', 1.4, 420, { from: .15, delay })),
+      flare: [0, 90].map(delay => layer('impacts/ring-dripping', 1.7, 380, { from: .15, delay })).concat(layer('impacts/ring-sparkle', 1.8, 400, { from: .15, delay: 160 })),
+      finisher: [0, 90, 180].map(delay => layer('impacts/ring-dripping', 2.4, 600, { from: .15, delay })).concat(layer('impacts/ground-ripple', 3.2, 700, { from: .3, delay: 140, tone: 'edge' })),
+      support: [layer('impacts/ring-dripping', 1.4, 540, { from: .15 })],
+    },
+    sparks: {
+      skill2: [spark('particles/mist-wisp', 4, [50, 140], [440, 660], 48, { gravity: -50, rotate: 'random' })],
+      finisher: [spark('particles/mist-wisp', 10, [70, 220], [500, 780], 54, { gravity: -50, rotate: 'random' })],
+    },
+  },
+  // Watch counterweight: a heavy ring drops, a crack follows, rock thrown from the weight.
+  caevren: {
+    layers: {
+      skill1: [layer('impacts/ring-concentric', 1.5, 380, { from: .2, alpha: .8 })],
+      skill2: [layer('impacts/ring-concentric', 2, 480, { from: .2, alpha: .8 }), layer('impacts/crack-burst', 1.6, 420, { delay: 90 })],
+      flare: [layer('impacts/ring-concentric', 2.3, 420, { from: .2, alpha: .8 }), layer('impacts/crack-burst', 2, 380, { delay: 40 })],
+      finisher: [layer('impacts/ring-concentric', 3.4, 700, { from: .2, alpha: .8 }), layer('impacts/crack-burst', 3, 640, { delay: 80 }), layer('impacts/ring-runic', 2.8, 620, { spin: .2, delay: 130, alpha: .7 })],
+      support: [layer('impacts/ring-runic', 1.5, 540, { spin: .2 })],
+    },
+    sparks: {
+      skill2: [spark('particles/rock-shard', 4, [140, 320], [320, 500], 30, { gravity: 520, rotate: 'spin' })],
+      finisher: [spark('particles/rock-shard', 12, [200, 500], [380, 660], 34, { gravity: 520, rotate: 'spin' })],
+    },
+  },
+  // Beacon flame: a signal sigil kindles above a solar ring, embers lift like sparks off a brazier.
+  vespera: {
+    layers: {
+      skill1: [layer('impacts/ring-solar', 1.3, 360, { from: .2 })],
+      skill2: [layer('impacts/ring-solar', 1.7, 460, { from: .2 }), layer('impacts/sigil-circle', 1.4, 460, { spin: .5, delay: 70 })],
+      flare: [layer('impacts/ring-solar', 2, 400, { from: .2 }), layer('impacts/sigil-circle', 1.7, 420, { spin: .5, delay: 50 })],
+      finisher: [layer('impacts/ring-solar', 3, 640, { from: .2 }), layer('impacts/sigil-circle', 2.4, 640, { spin: .5, delay: 60 }), layer('flares/star-wisp', 2.6, 600, { delay: 110, tone: 'core' })],
+      support: [layer('impacts/ring-solar', 1.5, 540, { from: .2 })],
+    },
+    sparks: {
+      skill2: [spark('flares/star-wisp', 4, [100, 280], [340, 540], 36, { gravity: -280, rotate: 'random' })],
+      finisher: [spark('flares/star-wisp', 10, [140, 420], [400, 680], 40, { gravity: -280, rotate: 'random' })],
+    },
+  },
+  // Twin severing blades: two crossing cuts, a fault line, shadow wisps cut loose.
+  ilyss: {
+    layers: {
+      skill1: [layer('impacts/x-cross', 1.3, 320, { spin: .2, tone: 'edge' })],
+      skill2: [layer('impacts/x-cross', 1.6, 400, { spin: .2, tone: 'edge' }), layer('particles/crescent', 2.2, 400, { spin: -.9, delay: 60, tone: 'core', alpha: 1 })],
+      flare: [layer('impacts/x-cross', 1.9, 360, { spin: .2, tone: 'edge' }), layer('particles/crescent', 2.4, 360, { spin: -.9, tone: 'core', alpha: 1 })],
+      finisher: [layer('impacts/x-cross', 2.6, 560, { spin: .2, tone: 'edge' }), layer('particles/crescent', 3.4, 580, { spin: -1, delay: 50, tone: 'core', alpha: 1 }), layer('impacts/crack-burst', 2.6, 600, { delay: 100 })],
+      support: [layer('impacts/ring-cosmic', 1.3, 520, { spin: .3 })],
+    },
+    sparks: {
+      skill2: [spark('particles/mist-wisp', 4, [60, 160], [420, 640], 46, { gravity: -40, rotate: 'random' })],
+      finisher: [spark('particles/mist-wisp', 10, [80, 240], [480, 760], 52, { gravity: -40, rotate: 'random' })],
+    },
+  },
+  // Orbit staff: a ring of petals circles the target, a second ring turns the other way.
+  asteriel: {
+    layers: {
+      skill1: [layer('impacts/petal-burst-b', 1.2, 340, { spin: .8 })],
+      skill2: [layer('impacts/petal-burst-b', 1.5, 440, { spin: .8 }), layer('impacts/ring-thorned', 1.7, 460, { spin: -.6, delay: 70 })],
+      flare: [layer('impacts/petal-burst-a', 1.9, 400, { spin: .8 }), layer('impacts/ring-thorned', 2, 420, { spin: -.6, delay: 50 })],
+      finisher: [layer('impacts/petal-burst-a', 2.8, 640, { spin: .9 }), layer('impacts/ring-thorned', 3, 640, { spin: -.7, delay: 60 }), layer('impacts/ring-sparkle', 3, 620, { from: .15, delay: 120 })],
+      support: [layer('impacts/petal-burst-b', 1.4, 520, { spin: .6 })],
+    },
+    sparks: {
+      skill2: [spark('particles/petal', 5, [60, 180], [400, 640], 24, { gravity: -60, rotate: 'spin' })],
+      finisher: [spark('particles/petal', 12, [80, 260], [460, 760], 26, { gravity: -60, rotate: 'spin' })],
+    },
+  },
+  // Interval shield: a runic ring holds, a bright ring answers after a beat, chimes drift upward.
+  serapha: {
+    layers: {
+      skill1: [layer('impacts/ring-runic', 1.3, 380, { spin: .2 })],
+      skill2: [layer('impacts/ring-runic', 1.7, 480, { spin: .2 }), layer('impacts/ring-sparkle', 1.6, 440, { from: .15, delay: 140 })],
+      flare: [layer('impacts/ring-runic', 2, 420, { spin: .2 }), layer('impacts/ring-sparkle', 1.9, 400, { from: .15, delay: 120 })],
+      finisher: [layer('impacts/ring-runic', 2.9, 660, { spin: .2 }), layer('impacts/ring-sparkle', 2.6, 620, { from: .15, delay: 120 }), layer('impacts/ring-sparkle', 3.2, 640, { from: .15, delay: 240 })],
+      support: [layer('impacts/ring-runic', 1.5, 540, { spin: .2 }), layer('impacts/ring-sparkle', 1.4, 520, { from: .15, delay: 140 })],
+    },
+    sparks: {
+      skill2: [spark('particles/star-soft', 4, [70, 190], [340, 540], 30, { gravity: -80 })],
+      finisher: [spark('particles/star-soft', 10, [90, 280], [400, 640], 34, { gravity: -80 })],
+    },
+  },
+  // Convoy lance: a narrow thrust beam and a ring per cadence beat, embers kicked back along the line.
+  seravelle: {
+    travel: { kind: 'orb', texture: 'beams/streak', px: 72, spin: 0, trail: 'flares/star-wisp', trailPx: 16 },
+    layers: {
+      skill1: [layer('impacts/ring-solar', 1.2, 340, { from: .2 })],
+      skill2: [0, 70].map(delay => layer('impacts/ring-solar', 1.5, 400, { from: .2, delay })),
+      flare: [0, 70, 140].map(delay => layer('impacts/ring-solar', 1.6, 360, { from: .2, delay })),
+      finisher: [0, 70, 140].map(delay => layer('impacts/ring-solar', 2.4, 580, { from: .2, delay })).concat(layer('impacts/radial-streaks-fade', 2.6, 560, { spin: 2, delay: 110, tone: 'core' })),
+      support: [layer('impacts/ring-solar', 1.4, 520, { from: .2 })],
+    },
+    sparks: {
+      skill2: [spark('flares/star-wisp', 4, [140, 340], [300, 480], 36, { gravity: -220, rotate: 'random' })],
+      finisher: [spark('flares/star-wisp', 10, [200, 520], [360, 600], 40, { gravity: -220, rotate: 'random' })],
+    },
+  },
+  // Unfastened court blades: two crescents cross in opposite turns, then a cut line splits the target.
+  velmira: {
+    layers: {
+      skill1: [layer('particles/crescent', 2, 320, { spin: 1, tone: 'core', alpha: 1 }), layer('particles/crescent', 2, 320, { spin: -1, delay: 40, tone: 'edge', alpha: 1 })],
+      skill2: [layer('particles/crescent', 2.6, 400, { spin: 1.1, tone: 'core', alpha: 1 }), layer('particles/crescent', 2.6, 400, { spin: -1.1, delay: 60, tone: 'edge', alpha: 1 })],
+      flare: [layer('particles/crescent', 2.8, 360, { spin: 1.2, tone: 'core', alpha: 1 }), layer('particles/crescent', 2.8, 360, { spin: -1.2, delay: 40, tone: 'edge', alpha: 1 })],
+      finisher: [layer('particles/crescent', 3.6, 560, { spin: 1.3, tone: 'core', alpha: 1 }), layer('particles/crescent', 3.6, 560, { spin: -1.3, delay: 50, tone: 'edge', alpha: 1 }), layer('impacts/shatter-web', 2.8, 640, { delay: 100, alpha: .6 })],
+    },
+    sparks: {
+      skill2: [spark('particles/mist-wisp', 4, [60, 160], [420, 640], 46, { gravity: -40, rotate: 'random' })],
+      finisher: [spark('particles/mist-wisp', 10, [80, 240], [480, 760], 52, { gravity: -40, rotate: 'random' })],
+    },
+  },
 };
 
 const cache = new Map<string, ElementStyle>();

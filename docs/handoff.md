@@ -1,5 +1,54 @@
 # Current state and handoff
 
+## Spectacle step 4, batch 4: the last eight bearer signatures (D-489, 2026-11-18)
+
+**Implemented in the working tree; not committed, pushed or released.**
+Maerion, Caevren, Vespera, Ilyss, Asteriel, Serapha, Seravelle and Velmira now
+have signature layers: all 32 bearers are covered, in `src/vfx/bearer-signatures.ts`.
+Details in the [combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- `npx vitest run src/vfx`: 67 of 67 passed (signature test covers all 32).
+
+**Also verified (after the build):**
+- Full `npx vitest run`: 10,700 of 10,701; the one failure was the known 20 s
+  timeout in `acquisition-surfaces.test.ts` (passes alone).
+- `npx vite build`: succeeded.
+- `capture_frames.mjs --stream` for batch 4 Skill 2: effects render on the caster in
+  each bearer's element colors, no console failures. Impact-phase timing was not
+  captured, and no owner feel review has happened.
+
+**Not verified:**
+- the GPU frame-time check (needs real hardware);
+- an owner feel review of batches 1 to 4.
+
+**Next:**
+- Capture batches 2 to 4 with `tools/capture_frames.mjs --stream` (Sonnet), then
+  the owner reviews all four batches and approves tuning, the push and release.
+
+## Spectacle step 4, batch 3: eight more bearer signatures (D-488, 2026-11-18)
+
+**Implemented in the working tree; not committed, pushed or released.**
+Nerithe, Orvella, Vaelor, Caldrex, Solenne, Myrthen, Neralis and Varkhel now
+have signature layers (24 of 32 bearers), in `src/vfx/bearer-signatures.ts`.
+Details in the [combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- `npx vitest run src/vfx`: 67 of 67 passed (signature test covers all 24).
+
+**Not verified:**
+- any batch 2 or 3 signature on screen (no `--stream` captures yet);
+- full `npx vitest run`, `npx vite build`, the GPU frame-time check;
+- an owner feel review of batches 1 to 3.
+
+**Next:**
+- Capture batches 2 and 3 with `tools/capture_frames.mjs --stream` (Sonnet), then
+  the owner reviews all three batches and approves tuning, the push and release.
+- Batch 4: the last 8 bearers (Maerion, Caevren, Vespera, Ilyss, Asteriel,
+  Serapha, Seravelle, Velmira; Sonnet).
+
 ## Spectacle step 4, batch 2: eight more bearer signatures (D-487, 2026-11-18)
 
 **Implemented in the working tree; not committed, pushed or released.**

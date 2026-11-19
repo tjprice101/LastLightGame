@@ -2069,3 +2069,19 @@ it on top of the element base (D-485) and caches the result.
 | Ozriel | cathedral shield: runic citadel ring, glass web, falling shards |
 | Ilvaris | halo-lyre: successive resonance rings, thin star points |
 | Kaelith | shatterglass scythe: wide arc, fault-line crack, glass web on the finisher |
+| Nerithe | surveyor trident: crossing chart marks, survey rings, tide overlay (batch 3) |
+| Neralis | crescent polearm: wide tide crescent, rolling rings, ripple on the finisher |
+| Orvella | crystal mace: thorned guard ring, landing crack, thrown crystal |
+| Myrthen | chained sickles: opposed crescent pair, thorns and petals shaken loose |
+| Vaelor | resonance blade: repeating rings with turning wind streaks, thin star points |
+| Caldrex | forge gauntlets: anvil ring, landing crack, rising embers |
+| Varkhel | chained counterweight: swung streak wheel, dropped solar ring and crack, thrown rock |
+| Solenne | temple bell shield: tolling runic ring, answering sigil, chime sparkle on support |
+| Maerion | ferry lantern: successive dripping rings, mist trailing the cast (batch 4) |
+| Caevren | watch counterweight: dropped heavy ring, crack, runic ring on the finisher, thrown rock |
+| Vespera | beacon flame: solar ring with a kindling sigil, rising embers |
+| Ilyss | twin severing blades: crossing cut, opposed crescent, fault line, shadow wisps |
+| Asteriel | orbit staff: petal ring with a counter-turning thorned ring, drifting petals |
+| Serapha | interval shield: runic ring answered by delayed sparkle rings, chimes |
+| Seravelle | convoy lance: narrow thrust beam, one solar ring per cadence beat, back-kicked embers |
+| Velmira | unfastened court blades: opposed core/edge crescents, shatter line, shadow wisps |

@@ -1,5 +1,21 @@
 # Decision log
 
+## Spectacle step 4, batch 4: the last eight bearer signatures (D-489, 2026-11-18)
+
+- **Batch 4:** Maerion, Caevren, Vespera, Ilyss, Asteriel, Serapha, Seravelle,
+  Velmira. Same rules as D-486; textures reused, none added. All 32 bearers now
+  have a signature, so step 4 is built.
+- **Pending:** owner feel review of all four batches, then tuning, push and release.
+- Presentation only: no rule, RNG, reward, save or authority change, no deploy.
+
+## Spectacle step 4, batch 3: eight more bearer signatures (D-488, 2026-11-18)
+
+- **Batch 3 (owner approved the build):** Nerithe, Orvella, Vaelor, Caldrex,
+  Solenne, Myrthen, Neralis, Varkhel. Same rules as D-486; textures reused,
+  none added. 24 of 32 bearers now have a signature.
+- **Pending:** owner feel review of batches 1 to 3; batch 4 (the last 8).
+- Presentation only: no rule, RNG, reward, save or authority change, no deploy.
+
 ## Spectacle step 4, batch 2: eight more bearer signatures (D-487, 2026-11-18)
 
 - **Batch 2 (proposed, owner may swap):** Aurora (`aurora`), Elise (`elise`),
