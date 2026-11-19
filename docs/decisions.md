@@ -1,46 +1,23 @@
 # Decision log
 
-## Spectacle step 4, batch 4: the last eight bearer signatures (D-489, 2026-11-18)
+## Spectacle step 4 complete: per-bearer signature layers (D-486 to D-489, 2026-11-18)
 
-- **Batch 4:** Maerion, Caevren, Vespera, Ilyss, Asteriel, Serapha, Seravelle,
-  Velmira. Same rules as D-486; textures reused, none added. All 32 bearers now
-  have a signature, so step 4 is built.
-- **Pending:** owner feel review of all four batches, then tuning, push and release.
-- Presentation only: no rule, RNG, reward, save or authority change, no deploy.
-
-## Spectacle step 4, batch 3: eight more bearer signatures (D-488, 2026-11-18)
-
-- **Batch 3 (owner approved the build):** Nerithe, Orvella, Vaelor, Caldrex,
-  Solenne, Myrthen, Neralis, Varkhel. Same rules as D-486; textures reused,
-  none added. 24 of 32 bearers now have a signature.
-- **Pending:** owner feel review of batches 1 to 3; batch 4 (the last 8).
-- Presentation only: no rule, RNG, reward, save or authority change, no deploy.
-
-## Spectacle step 4, batch 2: eight more bearer signatures (D-487, 2026-11-18)
-
-- **Batch 2 (proposed, owner may swap):** Aurora (`aurora`), Elise (`elise`),
-  Razor (`razor`), Thornia (`thornia`), Crinso (`crinso`), Ozriel (`ozriel`),
-  Ilvaris (`ilvaris`), Kaelith (`kaelith`): the next eight in the signature
-  list. Same rules as D-486; textures reused, none added.
-- **Pending:** owner feel review of batches 1 and 2 in the hosted build.
-- Presentation only: no rule, RNG, reward, save or authority change, and no
-  deploy.
-
-## Spectacle step 4, batch 1: per-bearer signature layers (D-486, 2026-11-18)
-
-- **Owner-approved plan (2026-11-18):** each Element-Bearer gets a signature
-  layer on top of its element base, built from its weapon and signature
-  geometry, in batches of about 8
+- **Owner-approved plan:** each Element-Bearer gets a signature layer on top of
+  its element base, built from its weapon and signature geometry, in four
+  batches of 8
   ([combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4)).
-  Batch 1 (proposed, owner may swap): Infernis (`ember`), Tizu (`tide`), Flora
-  (`sprout`), Atmoso (`atmoso`), Rosetta (`rosetta`), Disciple (`disciple`),
-  Bliss (`bliss`) and Bruno (`bruno`).
-- **Implemented:** new `src/vfx/bearer-signatures.ts` (data and
-  `bearerElementStyle`); `GpuBattleEffects.bearerStyle()` uses it. Bearers
-  without a signature keep their element base, so batches land one at a time.
-- **Pending:** owner feel review of the batch in the hosted build.
-- Presentation only: no rule, RNG, reward, save or authority change, and no
-  deploy.
+  Data and `bearerElementStyle` live in `src/vfx/bearer-signatures.ts`;
+  `GpuBattleEffects.bearerStyle()` uses it. Normal Attack keeps the element base.
+- **Batches:** 1 (D-486) Infernis, Tizu, Flora, Atmoso, Rosetta, Disciple, Bliss,
+  Bruno. 2 (D-487) Aurora, Elise, Razor, Thornia, Crinso, Ozriel, Ilvaris,
+  Kaelith. 3 (D-488) Nerithe, Orvella, Vaelor, Caldrex, Solenne, Myrthen,
+  Neralis, Varkhel. 4 (D-489) Maerion, Caevren, Vespera, Ilyss, Asteriel,
+  Serapha, Seravelle, Velmira. All 32 covered; textures reused, none added.
+- **Owner accepted the result (2026-11-18)** and released it: commit `aee50994`
+  on `main`, `overhaul/radiant-foundation` and `battle-flurry-phase3`; the
+  Deploy Last Light run succeeded. Not checked: the desktop GPU frame-time item
+  (still in Future Plans).
+- Presentation only: no rule, RNG, reward, save or authority change, no server deploy.
 
 ## Spectacle step 3: six element base sets (D-485, 2026-11-18)
 

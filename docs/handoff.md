@@ -1,286 +1,41 @@
 # Current state and handoff
 
-## Spectacle step 4, batch 4: the last eight bearer signatures (D-489, 2026-11-18)
+## Battle Spectacle steps 1 to 4 complete and released (D-482 to D-489, 2026-11-18)
 
-**Implemented in the working tree; not committed, pushed or released.**
-Maerion, Caevren, Vespera, Ilyss, Asteriel, Serapha, Seravelle and Velmira now
-have signature layers: all 32 bearers are covered, in `src/vfx/bearer-signatures.ts`.
-Details in the [combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
+**Released** (`aee50994` on `main`; the Deploy Last Light run succeeded). Owner
+reviewed and accepted steps 1 to 4. No server change, no deploy needed.
 
-**Verified:**
-- `npx tsc --noEmit`: 0 errors.
-- `npx vitest run src/vfx`: 67 of 67 passed (signature test covers all 32).
+**What exists now:**
+- **Step 1 (D-483):** approved visual rules R1 to R8 and tier time budgets;
+  Convergent Light label everywhere (internal `flare` IDs unchanged);
+  `tools/capture_frames.mjs --battle attack|skill1|skill2|flare|enemy [--stream]`
+  records timed battle frames from the no-save dev preview.
+- **Setup (D-482):** 121 VFX textures from the owner's library
+  (`tools/intake_vfx_library.py`, [art workflow](art-workflow.md)); dev-only
+  Playwright 1.56.1.
+- **Step 2 (D-484):** one Phaser WebGL effect layer replaces the canvas effects:
+  lunge/dash/brace, shake, hit-stop, Skill 2 flash, Convergent Light dim, zoom
+  and flash; Reduce motion shows a static ring and the number.
+- **Step 3 (D-485):** six element base sets (palette, rings, orb or beam travel,
+  overlay, wind-up sigil, particles). Enemy hits use their element.
+- **Step 4 (D-486 to D-489):** signature layers for all 32 bearers in
+  `src/vfx/bearer-signatures.ts`.
+Details: [combat spec](combat.md#battle-spectacle-gpu-effect-layer-and-beats-d-484-spectacle-step-2).
 
-**Also verified (after the build):**
-- Full `npx vitest run`: 10,700 of 10,701; the one failure was the known 20 s
-  timeout in `acquisition-surfaces.test.ts` (passes alone).
-- `npx vite build`: succeeded.
-- `capture_frames.mjs --stream` for batch 4 Skill 2: effects render on the caster in
-  each bearer's element colors, no console failures. Impact-phase timing was not
-  captured, and no owner feel review has happened.
+**Verified:** `npx tsc --noEmit` 0 errors; full `npx vitest run` 10,700 of
+10,701 (the known 20 s `acquisition-surfaces.test.ts` timeout, passes alone);
+`npx vite build` succeeded; batch 4 Skill 2 captured, effects render in element
+colors. Owner feel review done.
 
-**Not verified:**
-- the GPU frame-time check (needs real hardware);
-- an owner feel review of batches 1 to 4.
+**Not verified:** the desktop GPU frame-time check (Future Plans).
 
-**Next:**
-- Capture batches 2 to 4 with `tools/capture_frames.mjs --stream` (Sonnet), then
-  the owner reviews all four batches and approves tuning, the push and release.
+**Known:** the preview charge fixture fills at most two layers, so
+`--battle flare` shows Sparkling, never Ultimate (preview only).
 
-## Spectacle step 4, batch 3: eight more bearer signatures (D-488, 2026-11-18)
-
-**Implemented in the working tree; not committed, pushed or released.**
-Nerithe, Orvella, Vaelor, Caldrex, Solenne, Myrthen, Neralis and Varkhel now
-have signature layers (24 of 32 bearers), in `src/vfx/bearer-signatures.ts`.
-Details in the [combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
-
-**Verified:**
-- `npx tsc --noEmit`: 0 errors.
-- `npx vitest run src/vfx`: 67 of 67 passed (signature test covers all 24).
-
-**Not verified:**
-- any batch 2 or 3 signature on screen (no `--stream` captures yet);
-- full `npx vitest run`, `npx vite build`, the GPU frame-time check;
-- an owner feel review of batches 1 to 3.
-
-**Next:**
-- Capture batches 2 and 3 with `tools/capture_frames.mjs --stream` (Sonnet), then
-  the owner reviews all three batches and approves tuning, the push and release.
-- Batch 4: the last 8 bearers (Maerion, Caevren, Vespera, Ilyss, Asteriel,
-  Serapha, Seravelle, Velmira; Sonnet).
-
-## Spectacle step 4, batch 2: eight more bearer signatures (D-487, 2026-11-18)
-
-**Implemented in the working tree; not committed, pushed or released.**
-Aurora, Elise, Razor, Thornia, Crinso, Ozriel, Ilvaris and Kaelith now have
-signature layers (16 of 32 bearers in total), in `src/vfx/bearer-signatures.ts`.
-Details in the [combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
-
-**Verified:**
-- `npx tsc --noEmit`: 0 errors.
-- `npx vitest run src/vfx`: 67 of 67 passed (the signature test now covers all
-  16 and checks textures, Normal Attack untouched, escalation and the 25%
-  particle budget).
-
-**Not verified:**
-- any batch 2 signature on screen (no `--stream` captures yet);
-- full `npx vitest run`, `npx vite build`;
-- the GPU frame-time check;
-- an owner feel review of batches 1 and 2.
-
-**Next:**
-- Capture batch 2 with `tools/capture_frames.mjs --stream` (Sonnet), then the
-  owner reviews both batches and approves tuning, the push and release.
-- Batch 3 (next 8: Nerithe, Orvella, Vaelor, Caldrex, Solenne, Myrthen,
-  Neralis, Varkhel; Sonnet).
-
-## Spectacle step 4, batch 1: eight bearer signatures (D-486, 2026-11-18)
-
-**Implemented, committed on `battle-flurry-phase3`; not pushed or released.**
-Eight bearers have a signature layer on top of their element base: Infernis,
-Tizu, Flora, Atmoso, Rosetta, Disciple, Bliss and Bruno (all six elements).
-Details in the [combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
-
-**Verified:**
-- `npx tsc --noEmit`: 0 errors.
-- Full `npx vitest run`: 10,700 of 10,701 passed; the one failure was the
-  known 20 s timeout in `acquisition-surfaces.test.ts`.
-- `npx vite build`: passed (existing chunk-size warning).
-- `--stream` captures against the dev preview (Story 25), Skill 2: Infernis
-  (recaptured after enlarging the crescents so they read against the
-  fireball), Atmoso and Bruno.
-
-**Not verified:**
-- the other signatures on screen (Tizu, Flora, Rosetta, Disciple, Bliss);
-- Convergent Light, 3x and Reduce motion with signatures;
-- the GPU frame-time check;
-- an owner feel review of the hosted build.
-
-**Known:** signatures are subtle against the element bursts (the Atmoso wheels
-are hidden by the finishing flash on a lethal hit). The owner may want them
-larger or brighter after the feel review.
-
-**Next:**
-- The owner reviews batch 1 in game (Normal Attack, Skill 1, Skill 2 and
-  Convergent Light at 1x and 3x), then approves tuning, the push and release.
-- Batch 2 (next 8 bearers; Sonnet).
-
-## Spectacle step 3: element base sets live locally (2026-11-18)
-
-**Implemented (D-485), committed on `battle-flurry-phase3`; not pushed or
-released yet.** All six elements now have their own effect language on the
-GPU layer:
-- a three-tone palette;
-- their own impact rings and bursts;
-- ranged travel: orbs for Infernic, Botanic and Tranquilitic; beams for
-  Oceanic, Atmospheric and Chaotic;
-- an element overlay on melee cuts, a wind-up sigil and element particle
-  motion.
-
-Enemy hits use their element at enemy size. Neutral (no element) keeps the
-D-484 look.
-
-**Verified:**
-- `npx tsc --noEmit`: 0 errors.
-- Full `npx vitest run`: 10,694 of 10,694 passed, including the new
-  `src/vfx/element-styles.test.ts`.
-- `npx vite build`: passed (existing chunk-size warning).
-- `--stream` captures against the dev preview (Training) for each element:
-  - Infernic: Ember, Skill 1 and Skill 2;
-  - Oceanic: Tide and Maerion, Normal Attack and Skill 2;
-  - Atmospheric: Atmoso, Skill 2;
-  - Botanic: Sprout, Normal Attack and Skill 2;
-  - Tranquilitic: Rosetta, Skill 1 and Skill 2;
-  - Chaotic: Disciple and Thornia, Skill 2.
-
-  The first capture found the beam core drawn as a solid white bar; it was
-  fixed and recaptured.
-
-**Not verified:**
-- Convergent Light tier captures for each element;
-- enemy-turn captures for each element;
-- Reduce motion and 3x recaptures;
-- the GPU frame-time check with the 46-texture set;
-- an owner feel review of the hosted build.
-
-**Tuning round (Sonnet, 2026-11-18):** Infernic, Botanic and Tranquilitic
-orbs enlarged (64, 84 and 92 px) and support pulses enlarged (240 + 160 x
-power px, full starting alpha). `--stream` captures against the dev preview
-on the bright Story 25 sky: Sprout Verdant Renewal pulse and Rosetta Golden
-Thorn Volley orb read clearly. Not recaptured: Infernic orb, other
-elements' pulses, 3x and Reduce motion. Capture tip: effects appear a few
-frames after the click; check frames 5 to 8 with `--every 60`.
-
-**Next:**
-- The owner reviews the build, then approves the push and release.
-- Tuning round (Sonnet).
-- Step 4: per-bearer layers.
-
-## Spectacle step 2: GPU effect layer live (2026-11-18)
-
-**Implemented (D-484).** One Phaser WebGL layer on the VFX textures replaces
-the canvas effects in the live battle and the dev preview. Every player
-action now follows the approved tier beats (R2) with these screen tools:
-- lunge, dash, brace or rise;
-- shake and hit-stop;
-- soft flash on Skill 2;
-- dim, zoom and a full flash on the finisher for Convergent Light.
-
-Reduce motion shows one static element ring and the number per impact. The
-[combat spec](combat.md#battle-spectacle-gpu-effect-layer-and-beats-d-484-spectacle-step-2)
-has the details.
-
-Owner choices:
-- interim look: one effect per tier, tinted by element (per-bearer glyphs
-  retired until Step 4);
-- no WebGL: static rings.
-
-Presentation only, so no deploy of the authority.
-- Deleted `src/vfx/battle-effects.ts` (+ test), `signature-vfx.ts` and
-  `cinematic-motifs.ts`. Legacy `BattleView` systems are untouched.
-- The dev preview has a Convergent Light tier picker.
-- `tools/capture_frames.mjs` gains `--stream`, `--battle enemy`,
-  `--flare-tier`, `--speed` and `--reduced`. `--stream` uses the browser
-  screencast and counts frames from the input event. Screenshot mode stalls
-  rendering and slows GPU-timed effects.
-
-**Verified:**
-- `npx tsc --noEmit`: 0 errors. `npx vite build`: passed (existing chunk-size
-  warning).
-- Full `npx vitest run`: 10,683 of 10,684 passed. The one failure was the
-  known 20 s timeout in `acquisition-surfaces.test.ts`; alone it passed in
-  13 s. The total fell by the deleted canvas-effects test file.
-- Before/after `--stream` captures of every tier, run against the dev
-  preview (Nerithe final boss):
-  - all four tiers and all three Convergent Light tiers;
-  - an enemy turn;
-  - Reduce motion: static ring and numbers for about 200 ms;
-  - 3x: Skill 2 in about 0.4 s.
-
-  No page errors.
-- GPU check, headless Chromium on the dev PC's integrated AMD Radeon
-  (D3D11). Three-bearer Ultimate Convergent Light flurry, Training:
-  - median frame 16.7 ms, p95 16.8 ms at 1x and at 3x;
-  - peak 183 of 700 particles.
-
-  The first action on a page stalls about 0.35 s on the main thread (DOM
-  layout); the previous code showed the same stall.
-- **Not verified:** owner feel review of the hosted build; a check on other
-  devices (phones, low-power laptops).
-
-**Known:**
-- Effects are the interim shared look: element grammar (Step 3) and
-  per-bearer layers (Step 4) are next. The melee slash and ranged orb are
-  generic.
-- Damage numbers and drops still linger past each tier's budget (about
-  0.86 s), by design for readability.
-
-**Next:**
-- Owner reviews the before/after contact sheets, then plays the hosted build
-  at 1x and 3x, with and without Reduce motion.
-- Spectacle step 3: six element base sets (Opus for the grammar, Sonnet for
-  batches).
-- Owner decides the Warden Lv.177 / Training 120 source fix (Opus).
-
-## Convergent Light rename; Spectacle step 1 rules approved (2026-11-18)
-
-- **Convergent Light label everywhere.** Kits, glossary, tooltips, the skill
-  menu and docs say "Convergent Light" instead of "Flare". Internal IDs
-  (`flare`, `radiantFlareText`, save keys) are unchanged.
-- **Battle capture harness.** `tools/capture_frames.mjs --battle
-  attack|skill1|skill2|flare [--leader id] [--encounter id] [--member n]`
-  drives the in-memory dev preview (`battle-preview.html`, no saves). It
-  charges the gauge as needed and records frames from the input.
-- **Visual rules approved (D-483).**
-  [Step 1 proposal](Future%20Plans/battle-flurry-overhaul.md#step-1-proposal-visual-rules-approved-d-483)
-  (R1 to R8, tier time budgets). Baseline captures show weak, uniform
-  effects. Owner approved the rules; nothing in the battle changed yet.
-
-**Verified:**
-- `npx tsc --noEmit`: 0 errors.
-- Full `npx vitest run`: 10,736 of 10,737 passed. The one failure was the
-  known 20 s timeout in `acquisition-surfaces.test.ts` under full-suite load.
-- Capture runs for all four tiers against Story 25 and Elemental War Nerithe
-  final boss: frames saved, no page errors.
-- **Not verified:** hosted build (not pushed).
-
-**Known:**
-- The preview charge fixture fills at most two layers, so `--battle flare`
-  shows a Sparkling Convergent Light, never Ultimate. Preview only.
-- The preview page shifts scroll between frames.
-
-**Next:**
-- Step 2, the GPU effect foundation (Opus, Plan mode).
-- Owner decides the Warden Lv.177 / Training 120 source fix (Opus).
-
-## Battle Spectacle setup: VFX library, Playwright, plan (2026-11-18)
-
-**Owner direction (D-482).** Spectacle phase next, before Phase 4.
-[Plan](Future%20Plans/battle-flurry-overhaul.md#f-battle-spectacle-runs-before-phase-4).
-- Installed 121 textures from the owner's MagnumOpus VFX library, renamed
-  (`tools/intake_vfx_library.py`;
-  [art workflow](art-workflow.md#battle-vfx-texture-library-d-482-2026-11-18)).
-  Not yet used by the game.
-- Added dev-only Playwright 1.56.1 with Chromium and
-  `tools/capture_frames.mjs` (timed frame sequences for motion review).
-- Convergent Light naming and skill menu polish recorded; not implemented.
-
-**Verified:**
-- `python tools/intake_vfx_library.py`: 121 textures validated after
-  `--apply`. `python -m unittest test_vfx_library` (in `tools`): 4 passed.
-- `node tools/build_avif.mjs --check`: current for 1265 PNGs.
-- `node tools/capture_frames.mjs` against the local dev server: title screen
-  frames saved, no page errors.
-- Full `npx vitest run`: 10,735 of 10,737 passed; the 2 failures were
-  timeouts under full-suite load (`acquisition-surfaces.test.ts`,
-  `archives-controls.test.ts`); both files pass alone (8 tests).
-- **Not verified:** capture does not yet drive into a battle.
-
-**Next:**
-- Convergent Light label rename in all menus (Sonnet, small).
-- Spectacle step 1: visual rules plus battle capture harness (Opus, Plan
-  mode; owner approves the rules).
-- Owner decides the Warden Lv.177 / Training 120 source fix (Opus).
+**Remaining Spectacle steps** (in [Future Plans](Future%20Plans/battle-flurry-overhaul.md#f-battle-spectacle-runs-before-phase-4)):
+5 Convergent Light cinematics, 6 enemy attacks, 7 skill menu polish.
+**Then Phase 4** (Conduit callouts, contribution summary, re-anchoring).
+Also open: the Warden Lv.177 / Training 120 source fix (owner decision, Opus).
 
 ## Battle Flurry Phase 3 released (2026-11-18)
 

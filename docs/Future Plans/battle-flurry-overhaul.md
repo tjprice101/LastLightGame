@@ -198,7 +198,7 @@ The bar is real firepower and visual prowess (Brave Frontier inspiration,
 never copied). Proposed steps; each ends with an owner feel review of the
 hosted build:
 
-1. **Visual rules and capture harness (Opus, Plan mode).** Tier escalation
+1. **Visual rules and capture harness (Opus, Plan mode). Done (D-483).** Tier escalation
    Normal Attack < Skill 1 < Skill 2 < Convergent Light. Every action has
    wind-up, travel, impact and aftermath. Tools: bearer lunge/dash,
    afterimages, screen flash, hit-stop on heavy hits, camera shake and zoom,
@@ -206,13 +206,13 @@ hosted build:
    for Convergent Light. Time budget per tier so battles stay brisk; Reduce
    motion gives static feedback and Skip stays. Extend
    `tools/capture_frames.mjs` to reach a battle and record each tier.
-2. **GPU effect foundation (Opus).** One Phaser particle/shader layer that
+2. **GPU effect foundation (Opus). Done (D-484).** One Phaser particle/shader layer that
    uses the VFX texture library (`public/assets/vfx`, grayscale, tinted per
    element), replacing the current canvas effects. Device performance check
    (the open GPU item).
-3. **Six element base sets.** Projectile, impact and aura language per
+3. **Six element base sets. Done (D-485).** Projectile, impact and aura language per
    element.
-4. **Per-bearer signature layers in batches of about 8** (32 bearers), each
+4. **Per-bearer signature layers in batches of about 8. Done, all 32 (D-486 to D-489).** (32 bearers), each
    built from the bearer's signature equipment, trim and power geometry.
    Owner approves each batch in game.
 5. **Convergent Light cinematics.** Art cut-in, multi-hit choreography and
