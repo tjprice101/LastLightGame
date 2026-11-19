@@ -1,5 +1,36 @@
 # Current state and handoff
 
+## Spectacle step 4, batch 1: eight bearer signatures (D-486, 2026-11-18)
+
+**Implemented, committed on `battle-flurry-phase3`; not pushed or released.**
+Eight bearers have a signature layer on top of their element base: Infernis,
+Tizu, Flora, Atmoso, Rosetta, Disciple, Bliss and Bruno (all six elements).
+Details in the [combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Full `npx vitest run`: 10,700 of 10,701 passed; the one failure was the
+  known 20 s timeout in `acquisition-surfaces.test.ts`.
+- `npx vite build`: passed (existing chunk-size warning).
+- `--stream` captures against the dev preview (Story 25), Skill 2: Infernis
+  (recaptured after enlarging the crescents so they read against the
+  fireball), Atmoso and Bruno.
+
+**Not verified:**
+- the other signatures on screen (Tizu, Flora, Rosetta, Disciple, Bliss);
+- Convergent Light, 3x and Reduce motion with signatures;
+- the GPU frame-time check;
+- an owner feel review of the hosted build.
+
+**Known:** signatures are subtle against the element bursts (the Atmoso wheels
+are hidden by the finishing flash on a lethal hit). The owner may want them
+larger or brighter after the feel review.
+
+**Next:**
+- The owner reviews batch 1 in game (Normal Attack, Skill 1, Skill 2 and
+  Convergent Light at 1x and 3x), then approves tuning, the push and release.
+- Batch 2 (next 8 bearers; Sonnet).
+
 ## Spectacle step 3: element base sets live locally (2026-11-18)
 
 **Implemented (D-485), committed on `battle-flurry-phase3`; not pushed or

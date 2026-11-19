@@ -1,5 +1,21 @@
 # Decision log
 
+## Spectacle step 4, batch 1: per-bearer signature layers (D-486, 2026-11-18)
+
+- **Owner-approved plan (2026-11-18):** each Element-Bearer gets a signature
+  layer on top of its element base, built from its weapon and signature
+  geometry, in batches of about 8
+  ([combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4)).
+  Batch 1 (proposed, owner may swap): Infernis (`ember`), Tizu (`tide`), Flora
+  (`sprout`), Atmoso (`atmoso`), Rosetta (`rosetta`), Disciple (`disciple`),
+  Bliss (`bliss`) and Bruno (`bruno`).
+- **Implemented:** new `src/vfx/bearer-signatures.ts` (data and
+  `bearerElementStyle`); `GpuBattleEffects.bearerStyle()` uses it. Bearers
+  without a signature keep their element base, so batches land one at a time.
+- **Pending:** owner feel review of the batch in the hosted build.
+- Presentation only: no rule, RNG, reward, save or authority change, and no
+  deploy.
+
 ## Spectacle step 3: six element base sets (D-485, 2026-11-18)
 
 - **Owner-approved plan (2026-11-18):** each element gets its own base set

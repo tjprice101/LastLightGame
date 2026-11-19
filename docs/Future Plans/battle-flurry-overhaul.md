@@ -317,6 +317,13 @@ Open tuning, for Sonnet rounds after the review:
 - per-element size and alpha balance;
 - a GPU check of the larger texture set on the owner's hardware.
 
+#### Step 4: per-bearer signature layers (D-486, batch 1 implemented)
+
+Status: **batch 1 of 4 implemented 2026-11-18; owner feel review pending.**
+Eight bearers (Infernis, Tizu, Flora, Atmoso, Rosetta, Disciple, Bliss,
+Bruno) have signatures; 24 remain, in batches of about 8. See the
+[combat spec](../combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
+
 ## Skill language
 
 One fixed phrase order: **[hits] [element] attack on [target] ([power]%),**

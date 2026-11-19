@@ -2033,3 +2033,31 @@ investments and saved rewards retained, so pre-perk stat snapshots cannot mix
 with the new rules. No RNG stream, account field, acquisition rule, reward,
 load-time write or hostile tuning changed. Bounded before/after evidence and limitations are in
 [Section 1 of the Phase 1 plan](phase-1-war-characters.md#section-1-implementation-and-balance-evidence-d-437).
+
+## Battle Spectacle: bearer signature layers (D-486, Spectacle step 4)
+
+Presentation only, so no server deploy. `src/vfx/bearer-signatures.ts` holds
+one signature per Element-Bearer; `bearerElementStyle(starter, element)` puts
+it on top of the element base (D-485) and caches the result.
+- **What a signature may do.** Swap the melee cut, ranged travel, wind-up
+  sigil, support pulse or motes, and append layers and particles for Skill 1,
+  Skill 2, Convergent Light, the finisher and support. It never removes the
+  element's layers and never changes the palette.
+- **Normal Attack, enemy hits and status cues keep the element base** (a test
+  enforces it), so Normal Attack stays brisk.
+- **Escalation.** Signature layers appear from Skill 1; Skill 2 and the
+  finisher add at least as many as Skill 1. Added particles stay within 25% of
+  the element base's count for the same kind.
+- **Textures.** Signatures reuse the 46 loaded textures; no texture was added.
+- **Fallback.** A bearer with no entry plays its element base.
+
+| Bearer | Signature |
+|---|---|
+| Infernis | greatsword cleave: bright crescent arcs, rising embers |
+| Tizu | trident: a ripple per prong, ground ripple on the finisher |
+| Flora | petal-fletched arrow, petal blooms on hits and support |
+| Atmoso | cyclone: counter-turning streak wheels |
+| Rosetta | turning rose orb, double petal wheels |
+| Disciple | mind-fracture crown: spikes over a turning sigil, shards rise |
+| Bliss | twin feathers: wisps fan in opposite turns, down drifts |
+| Bruno | hammer slam: ground ring, crack burst, thrown rock |

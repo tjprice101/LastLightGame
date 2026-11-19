@@ -17,6 +17,7 @@ import { battleSpeed } from '../presentation/battle-speed';
 import { beatPlan, enemyImpactMs, FlashGovernor, spectacleTier, staticImpactMs, tintCss,
   type SpectacleBeats } from './spectacle-timing';
 import { elementStyle, type ElementStyle } from './element-styles';
+import { bearerElementStyle } from './bearer-signatures';
 import type { BurstKind, Point, SpectacleScene, SpectacleStats } from './spectacle-scene';
 import type Phaser from 'phaser';
 
@@ -114,10 +115,10 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     return rect && rect.width > 0 && rect.height > 0 ? rect : null;
   }
   private static centre(rect: DOMRect): Point { return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; }
-  /** Element base set (D-485) of the caster's kit; neutral when unknown. */
+  /** Element base set (D-485) of the caster's kit plus its signature layers (D-486); neutral when unknown. */
   private bearerStyle(state: RadiantCombatState, id: string): ElementStyle {
     const unit = state.bearers.find(member => member.loadout.id === id);
-    return elementStyle(unit ? radiantBearerKits[unit.loadout.starter]?.elementId : null);
+    return unit ? bearerElementStyle(unit.loadout.starter, radiantBearerKits[unit.loadout.starter]?.elementId) : elementStyle(null);
   }
   private wait(ms: number): Promise<void> {
     const scene = this.scene();
