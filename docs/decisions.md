@@ -1,5 +1,15 @@
 # Decision log
 
+## Spectacle step 4, batch 2: eight more bearer signatures (D-487, 2026-11-18)
+
+- **Batch 2 (proposed, owner may swap):** Aurora (`aurora`), Elise (`elise`),
+  Razor (`razor`), Thornia (`thornia`), Crinso (`crinso`), Ozriel (`ozriel`),
+  Ilvaris (`ilvaris`), Kaelith (`kaelith`): the next eight in the signature
+  list. Same rules as D-486; textures reused, none added.
+- **Pending:** owner feel review of batches 1 and 2 in the hosted build.
+- Presentation only: no rule, RNG, reward, save or authority change, and no
+  deploy.
+
 ## Spectacle step 4, batch 1: per-bearer signature layers (D-486, 2026-11-18)
 
 - **Owner-approved plan (2026-11-18):** each Element-Bearer gets a signature

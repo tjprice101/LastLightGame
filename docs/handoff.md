@@ -1,5 +1,30 @@
 # Current state and handoff
 
+## Spectacle step 4, batch 2: eight more bearer signatures (D-487, 2026-11-18)
+
+**Implemented in the working tree; not committed, pushed or released.**
+Aurora, Elise, Razor, Thornia, Crinso, Ozriel, Ilvaris and Kaelith now have
+signature layers (16 of 32 bearers in total), in `src/vfx/bearer-signatures.ts`.
+Details in the [combat spec](combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- `npx vitest run src/vfx`: 67 of 67 passed (the signature test now covers all
+  16 and checks textures, Normal Attack untouched, escalation and the 25%
+  particle budget).
+
+**Not verified:**
+- any batch 2 signature on screen (no `--stream` captures yet);
+- full `npx vitest run`, `npx vite build`;
+- the GPU frame-time check;
+- an owner feel review of batches 1 and 2.
+
+**Next:**
+- Capture batch 2 with `tools/capture_frames.mjs --stream` (Sonnet), then the
+  owner reviews both batches and approves tuning, the push and release.
+- Batch 3 (next 8: Nerithe, Orvella, Vaelor, Caldrex, Solenne, Myrthen,
+  Neralis, Varkhel; Sonnet).
+
 ## Spectacle step 4, batch 1: eight bearer signatures (D-486, 2026-11-18)
 
 **Implemented, committed on `battle-flurry-phase3`; not pushed or released.**

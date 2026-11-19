@@ -19,8 +19,8 @@ function texturesOf(id: string): SpectacleTexture[] {
 }
 
 describe('Bearer signature layers (D-486, Spectacle step 4)', () => {
-  it('covers batch 1: eight bearers across all six elements', () => {
-    expect(ids.sort()).toEqual(['atmoso', 'bliss', 'bruno', 'disciple', 'ember', 'rosetta', 'sprout', 'tide']);
+  it('covers batches 1 and 2: sixteen bearers across all six elements', () => {
+    expect(ids.sort()).toEqual(['atmoso', 'aurora', 'bliss', 'bruno', 'crinso', 'disciple', 'elise', 'ember', 'ilvaris', 'kaelith', 'ozriel', 'razor', 'rosetta', 'sprout', 'thornia', 'tide']);
     expect(new Set(ids.map(id => radiantBearerKits[id as keyof typeof radiantBearerKits].elementId)).size).toBe(6);
   });
   it('uses only textures the GPU layer loads', () => {
@@ -57,7 +57,7 @@ describe('Bearer signature layers (D-486, Spectacle step 4)', () => {
   });
   it('keeps the element palette and falls back to the base for bearers without a signature', () => {
     for (const id of ids) expect(styleOf(id).palette).toEqual(elementStyle(radiantBearerKits[id as keyof typeof radiantBearerKits].elementId).palette);
-    expect(bearerElementStyle('crinso', 'chaotic')).toBe(elementStyle('chaotic'));
+    expect(bearerElementStyle('nerithe', 'oceanic')).toBe(elementStyle('oceanic'));
     expect(bearerElementStyle(null, null)).toBe(elementStyle(null));
   });
   it('makes each signature distinct from its element base', () => {

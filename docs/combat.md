@@ -2061,3 +2061,11 @@ it on top of the element base (D-485) and caches the result.
 | Disciple | mind-fracture crown: spikes over a turning sigil, shards rise |
 | Bliss | twin feathers: wisps fan in opposite turns, down drifts |
 | Bruno | hammer slam: ground ring, crack burst, thrown rock |
+| Aurora | empty-hand lens: focusing sigil and bright ring, rising stars (batch 2) |
+| Elise | twin shuriken: counter-turning crossing blades, thin star points |
+| Razor | night sword guard: eclipse ring and a dark crescent, shadow wisps |
+| Thornia | garden gate: thorned ring, spikes, thrown thorns |
+| Crinso | dual-edged sword: bright and deep crescents cross opposed |
+| Ozriel | cathedral shield: runic citadel ring, glass web, falling shards |
+| Ilvaris | halo-lyre: successive resonance rings, thin star points |
+| Kaelith | shatterglass scythe: wide arc, fault-line crack, glass web on the finisher |

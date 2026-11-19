@@ -145,6 +145,112 @@ export const bearerSignatures: Readonly<Record<string, BearerSignature>> = {
       finisher: [spark('particles/rock-shard', 18, [220, 560], [380, 680], 34, { gravity: 520, rotate: 'spin' })],
     },
   },
+  // Empty-hand lens: a focusing sigil and a bright ring gather light onto the target.
+  aurora: {
+    layers: {
+      skill1: [layer('impacts/ring-sparkle', 1.3, 340, { from: .2 })],
+      skill2: [layer('impacts/sigil-circle', 1.5, 440, { spin: .5 }), layer('impacts/ring-sparkle', 1.8, 420, { from: .2, delay: 60 })],
+      flare: [layer('impacts/sigil-circle', 1.8, 380, { spin: .5 }), layer('impacts/ring-sparkle', 2, 380, { from: .2 })],
+      finisher: [layer('impacts/sigil-circle', 2.6, 620, { spin: .5 }), layer('impacts/ring-sparkle', 3, 600, { from: .2, delay: 60 }),
+        layer('flares/star-wisp', 2.4, 560, { delay: 90, tone: 'core' })],
+      support: [layer('impacts/ring-sparkle', 1.5, 520, { from: .2 })],
+    },
+    sparks: {
+      skill2: [spark('particles/star-soft', 5, [80, 220], [320, 520], 30, { gravity: -80 })],
+      finisher: [spark('particles/star-soft', 12, [100, 320], [380, 640], 34, { gravity: -80 })],
+    },
+  },
+  // Twin four-point shuriken: crossing blades and thin star points thrown outward.
+  elise: {
+    layers: {
+      skill1: [layer('impacts/x-cross', 1.3, 320, { spin: 1.4 })],
+      skill2: [layer('impacts/x-cross', 1.6, 400, { spin: 1.6 }), layer('impacts/x-cross', 1.3, 380, { spin: -1.6, delay: 60 })],
+      flare: [layer('impacts/x-cross', 1.9, 360, { spin: 1.6 }), layer('impacts/x-cross', 1.5, 340, { spin: -1.6, delay: 40 })],
+      finisher: [layer('impacts/x-cross', 2.6, 560, { spin: 1.8 }), layer('impacts/x-cross', 2, 520, { spin: -1.8, delay: 50 })],
+    },
+    sparks: {
+      skill2: [spark('flares/star-sharp', 4, [300, 640], [200, 340], 36, { rotate: 'spin' })],
+      finisher: [spark('flares/star-sharp', 10, [400, 860], [240, 420], 40, { rotate: 'spin' })],
+    },
+  },
+  // Night sword guard: an eclipse ring closes over the target, shadow wisps trail off.
+  razor: {
+    layers: {
+      skill1: [layer('impacts/ring-cosmic', 1.4, 360, { spin: .3 })],
+      skill2: [layer('impacts/ring-cosmic', 1.8, 460, { spin: .3 }), layer('particles/crescent', 2.2, 420, { spin: -.8, delay: 70, tone: 'core', alpha: 1 })],
+      flare: [layer('impacts/ring-cosmic', 2, 400, { spin: .3 }), layer('particles/crescent', 2.4, 380, { spin: -.8, tone: 'core', alpha: 1 })],
+      finisher: [layer('impacts/ring-cosmic', 3, 640, { spin: .3 }), layer('particles/crescent', 3.4, 600, { spin: -.9, delay: 60, tone: 'core', alpha: 1 })],
+    },
+    sparks: {
+      skill2: [spark('particles/mist-wisp', 4, [60, 160], [420, 640], 48, { gravity: -40, rotate: 'random' })],
+      finisher: [spark('particles/mist-wisp', 10, [80, 240], [480, 760], 54, { gravity: -40, rotate: 'random' })],
+    },
+  },
+  // Greatsword garden gate: thorned rings and thorn shards thrown from the blow.
+  thornia: {
+    layers: {
+      skill1: [layer('impacts/ring-thorned', 1.4, 360, { spin: .4 })],
+      skill2: [layer('impacts/ring-thorned', 1.8, 460, { spin: .4 }), layer('impacts/radial-spikes', 1.6, 420, { spin: -.4, delay: 70, tone: 'edge' })],
+      flare: [layer('impacts/ring-thorned', 2.1, 400, { spin: .4 }), layer('impacts/radial-spikes', 1.9, 380, { spin: -.4, tone: 'edge' })],
+      finisher: [layer('impacts/ring-thorned', 3, 640, { spin: .4 }), layer('impacts/radial-spikes', 2.8, 600, { spin: -.4, delay: 60, tone: 'edge' })],
+    },
+    sparks: {
+      skill1: [spark('particles/thorn', 3, [160, 340], [300, 460], 26, { gravity: 300, rotate: 'random' })],
+      skill2: [spark('particles/thorn', 6, [200, 440], [340, 540], 28, { gravity: 300, rotate: 'random' })],
+      finisher: [spark('particles/thorn', 14, [240, 580], [380, 660], 32, { gravity: 300, rotate: 'random' })],
+    },
+  },
+  // Dual-edged sword: two opposed crescents, one bright and one deep, cross the target.
+  crinso: {
+    layers: {
+      skill1: [layer('particles/crescent', 2, 320, { spin: .9, tone: 'core', alpha: 1 }), layer('particles/crescent', 2, 320, { spin: -.9, tone: 'edge', alpha: 1 })],
+      skill2: [layer('particles/crescent', 2.6, 400, { spin: 1, tone: 'core', alpha: 1 }), layer('particles/crescent', 2.6, 400, { spin: -1, tone: 'edge', alpha: 1, delay: 60 })],
+      flare: [layer('particles/crescent', 2.8, 360, { spin: 1.1, tone: 'core', alpha: 1 }), layer('particles/crescent', 2.8, 360, { spin: -1.1, tone: 'edge', alpha: 1, delay: 40 })],
+      finisher: [layer('particles/crescent', 3.6, 560, { spin: 1.2, tone: 'core', alpha: 1 }), layer('particles/crescent', 3.6, 560, { spin: -1.2, tone: 'edge', alpha: 1, delay: 60 })],
+    },
+  },
+  // Cathedral shield and glass halberd: a citadel ring holds, glass shards fall away.
+  ozriel: {
+    layers: {
+      skill1: [layer('impacts/ring-runic', 1.4, 380, { spin: .2 })],
+      skill2: [layer('impacts/ring-runic', 1.8, 480, { spin: .2 }), layer('impacts/shatter-web', 1.8, 440, { delay: 70, alpha: .6 })],
+      flare: [layer('impacts/ring-runic', 2.1, 420, { spin: .2 }), layer('impacts/shatter-web', 2.1, 400, { alpha: .6 })],
+      finisher: [layer('impacts/ring-runic', 3, 660, { spin: .2 }), layer('impacts/shatter-web', 3, 640, { delay: 60, alpha: .6 })],
+      support: [layer('impacts/ring-runic', 1.5, 540, { spin: .2 })],
+    },
+    sparks: {
+      skill2: [spark('particles/crystal-shard', 4, [140, 320], [300, 480], 34, { gravity: 260, rotate: 'random' })],
+      finisher: [spark('particles/crystal-shard', 10, [200, 480], [380, 620], 38, { gravity: 260, rotate: 'random' })],
+    },
+  },
+  // Glass halo-lyre: ring after ring of resonance with a ringing sparkle.
+  ilvaris: {
+    layers: {
+      skill1: [layer('impacts/ring-sparkle', 1.3, 340, { from: .15 })],
+      skill2: [0, 80, 160].map(delay => layer('impacts/ring-sparkle', 1.7, 400, { from: .15, delay })),
+      flare: [0, 80].map(delay => layer('impacts/ring-sparkle', 2, 360, { from: .15, delay })),
+      finisher: [0, 80, 160].map(delay => layer('impacts/ring-sparkle', 2.8, 580, { from: .15, delay })),
+      support: [layer('impacts/ring-sparkle', 1.5, 520, { from: .15 })],
+    },
+    sparks: {
+      skill2: [spark('particles/star-thin', 5, [200, 460], [260, 420], 38)],
+      finisher: [spark('particles/star-thin', 12, [280, 640], [300, 520], 42)],
+    },
+  },
+  // Shatterglass greatscythe: a wide scythe arc and a fault line splitting the target.
+  kaelith: {
+    layers: {
+      skill1: [layer('particles/crescent', 2.6, 340, { spin: .7, tone: 'core', alpha: 1 })],
+      skill2: [layer('particles/crescent', 3.2, 440, { spin: .8, tone: 'core', alpha: 1 }), layer('impacts/crack-burst', 1.8, 420, { delay: 80 })],
+      flare: [layer('particles/crescent', 3.4, 380, { spin: .9, tone: 'core', alpha: 1 }), layer('impacts/crack-burst', 2, 380)],
+      finisher: [layer('particles/crescent', 4.4, 600, { spin: 1, tone: 'core', alpha: 1 }), layer('impacts/crack-burst', 3.2, 620, { delay: 70 }),
+        layer('impacts/shatter-web', 2.8, 640, { delay: 110, alpha: .6 })],
+    },
+    sparks: {
+      skill2: [spark('particles/crystal-shard', 4, [200, 420], [300, 480], 34, { gravity: 240, rotate: 'random' })],
+      finisher: [spark('particles/crystal-shard', 12, [260, 560], [380, 620], 38, { gravity: 240, rotate: 'random' })],
+    },
+  },
 };
 
 const cache = new Map<string, ElementStyle>();
