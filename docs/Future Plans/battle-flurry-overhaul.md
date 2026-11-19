@@ -14,6 +14,16 @@ Owner choices: Health motes move to Phase 3 (engine rule, needs a deploy), and
 materials pour after the save rather than being predicted on the device.
 Phases 3-4 remain planned below.
 
+**Phase 4 round 1 (D-492, 2026-11-19):** 4a, the Conduit callouts and contribution
+summary, is implemented on branch `battle-flurry-phase3` (needs an authority
+deploy for measured stat and multiplier shares online); see the
+[combat spec](../combat.md#conduit-callouts-and-contribution-d-492-battle-flurry-phase-4a).
+4b is a docs-only restoration proposal,
+[phase4-conduit-restoration.md](battle-flurry-reference/phase4-conduit-restoration.md):
+owner direction is to restore the pre-Radiant Conduit effects in their totality
+where they fit the current system, instead of the re-anchor-and-cut wording in
+§E below. 4c (code) waits for per-batch approval.
+
 **Phase 3 in progress (2026-11-16):** Step 1 (docs only) drafts every kit in
 batches, plus a number sheet, in
 [phase3-kit-drafts.md](battle-flurry-reference/phase3-kit-drafts.md). Owner

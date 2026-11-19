@@ -2,6 +2,12 @@
 
 ## Current Radiant equipment (D-456; local-only)
 
+In battle, each Conduit's effect is now named as it acts and totalled on the
+results sheet (D-492, [combat spec](combat.md#conduit-callouts-and-contribution-d-492-battle-flurry-phase-4a)).
+A proposal to restore the pre-Radiant effects is in
+[phase4-conduit-restoration.md](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+(not approved).
+
 The current working tree has **99 ordinary-slot Conduits and 96 personal
 Masters**. Each has one or two concise effects; no two share the same
 effect-kind combination even when numeric values are ignored. They combine

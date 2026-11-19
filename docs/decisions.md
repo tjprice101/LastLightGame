@@ -1,5 +1,26 @@
 # Decision log
 
+## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
+
+- **Owner-approved plan (2026-11-19).** Phase 4 round 1 = 4a build (on-field
+  Conduit callouts plus a post-battle per-Conduit contribution summary) and 4b
+  draft (Conduit restoration proposal). 4c (restoration code) waits for owner
+  approval of 4b ([combat spec](combat.md#conduit-callouts-and-contribution-d-492-battle-flurry-phase-4a)).
+- **Owner choices:**
+  - **measure silent Conduits:** stat and multiplier Conduits get a measured
+    share (`boosts` on damage, heal and Shield events; prevented damage on
+    enemy hits), which needs an authority bundle rebuild and deploy;
+  - **restore, not redesign (4b direction):** "a lot of the conduits how they
+    were before the radiant rework could be brought back in their totality
+    because what they all did before was unique and still fits the current
+    system." This replaces the §E "re-anchor and cut" wording as the proposal
+    basis; the restoration itself still needs per-batch approval.
+- **Rules unchanged:** attribution is optional event bookkeeping. Amounts,
+  order, rounding, RNG streams, state fingerprints, rewards and saves are
+  unchanged; older journals stay valid.
+- **Not itemized:** `burn-power` on Burn ticks, `shield-break`, per-event
+  Health/Recovery sticks and `start-charge` (shown as always-on lines).
+
 ## Spectacle step 6: enemy attacks (D-491, 2026-11-19)
 
 - **Owner-approved plan (2026-11-19).** Enemy actions telegraph, escalate by

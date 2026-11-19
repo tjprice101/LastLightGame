@@ -16677,7 +16677,7 @@ var radiantKits = {
   },
   bliss: {
     signature: "Tempo",
-    passive: { name: "Stillfeather Tempo", description: "A skill or Flare gets its Opening bonus if Bliss acts before every other living ally this turn, and its Closing bonus if she acts after all of them. When alone, every action is Opening." },
+    passive: { name: "Stillfeather Tempo", description: "A skill or Convergent Light gets its Opening bonus if Bliss acts before every other living ally this turn, and its Closing bonus if she acts after all of them. When alone, every action is Opening." },
     skill1: skill("Warfeather Cut", one(4, 2.6), [bonus(0.3, { when: "opening" }), heal("lowest", 0.15, { when: "closing" })]),
     skill2: skill("Quietstorm Flourish", all(6, 1.7), [attackUp("all-allies", 0.2, 1, { when: "opening" }), shield("all-allies", 0.1, { when: "closing" })]),
     flare: skill("Thousandfeather Stillness", all(12, 9.5), [bonus(0.4, { when: "opening" }), heal("all-allies", 0.25, { when: "closing" })])
@@ -16748,7 +16748,7 @@ var radiantKits = {
   },
   kaelith: {
     signature: "Fractalized Incision",
-    passive: { name: "Reality Fault", description: "Each skill or Flare from Kaelith adds 1 Incision to every enemy it hits (max 3). Each Incision makes that enemy take +10% damage from all allies until consumed." },
+    passive: { name: "Reality Fault", description: "Each skill or Convergent Light from Kaelith adds 1 Incision to every enemy it hits (max 3). Each Incision makes that enemy take +10% damage from all allies until consumed." },
     skill1: skill("Shatterfall", all(5, 2)),
     skill2: skill("Glass Meridian", one(6, 3.6), [sig("consume-incisions", { to: "target" })], { perStack: 0.2 }),
     flare: skill("Denial of Fate", all(12, 10), [expose("all-enemies", 0.25, 2)])
@@ -16791,7 +16791,7 @@ var radiantKits = {
   },
   myrthen: {
     signature: "Season",
-    passive: { name: "Turning Season", description: "Each skill advances the Season from Sprout to Bloom to Harvest. In Harvest, the next skill or Flare deals +35% and ignores 20% of Defense, then the Season returns to Sprout. Battles start in Sprout." },
+    passive: { name: "Turning Season", description: "Each skill advances the Season from Sprout to Bloom to Harvest. In Harvest, the next skill or Convergent Light deals +35% and ignores 20% of Defense, then the Season returns to Sprout. Battles start in Sprout." },
     skill1: skill("Reaper's Claim", one(4, 2.5), [expose("target", 0.12, 2)]),
     skill2: skill("Turn the Bough", all(6, 1.7)),
     flare: skill("All That Ripens", one(12, 12.5))
@@ -16841,7 +16841,7 @@ var radiantKits = {
   },
   vespera: {
     signature: "Signal",
-    passive: { name: "Someone Still Beyond the Walls", description: "Signal makes an ally's next damaging skill or Flare deal +35%, until the end of the next player turn. Reapplying refreshes it rather than stacking." },
+    passive: { name: "Someone Still Beyond the Walls", description: "Signal makes an ally's next damaging skill or Convergent Light deal +35%, until the end of the next player turn. Reapplying refreshes it rather than stacking." },
     skill1: skill("Whitefire Dispatch", one(3, 2.1), [burn("target", 0.25, 3)]),
     skill2: skill("Keep the Last Beacon", none, [sig("signal", { to: "other-allies", value: 0.35 })]),
     flare: skill("None Left in the Dark", all(12, 6), [sig("burn-up", { to: "all-allies", value: 0.2, turns: 2 }), sig("signal", { to: "other-allies", value: 0.5 })])
@@ -17697,6 +17697,8 @@ function living2(hp) {
 function effectiveRadiantStats(state, id) {
   const member = bearer(state, id);
   const stats = { ...member.stats };
+  if (excludedSources) for (const key of ["hp", "attack", "defense", "recovery"])
+    stats[key] *= (1 + equipmentAmount(member, key)) / (1 + radiantEquipmentAmount(member.loadout, key));
   for (const key of ["hp", "attack", "defense", "recovery"])
     stats[key] *= 1 + leaderEffects(state, member).filter((entry) => entry.kind === key).reduce((sum, entry) => sum + entry.amount, 0);
   stats.attack *= 1 - category(member.buffs, "weaken") * (1 - Math.min(0.8, combatAmount(state, member, "resilience")));
@@ -17721,12 +17723,30 @@ function radiantSkillStats(state, id, slot) {
 function gaugeGain(member) {
   return 1 + category(member.buffs, "gain-up");
 }
+var excludedSources = null;
+function gearKey(source) {
+  return source.kind === "gear" ? `gear:${source.bearerId}:${source.conduitId}` : `${source.kind}:${source.bearerId}`;
+}
+function equipmentAmount(member, kind) {
+  if (!excludedSources) return radiantEquipmentAmount(member.loadout, kind);
+  const id = member.loadout.id, skip = excludedSources;
+  let sum = 0;
+  for (const slot of member.loadout.gear ?? []) {
+    if (slot === null || skip.has(gearKey({ kind: "gear", bearerId: id, conduitId: slot.id }))) continue;
+    for (const entry of radiantConduitPrimitives(slot)) if (entry.kind === kind) sum += entry.amount;
+  }
+  if (member.loadout.masterId !== null && !skip.has(gearKey({ kind: "master", bearerId: id }))) {
+    for (const entry of radiantMasters[member.loadout.masterId].effects) if (entry.kind === kind) sum += entry.amount;
+  }
+  return sum;
+}
 function leaderEffects(state, recipient) {
   const leader = state.bearers[0];
+  if (excludedSources?.has(gearKey({ kind: "leader", bearerId: leader.loadout.id }))) return [];
   return leader.hp > 0 && radiantStarterKits[leader.loadout.starter].elementId === radiantStarterKits[recipient.loadout.starter].elementId ? radiantLeaderEffects(leader.loadout) : [];
 }
 function combatAmount(state, actor2, kind) {
-  return radiantEquipmentAmount(actor2.loadout, kind) + leaderEffects(state, actor2).filter((entry) => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0);
+  return equipmentAmount(actor2, kind) + leaderEffects(state, actor2).filter((entry) => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0);
 }
 function outgoingDamageMultiplier(state, actor2, target, periodic = false) {
   const element = radiantStarterKits[actor2.loadout.starter].elementId;
@@ -18200,7 +18220,58 @@ function healthMote(state, events, target, source) {
   owner.hp += effective;
   events.push({ type: "health-mote", enemyId: target.id, bearerId: owner.loadout.id, offered, effective });
 }
-function packet(state, events, target, source, origin, offered, hitCharge, redirected = false) {
+function gearSources(state, holder) {
+  const id = holder.loadout.id, seen = /* @__PURE__ */ new Set(), sources = [];
+  for (const slot of holder.loadout.gear ?? []) if (slot !== null && !seen.has(slot.id)) {
+    seen.add(slot.id);
+    sources.push({ kind: "gear", bearerId: id, conduitId: slot.id });
+  }
+  if (holder.loadout.masterId !== null) sources.push({ kind: "master", bearerId: id });
+  if (leaderEffects(state, holder).length > 0) sources.push({ kind: "leader", bearerId: state.bearers[0].loadout.id });
+  return sources;
+}
+function attribute(state, holder, final, compute, scale = 1) {
+  if (excludedSources) return void 0;
+  const sources = gearSources(state, holder);
+  if (sources.length === 0) return void 0;
+  const without = (keys2) => {
+    excludedSources = new Set(keys2);
+    try {
+      return compute();
+    } finally {
+      excludedSources = null;
+    }
+  };
+  try {
+    const total = Math.round(Math.abs(final - without(sources.map(gearKey))) * scale);
+    if (!(total > 0)) return void 0;
+    const margins = sources.map((source) => Math.abs(final - without([gearKey(source)])));
+    const sum = margins.reduce((a, b) => a + b, 0);
+    if (!(sum > 0)) return void 0;
+    const shares = margins.map((margin) => Math.floor(total * margin / sum));
+    let left = total - shares.reduce((a, b) => a + b, 0);
+    const order = margins.map((margin, i) => ({ i, rest: total * margin / sum - shares[i] })).sort((a, b) => b.rest - a.rest);
+    for (const { i } of order) {
+      if (left <= 0) break;
+      shares[i]++;
+      left--;
+    }
+    const boosts = sources.map((source, i) => ({ source, amount: shares[i] })).filter((entry) => entry.amount > 0);
+    return boosts.length > 0 ? boosts : void 0;
+  } catch {
+    excludedSources = null;
+    return void 0;
+  }
+}
+function hitBoosts(boosts, hit, hits) {
+  if (!boosts) return void 0;
+  const part = boosts.map((entry) => ({
+    source: entry.source,
+    amount: Math.floor(entry.amount / hits) + (hit === hits - 1 ? entry.amount % hits : 0)
+  })).filter((entry) => entry.amount > 0);
+  return part.length > 0 ? part : void 0;
+}
+function packet(state, events, target, source, origin, offered, hitCharge, redirected = false, boosts) {
   safe(offered, "damage packet", 1);
   living2(target.hp);
   let remaining = offered;
@@ -18228,7 +18299,8 @@ function packet(state, events, target, source, origin, offered, hitCharge, redir
     absorbed,
     healthLoss,
     shields,
-    ...redirected ? { redirected: true } : {}
+    ...redirected ? { redirected: true } : {},
+    ...boosts ? { boosts } : {}
   });
   if (refusal?.signature?.kind === "refusal") {
     refusal.signature.spent.push(targetId);
@@ -18272,28 +18344,39 @@ function native(source) {
   return source.kind === "normal" || source.kind === "skill" || source.kind === "flare" || source.kind === "passive";
 }
 function heal2(state, events, target, source, snapshot) {
+  const base = snapshot;
   if (native(source)) snapshot *= 1 + combatAmount(state, bearer(state, source.bearerId), "healing");
   finite(snapshot, "healing snapshot");
   if (target.hp === 0) return 0;
   const offered = rounded(snapshot), effective = Math.min(offered, rounded(target.stats.hp) - target.hp);
   target.hp += effective;
+  const boosts = native(source) && effective > 0 ? attribute(
+    state,
+    bearer(state, source.bearerId),
+    offered,
+    () => rounded(base * (1 + combatAmount(state, bearer(state, source.bearerId), "healing"))),
+    effective / offered
+  ) : void 0;
   events.push({
     type: "heal",
     source,
     targetId: "loadout" in target ? target.loadout.id : target.id,
     snapshot,
     offered,
-    effective
+    effective,
+    ...boosts ? { boosts } : {}
   });
   return effective;
 }
 function shield2(state, events, target, source, magnitude2) {
-  const amount = rounded(magnitude2 * (native(source) ? 1 + combatAmount(state, bearer(state, source.bearerId), "shielding") : 1));
+  const shielded = () => rounded(magnitude2 * (native(source) ? 1 + combatAmount(state, bearer(state, source.bearerId), "shielding") : 1));
+  const amount = shielded();
   if (amount === 0 || target.hp === 0) return;
   const shieldId = state.nextShieldId++;
   safe(state.nextShieldId, "shield serial", 1);
   target.shields.push({ id: shieldId, source, remaining: amount });
-  events.push({ type: "shield", source, targetId: target.loadout.id, amount, shieldId });
+  const boosts = native(source) ? attribute(state, bearer(state, source.bearerId), amount, shielded) : void 0;
+  events.push({ type: "shield", source, targetId: target.loadout.id, amount, shieldId, ...boosts ? { boosts } : {} });
 }
 function applyCategory(events, targetId, effects, kind, source, magnitude2, turns) {
   finite(magnitude2, "category magnitude");
@@ -18479,13 +18562,14 @@ function debuff(state, events, target, kind, source, magnitude2, turns) {
 }
 function strike(state, events, actor2, target, source, coefficient) {
   if (target.hp === 0 || coefficient <= 0) return;
-  const stats = effectiveRadiantStats(state, actor2.loadout.id);
-  packet(state, events, target, source, "direct", radiantDirectDamage(
-    stats.attack,
+  const offered = () => radiantDirectDamage(
+    effectiveRadiantStats(state, actor2.loadout.id).attack,
     gearDefense(state, actor2, target.stats.defense),
     coefficient,
     (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor2, target)
-  ));
+  );
+  const amount = offered();
+  packet(state, events, target, source, "direct", amount, void 0, false, attribute(state, actor2, amount, offered));
 }
 function releaseCyclone2(state, events, actor2, multiplier, source) {
   const own = actor2.signature;
@@ -18875,21 +18959,24 @@ function tickSignatures(state, events) {
 function normal(state, events, actor2, targetId, hitCharge) {
   const target = enemy(state, targetId);
   living2(target.hp);
-  const stats = effectiveRadiantStats(state, actor2.loadout.id);
   const source = { kind: "normal", bearerId: actor2.loadout.id };
+  const offered = () => radiantDirectDamage(
+    effectiveRadiantStats(state, actor2.loadout.id).attack,
+    gearDefense(state, actor2, target.stats.defense),
+    1 + combatAmount(state, actor2, "normal") + cooperation(state, actor2),
+    (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor2, target)
+  );
+  const amount = offered();
   const impact = packet(
     state,
     events,
     target,
     source,
     "direct",
-    radiantDirectDamage(
-      stats.attack,
-      gearDefense(state, actor2, target.stats.defense),
-      1 + combatAmount(state, actor2, "normal") + cooperation(state, actor2),
-      (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor2, target)
-    ),
-    hitCharge
+    amount,
+    hitCharge,
+    false,
+    attribute(state, actor2, amount, offered)
   );
   return impact.healthLoss + impact.absorbed > 0 ? 1 : 0;
 }
@@ -18927,17 +19014,28 @@ function cast(state, events, actor2, input, hitCharge) {
   let hits = 0;
   if (def.target !== "none") for (const target of enemyTargets) {
     if (target.hp === 0) continue;
-    const coefficient = power2 * input.damageScale * skill2.skillPower * (1 + (input.kind === "flare" ? combatAmount(state, actor2, "flare") : 0) + cooperation(state, actor2) + bonus2);
-    const total = Math.max(input.hits, radiantDirectDamage(
-      stats.attack,
+    const offered = () => Math.max(input.hits, radiantDirectDamage(
+      excludedSources ? effectiveRadiantStats(state, id).attack : stats.attack,
       gearDefense(state, actor2, target.stats.defense, ignore2),
-      coefficient,
+      power2 * input.damageScale * skill2.skillPower * (1 + (input.kind === "flare" ? combatAmount(state, actor2, "flare") : 0) + cooperation(state, actor2) + bonus2),
       (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor2, target)
     ));
+    const total = offered();
+    const boosts = attribute(state, actor2, total, offered);
     for (let hit = 0; hit < input.hits && target.hp > 0; hit++) {
       const amount = Math.floor(total / input.hits) + (hit === input.hits - 1 ? total % input.hits : 0);
       if (!amount) continue;
-      const impact = packet(state, events, target, source, "direct", amount, hitCharge);
+      const impact = packet(
+        state,
+        events,
+        target,
+        source,
+        "direct",
+        amount,
+        hitCharge,
+        false,
+        hitBoosts(boosts, hit, input.hits)
+      );
       if (impact.healthLoss + impact.absorbed > 0) {
         hits++;
         struck.add(target);
@@ -19094,20 +19192,24 @@ function enemyAttack(state, events, action) {
     }
   }
   for (const target of targets) {
-    const stats = effectiveRadiantStats(state, target.loadout.id);
     const reduction2 = category(target.buffs, "reduction");
     const weakening = category(actor2.debuffs, "weaken");
     const element = elementDamageMultiplier(actor2.elementId, radiantStarterKits[target.loadout.starter].elementId);
-    const guard = state.skilled.includes(target.loadout.id) ? Math.min(0.6, combatAmount(state, target, "guard")) : 0;
-    const output = Math.max(0.2, (1 - guard) * (1 - reduction2));
-    const beforeProtection = radiantDirectDamage(actor2.stats.attack * (1 - weakening), stats.defense, action.coefficient, output * element);
-    const protection = (target.hp > target.stats.hp * 0.75 ? combatAmount(state, target, "shelter") : 0) + (beforeProtection > target.stats.hp * 0.2 ? combatAmount(state, target, "brace") : 0);
-    const total = radiantDirectDamage(
-      actor2.stats.attack * (1 - weakening),
-      stats.defense,
-      action.coefficient,
-      Math.max(0.2, output * (1 - Math.min(0.8, protection))) * element
-    );
+    const incoming = () => {
+      const stats = effectiveRadiantStats(state, target.loadout.id);
+      const guard = state.skilled.includes(target.loadout.id) ? Math.min(0.6, combatAmount(state, target, "guard")) : 0;
+      const output = Math.max(0.2, (1 - guard) * (1 - reduction2));
+      const beforeProtection = radiantDirectDamage(actor2.stats.attack * (1 - weakening), stats.defense, action.coefficient, output * element);
+      const protection = (target.hp > target.stats.hp * 0.75 ? combatAmount(state, target, "shelter") : 0) + (beforeProtection > target.stats.hp * 0.2 ? combatAmount(state, target, "brace") : 0);
+      return radiantDirectDamage(
+        actor2.stats.attack * (1 - weakening),
+        stats.defense,
+        action.coefficient,
+        Math.max(0.2, output * (1 - Math.min(0.8, protection))) * element
+      );
+    };
+    const total = incoming();
+    const prevented = attribute(state, target, total, incoming);
     for (let hit = 0; hit < hits && target.hp > 0; hit++) {
       let amount = Math.floor(total / hits) + (hit === hits - 1 ? total % hits : 0);
       if (!amount) continue;
@@ -19125,7 +19227,7 @@ function enemyAttack(state, events, action) {
       }
       if (amount - moved <= 0) continue;
       const taken = holdStillness(events, target, amount - moved);
-      const part = packet(state, events, target, source, "direct", taken);
+      const part = packet(state, events, target, source, "direct", taken, void 0, false, hitBoosts(prevented, hit, hits));
       damaged = true;
       refundFullBlock(state, events, target, part, taken);
       carryUnreturned(state, events, part.healthLoss);
@@ -19269,9 +19371,13 @@ function processRadiantGear(state, events, action) {
         const amount = primitive.amount;
         const grant = (recipient, value2) => {
           if (recipient.hp > 0) {
+            const before = state.gauge.members.find((m) => m.id === recipient.loadout.id).charge;
             addPassiveCharge(state, events, recipient.loadout.id, rounded(value2 * gaugeGain(recipient)));
             const event2 = events[events.length - 1];
-            if (event2.type === "charge") event2.gearSource = source;
+            if (event2.type === "charge") {
+              event2.gearSource = source;
+              if (event2.personal > before) event2.gained = event2.personal - before;
+            }
           }
         };
         const wounded = woundedAlly(state);
@@ -20078,6 +20184,8 @@ function validEvent(value2) {
   ].includes(String(value2.status))) return false;
   if (value2.type === "status" && value2.clockOnly !== void 0 && value2.clockOnly !== true) return false;
   if (value2.type === "skill" && value2.slot !== 1 && value2.slot !== 2) return false;
+  if (value2.boosts !== void 0 && (!["damage", "heal", "shield"].includes(value2.type) || !Array.isArray(value2.boosts) || !value2.boosts.every((boost) => record4(boost) && validSource(boost.source) && record4(boost.source) && ["gear", "master", "leader"].includes(String(boost.source.kind)) && Number.isSafeInteger(boost.amount) && Number(boost.amount) > 0))) return false;
+  if (value2.gained !== void 0 && (value2.type !== "charge" || value2.gearSource === void 0 || !Number.isSafeInteger(value2.gained) || Number(value2.gained) < 1)) return false;
   return value2.gearSource === void 0 || validSource(value2.gearSource);
 }
 function validateRadiantRunResponse(value2) {

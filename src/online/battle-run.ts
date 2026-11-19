@@ -546,6 +546,13 @@ function validEvent(value: unknown): boolean {
     'weaken-removed'].includes(String(value.status))) return false;
   if (value.type === 'status' && value.clockOnly !== undefined && value.clockOnly !== true) return false;
   if (value.type === 'skill' && value.slot !== 1 && value.slot !== 2) return false;
+  // D-492: optional Conduit attribution; older journals have none.
+  if (value.boosts !== undefined && (!['damage', 'heal', 'shield'].includes(value.type) || !Array.isArray(value.boosts) ||
+    !value.boosts.every(boost => record(boost) && validSource(boost.source) && record(boost.source) &&
+      ['gear', 'master', 'leader'].includes(String(boost.source.kind)) &&
+      Number.isSafeInteger(boost.amount) && Number(boost.amount) > 0))) return false;
+  if (value.gained !== undefined && (value.type !== 'charge' || value.gearSource === undefined ||
+    !Number.isSafeInteger(value.gained) || Number(value.gained) < 1)) return false;
   return value.gearSource === undefined || validSource(value.gearSource);
 }
 export function validateRadiantRunResponse(value: unknown): RadiantRunResponse {

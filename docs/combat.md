@@ -2249,3 +2249,69 @@ never an outcome, RNG or receipt.
 
   Overdrive needs an ordinary enemy of Lv.50 or higher, such as late Story
   stages; no preview fixture reaches it yet.
+
+## Conduit callouts and contribution (D-492, Battle Flurry Phase 4a)
+
+Problem (D-470): Conduits worked in the engine but nothing on screen showed it.
+Phase 4a names every Conduit, Master and Leader effect as it acts and totals
+what each one did once the encounter is saved. No combat number, order, RNG
+stream, reward or save changes.
+
+- **Engine attribution** (`src/game/combat-engine.ts`). Event-producing
+  Conduits were already attributed (`source: { kind: 'gear' | 'master' |
+  'leader' }`, `charge.gearSource`). New optional bookkeeping fields:
+  - `boosts: { source, amount }[]` on `damage`, `heal` and `shield` events,
+    for Conduits that only change numbers (stat sticks, conditional and
+    Normal/Convergent Light damage bonuses, pierce, healing and shielding
+    bonuses, Leader stat effects);
+  - on enemy hits, `boosts` is the damage the struck bearer's Defense, guard,
+    shelter and brace Conduits **prevented**;
+  - `charge.gained`: the Luminosity a Conduit actually added after the gauge
+    cap.
+  - Method: `attribute()` recomputes the same pure formula with all of the
+    holder's Conduits removed and then with each one removed alone; the total
+    difference is split in proportion to each source's marginal effect and
+    rounded so the shares sum exactly. Multi-hit totals split per hit like the
+    damage itself (`hitBoosts`). Recomputes never write state or read RNG; a
+    failed recompute only drops the bookkeeping.
+  - Not itemized: Burn strength from `burn-power` (stored when the Burn is
+    applied), `shield-break`, Health and Recovery sticks per event, and
+    `start-charge` (no event exists at encounter creation). Max Health and
+    starting Luminosity show as always-on lines in the summary instead.
+  - `validEvent` (`src/online/battle-run.ts`) accepts the new fields only when
+    well formed; older journals without them stay valid. The authority bundle
+    must be rebuilt and deployed for online journals to carry them.
+- **On-field callouts** (`radiantConduitCallouts` in
+  `src/presentation/battle-conduit-contribution.ts`, drawn by
+  `RadiantBattleView.conduitCallouts`):
+  - one pill per acting source per impact frame: the Conduit, Master or
+    "Leader Skill" name over up to two facts (`+202 damage`, `Shield +300`,
+    `Heal +180`, `+12 Luminosity`, `84 damage prevented`, a status name);
+  - boost shares below 10% of their hit are folded away; at most 2 pills per
+    bearer and 4 per frame;
+  - anchored above the owning bearer's field slot (not the art, which may be
+    mid-lunge), stacked 30 px apart, clamped inside the battlefield;
+  - element accent, gold rim, Lora body, Cinzel name; 1.1 s at speed 1,
+    follows battle speed; finite, pointer-transparent, aria-hidden and cleared
+    by Skip, Exit and Retry;
+  - Reduce motion: the same pill, static, for 900 ms (speed-scaled).
+- **Contribution summary** (`radiantConduitContributionMarkup`, inside
+  `radiantResultsMarkup` after "Battle summary"). A collapsed "Conduit
+  contribution" section, shown only on the saved result:
+  - grouped by bearer, one row per equipped Conduit (icon at its rank),
+    Master and the Leader Skill (only when it did something);
+  - exact totals: damage, damage prevented, healing (effective), Shield,
+    Luminosity, effects applied, plus always-on max Health and starting
+    Luminosity; idle Conduits read "No trigger this battle";
+  - totals cover the saved journal, so they include earlier retries of the
+    encounter, like the rewards;
+  - first open staggers the rows in and counts each total up (`luster.ts`);
+    static under Reduce motion.
+
+Validation: `src/game/conduit-effects.test.ts` (attribution shares, prevented
+damage, pure bookkeeping), `src/presentation/battle-conduit-contribution.test.ts`
+(tally, markup, callout merge/threshold/cap) and the D-492 cases in
+`src/presentation/battle-screen.test.ts` (animated and Reduce motion callouts).
+Motion review: `node tools/capture_frames.mjs --battle attack --member 0
+--encounter nerithe-10 --stream` (Infernis's Normal Attack shows "Leader Skill
++N damage"), desktop and `--width 390 --height 844`.

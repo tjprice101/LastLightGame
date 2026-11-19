@@ -1263,3 +1263,38 @@ describe('Battle Spectacle beats and screen tools (D-483 R2/R6, D-484)', () => {
     } finally { vi.useRealTimers(); }
   });
 });
+
+describe('Conduit callouts on the field (D-492)', () => {
+  it('names the Leader Skill share of a Normal Attack above its bearer, then cleans up', async () => {
+    const original = Object.getOwnPropertyDescriptor(Element.prototype, 'animate');
+    const callouts: string[] = [];
+    Object.defineProperty(Element.prototype, 'animate', { configurable: true, value: function (this: Element): Animation {
+      if (this instanceof HTMLElement && this.classList.contains('radiant-conduit-callout')) callouts.push(this.textContent ?? '');
+      const animation: Partial<Animation> = { playbackRate: 1, playState: 'finished',
+        finished: Promise.resolve().then(() => animation as Animation), cancel() {}, pause() {}, play() {} };
+      return animation as Animation;
+    } });
+    try {
+      const { view, host } = fixture(); await view.finishEntrance();
+      await view.act('normal', 'ember');
+      expect(callouts.some(text => /^Leader Skill\+[\d,]+ damage$/.test(text))).toBe(true);
+      expect(host.querySelector('.radiant-conduit-callout')).toBeNull();
+    } finally {
+      if (original) Object.defineProperty(Element.prototype, 'animate', original);
+      else delete (Element.prototype as Partial<Element>).animate;
+    }
+  });
+  it('shows the callout statically under Reduce motion and removes it', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    try {
+      const { view, host } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+      await view.act('normal', 'ember');
+      const pill = host.querySelector<HTMLElement>('.radiant-conduit-callout.is-static');
+      expect(pill).not.toBeNull();
+      expect(pill!.dataset.element).toBe('infernic');
+      expect(pill!.querySelector('b')!.textContent).toBe('Leader Skill');
+      await vi.advanceTimersByTimeAsync(900);
+      expect(host.querySelector('.radiant-conduit-callout')).toBeNull();
+    } finally { vi.useRealTimers(); }
+  });
+});

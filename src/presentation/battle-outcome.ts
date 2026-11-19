@@ -7,6 +7,7 @@ import { isRarity, type Rarity } from '../content/rarity';
 import { countUp, lusterSheen, staggerIn } from './luster';
 import { rarityFeedback } from './rarity-feedback';
 import { reducedMotion } from './settings';
+import { bindConduitContribution, radiantConduitContributionMarkup } from './battle-conduit-contribution';
 
 const titleCase = (value: string) => value.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
 export function radiantActivityTitle(activity: FrozenRadiantRun['anchor']['activity']): { eyebrow: string; title: string } {
@@ -79,6 +80,7 @@ export function radiantResultsMarkup(run: FrozenRadiantRun, canExit: boolean): s
       <p>HP damage dealt ${formatStat(outgoing('damage'))} · Received ${formatStat(incoming)}
         · Effective healing ${formatStat(outgoing('heal'))} · Shields created ${formatStat(outgoing('shield'))}</p>
       <p class="radiant-result-muted">Retry restores the frozen encounter; HP lost earlier and saved loot are not charged or repeated. No additional claim is required.</p></details>
+    ${radiantConduitContributionMarkup(run)}
     <div class="radiant-result-actions">${victory && !complete ? `<button type="button"${primary(true)} data-radiant-transition="continue">Continue · Next encounter</button>` : ''}
       <button type="button"${primary(!victory)} data-radiant-transition="retry">${victory ? 'Replay' : 'Retry'} encounter</button>
       ${canExit ? `<button type="button"${primary(complete)} data-radiant-transition="exit">Exit · Keep rewards</button>` : ''}</div></section>`;
@@ -133,6 +135,7 @@ export function celebrateRadiantResults(sheet: HTMLElement, outcome: RadiantOutc
   const cleanups: Array<() => void> = [];
   const list = sheet.querySelector<HTMLElement>('.battle-result-rewards ul');
   if (list) cleanups.push(staggerIn(list, ':scope > li', { stepMs: 50 }));
+  cleanups.push(bindConduitContribution(sheet));
   if (outcome === 'victory') {
     cleanups.push(lusterSheen(sheet, 1100));
     const heading = sheet.querySelector<HTMLElement>('[data-radiant-result-heading]');

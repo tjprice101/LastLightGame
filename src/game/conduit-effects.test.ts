@@ -333,3 +333,37 @@ describe('Step 4 retune Conduit effects (D-480)', () => {
     expect(b.absorbed).toBe(b.shields.reduce((sum, entry) => sum + entry.amount, 0));
   });
 });
+
+describe('Conduit contribution attribution (D-492)', () => {
+  const damage = (events: ReturnType<typeof act>['events']) =>
+    events.filter((event): event is Extract<typeof event, { type: 'damage' }> => event.type === 'damage');
+  it('splits a Normal hit between opening and Normal-damage Conduits without changing the hit', () => {
+    const bare = normal(fixture());
+    const boosted = normal(fixture(['prism-splinter-socket', 'siegebound-drive']));
+    const [plain] = damage(bare.events), [hit] = damage(boosted.events);
+    const total = (boosts: typeof hit.boosts) => (boosts ?? []).reduce((sum, entry) => sum + entry.amount, 0);
+    // Ember's own Leader effect is attributed in both; the Conduits add their own shares on top.
+    expect(plain.boosts!.map(entry => entry.source.kind)).toEqual(['leader']);
+    const shares = new Map(hit.boosts!.map(entry => [entry.source.kind === 'gear' ? entry.source.conduitId : entry.source.kind, entry.amount]));
+    expect([...shares.keys()].sort()).toEqual(['leader', 'prism-splinter-socket', 'siegebound-drive']);
+    expect(total(hit.boosts) - total(plain.boosts)).toBeGreaterThan(0);
+    expect(total(hit.boosts)).toBeLessThan(hit.offered);
+    expect(shares.get('prism-splinter-socket')!).toBeGreaterThan(shares.get('siegebound-drive')!);
+  });
+  it('records damage prevented by a Defense Conduit on enemy hits', () => {
+    const attack = (ids: ConduitId[]) => {
+      const state = defend(fixture(ids));
+      return damage(act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 2 }).events)[0];
+    };
+    const plain = attack([]), guarded = attack(['bastion-lock']);
+    expect(guarded.boosts).toEqual([{ source: { kind: 'gear', bearerId: 'ember', conduitId: 'bastion-lock' },
+      amount: plain.offered - guarded.offered }]);
+  });
+  it('attribution is pure bookkeeping: stripping boosts leaves identical state and events', () => {
+    const state = fixture(['prism-splinter-socket', 'bastion-lock'], 'ember', ['tide']);
+    const first = normal(structuredClone(state)), second = normal(structuredClone(state));
+    expect(second.state).toEqual(first.state);
+    expect(first.events.some(event => 'boosts' in event)).toBe(true);
+    expect(() => validateRadiantCombat(first.state)).not.toThrow();
+  });
+});

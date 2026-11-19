@@ -81,6 +81,10 @@ const descriptions: Record<RadiantStatusRow['kind'], { label: string; clock: str
   'gain-up': { label: 'Luminosity Gain Up', clock: 'turn', percent: true },
   hot: { label: 'Health Over Time', clock: 'turn', percent: true },
 };
+/** Display name of a timed status (D-492 Conduit callouts). */
+export function radiantStatusLabel(kind: RadiantStatusRow['kind'] | 'weaken-removed'): string {
+  return kind === 'weaken-removed' ? 'Weaken removed' : descriptions[kind].label;
+}
 export function radiantStatusRows(rows: readonly RadiantStatusRow[], run: FrozenRadiantRun): string {
   return rows.map(row => {
     const definition = descriptions[row.kind];

@@ -280,7 +280,7 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
 .radiant-loot b { position: relative; font-size: 13px; color: #fff; text-shadow: 0 1px 2px #000, 0 0 6px #000; white-space: nowrap; }
 .radiant-loot[data-rarity="Legendary"] img, .radiant-loot[data-rarity="Omnic"] img, .radiant-loot[data-rarity="Calamitic"] img { width: 54px; height: 54px; }
 /* Reduce motion keeps only static cues (R6): one element ring and the number per impact. */
-html[data-motion="reduced"] .radiant-fx-layer > :not(.radiant-static-ring):not(.radiant-number.is-static):not(.radiant-combo.is-static):not(.radiant-enemy-callout.is-static) { display: none; }
+html[data-motion="reduced"] .radiant-fx-layer > :not(.radiant-static-ring):not(.radiant-number.is-static):not(.radiant-combo.is-static):not(.radiant-enemy-callout.is-static):not(.radiant-conduit-callout.is-static) { display: none; }
 .radiant-static-ring { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; pointer-events: none;
   border: 3px solid var(--ring, #fff); box-shadow: 0 0 14px var(--ring, #fff), inset 0 0 10px var(--ring, #fff); }
 /* Battle Spectacle GPU layer (D-484): pointer-transparent, between the field and the DOM effects. */
@@ -604,6 +604,19 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 .radiant-result-details summary::before { content: ''; width: 7px; height: 7px; border-right: 2px solid var(--gild-mid); border-bottom: 2px solid var(--gild-mid); transform: rotate(-45deg); transition: transform var(--motion-press) var(--ease-out); }
 .radiant-result-details[open] summary::before { transform: rotate(45deg); }
 .radiant-result-details p { margin: 0 0 8px; }
+/* D-492 Conduit contribution: per-bearer rows, exact totals, neutral text on jewel glass with gold rules. */
+.radiant-contribution-bearer { margin: 4px 0 12px; }
+.radiant-contribution-bearer h4 { margin: 0 0 6px; font-family: var(--display-font); font-weight: 700; font-size: 13px; letter-spacing: .04em; color: var(--text-primary); }
+.radiant-contribution-bearer ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.radiant-contribution-row { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; gap: 10px; min-height: 44px; padding: 6px 8px; border: 1px solid var(--gild-line); border-radius: 10px; background: var(--glass-raised); }
+.radiant-contribution-row[data-idle] { opacity: .72; }
+.radiant-contribution-row .conduit-icon-frame { width: 44px; height: 44px; max-width: 44px; }
+.radiant-contribution-glyph { display: block; width: 36px; height: 36px; margin: 4px; border-radius: 50%; border: 2px solid var(--gild-mid); background: radial-gradient(circle, var(--gild-light) 0 18%, transparent 20%), var(--surface-raised); }
+.radiant-contribution-glyph[data-kind='leader'] { border-radius: 8px; transform: rotate(45deg) scale(.82); }
+.radiant-contribution-name { margin: 0 0 2px !important; color: var(--text-primary); font-weight: 700; overflow-wrap: anywhere; }
+.radiant-contribution-facts { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0 !important; }
+.radiant-contribution-fact { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.radiant-contribution-fact b { color: var(--text-primary); font-weight: 700; }
 .radiant-result-actions {
   position: sticky; bottom: calc(-1 * var(--result-pad)); z-index: 2; display: flex; flex-wrap: wrap; gap: 12px;
   margin: 12px calc(-1 * var(--result-pad)) calc(-1 * var(--result-pad)); padding: 12px var(--result-pad);
@@ -849,6 +862,22 @@ html[data-motion="reduced"] .radiant-charging-ring { animation: none; opacity: .
   box-shadow: 0 0 18px -4px var(--accent); text-shadow: 0 1px 2px #000a; }
 .radiant-enemy-callout[data-tier="overdrive"] { font-size: 14px; box-shadow: 0 0 24px -2px var(--accent); }
 .radiant-enemy-callout.is-static { transform: translate(-50%, -10px); }
+/* D-492 Conduit callout: Conduit name over its effect, element accent, gold rim; pointer-transparent. */
+.radiant-conduit-callout { --accent: #c9ccd4; position: absolute; z-index: 7; display: grid; justify-items: center; gap: 0;
+  max-width: min(240px, 46vw); padding: 3px 12px 4px; border-radius: 12px; pointer-events: none; transform: translate(-50%, 0);
+  font-family: var(--ui-font); font-weight: 600; font-size: 12px; line-height: 1.25; color: #fff; text-align: center;
+  border: 1px solid var(--gild-light); background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 38%, #1b1c24), #14151c);
+  box-shadow: 0 0 16px -4px var(--accent); text-shadow: 0 1px 2px #000a; }
+.radiant-conduit-callout b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: var(--display-font); font-weight: 700; font-size: 11px; letter-spacing: .04em; color: var(--gild-light); }
+.radiant-conduit-callout span { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.radiant-conduit-callout.is-static { transform: translate(-50%, -8px); }
+.radiant-conduit-callout[data-element="infernic"] { --accent: #ff8a5c; }
+.radiant-conduit-callout[data-element="oceanic"] { --accent: #6cc4ff; }
+.radiant-conduit-callout[data-element="botanic"] { --accent: #8fdc7a; }
+.radiant-conduit-callout[data-element="atmospheric"] { --accent: #b9e6f2; }
+.radiant-conduit-callout[data-element="tranquilitic"] { --accent: #f2a9c4; }
+.radiant-conduit-callout[data-element="chaotic"] { --accent: #d48cff; }
 /* Overdrive and boss special: a warning ring on each struck bearer's card through the telegraph. */
 .radiant-target-warning { position: absolute; inset: -3px; z-index: 5; border-radius: inherit; pointer-events: none;
   border: 2px solid #fff; box-shadow: 0 0 0 1px var(--gild-light), 0 0 18px 2px color-mix(in srgb, var(--accent, #fff) 70%, #fff); }

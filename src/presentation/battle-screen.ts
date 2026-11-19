@@ -19,6 +19,7 @@ import { radiantImpactFrames, radiantReadout, type RadiantImpactFrame, type Radi
 import './battle-screen.css';
 import { radiantArenaArt, radiantEnemyArt, radiantAllyArt } from './battle-art';
 import { radiantStatusSnapshot, radiantStatusRows, radiantShieldRows } from './battle-timed-status';
+import { radiantConduitCallouts, type RadiantConduitCallout } from './battle-conduit-contribution';
 import { bindArtworkLoading } from './artwork-loading';
 import { radiantResultsMarkup, radiantEncounterLabel, radiantActivityTitle, radiantOutcome, celebrateRadiantResults, radiantResultIntro } from './battle-outcome';
 import { radiantLeaderReference, radiantFlareNeedsTarget } from './battle-reference';
@@ -1044,6 +1045,7 @@ export class RadiantBattleView {
           // R6: one static element ring and the number per impact, 200 ms or less.
           if (enemyHit?.hitIndex === 0) this.staticEnemyCallout(enemyHit.plan.cue);
           this.staticImpact(frame, before, random);
+          this.staticConduitCallouts(frame);
           if (comboShown && frameIndex === comboFrames.at(-1)) this.staticComboTotal(comboFrames.length,
             comboFrames.reduce((sum, index) => sum + flareDamage(frames[index]), 0));
           continue;
@@ -1070,6 +1072,7 @@ export class RadiantBattleView {
         track(this.chargeOrbs(frame, previous, random));
         track(this.haulMotes(frame, random));
         track(this.damageNumbers(frame, before, random, tier === 'flare' && playerHit));
+        track(this.conduitCallouts(frame));
         for (const event of frame.events) if (event.type === 'defeated')
           track(this.lootDrops(response, played, event.targetId, random));
         if (playerHit && beats) {
@@ -1380,6 +1383,58 @@ export class RadiantBattleView {
       await this.animate(ring, [{ opacity: 0, scale: '1.12' }, { opacity: 1, scale: '1', offset: .3 },
         { opacity: .75, scale: '1.02', offset: .65 }, { opacity: 1, scale: '1', offset: .9 }, { opacity: 0, scale: '.98' }], duration);
     } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
+  }
+  /** D-492: name each Conduit, Master or Leader effect that acted in this frame above its bearer. */
+  private conduitCallouts(frame: RadiantImpactFrame): Promise<void> {
+    const run = this.session.view().run;
+    if (!run || this.disposed) return Promise.resolve();
+    return Promise.all(this.placeConduitCallouts(radiantConduitCallouts(frame.events, run)).map(async ({ callout, x, y }) => {
+      const node = this.spawn('radiant-conduit-callout', x, y);
+      this.fillConduitCallout(node, callout);
+      try {
+        await this.animate(node, [
+          { opacity: 0, transform: 'translate(-50%, 8px) scale(.92)' },
+          { opacity: 1, transform: 'translate(-50%, -2px) scale(1)', offset: .16 },
+          { opacity: 1, transform: 'translate(-50%, -8px) scale(1)', offset: .8 },
+          { opacity: 0, transform: 'translate(-50%, -14px) scale(1)' },
+        ], 1100);
+      } finally { node.dispatchEvent(new Event('radiant-fx-done')); }
+    })).then(() => undefined);
+  }
+  /** D-492 under Reduce motion: the same callouts, static, for a short moment. */
+  private staticConduitCallouts(frame: RadiantImpactFrame): void {
+    const run = this.session.view().run;
+    if (!run || this.disposed) return;
+    for (const { callout, x, y } of this.placeConduitCallouts(radiantConduitCallouts(frame.events, run))) {
+      const node = document.createElement('span');
+      node.className = 'radiant-conduit-callout is-static';
+      node.style.left = `${x}px`; node.style.top = `${y}px`;
+      this.fillConduitCallout(node, callout);
+      this.fxLayer().append(node);
+      this.staticCue(node, 900);
+    }
+  }
+  /** Above the owning bearer's field slot (not its art, which may be mid-lunge); a second callout stacks above the first. */
+  private placeConduitCallouts(callouts: RadiantConduitCallout[]): { callout: RadiantConduitCallout; x: number; y: number }[] {
+    const stacked = new Map<string, number>();
+    // Keep the pill (max min(240px, 46vw) wide, centered) inside the battlefield on narrow screens.
+    const field = this.host.querySelector('.radiant-field')?.getBoundingClientRect();
+    const half = Math.min(120, window.innerWidth * .23) + 4;
+    return callouts.flatMap(callout => {
+      const anchor = this.host.querySelector(`.radiant-field-ally[data-radiant-field-unit="${callout.bearerId}"]`);
+      if (!anchor) return [];
+      const box = anchor.getBoundingClientRect(), slot = stacked.get(callout.bearerId) ?? 0;
+      stacked.set(callout.bearerId, slot + 1);
+      let x = box.left + box.width / 2;
+      if (field && field.width > half * 2) x = Math.min(field.right - half, Math.max(field.left + half, x));
+      return [{ callout, x, y: box.top + box.height * .35 - slot * 30 }];
+    });
+  }
+  private fillConduitCallout(node: HTMLElement, callout: RadiantConduitCallout): void {
+    node.dataset.element = callout.elementId;
+    const name = document.createElement('b'); name.textContent = callout.name;
+    const text = document.createElement('span'); text.textContent = callout.text;
+    node.replaceChildren(name, text);
   }
   /** D-491 under Reduce motion: an Overdrive or boss special still names itself, statically, over the enemy. */
   private staticEnemyCallout(cue: EnemyActionCue): void {

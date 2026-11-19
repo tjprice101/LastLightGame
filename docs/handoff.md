@@ -1,5 +1,46 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
+
+**Implemented on `battle-flurry-phase3`.** Spec:
+[combat spec](combat.md#conduit-callouts-and-contribution-d-492-battle-flurry-phase-4a).
+- **Engine:** optional `boosts` on damage, heal and Shield events (each stat or
+  multiplier Conduit's share; prevented damage on enemy hits) and
+  `charge.gained`. Pure bookkeeping: no number, order or RNG changes.
+- **Callouts:** a pill above the owning bearer per acting Conduit, Master or
+  Leader Skill ("Leader Skill · +202 damage"); 10% threshold, 2 per bearer,
+  4 per frame; static under Reduce motion.
+- **Results:** a collapsed "Conduit contribution" section with exact totals per
+  bearer and Conduit, idle Conduits listed honestly.
+- **4b (docs only):** restoration proposal at
+  [phase4-conduit-restoration.md](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md),
+  awaiting owner approval per batch.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- `npx vite build`: succeeded (existing chunk advisory).
+- Full `npx vitest run`: 10,725 of 10,725 passed (before the two later
+  battle-screen D-492 tests, which pass with their file: 71 of 71 with the
+  contribution tests).
+- Timed `--stream` captures of Infernis's Normal Attack, desktop and 390x844:
+  the "Leader Skill +202 damage" pill rises over Infernis and fades; fixed an
+  anchor that followed the lunge and clamped pills inside the field.
+
+**Not verified:**
+- the results panel in a capture (preview fixtures rarely reach a saved
+  victory quickly; covered by markup tests);
+- ordinary Conduit callouts in a capture (the preview fixture equips only
+  Masters);
+- the Skill 2 capture: `capture_frames.mjs --battle skill2` times out because
+  the fan's Skill 2 button stays hidden in headless runs (seen after Spectacle
+  step 7; not caused by this change);
+- online journals: they carry `boosts` only after the authority bundle is
+  rebuilt and deployed (owner approval needed). Until then, online summaries
+  show event-producing Conduits only.
+
+**Next:** owner approves the deploy; owner feel review of callouts and the
+summary; owner reviews the 4b restoration draft batch by batch, then 4c.
+
 ## Spectacle step 7: skill menu polish (2026-11-19)
 
 **Implemented on `battle-flurry-phase3`.** Presentation only; no server change.
