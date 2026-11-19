@@ -1,5 +1,51 @@
 # Current state and handoff
 
+## Spectacle step 3: element base sets live locally (2026-11-18)
+
+**Implemented (D-485), committed on `battle-flurry-phase3`; not pushed or
+released yet.** All six elements now have their own effect language on the
+GPU layer:
+- a three-tone palette;
+- their own impact rings and bursts;
+- ranged travel: orbs for Infernic, Botanic and Tranquilitic; beams for
+  Oceanic, Atmospheric and Chaotic;
+- an element overlay on melee cuts, a wind-up sigil and element particle
+  motion.
+
+Enemy hits use their element at enemy size. Neutral (no element) keeps the
+D-484 look.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Full `npx vitest run`: 10,694 of 10,694 passed, including the new
+  `src/vfx/element-styles.test.ts`.
+- `npx vite build`: passed (existing chunk-size warning).
+- `--stream` captures against the dev preview (Training) for each element:
+  - Infernic: Ember, Skill 1 and Skill 2;
+  - Oceanic: Tide and Maerion, Normal Attack and Skill 2;
+  - Atmospheric: Atmoso, Skill 2;
+  - Botanic: Sprout, Normal Attack and Skill 2;
+  - Tranquilitic: Rosetta, Skill 1 and Skill 2;
+  - Chaotic: Disciple and Thornia, Skill 2.
+
+  The first capture found the beam core drawn as a solid white bar; it was
+  fixed and recaptured.
+
+**Not verified:**
+- Convergent Light tier captures for each element;
+- enemy-turn captures for each element;
+- Reduce motion and 3x recaptures;
+- the GPU frame-time check with the 46-texture set;
+- an owner feel review of the hosted build.
+
+**Known:** Botanic and Tranquilitic orbs and all support pulses read small
+on bright backgrounds (Sonnet tuning).
+
+**Next:**
+- The owner reviews the build, then approves the push and release.
+- Tuning round (Sonnet).
+- Step 4: per-bearer layers.
+
 ## Spectacle step 2: GPU effect layer live (2026-11-18)
 
 **Implemented (D-484).** One Phaser WebGL layer on the VFX textures replaces

@@ -1,5 +1,25 @@
 # Decision log
 
+## Spectacle step 3: six element base sets (D-485, 2026-11-18)
+
+- **Owner-approved plan (2026-11-18):** each element gets its own base set
+  of colors, shapes and particle motion on the D-484 GPU layer
+  ([combat spec](combat.md#battle-spectacle-element-base-sets-d-485-spectacle-step-3)).
+- **Owner choices:**
+  - three-tone palette per element: white-hot core, the HUD color, a deeper
+    edge;
+  - enemy hits use their element's impact now, smaller than a player
+    Skill 1. Telegraphs and boss specials stay in Step 6.
+- **Implemented:**
+  - new `src/vfx/element-styles.ts` (grammar table and tier builder; neutral
+    keeps the D-484 look);
+  - the scene primitives take a style;
+  - beam travel for Oceanic, Atmospheric and Chaotic;
+  - melee overlays and wind-up sigils;
+  - 28 grayscale library textures added, 2 unused ones removed.
+- Presentation only: no rule, RNG, reward, save or authority change, and no
+  deploy.
+
 ## Spectacle step 2: one GPU effect layer replaces the canvas effects (D-484, 2026-11-18)
 
 - **Owner-approved plan:** one Phaser WebGL layer built on the VFX texture

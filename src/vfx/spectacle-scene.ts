@@ -9,108 +9,27 @@
  * field shakes.
  */
 import Phaser from 'phaser';
-import { spectacleTextures, spectacleTextureUrl, type SpectacleTexture } from './vfx-textures';
+import { spectacleTextures, spectacleTextureUrl, textureEdge, type SpectacleTexture } from './vfx-textures';
+import { toneColor, type BurstKind, type ElementStyle, type SparkPreset, type Travel } from './element-styles';
 import { battleSpeed } from '../presentation/battle-speed';
 
 export interface Point { x: number; y: number }
-export type BurstKind = 'normal' | 'skill1' | 'skill2' | 'flare' | 'finisher' | 'support' | 'enemy' | 'status';
+export type { BurstKind } from './element-styles';
 export type Quality = 'high' | 'low';
 /** R7: live particle cap; low quality scales counts, never the look. */
 export const particleCaps: Record<Quality, number> = { high: 700, low: 300 };
 const lowQualityFactor = .45;
 
-interface SparkPreset {
-  texture: SpectacleTexture;
-  count: number;
-  speed: [number, number];
-  life: [number, number];
-  scale: [number, number];
-  gravity?: number;
-}
-/** Spark layers per burst kind (world px and ms at speed 1). */
-const sparkPresets: Record<BurstKind, SparkPreset[]> = {
-  normal: [{ texture: 'particles/star-hard', count: 10, speed: [140, 320], life: [160, 260], scale: [.9, 0] }],
-  skill1: [
-    { texture: 'particles/star-hard', count: 18, speed: [180, 420], life: [220, 380], scale: [1.1, 0] },
-    { texture: 'particles/star-thin', count: 8, speed: [260, 520], life: [180, 300], scale: [1.6, 0] },
-  ],
-  skill2: [
-    { texture: 'particles/star-hard', count: 30, speed: [220, 520], life: [260, 480], scale: [1.3, 0] },
-    { texture: 'particles/star-thin', count: 12, speed: [320, 640], life: [220, 360], scale: [2, 0] },
-    { texture: 'particles/crystal-shard', count: 8, speed: [160, 360], life: [320, 520], scale: [.35, 0], gravity: 420 },
-  ],
-  flare: [
-    { texture: 'particles/star-hard', count: 16, speed: [200, 460], life: [200, 340], scale: [1.2, 0] },
-    { texture: 'particles/star-thin', count: 6, speed: [300, 560], life: [160, 280], scale: [1.8, 0] },
-  ],
-  finisher: [
-    { texture: 'particles/star-hard', count: 60, speed: [260, 760], life: [320, 620], scale: [1.5, 0] },
-    { texture: 'particles/star-thin', count: 20, speed: [420, 900], life: [260, 440], scale: [2.4, 0] },
-    { texture: 'particles/crystal-shard', count: 14, speed: [220, 520], life: [420, 680], scale: [.45, 0], gravity: 520 },
-  ],
-  support: [{ texture: 'particles/star-soft', count: 14, speed: [40, 120], life: [360, 560], scale: [1.4, 0], gravity: -220 }],
-  enemy: [{ texture: 'particles/star-hard', count: 12, speed: [140, 340], life: [180, 300], scale: [1, 0] }],
-  status: [{ texture: 'particles/star-soft', count: 6, speed: [30, 90], life: [260, 400], scale: [1.1, 0], gravity: -160 }],
+/** Particle rotation that tumbles once over a particle's life from a random start (petals, rock, crescents). */
+const spinStart = new WeakMap<object, number>();
+const tumble = {
+  onEmit: (particle?: Phaser.GameObjects.Particles.Particle) => {
+    const start = Math.random() * 360;
+    if (particle) spinStart.set(particle, start);
+    return start;
+  },
+  onUpdate: (particle: Phaser.GameObjects.Particles.Particle, _key: string, t: number) => (spinStart.get(particle) ?? 0) + 360 * t,
 };
-interface Layer {
-  texture: SpectacleTexture;
-  /** Final size as a fraction of the target's smaller side. */
-  size: number;
-  from: number;
-  alpha: number;
-  life: number;
-  white?: boolean;
-  spin?: boolean;
-  delay?: number;
-}
-/** Sprite layers per burst kind: a white-hot core plus tinted rings, streaks and bursts. */
-const burstLayers: Record<BurstKind, Layer[]> = {
-  normal: [
-    { texture: 'glow/point-bloom', size: .9, from: .2, alpha: 1, life: 200, white: true },
-    { texture: 'impacts/ring-concentric', size: .8, from: .15, alpha: .8, life: 240 },
-  ],
-  skill1: [
-    { texture: 'glow/point-bloom', size: 1.2, from: .2, alpha: 1, life: 260, white: true },
-    { texture: 'impacts/radial-streaks-fade', size: 1.3, from: .3, alpha: .9, life: 320, spin: true },
-    { texture: 'impacts/ring-concentric', size: 1.1, from: .15, alpha: .85, life: 380 },
-  ],
-  skill2: [
-    { texture: 'glow/radial-bloom', size: 1.8, from: .3, alpha: .75, life: 420 },
-    { texture: 'glow/point-bloom', size: 1.4, from: .2, alpha: 1, life: 300, white: true },
-    { texture: 'impacts/flare-burst', size: 1.6, from: .3, alpha: .95, life: 420, spin: true },
-    { texture: 'impacts/ring-flare', size: 1.5, from: .2, alpha: .9, life: 500 },
-    { texture: 'impacts/ring-concentric', size: 1.9, from: .3, alpha: .6, life: 560, delay: 80 },
-  ],
-  // Each Convergent Light hit is at least Skill 2 sized; the finisher escalates past it.
-  flare: [
-    { texture: 'glow/radial-bloom', size: 1.9, from: .4, alpha: .7, life: 320 },
-    { texture: 'glow/point-bloom', size: 1.5, from: .3, alpha: 1, life: 240, white: true },
-    { texture: 'impacts/radial-spikes', size: 1.9, from: .4, alpha: .9, life: 300, spin: true },
-    { texture: 'impacts/ring-concentric', size: 1.7, from: .3, alpha: .7, life: 360 },
-  ],
-  finisher: [
-    { texture: 'glow/radial-bloom', size: 2.8, from: .4, alpha: .9, life: 620 },
-    { texture: 'flares/starburst-8point', size: 2.4, from: .3, alpha: 1, life: 420, white: true, spin: true },
-    { texture: 'impacts/shatter-burst', size: 2.2, from: .4, alpha: .95, life: 560, spin: true },
-    { texture: 'flares/supernova', size: 2.6, from: .3, alpha: .9, life: 640 },
-    { texture: 'impacts/ring-concentric', size: 3.4, from: .4, alpha: .7, life: 700, delay: 60 },
-  ],
-  support: [
-    { texture: 'glow/soft-glow', size: 1.3, from: .6, alpha: .7, life: 520 },
-    { texture: 'impacts/ring-flare', size: 1.1, from: .5, alpha: .7, life: 520 },
-  ],
-  enemy: [
-    { texture: 'glow/point-bloom', size: 1, from: .2, alpha: .9, life: 220, white: true },
-    { texture: 'impacts/radial-streaks-fade', size: 1.1, from: .3, alpha: .7, life: 280, spin: true },
-  ],
-  status: [{ texture: 'glow/soft-glow', size: .8, from: .5, alpha: .55, life: 380 }],
-};
-/** Pixel sizes of the textures' longest edge (tools/intake_vfx_library.py). */
-function textureEdge(key: SpectacleTexture): number {
-  if (key === 'particles/star-hard' || key === 'particles/star-soft' || key === 'particles/star-thin') return 32;
-  const category = key.split('/')[0];
-  return category === 'particles' ? 128 : category === 'glow' || category === 'flares' || category === 'projectiles' ? 256 : 512;
-}
 /** Custom "glow" blend (registered in create): colors add, alpha composites normally, so light
  * brightens the page under the transparent canvas instead of painting black. */
 let add: number = Phaser.BlendModes.ADD;
@@ -178,18 +97,7 @@ export class SpectacleScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.DESTROY, () => window.removeEventListener('last-light-battle-speed-change', this.speedChange));
     const finish = () => {
       this.alphaFromLuminance();
-      for (const [preset, layers] of Object.entries(sparkPresets)) layers.forEach((layer, index) => {
-        if (!this.textures.exists(layer.texture)) return;
-        const emitter = this.add.particles(0, 0, layer.texture, {
-          emitting: false, blendMode: add, angle: { min: 0, max: 360 },
-          speed: { min: layer.speed[0], max: layer.speed[1] },
-          lifespan: { min: layer.life[0], max: layer.life[1] },
-          scale: { start: layer.scale[0], end: layer.scale[1] },
-          alpha: { start: 1, end: 0 }, gravityY: layer.gravity ?? 0,
-          rotate: layer.texture === 'particles/crystal-shard' ? { min: 0, max: 360 } : 0,
-        }).setDepth(20);
-        this.emitters.set(`${preset}:${index}`, emitter);
-      });
+      // Burst emitters are created per element and tier on first use (emitterFor).
       this.warmUp(() => { this.ready = true; this.applyTimeScale(); this.onReady?.(); });
     };
     if (!this.failed.length) { finish(); return; }
@@ -360,16 +268,40 @@ export class SpectacleScene extends Phaser.Scene {
   private destroyLater(image: Phaser.GameObjects.Image): () => void {
     return () => { this.live.delete(image); image.destroy(); };
   }
-  private particles(kind: BurstKind, at: Point, tint: number, scale = 1): void {
+  /** Pooled burst emitter for one element, tier and particle layer; created on first use. */
+  private emitterFor(style: ElementStyle, kind: BurstKind, index: number, preset: SparkPreset):
+    Phaser.GameObjects.Particles.ParticleEmitter | null {
+    const key = `${style.id}:${kind}:${index}`;
+    const existing = this.emitters.get(key);
+    if (existing) return existing;
+    if (!this.textures.exists(preset.texture)) return null;
+    const { core, main, edge } = style.palette;
+    const config: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig = {
+      emitting: false, blendMode: add,
+      angle: { min: preset.angle?.[0] ?? 0, max: preset.angle?.[1] ?? 360 },
+      speed: { min: preset.speed[0], max: preset.speed[1] },
+      lifespan: { min: preset.life[0], max: preset.life[1] },
+      scale: { start: preset.scale[0], end: preset.scale[1] },
+      alpha: { start: 1, end: 0 }, gravityY: preset.gravity ?? 0,
+      rotate: preset.rotate === 'random' ? { min: 0, max: 360 } : preset.rotate === 'spin' ? tumble : 0,
+      ...(style.ramp ? { color: [core, main, edge], colorEase: 'Quad.easeOut' } : {}),
+    };
+    const emitter = this.add.particles(0, 0, preset.texture, config).setDepth(20);
+    emitter.timeScale = this.time.timeScale;
+    this.emitters.set(key, emitter);
+    return emitter;
+  }
+  private particles(kind: BurstKind, at: Point, style: ElementStyle, scale = 1): void {
     const factor = this.quality === 'low' ? lowQualityFactor : 1;
     let allowance = particleCaps[this.quality] - this.aliveParticles();
     let longest = 0;
-    sparkPresets[kind].forEach((preset, index) => {
-      const emitter = this.emitters.get(`${kind}:${index}`);
-      if (!emitter || allowance <= 0) return;
+    style.sparks[kind].forEach((preset, index) => {
+      if (allowance <= 0) return;
+      const emitter = this.emitterFor(style, kind, index, preset);
+      if (!emitter) return;
       const count = Math.min(allowance, Math.max(1, Math.round(preset.count * factor * Math.min(1.6, Math.max(.6, scale)))));
       allowance -= count;
-      emitter.setParticleTint(tint);
+      if (!style.ramp) emitter.setParticleTint(style.palette.main);
       emitter.explode(count, at.x, at.y);
       longest = Math.max(longest, preset.life[1]);
     });
@@ -378,28 +310,30 @@ export class SpectacleScene extends Phaser.Scene {
   }
 
   // ---- primitives -------------------------------------------------------------
-  /** Layered impact burst at a screen point; `size` is the target's smaller side in px. */
-  burst(screen: Point, kind: BurstKind, tint: number, size: number): void {
+  /** Layered impact burst in the element's shapes at a screen point; `size` is the target's smaller side in px. */
+  burst(screen: Point, kind: BurstKind, style: ElementStyle, size: number): void {
     if (!this.ready) return;
     const at = this.toWorld(screen);
     const extent = Math.min(260, Math.max(70, size));
-    for (const layer of burstLayers[kind]) {
-      const image = this.sprite(layer.texture, at, layer.white ? 0xffffff : tint);
+    for (const layer of style.layers[kind]) {
+      const image = this.sprite(layer.texture, at, toneColor(style, layer.tone));
       if (!image) continue;
       const target = extent * layer.size / textureEdge(layer.texture);
-      image.setScale(target * layer.from).setAlpha(layer.alpha).setRotation(layer.spin ? Math.random() * Math.PI * 2 : 0);
+      const start = layer.spin ? Math.random() * Math.PI * 2 : 0;
+      image.setScale(target * layer.from).setAlpha(layer.alpha).setRotation(start);
       if (layer.delay) image.setAlpha(0);
       this.tween({ targets: image, scale: target, alpha: { from: layer.alpha, to: 0 },
-        rotation: layer.spin ? image.rotation + .6 : image.rotation,
+        rotation: start + (layer.spin ?? 0),
         delay: layer.delay ?? 0, duration: layer.life, ease: 'Cubic.easeOut' }, this.destroyLater(image));
     }
-    this.particles(kind, at, tint, extent / 160);
+    this.particles(kind, at, style, extent / 160);
   }
-  /** Wind-up (R1): particles gather into the caster while a glow swells. */
-  chargeAura(screen: Point, ms: number, tint: number, power: number): void {
+  /** Wind-up (R1): the element's motes gather into the caster while a glow swells; skills turn a sigil underneath. */
+  chargeAura(screen: Point, ms: number, style: ElementStyle, power: number): void {
     if (!this.ready || ms <= 0) return;
     const at = this.toWorld(screen);
-    const core = this.sprite('glow/point-bloom', at, 0xffffff, 6);
+    const { core: coreTone, main } = style.palette;
+    const core = this.sprite('glow/point-bloom', at, coreTone, 6);
     if (core) {
       const size = (40 + 60 * power) / 256;
       core.setScale(size * .2).setAlpha(0);
@@ -409,7 +343,7 @@ export class SpectacleScene extends Phaser.Scene {
           this.tween({ targets: core, alpha: 0, scale: size * 1.6, duration: 120, ease: 'Cubic.easeOut' }, this.destroyLater(core));
         });
     }
-    const glow = this.sprite('glow/radial-bloom', at, tint, 5);
+    const glow = this.sprite('glow/radial-bloom', at, main, 5);
     if (glow) {
       const size = (130 + 150 * power) / 256;
       glow.setScale(size * .3).setAlpha(0);
@@ -420,40 +354,57 @@ export class SpectacleScene extends Phaser.Scene {
           this.tween({ targets: glow, alpha: 0, scale: size * 1.25, duration: 140, ease: 'Cubic.easeOut' }, this.destroyLater(glow));
         });
     }
+    const sigil = style.sigil && power > 0 ? this.sprite(style.sigil, at, main, 4) : null;
+    if (sigil && style.sigil) {
+      const size = (110 + 90 * power) / textureEdge(style.sigil);
+      const start = Math.random() * Math.PI * 2;
+      sigil.setScale(size * .55).setAlpha(0).setRotation(start);
+      this.tween({ targets: sigil, scale: size, alpha: { from: 0, to: .85 }, rotation: start + 1.2, duration: ms, ease: 'Sine.easeOut' },
+        completed => {
+          if (!completed) { this.destroyLater(sigil)(); return; }
+          this.tween({ targets: sigil, alpha: 0, scale: size * 1.15, duration: 160, ease: 'Cubic.easeOut' }, this.destroyLater(sigil));
+        });
+    }
     const motes = Math.round((6 + 14 * power) * (this.quality === 'low' ? lowQualityFactor : 1));
     for (let index = 0; index < motes; index++) {
       const angle = (index / motes) * Math.PI * 2 + Math.random() * .4;
       const radius = 70 + 70 * power + Math.random() * 30;
-      const mote = this.sprite(index % 3 ? 'particles/star-soft' : 'particles/star-hard',
-        { x: at.x + Math.cos(angle) * radius, y: at.y + Math.sin(angle) * radius }, tint, 6);
+      const kind = style.motes[index % 3 ? 0 : 1];
+      const mote = this.sprite(kind.texture, { x: at.x + Math.cos(angle) * radius, y: at.y + Math.sin(angle) * radius }, main, 6);
       if (!mote) continue;
-      mote.setScale(.9 + Math.random() * .9).setAlpha(0);
+      mote.setScale(kind.px * (1 + Math.random()) / textureEdge(kind.texture)).setAlpha(0).setRotation(Math.random() * Math.PI * 2);
       const delay = Math.random() * ms * .35;
-      this.tween({ targets: mote, x: at.x, y: at.y, alpha: { from: 1, to: .2 }, scale: .3,
+      this.tween({ targets: mote, x: at.x, y: at.y, alpha: { from: 1, to: .2 }, scale: mote.scale * .33,
         delay, duration: Math.max(60, ms - delay), ease: 'Quad.easeIn' }, this.destroyLater(mote));
     }
   }
-  /** Travel (R1, ranged): a glowing orb with a spark trail flies from caster to target. */
-  projectile(fromScreen: Point, toScreen: Point, ms: number, tint: number, power: number): void {
+  /** Travel (R1, ranged): the element's orb flies to the target, or its beam reaches across. */
+  projectile(fromScreen: Point, toScreen: Point, ms: number, style: ElementStyle, power: number): void {
     if (!this.ready || ms <= 0) return;
     const from = this.toWorld(fromScreen), to = this.toWorld(toScreen);
-    const orb = this.sprite('projectiles/gyre-orb', from, tint, 15);
-    const core = this.sprite('glow/point-bloom', from, 0xffffff, 16);
-    const size = (26 + 26 * power) / 256;
+    if (style.travel.kind === 'beam') { this.beam(from, to, ms, style, style.travel, power); return; }
+    const travel = style.travel;
+    const orb = this.sprite(travel.texture, from, style.palette.main, 15);
+    const core = this.sprite('glow/point-bloom', from, style.palette.core, 16);
+    const px = travel.px * (1 + power);
     const trailKey = `trail:${Math.random()}`;
     let trail: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
-    if (this.textures.exists('particles/star-soft')) {
-      trail = this.add.particles(0, 0, 'particles/star-soft', {
-        frequency: 14, quantity: this.quality === 'low' ? 1 : 2, blendMode: add, tint,
-        lifespan: { min: 120, max: 220 }, speed: { min: 0, max: 40 }, scale: { start: .9 + power * .6, end: 0 },
-        alpha: { start: .9, end: 0 },
+    if (this.textures.exists(travel.trail)) {
+      const { core: c, main, edge } = style.palette;
+      trail = this.add.particles(0, 0, travel.trail, {
+        frequency: 14, quantity: this.quality === 'low' ? 1 : 2, blendMode: add,
+        ...(style.ramp ? { color: [c, main, edge] } : { tint: main }),
+        lifespan: { min: 120, max: 220 }, speed: { min: 0, max: 40 },
+        scale: { start: travel.trailPx * (1 + power * .66) / textureEdge(travel.trail), end: 0 },
+        alpha: { start: .9, end: 0 }, rotate: { min: 0, max: 360 },
       }).setDepth(14);
       this.emitters.set(trailKey, trail);
       trail.timeScale = this.time.timeScale;
     }
     const followers = [orb, core].filter((image): image is Phaser.GameObjects.Image => !!image);
-    orb?.setScale(size).setRotation(Math.atan2(to.y - from.y, to.x - from.x));
-    core?.setScale(size * .8);
+    const heading = Math.atan2(to.y - from.y, to.x - from.x);
+    orb?.setScale(px / textureEdge(travel.texture)).setRotation(heading);
+    core?.setScale(px * .8 / 256);
     if (trail && orb) trail.startFollow(orb);
     const arc = -Math.min(60, Math.abs(to.x - from.x) * .12);
     const state = { t: 0 };
@@ -461,6 +412,7 @@ export class SpectacleScene extends Phaser.Scene {
       onUpdate: () => {
         const x = from.x + (to.x - from.x) * state.t, y = from.y + (to.y - from.y) * state.t + arc * Math.sin(Math.PI * state.t);
         for (const image of followers) image.setPosition(x, y);
+        if (orb && travel.spin) orb.setRotation(heading + travel.spin * state.t);
       } }, completed => {
       for (const image of followers) this.destroyLater(image)();
       if (trail && !completed) { this.emitters.delete(trailKey); trail.destroy(); return; }
@@ -471,20 +423,52 @@ export class SpectacleScene extends Phaser.Scene {
       }
     });
   }
-  /** Travel (R1, melee): a bright slash streak sweeps across the target. */
-  slash(toScreen: Point, fromScreen: Point, ms: number, tint: number, power: number, size: number): void {
+  /** Beam travel: reaches from caster to target within `grow` of the beat, holds (flickering for bolts), then fades. */
+  private beam(from: Point, to: Point, ms: number, style: ElementStyle, travel: Extract<Travel, { kind: 'beam' }>, power: number): void {
+    const length = Math.hypot(to.x - from.x, to.y - from.y);
+    const angle = Math.atan2(to.y - from.y, to.x - from.x);
+    const thickness = travel.thickness * (1 + power * .6);
+    // A thin white-hot line runs inside the element's beam (the streak texture is too tall for a core).
+    const parts = ([[travel.texture, style.palette.main, 15, thickness], ['trails/trail-basic', style.palette.core, 16, 4 + 3 * power]] as const)
+      .map(([key, tint, depth, thick]) => {
+        const image = this.sprite(key, from, tint, depth);
+        return image ? { image, scaleY: thick / 128 } : null;
+      }).filter((part): part is { image: Phaser.GameObjects.Image; scaleY: number } => !!part);
+    const full = length / 512;
+    for (const { image, scaleY } of parts) image.setOrigin(0, .5).setRotation(angle).setScale(.001, scaleY);
+    const state = { t: 0 };
+    const grow = Math.max(.05, travel.grow);
+    this.tween({ targets: state, t: 1, duration: ms,
+      onUpdate: () => {
+        const reach = Math.min(1, state.t / grow);
+        const eased = 1 - Math.pow(1 - reach, 3);
+        const alpha = travel.flicker ? .55 + .45 * Math.random() : 1;
+        for (const { image } of parts) image.setScale(Math.max(.001, full * eased), image.scaleY).setAlpha(alpha);
+      } }, completed => {
+      for (const { image, scaleY } of parts) {
+        if (!completed) { this.destroyLater(image)(); continue; }
+        this.tween({ targets: image, alpha: 0, scaleY: scaleY * .3, duration: 140, ease: 'Quad.easeIn' }, this.destroyLater(image));
+      }
+    });
+  }
+  /** Travel (R1, melee): a bright cut sweeps across the target with the element's overlay along it. */
+  slash(toScreen: Point, fromScreen: Point, ms: number, style: ElementStyle, power: number, size: number): void {
     if (!this.ready || ms <= 0) return;
     const to = this.toWorld(toScreen), from = this.toWorld(fromScreen);
     // One quick cut (two crossing cuts from Skill 2 up), drawn across the target and gone within the travel beat.
     const base = Math.atan2(to.y - from.y, to.x - from.x) + Math.PI / 5 + (Math.random() - .5) * .5;
     const length = Math.min(240, Math.max(90, size * (.75 + power * .35)));
     const cuts = power >= .6 ? [base, base - Math.PI / 2.4] : [base];
+    const strokes: [SpectacleTexture, number, number, number][] = [
+      ...(style.overlay ? [[style.overlay, style.palette.main, 14, (30 + 24 * power) / 128] as [SpectacleTexture, number, number, number]] : []),
+      ['beams/streak', style.palette.main, 15, (14 + 12 * power) / 128],
+      ['trails/trail-basic', style.palette.core, 16, 5 / 128],
+    ];
     cuts.forEach((angle, cut) => {
       const delay = cut * ms * .3;
-      for (const [key, white, depth] of [['beams/streak', false, 15], ['trails/trail-basic', true, 16]] as const) {
-        const streak = this.sprite(key, to, white ? 0xffffff : tint, depth);
+      for (const [key, tint, depth, scaleY] of strokes) {
+        const streak = this.sprite(key, to, tint, depth);
         if (!streak) continue;
-        const scaleY = (white ? 5 : 14 + 12 * power) / 128;
         streak.setRotation(angle).setScale(.02, scaleY).setAlpha(0);
         this.tween({ targets: streak, scaleX: length / 512, alpha: { from: 1, to: 1 }, delay, duration: ms * .4,
           ease: 'Expo.easeOut' }, completed => {
@@ -495,16 +479,16 @@ export class SpectacleScene extends Phaser.Scene {
       }
     });
   }
-  /** Travel (R1, support): a soft pulse rings outward from the caster. */
-  pulse(screen: Point, ms: number, tint: number, power: number): void {
+  /** Travel (R1, support): the element's ring pulses outward from the caster. */
+  pulse(screen: Point, ms: number, style: ElementStyle, power: number): void {
     if (!this.ready || ms <= 0) return;
     const at = this.toWorld(screen);
-    const ring = this.sprite('impacts/ring-flare', at, tint, 8);
-    const glow = this.sprite('glow/soft-glow', at, tint, 7);
-    const size = (160 + 120 * power) / 512;
+    const ring = this.sprite(style.pulse, at, style.palette.main, 8);
+    const glow = this.sprite('glow/soft-glow', at, style.palette.main, 7);
+    const size = 160 + 120 * power;
     for (const image of [ring, glow]) {
       if (!image) continue;
-      const end = image === glow ? size * 1.4 : size;
+      const end = (image === glow ? size * 1.4 / 512 : size / textureEdge(style.pulse));
       image.setScale(end * .2).setAlpha(.9);
       this.tween({ targets: image, scale: end, alpha: 0, duration: ms + 160, ease: 'Cubic.easeOut' }, this.destroyLater(image));
     }

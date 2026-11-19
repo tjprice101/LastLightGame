@@ -299,11 +299,23 @@ Owner choices: the interim look is one effect per tier, tinted by element
 (per-bearer glyphs retired until Step 4). Without WebGL, static rings show.
 
 Still open for later steps:
-- element shape grammar (Step 3);
 - per-bearer layers (Step 4);
 - cut-in art and finisher choreography (Step 5);
 - enemy telegraphs (Step 6);
 - a physical-device GPU check on the owner's own hardware (see the handoff).
+
+#### Step 3: six element base sets (implemented, D-485)
+
+Status: **implemented 2026-11-18; owner feel review pending.** It gives each
+element its own three-tone palette, shapes, travel and particle motion. Enemy
+hits use their element's impact at enemy size. See the
+[combat spec](../combat.md#battle-spectacle-element-base-sets-d-485-spectacle-step-3).
+
+Open tuning, for Sonnet rounds after the review:
+- Botanic and Tranquilitic orbs and support pulses read small against bright
+  backgrounds;
+- per-element size and alpha balance;
+- a GPU check of the larger texture set on the owner's hardware.
 
 ## Skill language
 

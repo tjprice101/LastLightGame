@@ -109,7 +109,8 @@ describe('GpuBattleEffects on the GPU layer', () => {
     const { effects } = await mounted();
     const beats = beatPlan('skill1', null, 1);
     await effects.windup(normal, state, beats);
-    expect(scene.chargeAura).toHaveBeenCalledWith({ x: 880, y: 400 }, 200, 0xff8a5c, 0);
+    expect(scene.chargeAura).toHaveBeenCalledWith({ x: 880, y: 400 }, 200, expect.objectContaining({ id: 'infernic' }), 0);
+    expect(scene.chargeAura.mock.calls[0][2].palette.main).toBe(0xff8a5c);
     expect(scene.wait).toHaveBeenNthCalledWith(1, 200);
     expect(scene.wait).toHaveBeenNthCalledWith(2, 150);
     // Infernis (ember) is a melee kit: a slash across the selected enemy, no projectile.
@@ -126,7 +127,19 @@ describe('GpuBattleEffects on the GPU layer', () => {
     await effects.impact(hit('e1', { kind: 'enemy', enemyId: 'e2' }), null, state);
     expect(scene.burst.mock.calls.map(call => call[1])).toEqual(['flare', 'finisher', 'enemy']);
     expect(scene.wait).toHaveBeenCalledWith(beats.hitInterval);
-    expect(scene.burst.mock.calls[2][2]).toBe(0x6cc4ff);
+    // Player hits use the caster's element base set; enemy hits use the attacker's element (D-485).
+    expect(scene.burst.mock.calls[0][2].id).toBe('infernic');
+    expect(scene.burst.mock.calls[2][2].id).toBe('oceanic');
+    expect(scene.burst.mock.calls[2][2].palette.main).toBe(0x6cc4ff);
+  });
+  it('falls back to the neutral set for an enemy without an element and a support pulse in the caster element', async () => {
+    const { effects } = await mounted();
+    const plain = { ...state, enemies: [{ id: 'e1', hp: 100 }, { id: 'e2', hp: 100 }] } as unknown as RadiantCombatState;
+    await effects.impact(hit('e1', { kind: 'enemy', enemyId: 'e2' }), null, plain);
+    expect(scene.burst.mock.calls.at(-1)![2].id).toBe('neutral');
+    const tideSkill: RadiantPlayerAction = { type: 'normal', bearerId: 'tide', targetId: 'e1' };
+    await effects.windup(tideSkill, state, beatPlan('normal', null, 1));
+    expect(scene.chargeAura.mock.calls.at(-1)![2].id).toBe('oceanic');
   });
   it('routes screen cues through the flash governor and passes hit-stop to the GPU clocks', async () => {
     const { effects } = await mounted();

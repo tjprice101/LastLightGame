@@ -14,8 +14,9 @@ import { radiantBearerKits } from '../content/combat-kits';
 import { radiantKits, type RadiantKitId, type KitSkillTarget } from '../content/radiant-kits';
 import { characterChoreography } from '../presentation/battle-effects';
 import { battleSpeed } from '../presentation/battle-speed';
-import { beatPlan, elementTint, enemyImpactMs, FlashGovernor, spectacleTier, staticImpactMs, tintCss,
+import { beatPlan, enemyImpactMs, FlashGovernor, spectacleTier, staticImpactMs, tintCss,
   type SpectacleBeats } from './spectacle-timing';
+import { elementStyle, type ElementStyle } from './element-styles';
 import type { BurstKind, Point, SpectacleScene, SpectacleStats } from './spectacle-scene';
 import type Phaser from 'phaser';
 
@@ -113,9 +114,10 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     return rect && rect.width > 0 && rect.height > 0 ? rect : null;
   }
   private static centre(rect: DOMRect): Point { return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; }
-  private bearerTint(state: RadiantCombatState, id: string): number {
+  /** Element base set (D-485) of the caster's kit; neutral when unknown. */
+  private bearerStyle(state: RadiantCombatState, id: string): ElementStyle {
     const unit = state.bearers.find(member => member.loadout.id === id);
-    return elementTint(unit ? radiantBearerKits[unit.loadout.starter].elementId : null);
+    return elementStyle(unit ? radiantBearerKits[unit.loadout.starter]?.elementId : null);
   }
   private wait(ms: number): Promise<void> {
     const scene = this.scene();
@@ -160,11 +162,11 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     const scene = this.scene();
     const caster = this.anchor(action.bearerId);
     if (!scene || !caster) { await this.wait(plan.windup + plan.travel); return; }
-    const tint = this.bearerTint(state, action.bearerId);
+    const style = this.bearerStyle(state, action.bearerId);
     const shape = this.shape(action, state);
     const from = GpuBattleEffects.centre(caster);
     const generation = this.generation;
-    scene.chargeAura(from, plan.windup, tint, shape.power);
+    scene.chargeAura(from, plan.windup, style, shape.power);
     await scene.wait(plan.windup);
     if (this.disposed || generation !== this.generation) return;
     const enemies = state.enemies.filter(enemy => enemy.hp > 0).map(enemy => enemy.id);
@@ -173,18 +175,18 @@ export class GpuBattleEffects implements RadiantBattleEffects {
       : enemies;
     if (!targets.length || !targets[0]) {
       // Support kits pulse from the caster to every living ally.
-      scene.pulse(from, plan.travel, tint, shape.power);
+      scene.pulse(from, plan.travel, style, shape.power);
       for (const ally of state.bearers) {
         const rect = ally.hp > 0 && ally.loadout.id !== action.bearerId ? this.anchor(ally.loadout.id) : null;
-        if (rect) scene.pulse(GpuBattleEffects.centre(rect), plan.travel, tint, shape.power * .6);
+        if (rect) scene.pulse(GpuBattleEffects.centre(rect), plan.travel, style, shape.power * .6);
       }
     } else {
       for (const id of targets.slice(0, 6)) {
         const rect = this.anchor(id!);
         if (!rect) continue;
         const to = GpuBattleEffects.centre(rect);
-        if (shape.melee) scene.slash(to, from, plan.travel, tint, shape.power, Math.min(rect.width, rect.height));
-        else scene.projectile(from, to, plan.travel, tint, shape.power);
+        if (shape.melee) scene.slash(to, from, plan.travel, style, shape.power, Math.min(rect.width, rect.height));
+        else scene.projectile(from, to, plan.travel, style, shape.power);
       }
     }
     await scene.wait(plan.travel);
@@ -208,17 +210,18 @@ export class GpuBattleEffects implements RadiantBattleEffects {
       seen.add(packet.targetId);
       const rect = this.anchor(packet.targetId);
       if (!rect) continue;
-      const tint = packet.source.kind === 'enemy'
-        ? elementTint(state?.enemies.find(enemy => enemy.id === (packet.source as { enemyId: string }).enemyId)?.elementId)
-        : state ? this.bearerTint(state, packet.source.bearerId) : elementTint(null);
-      if (!scene) { this.staticRing(rect, tint); continue; }
+      // Enemy hits use the attacker's element base set at the smaller enemy size (owner choice, D-485).
+      const style = packet.source.kind === 'enemy'
+        ? elementStyle(state?.enemies.find(enemy => enemy.id === (packet.source as { enemyId: string }).enemyId)?.elementId)
+        : state ? this.bearerStyle(state, packet.source.bearerId) : elementStyle(null);
+      if (!scene) { this.staticRing(rect, style.palette.main); continue; }
       const own = !!action && packet.source.kind !== 'enemy' && packet.source.bearerId === action.bearerId &&
         ['normal', 'skill', 'flare', 'master'].includes(packet.source.kind);
       const kind: BurstKind = packet.type === 'status' ? 'status' : packet.type !== 'damage' ? 'support'
         : packet.source.kind === 'enemy' ? 'enemy'
           : !own || packet.origin !== 'direct' || !tier ? 'normal'
             : tier === 'flare' ? finisher ? 'finisher' : 'flare' : tier;
-      scene.burst(GpuBattleEffects.centre(rect), kind, tint, Math.min(rect.width, rect.height));
+      scene.burst(GpuBattleEffects.centre(rect), kind, style, Math.min(rect.width, rect.height));
     }
     await this.wait(slot);
   }

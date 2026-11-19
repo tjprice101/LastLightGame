@@ -616,6 +616,48 @@ per-bearer glyphs are retired).
   - `--battle enemy` captures an enemy phase;
   - `--speed` and `--reduced` set battle speed and Reduce motion.
 
+## Battle Spectacle: element base sets (D-485, Spectacle step 3)
+
+Presentation only, so no server deploy. It implements rule R3 on the D-484
+layer. `src/vfx/element-styles.ts` holds one style per element plus
+`neutral` (no element; the unchanged D-484 look). Each style has:
+- **Palette.** Three tones (owner choice): a white-hot core, the HUD color
+  (`elementTints`) and a deeper edge. Particles fade core to main to edge
+  over their life. Core-toned layers stay white-hot.
+- **Shapes and motion.** All shapes are grayscale VFX library textures:
+
+| Element | Ranged travel | Impact ring / burst / heavy | Particles | Melee overlay |
+|---|---|---|---|---|
+| Infernic | spinning flame orb, ember trail | ring-solar / radial-spikes / flare-burst | embers and flame tongues rise | plasma-core flame tongue |
+| Oceanic | tide beam that sweeps across | ring-dripping / ripples / ground splash | droplets and mist fall | standing wave |
+| Atmospheric | instant flickering storm bolt | ring-sparkle / x-cross / radial streaks | fast, short streaks | storm bolt |
+| Botanic | spinning bloom, petal trail | ring-thorned / petal bursts | petals tumble, thorns fall | petal spray |
+| Tranquilitic | turning runic ring orb | ring-runic / sigil-circle / ring-cosmic | slow motes and crescents float; layers linger | glyph stream |
+| Chaotic | fissure lance | shatter-web / crack-burst / shatter-burst, smoke on Skill 2+ | rock and crystal shards fall | fissure |
+
+- **Tier escalation.** It is shared by every element (a test enforces it):
+  - from Normal through Skill 1 and Skill 2 to the finisher, the particle
+    count never drops and the largest layer grows;
+  - each Convergent Light hit is at least as large as a Skill 2 hit;
+  - the finisher has the most layers.
+- **Wind-up.** Element motes gather in. Skills also turn the element's sigil
+  under the caster.
+- **Support.** The pulse uses the element's ring. Support and status
+  particles always rise.
+- **Enemies (owner choice).** Enemy hits use the attacker's element set at
+  the enemy size, which is smaller than a player Skill 1. Telegraphs stay in
+  Step 6.
+- **Unchanged.** Timing, screen tools, the flash governor, Reduce motion and
+  the no-WebGL static rings (they use the HUD color), the particle caps and
+  Skip are all as in D-484.
+- **Textures.** The GPU layer loads 46 textures (budget 50): 28 were added;
+  two that were never drawn (`glow/glow-orb`, `impacts/impact-ellipse`) were
+  removed. Burst emitters are created per element and tier on first use.
+  The color textures `ring-fire`, `arc-flame`, `ember-drop`, `bloom-flower`
+  and `ring-eclipse` are not used, because only grayscale textures are
+  allowed. `beams/lightning` is not used either: its gray background would
+  draw a visible box.
+
 ## Flurry presentation (D-472, Battle Flurry Phase 2)
 
 Presentation only: combat rules, events, rewards, receipts, the `settle`
