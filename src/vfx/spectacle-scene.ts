@@ -485,11 +485,11 @@ export class SpectacleScene extends Phaser.Scene {
     const at = this.toWorld(screen);
     const ring = this.sprite(style.pulse, at, style.palette.main, 8);
     const glow = this.sprite('glow/soft-glow', at, style.palette.main, 7);
-    const size = 160 + 120 * power;
+    const size = 240 + 160 * power;
     for (const image of [ring, glow]) {
       if (!image) continue;
       const end = (image === glow ? size * 1.4 / 512 : size / textureEdge(style.pulse));
-      image.setScale(end * .2).setAlpha(.9);
+      image.setScale(end * .2).setAlpha(1);
       this.tween({ targets: image, scale: end, alpha: 0, duration: ms + 160, ease: 'Cubic.easeOut' }, this.destroyLater(image));
     }
   }

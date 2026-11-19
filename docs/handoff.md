@@ -38,8 +38,13 @@ D-484 look.
 - the GPU frame-time check with the 46-texture set;
 - an owner feel review of the hosted build.
 
-**Known:** Botanic and Tranquilitic orbs and all support pulses read small
-on bright backgrounds (Sonnet tuning).
+**Tuning round (Sonnet, 2026-11-18):** Infernic, Botanic and Tranquilitic
+orbs enlarged (64, 84 and 92 px) and support pulses enlarged (240 + 160 x
+power px, full starting alpha). `--stream` captures against the dev preview
+on the bright Story 25 sky: Sprout Verdant Renewal pulse and Rosetta Golden
+Thorn Volley orb read clearly. Not recaptured: Infernic orb, other
+elements' pulses, 3x and Reduce motion. Capture tip: effects appear a few
+frames after the click; check frames 5 to 8 with `--every 60`.
 
 **Next:**
 - The owner reviews the build, then approves the push and release.
