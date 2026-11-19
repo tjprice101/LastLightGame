@@ -1,5 +1,28 @@
 # Decision log
 
+## Spectacle step 5: Convergent Light cinematics (D-490, 2026-11-18)
+
+- **Owner-approved plan (2026-11-18).** Each Convergent Light tier escalates in
+  three parts: the cut-in, the hit run and the finisher
+  ([combat spec](combat.md#battle-spectacle-convergent-light-cinematics-d-490-spectacle-step-5)).
+- **Owner choices:**
+  - Ultimate grows from 2.4 s to **3.0 s** (`[1000, 300, 1400, 300]`).
+    Sparkling 1.5 s and Glimmering 1.9 s are unchanged.
+  - The Ultimate cut-in is a **full-screen takeover**. Sparkling and
+    Glimmering keep the diagonal band; Glimmering adds gold edges, a sheen and
+    prismatic shards.
+- **Revises R2 (D-483):** the finisher's shake and hit-stop now escalate by
+  tier, 6 px / 70 ms, 8 px / 90 ms and 10 px / 120 ms. Before, all three tiers
+  used 8 px / 90 ms.
+- **Added:**
+  - an accelerating hit cadence;
+  - a gather before the finisher (80 / 110 / 180 ms);
+  - hits that grow through the run;
+  - a finisher set (light pillar, field shockwave, lens flare);
+  - a hit-count and running-total combo plate;
+  - four grayscale textures, which reach the 50-texture budget.
+- Presentation only: no rule, RNG, reward, save or authority change, no server deploy.
+
 ## Spectacle step 4 complete: per-bearer signature layers (D-486 to D-489, 2026-11-18)
 
 - **Owner-approved plan:** each Element-Bearer gets a signature layer on top of

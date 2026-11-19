@@ -33,7 +33,11 @@ export const spectacleTextures = [
   'trails/petal-spray',
   'impacts/sigil-circle', 'impacts/ring-runic', 'impacts/ring-cosmic', 'particles/crescent', 'beams/glyph-stream',
   'impacts/shatter-web', 'impacts/crack-burst', 'beams/fissure', 'particles/rock-shard', 'beams/smoke-stream',
+  // Convergent Light cinematics (D-490): finisher lens flare and glint, gather vortex, pillar ground flare.
+  'glow/lens-flare', 'glow/star-flare', 'impacts/vortex-rings', 'impacts/impact-ellipse',
 ] as const;
+/** GPU texture budget (D-485); the D-490 additions fill it. */
+export const spectacleTextureBudget = 50;
 export type SpectacleTexture = (typeof spectacleTextures)[number];
 
 export function spectacleTextureUrl(key: SpectacleTexture, format: 'avif' | 'png' = avifPreferred() ? 'avif' : 'png'): string {

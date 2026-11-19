@@ -49,19 +49,29 @@ export interface RadiantFlareCutinInput {
   color: string;
 }
 const radiantCutinPower = { sparkling: .35, glimmering: .65, ultimate: 1 } as const;
-/** Radiant Flare cut-in: the shared portrait panel, presentation only and pointer-transparent. */
+/**
+ * Convergent Light cut-in (D-490), presentation only and pointer-transparent. Sparkling and Glimmering use
+ * the diagonal band (Glimmering adds gold edges and prismatic shards); Ultimate is a full-screen takeover
+ * with letterbox bars, speed lines, a turning sigil, a name sheen and a closing wipe. The view animates it.
+ */
 export function radiantFlareCutin(input: RadiantFlareCutinInput): HTMLElement {
   const panel = document.createElement('div');
   const ultimate = input.tier === 'ultimate';
-  panel.className = `portrait-cutin cutin-ally cutin-radiant${ultimate ? ' cutin-ultimate' : ''}`;
+  panel.className = `portrait-cutin cutin-ally cutin-radiant${ultimate ? ' cutin-ultimate cutin-takeover' : ''}`;
   panel.dataset.tier = input.tier;
   panel.setAttribute('aria-hidden', 'true');
   panel.style.setProperty('--element', input.color);
   panel.style.setProperty('--cutin-power', String(radiantCutinPower[input.tier]));
-  panel.innerHTML = `<span class="cutin-streaks"></span><span class="cutin-sigil"></span>
+  const copy = `<span class="cutin-copy"><small></small><strong></strong><span></span><i class="cutin-divider"></i>${
+    ultimate ? '<i class="cutin-name-sheen"></i>' : ''}</span>`;
+  panel.innerHTML = ultimate
+    ? `<span class="cutin-speedlines"></span><span class="cutin-halo"></span><span class="cutin-sigil"></span>
+    <span class="cutin-portrait">${input.art}</span>${copy}
+    <span class="cutin-bar cutin-bar-top"></span><span class="cutin-bar cutin-bar-bottom"></span><span class="cutin-wipe"></span>`
+    : `<span class="cutin-streaks"></span><span class="cutin-sigil"></span>${
+      input.tier === 'glimmering' ? `<span class="cutin-shards">${'<i></i>'.repeat(7)}</span>` : ''}
     <span class="cutin-crest"><span></span></span><span class="cutin-edge cutin-edge-top"></span><span class="cutin-edge cutin-edge-bottom"></span>
-    <span class="cutin-portrait">${input.art}</span>
-    <span class="cutin-copy"><small></small><strong></strong><span></span><i class="cutin-divider"></i></span>`;
+    <span class="cutin-portrait">${input.art}</span><span class="cutin-glint"></span>${copy}`;
   panel.querySelector('.cutin-copy small')!.textContent = input.tierLabel.toUpperCase();
   panel.querySelector('.cutin-copy strong')!.textContent = input.name;
   panel.querySelector('.cutin-copy > span')!.textContent = input.flare;

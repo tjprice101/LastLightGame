@@ -82,6 +82,7 @@ describe('GpuBattleEffects on the GPU layer', () => {
     ready: true, stats: {}, onReady: null as null | (() => void), onActivity: null,
     attach: vi.fn(), setPaused: vi.fn(), freeze: vi.fn(), chargeAura: vi.fn(), projectile: vi.fn(), slash: vi.fn(),
     pulse: vi.fn(), burst: vi.fn(), flash: vi.fn(), dim: vi.fn(), cancelAll: vi.fn(),
+    converge: vi.fn(), pillar: vi.fn(), shockwave: vi.fn(), lensFlare: vi.fn(), focus: vi.fn(),
     wait: vi.fn(() => Promise.resolve()), idle: vi.fn(() => Promise.resolve()),
   };
   beforeEach(() => {
@@ -122,15 +123,38 @@ describe('GpuBattleEffects on the GPU layer', () => {
     const { effects } = await mounted();
     const flare: RadiantPlayerAction = { type: 'flare', bearerId: 'ember' };
     const beats = beatPlan('flare', 'ultimate', 12);
-    await effects.impact(hit('e1'), flare, state, beats, false);
-    await effects.impact(hit('e1'), flare, state, beats, true);
+    const flareHit = (id: string) => hit(id, { kind: 'flare', bearerId: 'ember' });
+    await effects.impact(flareHit('e1'), flare, state, beats, false, 0);
+    await effects.impact(flareHit('e1'), flare, state, beats, true, 11);
     await effects.impact(hit('e1', { kind: 'enemy', enemyId: 'e2' }), null, state);
     expect(scene.burst.mock.calls.map(call => call[1])).toEqual(['flare', 'finisher', 'enemy']);
-    expect(scene.wait).toHaveBeenCalledWith(beats.hitInterval);
+    // D-490: each hit waits its own cadence slot and grows; the finisher is the largest.
+    expect(scene.wait).toHaveBeenNthCalledWith(1, beats.slots[0]);
+    expect(scene.wait).toHaveBeenNthCalledWith(2, beats.slots[11]);
+    expect(scene.burst.mock.calls.map(call => call[4])).toEqual([1, 1.35, 1]);
+    // The finisher set lands once: a pillar and lens flare on the target and one field shockwave.
+    expect(scene.pillar).toHaveBeenCalledTimes(1);
+    expect(scene.lensFlare).toHaveBeenCalledTimes(1);
+    expect(scene.shockwave).toHaveBeenCalledTimes(1);
     // Player hits use the caster's element base set; enemy hits use the attacker's element (D-485).
     expect(scene.burst.mock.calls[0][2].id).toBe('infernic');
     expect(scene.burst.mock.calls[2][2].id).toBe('oceanic');
     expect(scene.burst.mock.calls[2][2].palette.main).toBe(0x6cc4ff);
+  });
+  it('grows Convergent Light hits through the run and gathers light on every target before the finisher (D-490)', async () => {
+    const { effects } = await mounted();
+    const flare: RadiantPlayerAction = { type: 'flare', bearerId: 'ember' };
+    const beats = beatPlan('flare', 'glimmering', 8);
+    for (let index = 0; index < 7; index++)
+      await effects.impact(hit('e1', { kind: 'flare', bearerId: 'ember' }), flare, state, beats, false, index);
+    const sizes = scene.burst.mock.calls.map(call => call[4] as number);
+    for (let index = 1; index < sizes.length; index++) expect(sizes[index]).toBeGreaterThan(sizes[index - 1]);
+    expect(scene.pillar).not.toHaveBeenCalled();
+    await effects.gather(flare, state, ['e1', 'e2'], beats);
+    expect(scene.converge).toHaveBeenCalledTimes(2);
+    expect(scene.converge.mock.calls[0][1]).toBe(beats.gather);
+    expect(scene.focus).toHaveBeenCalledWith(.08, beats.gather, beats.aftermath);
+    expect(scene.wait).toHaveBeenLastCalledWith(beats.gather);
   });
   it('falls back to the neutral set for an enemy without an element and a support pulse in the caster element', async () => {
     const { effects } = await mounted();

@@ -1131,11 +1131,50 @@ describe('Battle Spectacle beats and screen tools (D-483 R2/R6, D-484)', () => {
     const cues = effects.screen.mock.calls.map(call => (call as unknown[])[0] as Record<string, unknown>);
     expect(cues[0]).toMatchObject({ dim: { alpha: .3 } });
     expect(cues.filter(cue => cue.flash === 'full')).toHaveLength(1);
-    expect(cues.filter(cue => cue.freeze === 90)).toHaveLength(1);
+    // D-490: the Sparkling finisher's hit-stop is 70 ms (Glimmering 90, Ultimate 120).
+    expect(cues.filter(cue => cue.freeze === 70)).toHaveLength(1);
     const player = (effects.impact.mock.calls as unknown[][]).filter(call => call[1] && call[3]);
     expect(player.filter(call => call[4] === true)).toHaveLength(1);
     const finisher = player.find(call => call[4] === true)![0] as RadiantImpactFrame;
     expect(finisher.events.some(event => event.type === 'damage')).toBe(true);
+  });
+  it('runs the Convergent Light hits on the D-490 cadence: indexed hits, one gather before the finisher, one combo total', async () => {
+    const effects = { ...spectacleEffects(), gather: vi.fn(async () => {}) };
+    const { view, host } = fixture(3, 6, effects, 25, undefined, undefined, true); await view.finishEntrance();
+    const plates: HTMLElement[] = [];
+    const observer = new MutationObserver(records => { for (const record of records) for (const node of Array.from(record.addedNodes))
+      if (node instanceof HTMLElement && node.classList.contains('radiant-combo')) plates.push(node); });
+    observer.observe(host, { childList: true, subtree: true });
+    await view.act('flare', 'ember');
+    await Promise.resolve();
+    observer.disconnect();
+    const player = (effects.impact.mock.calls as unknown[][]).filter(call => call[1] && call[3]);
+    const beats = player[0][3] as { slots: number[]; gather: number; impact: number; finisherAt: number };
+    expect(player.map(call => call[5])).toEqual(player.map((_, index) => index));
+    expect(beats.slots.reduce((sum, slot) => sum + slot, 0) + beats.gather).toBeCloseTo(beats.impact);
+    expect(effects.gather).toHaveBeenCalledTimes(1);
+    const finisherCall = effects.impact.mock.calls.findIndex(call => (call as unknown[])[4] === true);
+    expect(effects.gather.mock.invocationCallOrder[0]).toBeLessThan(effects.impact.mock.invocationCallOrder[finisherCall]);
+    expect((effects.gather.mock.calls[0] as unknown[])[3]).toBe(beats);
+    // The combo plate counts the Convergent Light's own damaging hits and ends on their exact total.
+    const flareHits = player.map(call => (call[0] as RadiantImpactFrame).events.reduce((sum, event) => sum +
+      (event.type === 'damage' && event.source.kind === 'flare' ? event.healthLoss + event.absorbed : 0), 0)).filter(amount => amount > 0);
+    expect(plates).toHaveLength(1);
+    expect(plates[0].classList.contains('is-final')).toBe(true);
+    expect(plates[0].querySelector('.radiant-combo-count')!.textContent).toBe(String(flareHits.length));
+    expect(plates[0].querySelector('.radiant-combo-total')!.textContent)
+      .toBe(flareHits.reduce((sum, amount) => sum + amount, 0).toLocaleString('en-US'));
+    expect(host.querySelector('.radiant-combo')).toBeNull();
+  });
+  it('gives a support Convergent Light a soft finisher flash with no hit-stop and no combo plate', async () => {
+    const effects = spectacleEffects();
+    const { view, host } = fixture(['tide', 'ember', 'sprout'], 6, effects, 25, undefined, undefined, true); await view.finishEntrance();
+    await view.act('flare', 'tide');
+    const cues = effects.screen.mock.calls.map(call => (call as unknown[])[0] as Record<string, unknown>);
+    expect(cues.some(cue => cue.freeze)).toBe(false);
+    expect(cues.filter(cue => cue.flash === 'full')).toHaveLength(0);
+    expect(cues.filter(cue => cue.flash === 'soft')).toHaveLength(1);
+    expect(host.querySelector('.radiant-combo')).toBeNull();
   });
   it('shows one static element ring and the number per impact under Reduce motion, gone within 200 ms', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
@@ -1149,6 +1188,17 @@ describe('Battle Spectacle beats and screen tools (D-483 R2/R6, D-484)', () => {
       expect(host.querySelector('.radiant-orb')).toBeNull();
       await vi.advanceTimersByTimeAsync(200);
       expect(host.querySelector('.radiant-static-ring, .radiant-number')).toBeNull();
+    } finally { vi.useRealTimers(); }
+  });
+  it('shows one static combo total for a Convergent Light under Reduce motion and no cut-in', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    try {
+      const { view, host } = fixture(3, 6, undefined, 25, undefined, undefined, true); applyMotion('reduced'); await view.finishEntrance();
+      await view.act('flare', 'ember');
+      expect(host.querySelectorAll('.radiant-combo.is-static.is-final')).toHaveLength(1);
+      expect(host.querySelector('.portrait-cutin')).toBeNull();
+      await vi.advanceTimersByTimeAsync(200);
+      expect(host.querySelector('.radiant-combo')).toBeNull();
     } finally { vi.useRealTimers(); }
   });
 });

@@ -2085,3 +2085,76 @@ it on top of the element base (D-485) and caches the result.
 | Serapha | interval shield: runic ring answered by delayed sparkle rings, chimes |
 | Seravelle | convoy lance: narrow thrust beam, one solar ring per cadence beat, back-kicked embers |
 | Velmira | unfastened court blades: opposed core/edge crescents, shatter line, shadow wisps |
+
+## Battle Spectacle: Convergent Light cinematics (D-490, Spectacle step 5)
+
+Presentation only, so no server deploy. It builds on D-484 to D-489 and
+escalates each Convergent Light tier in three parts. Each action still plays
+the receipt's frames in order; only the wait between frames changes, never an
+outcome, RNG or receipt.
+
+- **Timing** (`src/vfx/spectacle-timing.ts`). Totals at battle speed 1:
+
+  | Tier | Wind-up / travel (cut-in) | Impact | Aftermath | Total |
+  |---|---|---|---|---|
+  | Sparkling | 450 / 150 ms | 600 ms | 300 ms | 1.5 s |
+  | Glimmering | 550 / 200 ms | 850 ms | 300 ms | 1.9 s |
+  | Ultimate | 1000 / 300 ms | 1400 ms | 300 ms | 3.0 s (was 2.4 s) |
+
+  Speed 2x/3x divides every value, and Skip ends the action at once.
+- **Cut-in** (`radiantFlareCutin`, `battle-cutin.css`). It lasts the wind-up
+  and travel. Its art is the bearer's existing cutout (`radiantAllyArt`);
+  bearers whose art is pending keep the neutral tile.
+  - Sparkling: the diagonal band. The art pushes in, the sigil turns and a
+    glint sweeps across.
+  - Glimmering: as Sparkling, plus gold edges and divider, a brighter rim,
+    a gold sheen across the name (`lusterSheen`) and prismatic shards.
+  - Ultimate: a full-screen takeover. Letterbox bars close in, and the art
+    pushes in over element speed lines, a halo and a turning sigil. The tier
+    label, name and Convergent Light name stamp in one after another, a gold
+    sheen crosses the name, and a light wipe opens the bars back onto the
+    field. Layouts exist for desktop, portrait (700 px wide or less) and short
+    landscape (500 px tall or less).
+- **Hit run.** `beatPlan(tier, flare, hits, finisherAt)` returns one slot per
+  hit and a `gather`. The slots plus the gather add up exactly to the impact
+  beat.
+  - **Cadence:** the hits accelerate, and the first gap is 1.6 times the last.
+    The finisher holds longest (weight 2), and frames after the finisher, such
+    as closing statuses, pass quickly (weight 0.6). Normal Attack and the Skill
+    tiers keep an even split.
+  - **Growth:** each hit's burst grows from 1x to 1.25x across the run
+    (`hitProgress`) and lands slightly off the last spot. The finisher burst
+    is 1.15x, 1.25x or 1.35x by tier.
+  - **Shake ramp:** each hit adds a shake that grows from 1 px to 3 px. The
+    heavy shake waits for the finisher.
+  - **Combo plate:** a plate at the upper centre of the field shows "N Hits"
+    and the running total (exact; health loss plus Shield absorbed by this
+    Convergent Light). It steps up in size with each hit. It appears only when
+    there are at least two damaging hits. During the run, hit numbers use a
+    compact size.
+- **Gather.** Just before the finisher, light pulls onto each target for 80,
+  110 or 180 ms by tier: a reversed vortex, the wind-up aura and an extra
+  0.08 field dim. There is no gather when the first hit is the finisher.
+- **Finisher.**
+  - Screen tools: a full flash through the governor, hit-stop of 70, 90 or
+    120 ms and shake of 6, 8 or 10 px.
+  - On each target: a light pillar built from stretched soft glows with a
+    ground flare, plus a lens flare.
+  - Across the field: one shockwave.
+  - The combo plate turns into the gilded total, holds through the aftermath
+    and fades.
+- **Support Convergent Lights** (no damage). The finisher is the last heal or
+  Shield frame: a pillar on each ally and a half-size shockwave, with a soft
+  flash, no hit-stop and no combo plate.
+- **Reduce motion (R6).** No cut-in, motion, flash or dim. Impacts keep the
+  static ring and number. One static combo total shows on the last damaging
+  hit for 200 ms or less.
+- **Safety.** There is still one full flash per action, so the three-per-second
+  limit holds. Every DOM effect is `aria-hidden`, pointer-transparent and
+  registered for Skip, Exit and Retry cleanup.
+- **Textures:** 50 of the 50-texture budget. The four new grayscale ones are
+  `glow/lens-flare`, `glow/star-flare`, `impacts/vortex-rings` and
+  `impacts/impact-ellipse`.
+- **Review captures:** `node tools/capture_frames.mjs --battle flare
+  --flare-tier ultimate --encounter nerithe-10 --stream`. The Story bosses die
+  in one or two hits, so use the Nerithe final boss to see a full hit run.

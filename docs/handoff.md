@@ -1,5 +1,42 @@
 # Current state and handoff
 
+## Spectacle step 5: Convergent Light cinematics (D-490, 2026-11-18)
+
+**Implemented on `battle-flurry-phase3`.** Presentation only; no server change
+and no deploy needed. Spec:
+[combat spec](combat.md#battle-spectacle-convergent-light-cinematics-d-490-spectacle-step-5).
+- **Cut-in by tier:**
+  - Sparkling: the band with a portrait push-in and a glint.
+  - Glimmering: gold edges, a name sheen and prismatic shards.
+  - Ultimate: a full-screen takeover with letterbox bars, speed lines, a
+    stamped name and a wipe. Ultimate now lasts 3.0 s (owner choice).
+- **Hit run:** an accelerating cadence; hits that grow and lands that vary;
+  a shake ramp; a "N Hits" plate with the running total; compact hit numbers.
+- **Gather and finisher:** light pulls onto the targets, then a pillar, a field
+  shockwave and a lens flare. The finisher's shake and hit-stop escalate by
+  tier.
+- **Support Convergent Lights:** pillars on the allies and a soft flash.
+- **Reduce motion:** one static total.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- `npx vite build`: succeeded (existing chunk advisory).
+- Full `npx vitest run`: 10,707 of 10,708 passed. The one failure is the known 20 s
+  `acquisition-surfaces.test.ts` timeout; run alone it passes.
+- Timed `--stream` captures:
+  - Ultimate against the Nerithe final boss, desktop and 390x844 portrait
+    (12-hit run, gather, finisher, 15,033 total);
+  - Glimmering against Story 20 (one-hit kill, so no gather or combo);
+  - Tizu's support Convergent Light;
+  - Ultimate under Reduce motion.
+
+**Not verified:** the owner feel review on the hosted build; the desktop GPU
+frame-time check (still in Future Plans).
+
+**Next:** owner feel review of all three tiers on the hosted build. Then
+Spectacle step 6, enemy attacks (Opus for the telegraph rules; Sonnet for
+tuning rounds).
+
 ## Battle Spectacle steps 1 to 4 complete and released (D-482 to D-489, 2026-11-18)
 
 **Released** (`aee50994` on `main`; the Deploy Last Light run succeeded). Owner

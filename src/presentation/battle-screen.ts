@@ -31,7 +31,7 @@ import { radiantFlareCutin } from './battle-cutin';
 import './battle-cutin.css';
 import { radiantBearerKits, radiantFlareName } from '../content/combat-kits';
 import { elementDamageMultiplier } from '../content/element-matchups';
-import { beatPlan, elementTint, enemyScreenTools, screenTools, spectacleTier, staticImpactMs, tintCss,
+import { beatPlan, elementTint, enemyScreenTools, hitProgress, screenTools, spectacleTier, staticImpactMs, tintCss,
   type FlashKind, type SpectacleBeats } from '../vfx/spectacle-timing';
 
 export { radiantActivityTitle };
@@ -49,7 +49,9 @@ export interface RadiantBattleEffects {
   /** `action` is the presented player action, or null for enemy-phase frames (no caster).
    * Resolves after this hit's slot in the impact beat; lingering particles are awaited through `idle`. */
   impact(frame: RadiantImpactFrame, action?: RadiantPlayerAction | null, state?: RadiantCombatState,
-    beats?: SpectacleBeats, finisher?: boolean): Promise<void>;
+    beats?: SpectacleBeats, finisher?: boolean, hitIndex?: number): Promise<void>;
+  /** D-490: light gathers onto the targets for `beats.gather` just before a Convergent Light finisher. */
+  gather?(action: RadiantPlayerAction, state: RadiantCombatState, targetIds: readonly string[], beats: SpectacleBeats): Promise<void>;
   screen?(cue: RadiantScreenCue): void;
   /** Resolves once every lingering effect has finished (the aftermath beat). */
   idle?(): Promise<void>;
@@ -57,6 +59,8 @@ export interface RadiantBattleEffects {
   cancel(): void;
   dispose?(): void;
 }
+/** D-490 combo plate handle: one per Convergent Light presentation. */
+interface ComboPlate { hit(amount: number, final: boolean): void; settle(holdMs: number): Promise<void> }
 /** One action's presentation; player actions overlap (Battle Flurry, D-472). */
 interface ActivePresentation {
   index: number;
@@ -958,8 +962,16 @@ export class RadiantBattleView {
       const finisherFrame = strikeFrames.at(-1) ?? hitFrames.at(-1);
       const tier = player ? spectacleTier(player) : null;
       const flareTier = player?.type === 'flare' ? readyFlare(before.gauge, player.bearerId) : null;
-      const beats = tier ? beatPlan(tier, flareTier, hitFrames.length) : null;
+      const finisherAt = finisherFrame === undefined ? undefined : hitFrames.indexOf(finisherFrame);
+      const beats = tier ? beatPlan(tier, flareTier, hitFrames.length, finisherAt) : null;
       const tools = tier ? screenTools(tier, flareTier) : null;
+      // D-490 combo: the Convergent Light's own damaging hits, counted and totalled as they land.
+      const flareDamage = (frame: RadiantImpactFrame) => frame.events.reduce((sum, event) => sum +
+        (player && event.type === 'damage' && event.source.kind === 'flare' && event.source.bearerId === player.bearerId
+          ? event.healthLoss + event.absorbed : 0), 0);
+      const comboFrames = tier === 'flare' ? strikeFrames.filter(frameIndex => flareDamage(frames[frameIndex]) > 0) : [];
+      const comboShown = comboFrames.length >= 2;
+      let combo: ComboPlate | null = null;
       const fx: Promise<void>[] = [], failures: unknown[] = [], played = new Set<number>();
       const track = (effect: Promise<void>) => { fx.push(effect.catch(error => { failures.push(error); })); };
       if (!reducedMotion() && player && beats && tools) {
@@ -993,6 +1005,12 @@ export class RadiantBattleView {
           if (!current()) break;
         }
         previousActor = actor;
+        if (!reducedMotion() && player && beats && beats.gather > 0 && tier === 'flare' && frameIndex === finisherFrame) {
+          // D-490: light gathers onto the targets, then the finisher lands.
+          const targets = [...new Set(frame.events.filter(impactPacket).map(event => event.targetId))];
+          await (this.effects?.gather ? this.effects.gather(player, structuredClone(before), targets, beats) : this.pause(beats.gather));
+          if (!current()) break;
+        }
         const previous = frameIndex ? frames[frameIndex - 1].readout : radiantReadout(before);
         if (this.newer(index, frameIndex)) {
           this.displayed = structuredClone(frame.readout); this.statuses = structuredClone(frame.statuses);
@@ -1004,11 +1022,14 @@ export class RadiantBattleView {
         if (reducedMotion()) {
           // R6: one static element ring and the number per impact, 200 ms or less.
           this.staticImpact(frame, before, random);
+          if (comboShown && frameIndex === comboFrames.at(-1)) this.staticComboTotal(comboFrames.length,
+            comboFrames.reduce((sum, index) => sum + flareDamage(frames[index]), 0));
           continue;
         }
         const hit = frame.events.some(event => event.type === 'damage' && event.healthLoss + event.absorbed > 0);
         const playerHit = !enemyPhase && !!beats && hitFrames.includes(frameIndex);
         const finisher = playerHit && tier === 'flare' && frameIndex === finisherFrame;
+        const hitIndex = playerHit ? hitFrames.indexOf(frameIndex) : -1;
         if (playerHit && hit && tools) {
           // Screen tools land on the first hit; a Convergent Light saves its heaviest for the finisher.
           const first = frameIndex === strikeFrames[0];
@@ -1016,18 +1037,24 @@ export class RadiantBattleView {
             this.hitStop(tools.hitStop);
             if (tools.flash !== 'none') this.effects?.screen?.({ flash: tools.flash });
             track(this.shakeField(tools.shake));
-          } else if (tier === 'flare' && first) track(this.shakeField(3));
+          } else if (tier === 'flare' && beats) track(this.shakeField(1 + 2 * hitProgress(beats, hitIndex))); // D-490 shake ramp
+        } else if (finisher && tools) this.effects?.screen?.({ flash: 'soft' }); // A support Convergent Light: soft, no hit-stop.
+        if (comboShown && beats && comboFrames.includes(frameIndex)) {
+          combo ??= this.comboPlate(comboFrames.length);
+          const final = frameIndex === comboFrames.at(-1);
+          combo.hit(flareDamage(frame), final);
+          if (final) track(combo.settle(beats.aftermath));
         }
         track(this.chargeOrbs(frame, previous, random));
         track(this.haulMotes(frame, random));
-        track(this.damageNumbers(frame, before, random));
+        track(this.damageNumbers(frame, before, random, tier === 'flare' && playerHit));
         for (const event of frame.events) if (event.type === 'defeated')
           track(this.lootDrops(response, played, event.targetId, random));
         if (playerHit && beats) {
           // The recoil and particles overlap the next hit; only this hit's slot is awaited.
           track(this.fieldImpact(frame));
-          if (this.effects) await this.effects.impact(structuredClone(frame), player, structuredClone(before), beats, finisher);
-          else { track(this.impact(frame)); await this.pause(beats.hitInterval); }
+          if (this.effects) await this.effects.impact(structuredClone(frame), player, structuredClone(before), beats, finisher, hitIndex);
+          else { track(this.impact(frame)); await this.pause(beats.slots[hitIndex] ?? beats.hitInterval); }
           continue;
         }
         const defeat = frame.events.some(event => event.type === 'defeated');
@@ -1425,7 +1452,8 @@ export class RadiantBattleView {
     return Promise.all(flights).then(() => {});
   }
   /** Stacking damage/heal/Shield numbers with Weakness flair; exact values, finite, aria-hidden. */
-  private damageNumbers(frame: RadiantImpactFrame, state: RadiantCombatState, random: () => number): Promise<void> {
+  /** `compact` (D-490): a Convergent Light's run of hits uses smaller numbers; the combo plate carries the total. */
+  private damageNumbers(frame: RadiantImpactFrame, state: RadiantCombatState, random: () => number, compact = false): Promise<void> {
     const floats: Promise<void>[] = [];
     const bearerElement = (id: string) => {
       const unit = state.bearers.find(member => member.loadout.id === id);
@@ -1439,8 +1467,8 @@ export class RadiantBattleView {
       const box = anchor.getBoundingClientRect();
       const stack = this.numberStacks.get(targetId) ?? 0;
       this.numberStacks.set(targetId, stack + 1);
-      const node = this.spawn(`radiant-number is-${kind}`, box.left + box.width / 2 + (random() - .5) * box.width * .3,
-        box.top + box.height * .32 - (stack % 5) * 22);
+      const node = this.spawn(`radiant-number is-${kind}${compact ? ' is-compact' : ''}`,
+        box.left + box.width / 2 + (random() - .5) * box.width * .3, box.top + box.height * .32 - (stack % 5) * (compact ? 16 : 22));
       node.innerHTML = `${tag ? `<small>${escape(tag)}</small>` : ''}<b>${escape(text)}</b>`;
       const release = () => {
         const left = (this.numberStacks.get(targetId) ?? 1) - 1;
@@ -1484,17 +1512,115 @@ export class RadiantBattleView {
       flare: radiantFlareName(member.loadout.starter), tier, tierLabel: tierNames[tier],
       art: radiantAllyArt(member.loadout), color });
     this.fxLayer().append(panel);
-    const cleanup = () => panel.remove();
+    let sheen: (() => void) | null = null;
+    const cleanup = () => { sheen?.(); panel.remove(); };
     this.effectsCleanup.add(cleanup);
+    const part = (selector: string) => panel.querySelector(selector) ?? panel;
+    const linear = { easing: 'linear' };
     try {
-      await this.animate(panel, [
-        // Linear overall timing; each segment eases itself so the hold stays fully opaque.
-        { opacity: 0, transform: 'translateX(-14%) skewX(-8deg)', easing: 'cubic-bezier(.2,.8,.2,1)' },
-        { opacity: 1, transform: 'translateX(0) skewX(0deg)', offset: .16, easing: 'linear' },
-        { opacity: 1, transform: 'translateX(2%) skewX(0deg)', offset: .82, easing: 'cubic-bezier(.6,0,.9,.4)' },
-        { opacity: 0, transform: 'translateX(12%) skewX(6deg)' },
-      ], duration, { easing: 'linear' });
+      if (tier === 'ultimate') {
+        // D-490 Ultimate takeover: bars close, the art pushes in over speed lines, the name stamps in, a wipe opens the field.
+        const stamp = (at: number): Keyframe[] => [
+          { opacity: 0, scale: '1.6', filter: 'brightness(2.4)' },
+          { opacity: 0, scale: '1.6', filter: 'brightness(2.4)', offset: at, easing: 'cubic-bezier(.2,.9,.3,1.2)' },
+          { opacity: 1, scale: '1', filter: 'brightness(1)', offset: Math.min(1, at + .1) },
+          { opacity: 1, scale: '1', filter: 'brightness(1)' },
+        ];
+        await Promise.all([
+          this.animate(panel, [{ opacity: 0 }, { opacity: 1, offset: .1 }, { opacity: 1, offset: .86 }, { opacity: 0 }], duration, linear),
+          ...['.cutin-bar-top', '.cutin-bar-bottom'].map(selector => this.animate(part(selector), [
+            { scale: '1 0', easing: 'cubic-bezier(.2,.8,.2,1)' }, { scale: '1 1', offset: .14 },
+            { scale: '1 1', offset: .82, easing: 'cubic-bezier(.6,0,.8,.4)' }, { scale: '1 0' },
+          ], duration, linear)),
+          this.animate(part('.cutin-speedlines'), [{ opacity: 0, rotate: '0deg', scale: '1.3' },
+            { opacity: .9, offset: .16 }, { opacity: .6, rotate: '14deg', scale: '1' }], duration, linear),
+          this.animate(part('.cutin-halo'), [{ opacity: 0, scale: '.5' }, { opacity: 1, scale: '1', offset: .3 },
+            { opacity: .75, scale: '1.12' }], duration, linear),
+          this.animate(part('.cutin-sigil'), [{ opacity: 0, rotate: '0deg', scale: '.7' }, { opacity: .7, offset: .22 },
+            { opacity: .55, rotate: '90deg', scale: '1.05' }], duration, linear),
+          this.animate(part('.cutin-portrait'), [{ opacity: 0, translate: '-6% 0', scale: '1' },
+            { opacity: 1, offset: .14 }, { opacity: 1, translate: '1% 0', scale: '1.08' }], duration, linear),
+          this.animate(part('.cutin-copy small'), stamp(.16), duration, linear),
+          this.animate(part('.cutin-copy strong'), stamp(.24), duration, linear),
+          this.animate(part('.cutin-copy > span'), stamp(.32), duration, linear),
+          this.animate(part('.cutin-name-sheen'), [{ translate: '-120% 0', opacity: 0 }, { translate: '-120% 0', opacity: 1, offset: .44 },
+            { translate: '120% 0', opacity: 1, offset: .72 }, { translate: '120% 0', opacity: 0 }], duration, linear),
+          this.animate(part('.cutin-wipe'), [{ translate: '-60vw 0', opacity: 0 }, { translate: '-60vw 0', opacity: 0, offset: .74 },
+            { opacity: 1, offset: .82 }, { translate: '110vw 0', opacity: 0 }], duration, linear),
+        ]);
+      } else {
+        // Sparkling and Glimmering band: the art pushes in, the sigil turns and a glint sweeps; Glimmering adds gold.
+        if (tier === 'glimmering') {
+          const name = panel.querySelector<HTMLElement>('.cutin-copy > span');
+          if (name) sheen = lusterSheen(name, duration * .8 / battleSpeed());
+        }
+        await Promise.all([
+          this.animate(panel, [
+            // Linear overall timing; each segment eases itself so the hold stays fully opaque.
+            { opacity: 0, transform: 'translateX(-14%) skewX(-8deg)', easing: 'cubic-bezier(.2,.8,.2,1)' },
+            { opacity: 1, transform: 'translateX(0) skewX(0deg)', offset: .16, easing: 'linear' },
+            { opacity: 1, transform: 'translateX(2%) skewX(0deg)', offset: .82, easing: 'cubic-bezier(.6,0,.9,.4)' },
+            { opacity: 0, transform: 'translateX(12%) skewX(6deg)' },
+          ], duration, linear),
+          this.animate(part('.cutin-portrait'), [{ translate: '-5% 0', scale: '.96' }, { translate: '0 0', scale: '1.04' }], duration,
+            { easing: 'cubic-bezier(.2,.7,.3,1)' }),
+          this.animate(part('.cutin-sigil'), [{ rotate: '0deg' }, { rotate: tier === 'glimmering' ? '90deg' : '60deg' }], duration, linear),
+          this.animate(part('.cutin-glint'), [{ translate: '-30vw 0', opacity: 0 }, { translate: '-30vw 0', opacity: 0, offset: .12 },
+            { opacity: 1, offset: .3 }, { translate: '110vw 0', opacity: 0, offset: .72 }, { translate: '110vw 0', opacity: 0 }], duration, linear),
+          ...(tier === 'glimmering' ? [this.animate(part('.cutin-shards'), [{ opacity: 0, translate: '-4% 2%' },
+            { opacity: 1, offset: .22 }, { opacity: 1, offset: .7 }, { opacity: 0, translate: '6% -8%' }], duration, linear)] : []),
+        ]);
+      }
     } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
+  }
+  /** D-490 combo plate anchor: the upper centre of the field, the open space between the two sides, so the
+   * plate never covers the hit numbers stacking over the targets. */
+  private comboAnchor(): { x: number; top: number } {
+    const field = this.host.querySelector('.radiant-field')?.getBoundingClientRect();
+    if (!field || field.width <= 0) return { x: window.innerWidth / 2, top: window.innerHeight * .2 };
+    return { x: field.left + field.width / 2, top: Math.max(72, field.top + field.height * .1) };
+  }
+  /** D-490 combo plate over the field: hit count and the running Convergent Light total (exact), stepping up
+   * with each hit; the final hit turns it into the gilded total. Finite, aria-hidden (inside the effects layer). */
+  private comboPlate(hits: number): ComboPlate {
+    const place = this.comboAnchor();
+    const node = this.spawn('radiant-combo', place.x, place.top);
+    node.innerHTML = '<b class="radiant-combo-count"></b><small>Hits</small><span class="radiant-combo-total"></span>';
+    const count = node.querySelector('b')!, label = node.querySelector('small')!, total = node.querySelector('span')!;
+    let landed = 0, sum = 0, sheen: (() => void) | null = null;
+    const release = () => { sheen?.(); this.effectsCleanup.delete(release); };
+    this.effectsCleanup.add(release);
+    return {
+      hit: (amount, final) => {
+        landed++; sum += amount;
+        count.textContent = String(landed);
+        label.textContent = landed === 1 ? 'Hit' : 'Hits';
+        total.textContent = amountText(sum);
+        node.style.setProperty('--combo-step', String(Math.min(1, landed / hits)));
+        if (final) {
+          node.classList.add('is-final');
+          sheen = lusterSheen(node, 700 / battleSpeed());
+        }
+        void this.animate(node, final
+          ? [{ opacity: 1, scale: '1.5' }, { opacity: 1, scale: '.94', offset: .45 }, { opacity: 1, scale: '1' }]
+          : [{ opacity: 1, scale: '1.18' }, { opacity: 1, scale: '1' }], final ? 260 : 120, { easing: 'cubic-bezier(.2,.8,.3,1)' })
+          .catch(() => {});
+      },
+      settle: holdMs => this.animate(node, [{ opacity: 1 }, { opacity: 1, offset: .5 }, { opacity: 0, translate: '0 -10px' }],
+        holdMs + 300, { easing: 'ease-in' }).finally(() => { release(); node.dispatchEvent(new Event('radiant-fx-done')); }),
+    };
+  }
+  /** D-490 under Reduce motion: one static combo total on the last Convergent Light hit, 200 ms or less. */
+  private staticComboTotal(hits: number, sum: number): void {
+    const place = this.comboAnchor();
+    const node = document.createElement('span');
+    node.className = 'radiant-combo is-final is-static';
+    node.style.left = `${place.x}px`; node.style.top = `${place.top}px`;
+    node.innerHTML = '<b class="radiant-combo-count"></b><small>Hits</small><span class="radiant-combo-total"></span>';
+    node.querySelector('b')!.textContent = String(hits);
+    node.querySelector('span')!.textContent = amountText(sum);
+    this.fxLayer().append(node);
+    this.staticCue(node, staticImpactMs);
   }
   /** Skill name callout over the caster's card during the windup (finite, pointer-transparent; none under Reduce motion). */
   private async skillCallout(action: RadiantPlayerAction, before: RadiantCombatState): Promise<void> {

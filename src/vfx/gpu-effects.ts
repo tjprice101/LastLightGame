@@ -14,8 +14,9 @@ import { radiantBearerKits } from '../content/combat-kits';
 import { radiantKits, type RadiantKitId, type KitSkillTarget } from '../content/radiant-kits';
 import { characterChoreography } from '../presentation/battle-effects';
 import { battleSpeed } from '../presentation/battle-speed';
-import { beatPlan, enemyImpactMs, FlashGovernor, spectacleTier, staticImpactMs, tintCss,
+import { beatPlan, enemyImpactMs, FlashGovernor, hitProgress, spectacleTier, staticImpactMs, tintCss,
   type SpectacleBeats } from './spectacle-timing';
+import type { FlareTier } from '../game/combat-gauge';
 import { elementStyle, type ElementStyle } from './element-styles';
 import { bearerElementStyle } from './bearer-signatures';
 import type { BurstKind, Point, SpectacleScene, SpectacleStats } from './spectacle-scene';
@@ -77,6 +78,10 @@ function exposeStats(stats: SpectacleStats): void {
 
 type Packet = Extract<RadiantCombatEvent, { type: 'damage' | 'heal' | 'shield' | 'status' }>;
 const meleeMotions = new Set(['slash', 'thrust', 'hammer', 'twin', 'guard']);
+/** D-490: Convergent Light finisher weight by tier (pillar, shockwave and lens-flare size). */
+const finisherPower: Record<FlareTier, number> = { sparkling: .6, glimmering: .8, ultimate: 1 };
+/** D-490: the finisher burst's extra size by tier; ordinary Convergent Light hits grow from 1 to 1.25. */
+const finisherIntensity: Record<FlareTier, number> = { sparkling: 1.15, glimmering: 1.25, ultimate: 1.35 };
 
 export class GpuBattleEffects implements RadiantBattleEffects {
   private runtime: SpectacleRuntime | null = null;
@@ -192,20 +197,40 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     }
     await scene.wait(plan.travel);
   }
-  /** `action` null = enemy phase (no caster). Resolves after this hit's slot; particles linger (see `idle`). */
+  /** D-490 gather before a Convergent Light finisher: light pulls onto each target and the dim deepens. */
+  async gather(action: RadiantPlayerAction, state: RadiantCombatState, targetIds: readonly string[], beats: SpectacleBeats): Promise<void> {
+    if (this.disposed || beats.gather <= 0) return;
+    const scene = this.scene();
+    if (scene) {
+      const style = this.bearerStyle(state, action.bearerId);
+      const power = beats.flare ? finisherPower[beats.flare] : 1;
+      for (const id of targetIds.slice(0, 6)) {
+        const rect = this.anchor(id);
+        if (rect) scene.converge(GpuBattleEffects.centre(rect), beats.gather, style, power * .8, Math.min(rect.width, rect.height));
+      }
+      scene.focus(.08, beats.gather, beats.aftermath);
+    }
+    await this.wait(beats.gather);
+  }
+  /** `action` null = enemy phase (no caster). Resolves after this hit's slot; particles linger (see `idle`).
+   * `hitIndex` (D-490) picks the hit's slot in `beats.slots` and its escalation. */
   async impact(frame: RadiantImpactFrame, action?: RadiantPlayerAction | null, state?: RadiantCombatState,
-    beats?: SpectacleBeats, finisher = false): Promise<void> {
+    beats?: SpectacleBeats, finisher = false, hitIndex?: number): Promise<void> {
     if (this.disposed) return;
     const packets = frame.events.filter((event): event is Packet =>
       event.type === 'damage' && event.healthLoss + event.absorbed > 0 ||
       event.type === 'heal' && event.effective > 0 ||
       event.type === 'shield' && event.amount > 0 ||
       event.type === 'status' && !event.clockOnly && event.remaining > 0 && event.status !== 'weaken-removed');
-    const slot = action ? (beats ?? (state ? this.defaultBeats(action, state) : null))?.hitInterval ?? 150 : enemyImpactMs;
+    const plan = action ? beats ?? (state ? this.defaultBeats(action, state) : null) : null;
+    const slot = action ? (plan && hitIndex !== undefined ? plan.slots[hitIndex] : undefined) ?? plan?.hitInterval ?? 150 : enemyImpactMs;
     if (!packets.length) return;
     const scene = this.scene();
     const tier = action ? spectacleTier(action) : null;
+    const flare = tier === 'flare' ? plan?.flare ?? null : null;
+    const progress = plan && hitIndex !== undefined ? hitProgress(plan, hitIndex) : 0;
     const seen = new Set<string>();
+    const struck: { point: Point; size: number; style: ElementStyle; support: boolean }[] = [];
     for (const packet of packets) {
       if (seen.has(packet.targetId)) continue;
       seen.add(packet.targetId);
@@ -222,7 +247,23 @@ export class GpuBattleEffects implements RadiantBattleEffects {
         : packet.source.kind === 'enemy' ? 'enemy'
           : !own || packet.origin !== 'direct' || !tier ? 'normal'
             : tier === 'flare' ? finisher ? 'finisher' : 'flare' : tier;
-      scene.burst(GpuBattleEffects.centre(rect), kind, style, Math.min(rect.width, rect.height));
+      const size = Math.min(rect.width, rect.height);
+      let point = GpuBattleEffects.centre(rect);
+      // D-490: Convergent Light hits grow through the run and never stamp the same spot twice.
+      const intensity = kind === 'finisher' && flare ? finisherIntensity[flare] : kind === 'flare' ? 1 + .25 * progress : 1;
+      if (kind === 'flare') point = { x: point.x + (Math.random() - .5) * size * .24, y: point.y + (Math.random() - .5) * size * .24 };
+      scene.burst(point, kind, style, size, intensity);
+      if (finisher && own && flare && (kind === 'finisher' || kind === 'support'))
+        struck.push({ point: GpuBattleEffects.centre(rect), size, style, support: kind === 'support' });
+    }
+    if (scene && flare && struck.length) {
+      // D-490 finisher set: a pillar of light on each target, one field shockwave and a lens flare.
+      const power = finisherPower[flare];
+      for (const target of struck.slice(0, 6)) {
+        scene.pillar(target.point, target.style, power, target.size);
+        if (!target.support) scene.lensFlare(target.point, target.style, power, target.size);
+      }
+      scene.shockwave(struck[0].point, struck[0].style, struck[0].support ? power * .5 : power);
     }
     await this.wait(slot);
   }

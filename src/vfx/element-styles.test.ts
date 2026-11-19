@@ -30,7 +30,9 @@ describe('Element base sets (D-485, Spectacle step 3)', () => {
     for (const style of styles) for (const texture of texturesOf(style)) expect(loaded.has(texture), `${style.id}: ${texture}`).toBe(true);
   });
   it('loads only textures some set (or a shared primitive) draws, within the 50-texture budget', () => {
-    const shared = ['beams/streak', 'trails/trail-basic', 'glow/point-bloom', 'glow/radial-bloom', 'glow/soft-glow'];
+    const shared = ['beams/streak', 'trails/trail-basic', 'glow/point-bloom', 'glow/radial-bloom', 'glow/soft-glow',
+      // D-490 Convergent Light primitives (gather, pillar, lens flare).
+      'glow/lens-flare', 'glow/star-flare', 'impacts/vortex-rings', 'impacts/impact-ellipse'];
     const used = new Set<string>([...styles.flatMap(texturesOf), ...shared]);
     expect(spectacleTextures.filter(texture => !used.has(texture))).toEqual([]);
     expect(spectacleTextures.length).toBeLessThanOrEqual(50);

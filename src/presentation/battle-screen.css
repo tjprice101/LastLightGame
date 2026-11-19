@@ -280,7 +280,7 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
 .radiant-loot b { position: relative; font-size: 13px; color: #fff; text-shadow: 0 1px 2px #000, 0 0 6px #000; white-space: nowrap; }
 .radiant-loot[data-rarity="Legendary"] img, .radiant-loot[data-rarity="Omnic"] img, .radiant-loot[data-rarity="Calamitic"] img { width: 54px; height: 54px; }
 /* Reduce motion keeps only static cues (R6): one element ring and the number per impact. */
-html[data-motion="reduced"] .radiant-fx-layer > :not(.radiant-static-ring):not(.radiant-number.is-static) { display: none; }
+html[data-motion="reduced"] .radiant-fx-layer > :not(.radiant-static-ring):not(.radiant-number.is-static):not(.radiant-combo.is-static) { display: none; }
 .radiant-static-ring { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; pointer-events: none;
   border: 3px solid var(--ring, #fff); box-shadow: 0 0 14px var(--ring, #fff), inset 0 0 10px var(--ring, #fff); }
 /* Battle Spectacle GPU layer (D-484): pointer-transparent, between the field and the DOM effects. */
@@ -707,6 +707,20 @@ html[data-motion="reduced"] .radiant-result-aura { display: none; }
 .radiant-number.is-static { opacity: 1; transform: translate(-50%, -16px); }
 .radiant-number.is-heal b { color: #9be7a4; }
 .radiant-number.is-shield b, .radiant-number.is-absorb b { font-size: clamp(14px, 1.5vw, 19px); color: #d6e6ff; }
+/* D-490: a Convergent Light's run of hits uses compact numbers; the combo plate carries the total. */
+.radiant-number.is-compact b { font-size: clamp(14px, 1.5vw, 19px); }
+.radiant-number.is-compact.is-weak b { font-size: clamp(17px, 1.9vw, 23px); }
+.radiant-combo { position: absolute; display: grid; grid-template-columns: auto auto; align-items: baseline; column-gap: 6px; row-gap: 2px;
+  max-width: min(90vw, 420px); transform: translate(-50%, 0); transform-origin: 50% 0; opacity: 0;
+  scale: calc(1 + var(--combo-step, 0) * .35); font-family: var(--ui-font); font-variant-numeric: tabular-nums; color: #fff;
+  text-shadow: 0 2px 2px #000, 0 0 10px #000c; pointer-events: none; }
+.radiant-combo-count { font: 700 clamp(26px, 3vw, 40px)/1 var(--display-font); }
+.radiant-combo small { font-weight: 700; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: #e2e2eb; }
+.radiant-combo-total { grid-column: 1 / -1; justify-self: center; font-weight: 700; font-size: clamp(15px, 1.6vw, 20px); line-height: 1.1;
+  overflow-wrap: anywhere; text-align: center; color: #e8e8f0; }
+.radiant-combo.is-final .radiant-combo-total { font-size: clamp(22px, 2.6vw, 34px); color: #fff8e6;
+  text-shadow: 0 2px 2px #000, 0 0 12px color-mix(in srgb, var(--gild-light) 70%, transparent), 0 0 24px color-mix(in srgb, var(--gild-mid) 50%, transparent); }
+.radiant-combo.is-static { opacity: 1; scale: 1; }
 
 /* Prismatica motes flying to the Haul: prismatic white, distinct from element-coloured Gauge orbs. */
 .radiant-prism-mote { width: 12px; height: 12px; margin: -6px 0 0 -6px;

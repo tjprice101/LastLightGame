@@ -66,6 +66,9 @@ export class SpectacleScene extends Phaser.Scene {
   private frozenUntil = 0;
   private dimRect!: Phaser.GameObjects.Rectangle;
   private flashRect!: Phaser.GameObjects.Rectangle;
+  /** D-490: the extra dim that deepens through a Convergent Light gather. */
+  private focusRect!: Phaser.GameObjects.Rectangle;
+  private focusTween: Phaser.Tweens.BaseTween | null = null;
   private dimTween: Phaser.Tweens.BaseTween | null = null;
   private flashTween: Phaser.Tweens.BaseTween | null = null;
   private frameSamples: number[] = [];
@@ -93,6 +96,7 @@ export class SpectacleScene extends Phaser.Scene {
     }
     this.dimRect = this.add.rectangle(0, 0, 1, 1, 0x05060c, 1).setOrigin(0).setDepth(-10).setAlpha(0);
     this.flashRect = this.add.rectangle(0, 0, 1, 1, 0xffffff, 1).setOrigin(0).setDepth(100).setBlendMode(add).setAlpha(0);
+    this.focusRect = this.add.rectangle(0, 0, 1, 1, 0x05060c, 1).setOrigin(0).setDepth(-9).setAlpha(0);
     window.addEventListener('last-light-battle-speed-change', this.speedChange);
     this.events.once(Phaser.Scenes.Events.DESTROY, () => window.removeEventListener('last-light-battle-speed-change', this.speedChange));
     const finish = () => {
@@ -163,6 +167,7 @@ export class SpectacleScene extends Phaser.Scene {
       this.cameras.main.setScroll(-box.left, -box.top);
       this.dimRect.setSize(box.width, box.height);
       this.flashRect.setSize(box.width, box.height);
+      this.focusRect.setSize(box.width, box.height);
     }
     if (this.frozenUntil && performance.now() >= this.frozenUntil) { this.frozenUntil = 0; this.applyTimeScale(); }
     if (!this.active) return;
@@ -226,6 +231,7 @@ export class SpectacleScene extends Phaser.Scene {
     this.fieldBox = { left: box.left, top: box.top, width: box.width, height: box.height };
     this.cameras.main.setScroll(-box.left, -box.top);
     this.dimRect.setSize(box.width, box.height); this.flashRect.setSize(box.width, box.height);
+    this.focusRect.setSize(box.width, box.height);
   }
   /** Keeps the scene awake for `ms` of scaled time, then runs `done`. */
   private hold(ms: number, done?: () => void): void {
@@ -310,11 +316,12 @@ export class SpectacleScene extends Phaser.Scene {
   }
 
   // ---- primitives -------------------------------------------------------------
-  /** Layered impact burst in the element's shapes at a screen point; `size` is the target's smaller side in px. */
-  burst(screen: Point, kind: BurstKind, style: ElementStyle, size: number): void {
+  /** Layered impact burst in the element's shapes at a screen point; `size` is the target's smaller side in px.
+   * `intensity` (D-490) grows Convergent Light hits through the run; 1 elsewhere. */
+  burst(screen: Point, kind: BurstKind, style: ElementStyle, size: number, intensity = 1): void {
     if (!this.ready) return;
     const at = this.toWorld(screen);
-    const extent = Math.min(260, Math.max(70, size));
+    const extent = Math.min(260, Math.max(70, size)) * Math.min(1.4, Math.max(.6, intensity));
     for (const layer of style.layers[kind]) {
       const image = this.sprite(layer.texture, at, toneColor(style, layer.tone));
       if (!image) continue;
@@ -493,6 +500,101 @@ export class SpectacleScene extends Phaser.Scene {
       this.tween({ targets: image, scale: end, alpha: 0, duration: ms + 160, ease: 'Cubic.easeOut' }, this.destroyLater(image));
     }
   }
+  /** D-490 gather: light pulls inward onto a target just before the finisher (a reversed vortex plus the
+   * wind-up aura at the target). */
+  converge(screen: Point, ms: number, style: ElementStyle, power: number, size: number): void {
+    if (!this.ready || ms <= 0) return;
+    this.chargeAura(screen, ms, style, power);
+    const at = this.toWorld(screen);
+    const vortex = this.sprite('impacts/vortex-rings', at, style.palette.main, 9);
+    if (!vortex) return;
+    const end = Math.min(220, Math.max(80, size)) * .6 / 512;
+    const start = Math.random() * Math.PI * 2;
+    vortex.setScale(end * 2.6).setAlpha(0).setRotation(start);
+    this.tween({ targets: vortex, scale: end, alpha: { from: .2, to: .95 }, rotation: start - 2.4, duration: ms, ease: 'Quad.easeIn' },
+      completed => {
+        if (!completed) { this.destroyLater(vortex)(); return; }
+        this.tween({ targets: vortex, alpha: 0, scale: end * .4, duration: 90, ease: 'Quad.easeIn' }, this.destroyLater(vortex));
+      });
+  }
+  /** D-490 finisher pillar: a column of light lands on the target with a ground flare at its base.
+   * Built from soft glows stretched tall, so the column has no hard ends. */
+  pillar(screen: Point, style: ElementStyle, power: number, size: number): void {
+    if (!this.ready) return;
+    const at = this.toWorld(screen);
+    const extent = Math.min(260, Math.max(90, size));
+    const height = Math.max(this.fieldBox.height, extent * 3) * 1.2;
+    const base = { x: at.x, y: at.y + extent * .38 };
+    const columns: [SpectacleTexture, number, number, number][] = [
+      ['glow/soft-glow', style.palette.main, extent * (.7 + .3 * power), .95],
+      ['glow/point-bloom', style.palette.core, extent * (.22 + .1 * power), 1],
+    ];
+    for (const [key, tint, width, alpha] of columns) {
+      const column = this.sprite(key, { x: at.x, y: base.y - height / 2 }, tint, 18);
+      if (!column) continue;
+      const sx = width / textureEdge(key), sy = height / textureEdge(key);
+      column.setScale(sx * .3, sy).setAlpha(alpha);
+      this.tween({ targets: column, scaleX: sx, duration: 90, ease: 'Expo.easeOut' }, completed => {
+        if (!completed) { this.destroyLater(column)(); return; }
+        this.tween({ targets: column, scaleX: sx * .15, alpha: 0, duration: 380 + 180 * power, ease: 'Quad.easeIn' },
+          this.destroyLater(column));
+      });
+    }
+    const ground = this.sprite('impacts/impact-ellipse', base, style.palette.core, 19);
+    if (ground) {
+      const end = extent * (2 + power) / 512;
+      ground.setScale(end * .3, end * .6).setAlpha(1);
+      this.tween({ targets: ground, scaleX: end, scaleY: end, alpha: 0, duration: 520, ease: 'Cubic.easeOut' }, this.destroyLater(ground));
+    }
+  }
+  /** D-490 finisher shockwave: one ring that races across the field from the struck point. */
+  shockwave(screen: Point, style: ElementStyle, power: number): void {
+    if (!this.ready) return;
+    const at = this.toWorld(screen);
+    const reach = Math.max(this.fieldBox.width, this.fieldBox.height, 400) * (.8 + .4 * power);
+    const rings: [SpectacleTexture, number, number, number, number][] = [
+      ['impacts/ring-concentric', style.palette.main, 12, .9, 560],
+      ['impacts/ring-flare', style.palette.core, 13, .7, 420],
+    ];
+    for (const [key, tint, depth, alpha, life] of rings) {
+      const ring = this.sprite(key, at, tint, depth);
+      if (!ring) continue;
+      const end = reach / textureEdge(key);
+      ring.setScale(end * .08).setAlpha(alpha);
+      this.tween({ targets: ring, scale: end, alpha: 0, duration: life + 160 * power, ease: 'Cubic.easeOut' }, this.destroyLater(ring));
+    }
+  }
+  /** D-490 finisher lens flare: an anamorphic streak and a star glint over the struck point. */
+  lensFlare(screen: Point, style: ElementStyle, power: number, size: number): void {
+    if (!this.ready) return;
+    const at = this.toWorld(screen);
+    const extent = Math.min(260, Math.max(90, size));
+    const parts: [SpectacleTexture, number, number, number, number][] = [
+      ['glow/lens-flare', style.palette.core, extent * (3.2 + 1.6 * power), 520, 0],
+      ['glow/star-flare', style.palette.main, extent * (1.4 + .6 * power), 440, .5],
+    ];
+    for (const [key, tint, width, life, spin] of parts) {
+      const image = this.sprite(key, at, tint, 30);
+      if (!image) continue;
+      const end = width / textureEdge(key);
+      image.setScale(end * .4).setAlpha(1);
+      this.tween({ targets: image, scale: end, alpha: 0, rotation: spin, duration: life + 160 * power, ease: 'Cubic.easeOut' },
+        this.destroyLater(image));
+    }
+  }
+  /** D-490: deepens the field dim by `alpha` over `inMs`, then lifts over `outMs`. */
+  focus(alpha: number, inMs: number, outMs: number): void {
+    if (!this.ready || alpha <= 0) return;
+    this.focusTween?.stop();
+    this.begin();
+    let done = false;
+    const finish = () => { if (done) return; done = true; this.focusRect.setAlpha(0); this.end(); };
+    this.focusTween = this.tweens.chain({ targets: this.focusRect, tweens: [
+      { alpha, duration: Math.max(1, inMs), ease: 'Sine.easeIn' },
+      { alpha: 0, duration: Math.max(1, outMs), ease: 'Sine.easeOut' },
+    ], onComplete: finish });
+    this.focusTween.once(Phaser.Tweens.Events.TWEEN_STOP, finish);
+  }
   /** Full-field flash (R2): soft for Skill 2, full on a Convergent Light finisher. */
   flash(kind: 'soft' | 'full', ms: number): void {
     if (!this.ready) return;
@@ -522,9 +624,9 @@ export class SpectacleScene extends Phaser.Scene {
   cancelAll(): void {
     for (const tween of [...this.tweensLive]) tween.stop();
     this.tweensLive.clear();
-    this.dimTween?.stop(); this.flashTween?.stop();
-    this.dimTween = null; this.flashTween = null;
-    this.dimRect?.setAlpha(0); this.flashRect?.setAlpha(0);
+    this.dimTween?.stop(); this.flashTween?.stop(); this.focusTween?.stop();
+    this.dimTween = null; this.flashTween = null; this.focusTween = null;
+    this.dimRect?.setAlpha(0); this.flashRect?.setAlpha(0); this.focusRect?.setAlpha(0);
     for (const timer of [...this.timers]) timer.remove(false);
     this.timers.clear();
     for (const [key, emitter] of [...this.emitters]) {

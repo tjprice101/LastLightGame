@@ -215,8 +215,8 @@ hosted build:
 4. **Per-bearer signature layers in batches of about 8. Done, all 32 (D-486 to D-489).** (32 bearers), each
    built from the bearer's signature equipment, trim and power geometry.
    Owner approves each batch in game.
-5. **Convergent Light cinematics.** Art cut-in, multi-hit choreography and
-   finisher, escalating across its three tiers.
+5. **Convergent Light cinematics. Done (D-490).** Art cut-in, multi-hit choreography and
+   finisher, escalating across its three tiers (Ultimate 3.0 s, full-screen takeover).
 6. **Enemy attacks.** Telegraphed wind-ups, per-family attack animations,
    heavier boss specials.
 7. **Skill menu polish** (keep the hold-a-card mechanic): animated option
@@ -253,6 +253,8 @@ divide every time):
 | Convergent Light | cut-in plus 30-55% dim | multi-hit | finisher | 300 ms | 1.5 / 1.9 / 2.4 s | dim, 1.06 zoom, full flash on finisher, 8 px shake, 90 ms hit-stop |
 
 The Convergent Light totals are for Sparkling, Glimmering and Ultimate.
+D-490 (step 5) changed Ultimate to 3.0 s and made the finisher's shake and
+hit-stop escalate by tier (6/8/10 px, 70/90/120 ms).
 
 **R3. Element language.** Particles, trails and bursts are tinted per element
 from the VFX texture library. Each element has a shape grammar:
@@ -324,6 +326,18 @@ pending.** Sixteen bearers have signatures (batch 1: Infernis, Tizu, Flora,
 Atmoso, Rosetta, Disciple, Bliss, Bruno; batch 2: Aurora, Elise, Razor,
 Thornia, Crinso, Ozriel, Ilvaris, Kaelith); 16 remain, in batches of about 8. See the
 [combat spec](../combat.md#battle-spectacle-bearer-signature-layers-d-486-spectacle-step-4).
+
+#### Step 5: Convergent Light cinematics (implemented, D-490)
+
+Status: **implemented 2026-11-18; owner feel review of the hosted build
+pending.** It adds a tiered cut-in (Ultimate full-screen takeover), an
+accelerating hit run with a combo plate, a gather and a finisher set. See the
+[combat spec](../combat.md#battle-spectacle-convergent-light-cinematics-d-490-spectacle-step-5).
+
+Open tuning, for Sonnet rounds after the review:
+- shard and glint visibility in the Glimmering band;
+- the Ultimate takeover's timing and the combo plate's size;
+- the GPU frame-time check, which matters more now that Ultimate is heavier.
 
 ## Skill language
 
