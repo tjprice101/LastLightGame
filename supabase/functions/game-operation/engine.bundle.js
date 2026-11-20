@@ -17615,6 +17615,47 @@ var radiantMaximumDuration = 6;
 var radiantHealthMote = 0.1;
 var allyCategories = ["attack-up", "defense-up", "reduction", "gain-up", "hot", "weaken"];
 var enemyCategories = ["weaken", "expose", "burn"];
+var radiantSignatureOpList = [
+  "seed",
+  "seed-wither",
+  "cover",
+  "cyclone",
+  "gust",
+  "cyclone-release",
+  "lodge",
+  "recall",
+  "return",
+  "wounds",
+  "detonate",
+  "refund",
+  "quarry",
+  "contributor",
+  "trap",
+  "trap-strike",
+  "combo",
+  "refusal",
+  "mark",
+  "incision",
+  "survey",
+  "foundation",
+  "foundation-absorb",
+  "beat",
+  "heat",
+  "burn-up",
+  "stillness",
+  "season",
+  "current",
+  "tension",
+  "cadence",
+  "crosscut",
+  "unreturned",
+  "load",
+  "signal",
+  "severance",
+  "path",
+  "promise",
+  "interval"
+];
 function validateRadiantDropEvents(events, enemyIds2, bearerIds) {
   for (const [index, event2] of events.entries()) {
     if (event2.type !== "gauge-drop") continue;
@@ -20146,6 +20187,7 @@ function validateRadiantRunSnapshot(value2) {
     throw new RadiantRunError("unavailable", "Invalid saved Radiant account; nothing was saved.");
   }
 }
+var radiantSignatureOps = new Set(radiantSignatureOpList);
 var eventFields = {
   damage: { text: ["targetId", "origin"], number: ["offered", "absorbed", "healthLoss"] },
   heal: { text: ["targetId"], number: ["snapshot", "offered", "effective"] },
@@ -20158,7 +20200,9 @@ var eventFields = {
   round: { text: [], number: ["round"] },
   skill: { text: ["bearerId", "name"], number: ["slot", "cost"] },
   "health-mote": { text: ["enemyId", "bearerId"], number: ["offered", "effective"] },
-  status: { text: ["targetId", "status"], number: ["magnitude", "remaining"] }
+  status: { text: ["targetId", "status"], number: ["magnitude", "remaining"] },
+  // Signature bookkeeping (Step 2b, D-475 to D-478): journals of settled encounters carry it.
+  signature: { text: ["bearerId", "op"], number: ["amount"] }
 };
 function validSource(value2) {
   return record4(value2) && (value2.kind === "enemy" ? validId(value2.enemyId) : ["normal", "skill", "flare", "passive", "role", "master", "leader"].includes(String(value2.kind)) ? validId(value2.bearerId) : value2.kind === "gear" && validId(value2.bearerId) && validId(value2.conduitId));
@@ -20184,6 +20228,7 @@ function validEvent(value2) {
   ].includes(String(value2.status))) return false;
   if (value2.type === "status" && value2.clockOnly !== void 0 && value2.clockOnly !== true) return false;
   if (value2.type === "skill" && value2.slot !== 1 && value2.slot !== 2) return false;
+  if (value2.type === "signature" && (!radiantSignatureOps.has(String(value2.op)) || value2.holderId !== void 0 && !validId(value2.holderId))) return false;
   if (value2.boosts !== void 0 && (!["damage", "heal", "shield"].includes(value2.type) || !Array.isArray(value2.boosts) || !value2.boosts.every((boost) => record4(boost) && validSource(boost.source) && record4(boost.source) && ["gear", "master", "leader"].includes(String(boost.source.kind)) && Number.isSafeInteger(boost.amount) && Number(boost.amount) > 0))) return false;
   if (value2.gained !== void 0 && (value2.type !== "charge" || value2.gearSource === void 0 || !Number.isSafeInteger(value2.gained) || Number(value2.gained) < 1)) return false;
   return value2.gearSource === void 0 || validSource(value2.gearSource);
