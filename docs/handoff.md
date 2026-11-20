@@ -34,7 +34,8 @@ B5 with one enemy retune). Spec:
   10). New `conduit-restoration-b3a.test.ts`: 87 of 87. Updated fixtures:
   `conduit-effects.test.ts` (no Conduit carries Recovery; triage test drops
   Worldroot Graft), `conduit-loadout.test.ts` (Cinder Testament keyword).
-- `node toolsun_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+- `node tools
+un_pressure_study.mjs <out> --retune` (radiant-trio-v1,
   balanced; B1+B2+B3a vs B1+B2): ordinary 99.8% (98.1%); Calamity EX+1/2/3
   96.8/85.2/78.7% (94.9/73.6/62.5%; D-481: 85.2/52.8/33.3%); Oblivion 141-160
   100% (91.7%), 161-180 90.5% (61.9%); Training 101-120 88.9% (72.2%);
@@ -46,8 +47,11 @@ B5 with one enemy retune). Spec:
 
 **Not verified:** a look in game (unreleased).
 
-**Next:** B3b (next-action tokens, 13 rows; flare event gains `cost`) in a
-fresh Opus session; start the pressure study early (it takes about an hour).
+**Next:** owner decision 2026-11-20: critical hits return (old base values,
+enemy crits, Critical Up replaces Exposure; see decisions D-493). Plan the crit
+step in a fresh Opus session in Plan mode before B3b; it also converts the
+about 20 built crit-conversion rows. Then B3b (next-action tokens; flare event
+gains `cost`). Start the pressure study early (it takes about an hour).
 
 ## Battle Flurry Phase 4c B2: Legendary Conduit restoration (D-493, 2026-11-19)
 

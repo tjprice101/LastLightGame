@@ -6,7 +6,8 @@
 - **B1 and B2 implemented, unreleased** (B2 spec: [combat.md](../../combat.md#conduit-restoration-b2-legendary-d-493-battle-flurry-phase-4c); Heartcase keeps Health above the normal maximum until damage instead of clamping it)
 - B1 (spec: [combat.md](../../combat.md#conduit-restoration-b1-common--rare-d-493-battle-flurry-phase-4c)).
 - **B3a implemented, unreleased (2026-11-20):** 29 Omnic rows that need no new system (spec: [combat.md](../../combat.md#conduit-restoration-b3a-omnic-without-new-systems-d-493-battle-flurry-phase-4c)). B3b (next-action tokens: Dawn Witness, Paradox Spindle, Skythread, Stormstep, Thunderbird, Verdant Covenant, Phoenix Temper, Rosefault, Secondbeat, Sootwake, Tempest Return, Covercharge, Triage) and B3c (Atlas Bastion taunt, Phoenix Reactor revive, Accord) remain. G12 belongs to B4 (Throne of Borrowed Tomorrows).
-- Next: B3b, B3c, B4, B5 on `battle-flurry-phase3`; then one enemy retune on the final
+- **Crits return (owner, 2026-11-20, D-493 note):** O1 and C9/C10 are replaced by real critical hits (old base values, enemy crits, Critical Up instead of Exposure). A planned crit step runs before B3b and converts the built O1 rows.
+- Next: crit step, then B3b, B3c, B4, B5 on `battle-flurry-phase3`; then one enemy retune on the final
   Conduit set and a single release with the matching server deploy (owner
   choice, D-493).
 

@@ -44,6 +44,18 @@
   Conduit effects that act on other allies need their wearer alive. Open item:
   Shared Tide Lifesea Engine (Oceanic) only triggers on a skill that Shields
   exactly one ally, and no released Oceanic kit has one.
+- **Critical hits return (owner decision, 2026-11-20).** Reverses D-473 O4
+  and replaces the C9/C10 deterministic conversion (O1). Owner answers: base
+  Critical Rate and Critical Damage use the pre-Radiant values (rate about
+  10-25% by bearer, damage 1.5x); enemies can land critical hits again; Critical
+  Up comes back in place of Exposure (kits and Conduits that apply or read
+  Exposure are redesigned around Critical Up). Restored crit rows take their
+  old crit stats and triggers verbatim. Sequencing: a planned crit step runs
+  before B3b and also converts the about 20 already-built conversion rows (B1,
+  B2, B3a). Open for that plan: crit RNG stream (separate, must not perturb
+  other streams), which hits can crit (Normal Attacks, skills, Convergent
+  Light; Burn and Conduit-generated strikes), presentation, and the exact
+  Exposure-to-Critical-Up kit translations.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 
