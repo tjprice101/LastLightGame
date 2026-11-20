@@ -25,7 +25,17 @@ export type RadiantConduitEffect =
   // D-493 B2 (Legendary).
   | 'ally-guard' | 'skill2-power' | 'skill2-efficiency' | 'phase-shield' | 'reserve-health' | 'reserve-defense'
   | 'skill-direct' | 'support-power' | 'restore-charge' | 'gamble-power' | 'shield-guard' | 'aoe-power'
-  | 'prism-efficiency' | 'prism-gain' | 'last-block' | 'exposed-heal' | 'flare-power';
+  | 'prism-efficiency' | 'prism-gain' | 'last-block' | 'exposed-heal' | 'flare-power'
+  // D-493 B3a (Omnic, no new system): squad auras, dynamic Skill Power, per-target hooks and new triggers.
+  | 'squad-hp' | 'squad-attack' | 'squad-gain' | 'squad-defense' | 'ally-defense-share'
+  | 'oceanic-power' | 'census-power' | 'ruin-power' | 'ruin-defense'
+  | 'weakened-pierce' | 'weakened-ally-power' | 'low-heal-power' | 'lift-guard'
+  | 'burn-skill-power' | 'burn-duration' | 'burn-ally-direct' | 'skill-shield-direct' | 'skill-shield-brace'
+  | 'shielded-restore-power' | 'skill-mark' | 'burn-amp' | 'burn-transfer' | 'overheal-shield'
+  | 'defense-heal' | 'shield-charge' | 'first-heal' | 'first-skill-charge' | 'first-skill-shield'
+  | 'flare-round-heal' | 'flare-round-charge' | 'weaken-guard' | 'weaken-heal' | 'shield-echo' | 'skill-drain-ally'
+  | 'burning-attack' | 'burn-tick-heal' | 'shield-reflect' | 'weaken-duration' | 'weaken-ally-efficiency'
+  | 'first-turn-attack';
 /** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration);
  * `step` primitives add `step` per rank instead of scaling (C12 exceptions such as Stasis Reliquary's chance). */
 export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true; step?: number }
@@ -43,11 +53,32 @@ export const radiantShieldGuardCap = .8;
 export const radiantStasisVulnerability = .25;
 /** D-493 C12: Glassroot Gimbal's Health step (fixed at every rank). */
 export const radiantHealthSkillPowerStep = 450;
+/** D-493 B3a fixed rules (C12): thresholds, caps and fallbacks keep their value at every rank. */
+export const radiantOmnicRules = {
+  /** Kirin Cradle: heal cap (fraction of the ally's maximum Health) and the all-full Luminosity fallback. */
+  defenseHealCap: .5, defenseHealCharge: 8,
+  /** Worldroot Graft: the Health line below which healing gains Skill Power and above which a lift grants Defense Up. */
+  lowHealthLine: .4,
+  /** Fractured Mercy Governor: the Health line below which its heal applies. */
+  weakenHealLine: .5,
+  /** Aegis Covenant Crown: enemy hits above this fraction of maximum Health are reduced. */
+  heavyHitLine: .2,
+  /** Cinder Testament: Burn bonus cap. */
+  burnAmpCap: .6,
+  /** Worldtree Heart: Shield cap (fraction of the healed ally's maximum Health). */
+  overhealCap: .2,
+  /** Worldroot Sap Cathedral: heal cap per cast (fraction of the ally's maximum Health). */
+  drainAllyCap: .1,
+  /** Leviathan Mercy Reflector: reflection cap per enemy phase (multiple of this bearer's current Attack). */
+  reflectCap: 1.5,
+  /** Nightglass Archive: mark duration in turns. */
+  markTurns: 2,
+} as const;
 export const pair = (kind: RadiantConduitEffect, amount: number, related: RadiantConduitEffect, extra: number): RadiantConduitDesign =>
   [effect(kind, amount), effect(related, extra)];
 
 // Stable-ID design decisions. D-493 restores the pre-Radiant (Phase Zero) effects batch by batch
-// (B1 Common + Rare and B2 Legendary in 4c; C1 x0.2 rescale on always-on Health/Defense/Attack). Rows not yet
+// (B1 Common + Rare, B2 Legendary and B3a Omnic in 4c; C1 x0.2 rescale on always-on Health/Defense/Attack). Rows not yet
 // restored keep their Radiant-era designs.
 // Fractions are ratios and charge values are whole personal charge.
 export const radiantConduits = {
@@ -92,49 +123,49 @@ export const radiantConduits = {
   'meridian-inverter': [effect('restore-charge', 4)],
   'verdict-caliper': [effect('exposed-heal', .25)],
   'infernic-phoenix-reactor': pair('break-heal', .4, 'hurt-shield', .08),
-  'aquatic-leviathan-pump': pair('absorbed-charge', 8, 'hurt-heal', .35),
+  'aquatic-leviathan-pump': [effect('defense', .09), effect('direct', .125), effect('shield-charge', 5)],
   'tectonic-atlas-bastion': pair('normal-reduction', .15, 'guard-team-shield', .4),
-  'efflorescent-worldtree-heart': pair('heal-shield', .5, 'round-heal', .25),
+  'efflorescent-worldtree-heart': [effect('hp', .28), effect('skill-power', .35), effect('overheal-shield', .6)],
   'voltaic-thunderbird-coil': pair('normal-splash', .4, 'opening', .25),
-  'atmospheric-griffin-turbine': pair('team-charge', 3, 'normal', .25),
-  'luminous-seraph-mirror': pair('normal-heal', .4, 'normal-splash', .2),
-  'ominous-eclipse-mantle': pair('weakened', .4, 'pierce', .2),
-  'tranquilitic-kirin-cradle': pair('normal-heal', .5, 'recovery', .25),
-  'chaotic-ouroboros-core': pair('flare-shield', .06, 'shielded', .3),
-  'infernic-cinder-testament': pair('burn-power', .45, 'normal-burn', .12),
-  'aquatic-undertide-chronometer': pair('normal-weaken', .2, 'guard-charge', 6),
-  'tectonic-faultkeeper-loom': pair('guard-team-shield', .6, 'defense', .25),
+  'atmospheric-griffin-turbine': pair('attack', .198, 'team-charge', 10),
+  'luminous-seraph-mirror': pair('first-heal', .06, 'squad-hp', .13),
+  'ominous-eclipse-mantle': [effect('skill-power', .35), effect('flare', .45), effect('weakened-pierce', .35), effect('weakened-ally-power', .2)],
+  'tranquilitic-kirin-cradle': [effect('defense', .13), effect('attack', .4), effect('defense-heal', 1)],
+  'chaotic-ouroboros-core': [effect('capacity', .4), effect('flare-shield', .1), effect('squad-hp', .11)],
+  'infernic-cinder-testament': [effect('burn-amp', .2)],
+  'aquatic-undertide-chronometer': [effect('defense', .14), effect('skill-efficiency', .3), fixedEffect('weaken-duration', 1), effect('weaken-ally-efficiency', .15)],
+  'tectonic-faultkeeper-loom': [effect('defense', .15), effect('skill-power', .55), effect('ally-defense-share', .25)],
   'efflorescent-verdant-covenant': pair('heal-buff', .2, 'heal-charge', 5),
   'voltaic-stormstep-dynamo': pair('cooperation', .4, 'flare-team-charge', 8),
   'atmospheric-skythread-rudder': pair('normal-charge', 5, 'next-buff', .15),
   'luminous-dawn-witness-array': pair('opening', .35, 'normal-shield', .5),
-  'ominous-nightglass-archive': pair('normal-expose', .18, 'cooperation', .35),
-  'tranquilitic-stillhour-carillon': pair('flare-team-charge', 10, 'round-charge', 3),
+  'ominous-nightglass-archive': pair('squad-attack', .4, 'skill-mark', .125),
+  'tranquilitic-stillhour-carillon': [effect('hp', .24), effect('gauge-gain', .3), effect('flare-round-heal', .08), effect('flare-round-charge', 10)],
   'chaotic-paradox-spindle': pair('normal', .3, 'flare-team-charge', 8),
-  'clearwater-manifold': pair('team-charge', 3, 'heal-team-charge', 4),
+  'clearwater-manifold': [effect('oceanic-power', .35)],
   'tranquilitic-accord-bastion': pair('heal-shield', .6, 'hurt-heal', .3),
-  'aegis-return-spring': pair('shielding', .35, 'break-heal', .3),
-  'flare-focusing-iris': pair('burn-power', .35, 'flare', .3),
-  'cinder-metering-nozzle': pair('normal-burn', .15, 'normal-splash', .25),
-  'firstlight-cam': pair('start-charge', 20, 'shelter', .15),
-  'tension-governor': pair('normal-weaken', .2, 'status-shield', .5),
-  'tidebound-reflector': pair('reflect', .5, 'defense', .3),
-  'ward-stitch-spool': pair('healing', .3, 'heal-shield', .5),
-  'emberlife-kiln': pair('burn-heal', .25, 'burn-power', .25),
+  'aegis-return-spring': [effect('defense', .18), effect('direct', .1), effect('skill-shield-direct', .1), effect('skill-shield-brace', .3)],
+  'flare-focusing-iris': [effect('attack', .11), fixedEffect('burn-duration', 1), effect('burn-skill-power', .8), effect('burn-ally-direct', .1)],
+  'cinder-metering-nozzle': [effect('attack', .45), fixedEffect('burn-transfer', 1)],
+  'firstlight-cam': [effect('hp', .07), effect('skill-power', .45), effect('squad-gain', .5), effect('squad-defense', .08)],
+  'tension-governor': [effect('skill-efficiency', .25), effect('squad-hp', .11), effect('weaken-guard', .3), effect('weaken-heal', .06)],
+  'tidebound-reflector': pair('attack', .25, 'shield-reflect', .4),
+  'ward-stitch-spool': [effect('defense', .11), effect('skill-power', .55), effect('shielded-restore-power', .3)],
+  'emberlife-kiln': [effect('skill-power', .55), effect('capacity', .4), effect('burning-attack', 1), effect('burn-tick-heal', .08)],
   'tempered-strike-link': pair('burning', .4, 'normal', .2),
-  'infernic-pyre-census': pair('burning', .35, 'cooperation', .3),
+  'infernic-pyre-census': [effect('hp', .05), effect('skill-power', .55), effect('census-power', .2)],
   'chaotic-fault-verdict': pair('shielded', .4, 'pierce', .2),
-  'ruinselect-prism': pair('wounded', .45, 'leech', .12),
+  'ruinselect-prism': pair('ruin-power', .55, 'ruin-defense', .04),
   'secondbeat-rack': pair('weakened', .3, 'kill-charge', 12),
-  'oceanic-shared-tide-pump': pair('guard-team-shield', .5, 'absorbed-charge', 6),
-  'pulse-trigger-pawl': pair('normal-charge', 4, 'exposed', .3),
-  'solace-anchor': pair('round-charge', 4, 'normal-heal', .3),
+  'oceanic-shared-tide-pump': [effect('hp', .13), effect('skill-efficiency', .3), effect('shield-echo', .5)],
+  'pulse-trigger-pawl': [effect('skill-power', .65), effect('direct', .2), effect('first-skill-charge', 8)],
+  'solace-anchor': [effect('attack', .16), effect('direct', .0875), effect('first-turn-attack', .2)],
   'sootwake-crucible': pair('burning', .3, 'next-buff', .2),
   'atmospheric-storm-clock': pair('normal-charge', 4, 'cooperation', .3),
-  'pressurecrest-governor': pair('normal-reduction', .18, 'first-action', .25),
+  'pressurecrest-governor': [effect('defense', .17), effect('direct', .15), effect('first-skill-shield', .15)],
   'covercharge-drum': pair('hurt-heal', .3, 'hurt-charge', 8),
-  'botanic-graft-covenant': pair('healing', .35, 'round-heal', .3),
-  'mending-valve': pair('kill-heal', .1, 'recovery', .25),
+  'botanic-graft-covenant': [effect('hp', .22), effect('skill-efficiency', .2), effect('low-heal-power', .5), effect('lift-guard', .3)],
+  'mending-valve': [effect('attack', .17), effect('skill-power', .4), effect('skill-drain-ally', .15)],
   'rootbound-triage-vault': pair('heal-charge', 6, 'heal-shield', .5),
   'calamitic-world-eater-orrery': pair('solo', .65, 'flare', .5),
   'calamitic-causality-funeral-engine': pair('kill-charge', 20, 'execution', .6),

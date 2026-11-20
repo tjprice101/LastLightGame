@@ -1,5 +1,54 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B3a: Omnic Conduit restoration, no new systems (D-493, 2026-11-20)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b3a-omnic-without-new-systems-d-493-battle-flurry-phase-4c).
+- B3 split in three: B3a (29 rows, this entry), B3b (next-action tokens, 13
+  rows), B3c (rescue ledger, revive, Accord, taunt, 3 rows). G12 (extra skill
+  after Convergent Light) belongs to B4 (Throne of Borrowed Tomorrows).
+- New engine pieces: squad auras per living wearer (maximum Health, Attack,
+  Defense, Gauge Gain), Faultkeeper's Defense share, combat-only Skill Power
+  (Clearwater, Pyre Census, Ruinselect, Ward Loom), per-target Defense ignore
+  and Skill Power (Eclipse Mantle, Worldroot Graft), ally direct-damage
+  bonuses (Ember Iris, Nightglass marks, Aegis Crown), Nightglass marks on
+  enemies, Cinder Testament's Burn bonus, Eternal Cinder's Burn transfer,
+  Worldtree's overheal Shield, 15 new triggers. Enemy tags show marks and Burn
+  bonuses. `radiantHealthBound` now takes the state.
+- Implementation choices (owner may reverse): auras multiply separately from
+  the gear pool; Health above a maximum lowered by a fallen aura wearer stays
+  until damage; Worldtree raises its existing Shield instead of replacing it
+  (the impact replay can only add Shield); Conduits acting on other allies need
+  their wearer alive.
+- Open item: Shared Tide Lifesea Engine only triggers on a skill that Shields
+  exactly one ally; no released Oceanic kit has one, so it never fires today.
+- Not yet: Undertide's discount on Convergent Light (B3b). The battle fan shows
+  costs before a target is chosen.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded.
+- Full `npx vitest run`: 10,870 of 10,871; the one failure
+  (`acquisition-surfaces.test.ts`, 21 s timeout under load) and
+  `conduit-element.test.ts` (worker failed to start) pass on their own (10 of
+  10). New `conduit-restoration-b3a.test.ts`: 87 of 87. Updated fixtures:
+  `conduit-effects.test.ts` (no Conduit carries Recovery; triage test drops
+  Worldroot Graft), `conduit-loadout.test.ts` (Cinder Testament keyword).
+- `node toolsun_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced; B1+B2+B3a vs B1+B2): ordinary 99.8% (98.1%); Calamity EX+1/2/3
+  96.8/85.2/78.7% (94.9/73.6/62.5%; D-481: 85.2/52.8/33.3%); Oblivion 141-160
+  100% (91.7%), 161-180 90.5% (61.9%); Training 101-120 88.9% (72.2%);
+  Dungeon 101-120 100% (95.3%). Flare-saving Calamity 100/100/95.4%
+  (100/93.5/80.6%). Several bands moved more than 5 points (O4); the release
+  is already held for one enemy retune on the final Conduit set (owner
+  choice), and the gap keeps widening.
+- `node toolsundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** a look in game (unreleased).
+
+**Next:** B3b (next-action tokens, 13 rows; flare event gains `cost`) in a
+fresh Opus session; start the pressure study early (it takes about an hour).
+
 ## Battle Flurry Phase 4c B2: Legendary Conduit restoration (D-493, 2026-11-19)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release after

@@ -3279,6 +3279,27 @@ var radiantAllyGuardThreshold = 0.75;
 var radiantShieldGuardCap = 0.8;
 var radiantStasisVulnerability = 0.25;
 var radiantHealthSkillPowerStep = 450;
+var radiantOmnicRules = {
+  /** Kirin Cradle: heal cap (fraction of the ally's maximum Health) and the all-full Luminosity fallback. */
+  defenseHealCap: 0.5,
+  defenseHealCharge: 8,
+  /** Worldroot Graft: the Health line below which healing gains Skill Power and above which a lift grants Defense Up. */
+  lowHealthLine: 0.4,
+  /** Fractured Mercy Governor: the Health line below which its heal applies. */
+  weakenHealLine: 0.5,
+  /** Aegis Covenant Crown: enemy hits above this fraction of maximum Health are reduced. */
+  heavyHitLine: 0.2,
+  /** Cinder Testament: Burn bonus cap. */
+  burnAmpCap: 0.6,
+  /** Worldtree Heart: Shield cap (fraction of the healed ally's maximum Health). */
+  overhealCap: 0.2,
+  /** Worldroot Sap Cathedral: heal cap per cast (fraction of the ally's maximum Health). */
+  drainAllyCap: 0.1,
+  /** Leviathan Mercy Reflector: reflection cap per enemy phase (multiple of this bearer's current Attack). */
+  reflectCap: 1.5,
+  /** Nightglass Archive: mark duration in turns. */
+  markTurns: 2
+};
 var pair = (kind, amount, related, extra) => [effect(kind, amount), effect(related, extra)];
 var radiantConduits = {
   "vigil-core": [effect("hp", 0.2)],
@@ -3322,49 +3343,49 @@ var radiantConduits = {
   "meridian-inverter": [effect("restore-charge", 4)],
   "verdict-caliper": [effect("exposed-heal", 0.25)],
   "infernic-phoenix-reactor": pair("break-heal", 0.4, "hurt-shield", 0.08),
-  "aquatic-leviathan-pump": pair("absorbed-charge", 8, "hurt-heal", 0.35),
+  "aquatic-leviathan-pump": [effect("defense", 0.09), effect("direct", 0.125), effect("shield-charge", 5)],
   "tectonic-atlas-bastion": pair("normal-reduction", 0.15, "guard-team-shield", 0.4),
-  "efflorescent-worldtree-heart": pair("heal-shield", 0.5, "round-heal", 0.25),
+  "efflorescent-worldtree-heart": [effect("hp", 0.28), effect("skill-power", 0.35), effect("overheal-shield", 0.6)],
   "voltaic-thunderbird-coil": pair("normal-splash", 0.4, "opening", 0.25),
-  "atmospheric-griffin-turbine": pair("team-charge", 3, "normal", 0.25),
-  "luminous-seraph-mirror": pair("normal-heal", 0.4, "normal-splash", 0.2),
-  "ominous-eclipse-mantle": pair("weakened", 0.4, "pierce", 0.2),
-  "tranquilitic-kirin-cradle": pair("normal-heal", 0.5, "recovery", 0.25),
-  "chaotic-ouroboros-core": pair("flare-shield", 0.06, "shielded", 0.3),
-  "infernic-cinder-testament": pair("burn-power", 0.45, "normal-burn", 0.12),
-  "aquatic-undertide-chronometer": pair("normal-weaken", 0.2, "guard-charge", 6),
-  "tectonic-faultkeeper-loom": pair("guard-team-shield", 0.6, "defense", 0.25),
+  "atmospheric-griffin-turbine": pair("attack", 0.198, "team-charge", 10),
+  "luminous-seraph-mirror": pair("first-heal", 0.06, "squad-hp", 0.13),
+  "ominous-eclipse-mantle": [effect("skill-power", 0.35), effect("flare", 0.45), effect("weakened-pierce", 0.35), effect("weakened-ally-power", 0.2)],
+  "tranquilitic-kirin-cradle": [effect("defense", 0.13), effect("attack", 0.4), effect("defense-heal", 1)],
+  "chaotic-ouroboros-core": [effect("capacity", 0.4), effect("flare-shield", 0.1), effect("squad-hp", 0.11)],
+  "infernic-cinder-testament": [effect("burn-amp", 0.2)],
+  "aquatic-undertide-chronometer": [effect("defense", 0.14), effect("skill-efficiency", 0.3), fixedEffect("weaken-duration", 1), effect("weaken-ally-efficiency", 0.15)],
+  "tectonic-faultkeeper-loom": [effect("defense", 0.15), effect("skill-power", 0.55), effect("ally-defense-share", 0.25)],
   "efflorescent-verdant-covenant": pair("heal-buff", 0.2, "heal-charge", 5),
   "voltaic-stormstep-dynamo": pair("cooperation", 0.4, "flare-team-charge", 8),
   "atmospheric-skythread-rudder": pair("normal-charge", 5, "next-buff", 0.15),
   "luminous-dawn-witness-array": pair("opening", 0.35, "normal-shield", 0.5),
-  "ominous-nightglass-archive": pair("normal-expose", 0.18, "cooperation", 0.35),
-  "tranquilitic-stillhour-carillon": pair("flare-team-charge", 10, "round-charge", 3),
+  "ominous-nightglass-archive": pair("squad-attack", 0.4, "skill-mark", 0.125),
+  "tranquilitic-stillhour-carillon": [effect("hp", 0.24), effect("gauge-gain", 0.3), effect("flare-round-heal", 0.08), effect("flare-round-charge", 10)],
   "chaotic-paradox-spindle": pair("normal", 0.3, "flare-team-charge", 8),
-  "clearwater-manifold": pair("team-charge", 3, "heal-team-charge", 4),
+  "clearwater-manifold": [effect("oceanic-power", 0.35)],
   "tranquilitic-accord-bastion": pair("heal-shield", 0.6, "hurt-heal", 0.3),
-  "aegis-return-spring": pair("shielding", 0.35, "break-heal", 0.3),
-  "flare-focusing-iris": pair("burn-power", 0.35, "flare", 0.3),
-  "cinder-metering-nozzle": pair("normal-burn", 0.15, "normal-splash", 0.25),
-  "firstlight-cam": pair("start-charge", 20, "shelter", 0.15),
-  "tension-governor": pair("normal-weaken", 0.2, "status-shield", 0.5),
-  "tidebound-reflector": pair("reflect", 0.5, "defense", 0.3),
-  "ward-stitch-spool": pair("healing", 0.3, "heal-shield", 0.5),
-  "emberlife-kiln": pair("burn-heal", 0.25, "burn-power", 0.25),
+  "aegis-return-spring": [effect("defense", 0.18), effect("direct", 0.1), effect("skill-shield-direct", 0.1), effect("skill-shield-brace", 0.3)],
+  "flare-focusing-iris": [effect("attack", 0.11), fixedEffect("burn-duration", 1), effect("burn-skill-power", 0.8), effect("burn-ally-direct", 0.1)],
+  "cinder-metering-nozzle": [effect("attack", 0.45), fixedEffect("burn-transfer", 1)],
+  "firstlight-cam": [effect("hp", 0.07), effect("skill-power", 0.45), effect("squad-gain", 0.5), effect("squad-defense", 0.08)],
+  "tension-governor": [effect("skill-efficiency", 0.25), effect("squad-hp", 0.11), effect("weaken-guard", 0.3), effect("weaken-heal", 0.06)],
+  "tidebound-reflector": pair("attack", 0.25, "shield-reflect", 0.4),
+  "ward-stitch-spool": [effect("defense", 0.11), effect("skill-power", 0.55), effect("shielded-restore-power", 0.3)],
+  "emberlife-kiln": [effect("skill-power", 0.55), effect("capacity", 0.4), effect("burning-attack", 1), effect("burn-tick-heal", 0.08)],
   "tempered-strike-link": pair("burning", 0.4, "normal", 0.2),
-  "infernic-pyre-census": pair("burning", 0.35, "cooperation", 0.3),
+  "infernic-pyre-census": [effect("hp", 0.05), effect("skill-power", 0.55), effect("census-power", 0.2)],
   "chaotic-fault-verdict": pair("shielded", 0.4, "pierce", 0.2),
-  "ruinselect-prism": pair("wounded", 0.45, "leech", 0.12),
+  "ruinselect-prism": pair("ruin-power", 0.55, "ruin-defense", 0.04),
   "secondbeat-rack": pair("weakened", 0.3, "kill-charge", 12),
-  "oceanic-shared-tide-pump": pair("guard-team-shield", 0.5, "absorbed-charge", 6),
-  "pulse-trigger-pawl": pair("normal-charge", 4, "exposed", 0.3),
-  "solace-anchor": pair("round-charge", 4, "normal-heal", 0.3),
+  "oceanic-shared-tide-pump": [effect("hp", 0.13), effect("skill-efficiency", 0.3), effect("shield-echo", 0.5)],
+  "pulse-trigger-pawl": [effect("skill-power", 0.65), effect("direct", 0.2), effect("first-skill-charge", 8)],
+  "solace-anchor": [effect("attack", 0.16), effect("direct", 0.0875), effect("first-turn-attack", 0.2)],
   "sootwake-crucible": pair("burning", 0.3, "next-buff", 0.2),
   "atmospheric-storm-clock": pair("normal-charge", 4, "cooperation", 0.3),
-  "pressurecrest-governor": pair("normal-reduction", 0.18, "first-action", 0.25),
+  "pressurecrest-governor": [effect("defense", 0.17), effect("direct", 0.15), effect("first-skill-shield", 0.15)],
   "covercharge-drum": pair("hurt-heal", 0.3, "hurt-charge", 8),
-  "botanic-graft-covenant": pair("healing", 0.35, "round-heal", 0.3),
-  "mending-valve": pair("kill-heal", 0.1, "recovery", 0.25),
+  "botanic-graft-covenant": [effect("hp", 0.22), effect("skill-efficiency", 0.2), effect("low-heal-power", 0.5), effect("lift-guard", 0.3)],
+  "mending-valve": [effect("attack", 0.17), effect("skill-power", 0.4), effect("skill-drain-ally", 0.15)],
   "rootbound-triage-vault": pair("heal-charge", 6, "heal-shield", 0.5),
   "calamitic-world-eater-orrery": pair("solo", 0.65, "flare", 0.5),
   "calamitic-causality-funeral-engine": pair("kill-charge", 20, "execution", 0.6),
@@ -3503,7 +3524,47 @@ var conduitDescriptions = {
   "last-block": (a) => `When an enemy hit breaks this bearer's Shield, ${percent(a)} chance to block the rest of that hit. After a block, this bearer takes ${percent(radiantStasisVulnerability)} more damage from enemy attacks in the next enemy phase, and this cannot trigger again until that phase ends.`,
   "exposed-heal": (a) => `Once per action, a damaging Normal Attack, skill or Convergent Light on an enemy with Exposure heals this bearer ${percent(a)} of their maximum Health.`,
   "flare-power": (a) => `Convergent Light gains ${percent(a)} Skill Power.`,
-  "twin-charge": (a) => `Each Normal Attack that hits Health or a Shield grants this bearer and the other living ally with the lowest Luminosity percentage ${number(a)} Luminosity each, rounded once.`
+  "twin-charge": (a) => `Each Normal Attack that hits Health or a Shield grants this bearer and the other living ally with the lowest Luminosity percentage ${number(a)} Luminosity each, rounded once.`,
+  "squad-hp": (a) => `While this bearer lives, every squad member has ${percent(a)} more maximum Health (each living wearer adds its own). Health above a lowered maximum stays until lost.`,
+  "squad-attack": (a) => `While this bearer lives, every squad member has ${percent(a)} more Attack (each living wearer adds its own).`,
+  "squad-gain": (a) => `While this bearer lives, every squad member has Gauge Gain +${percent(a)} (each living wearer adds its own).`,
+  "squad-defense": (a) => `While this bearer lives, every squad member has ${percent(a)} more Defense (each living wearer adds its own).`,
+  "ally-defense-share": (a) => `While this bearer lives, other living allies gain Defense equal to ${percent(a)} of this bearer's current Defense.`,
+  "oceanic-power": (a) => `Skill Power increases by ${percent(a)} for each other Oceanic squad member, including defeated ones.`,
+  "census-power": (a) => `Skill Power increases by ${percent(a)} for each different element among living squad members.`,
+  "ruin-power": (a) => `Skill Power increases by ${percent(a)} for each currently defeated squad member.`,
+  "ruin-defense": (a) => `Defense increases by ${percent(a)} for each currently defeated squad member.`,
+  "weakened-pierce": (a) => `Skills and Convergent Light ignore ${percent(a)} of a Weakened enemy's Defense, up to 80% total with other Defense ignore and reduction.`,
+  "weakened-ally-power": (a) => `Skills and Convergent Light gain ${percent(a)} Skill Power against an enemy Weakened by another ally.`,
+  "low-heal-power": (a) => `Healing from this bearer's skills and Convergent Light gains ${percent(a)} Skill Power on allies below ${percent(radiantOmnicRules.lowHealthLine)} Health.`,
+  "lift-guard": (a) => `An ally healed by this bearer's skill or Convergent Light from below ${percent(radiantOmnicRules.lowHealthLine)} Health to at least ${percent(radiantOmnicRules.lowHealthLine)} gains Defense Up ${percent(a)} through the next enemy phase.`,
+  "burn-skill-power": (a) => `Skills and Convergent Light that apply Burn gain ${percent(a)} Skill Power.`,
+  "burn-duration": (a) => `Burn from this bearer's skills and Convergent Light lasts ${number(a)} more turn${a === 1 ? "" : "s"}, up to 6 turns.`,
+  "burn-ally-direct": (a) => `While this bearer lives, other allies deal ${percent(a)} more direct damage to enemies carrying this bearer's Burn.`,
+  "skill-shield-direct": (a) => `While this bearer lives, allies holding a Shield from this bearer's skills or Convergent Light deal ${percent(a)} more direct damage.`,
+  "skill-shield-brace": (a) => `While this bearer lives, allies holding a Shield from this bearer's skills or Convergent Light take ${percent(Math.min(0.8, a))} less damage from enemy hits above ${percent(radiantOmnicRules.heavyHitLine)} of their maximum Health (up to 80% total with other reductions of this kind).`,
+  "shielded-restore-power": (a) => `While this bearer lives, each living ally holding a Shield gains ${percent(a)} Skill Power on skills and Convergent Light that heal or grant Shields.`,
+  "skill-mark": (a) => `This bearer's damaging skills and Convergent Light mark each surviving enemy they hit for ${radiantOmnicRules.markTurns} turns. While this bearer lives, other allies' Normal Attacks on a marked enemy deal ${percent(a)} more direct damage.`,
+  "burn-amp": (a) => `Each time another ally's skill or Convergent Light damages an enemy carrying this bearer's Burn, that Burn deals ${percent(a)} more damage, up to +${percent(radiantOmnicRules.burnAmpCap)}. Reapplying the Burn keeps the bonus; a stronger Burn from another ally replaces it.`,
+  "burn-transfer": (a) => `When an enemy carrying Burn is defeated, ${percent(a)} of its remaining Burn damage (one tick per remaining turn) strikes the other living enemy with the highest Health percentage as one Conduit-generated strike.`,
+  "overheal-shield": (a) => `This bearer's skills and Convergent Light turn ${percent(a)} of overhealing into a Shield for the healed ally, up to ${percent(radiantOmnicRules.overhealCap)} of that ally's maximum Health. A new Shield from this Conduit raises the previous one to the new amount instead of adding to it.`,
+  "defense-heal": (a) => `Each Normal Attack heals the living ally with the lowest Health percentage for ${percent(a)} of this bearer's current Defense, up to ${percent(radiantOmnicRules.defenseHealCap)} of that ally's maximum Health; if every living ally is at full Health, that ally gains ${radiantOmnicRules.defenseHealCharge} Luminosity instead, rounded once.`,
+  "shield-charge": (a) => `Whenever an enemy attack damages any ally's Shield, that ally gains ${number(a)} Luminosity, once per attack, rounded once.`,
+  "first-heal": (a) => `Once per turn, this bearer's first damaging action heals every living ally ${percent(a)} of their own maximum Health.`,
+  "first-skill-charge": (a) => `Once per turn, this bearer's first damaging Skill 1 or Skill 2 grants each other living ally ${number(a)} Luminosity, rounded once.`,
+  "first-skill-shield": (a) => `Once per turn, this bearer's first damaging skill or Convergent Light gives the living ally with the lowest Health percentage a Shield equal to ${percent(a)} of their maximum Health.`,
+  "flare-round-heal": (a) => `At the start of the turn after this bearer uses Convergent Light, heal every living ally ${percent(a)} of their own maximum Health.`,
+  "flare-round-charge": (a) => `At the start of the turn after this bearer uses Convergent Light, every living ally gains ${number(a)} Luminosity, rounded once.`,
+  "weaken-guard": (a) => `Once per skill or Convergent Light from this bearer that applies Weaken, the most-wounded living ally gains Defense Up ${percent(a)} through the next enemy phase.`,
+  "weaken-heal": (a) => `Once per skill or Convergent Light from this bearer that applies Weaken, the most-wounded living ally heals ${percent(a)} of their maximum Health if below ${percent(radiantOmnicRules.weakenHealLine)} Health.`,
+  "shield-echo": (a) => `A skill or Convergent Light from this bearer that Shields only one ally also gives the most-wounded other living ally a Shield worth ${percent(a)} of that amount.`,
+  "skill-drain-ally": (a) => `This bearer's damaging skills and Convergent Light heal the living ally with the lowest Health percentage for ${percent(a)} of the enemy Health they removed, up to ${percent(radiantOmnicRules.drainAllyCap)} of that ally's maximum Health per cast.`,
+  "burning-attack": (a) => `While this bearer lives and any enemy carries Burn, every living squad member has Attack Up ${percent(Math.min(1, a))} (strongest Attack Up applies, up to 100%).`,
+  "burn-tick-heal": (a) => `While this bearer lives, each Burn tick from an Element-Bearer ability that damages enemy Health heals every living squad member ${percent(a)} of their own maximum Health.`,
+  "shield-reflect": (a) => `Shields from this bearer's abilities reflect ${percent(a)} of the damage they absorb to the attacker, up to ${percent(radiantOmnicRules.reflectCap)} of this bearer's current Attack per enemy phase across all holders.`,
+  "weaken-duration": (a) => `Weaken from this bearer's skills and Convergent Light lasts ${number(a)} more turn${a === 1 ? "" : "s"}, up to 6 turns.`,
+  "weaken-ally-efficiency": (a) => `While this bearer lives, other allies gain ${percent(a)} Skill Efficiency on damaging Skill 1 or Skill 2 aimed at an enemy carrying this bearer's Weaken (total discount up to 50%).`,
+  "first-turn-attack": (a) => `When this bearer acts before every other living ally in a turn, those allies gain Attack Up ${percent(a)} for the rest of the turn.`
 };
 function radiantConduitDescription(primitive) {
   return conduitDescriptions[primitive.kind](primitive.amount);
@@ -17736,20 +17797,42 @@ function living2(hp) {
   if (hp <= 0) throw new Error("Defeated radiant target cannot act or be selected.");
 }
 function effectiveRadiantStats(state, id) {
-  const member = bearer(state, id);
+  return effectiveStats(state, bearer(state, id), true);
+}
+function effectiveStats(state, member, share) {
   const stats = { ...member.stats };
   if (excludedSources) for (const key of ["hp", "attack", "defense", "recovery"])
     stats[key] *= (1 + equipmentAmount(member, key)) / (1 + radiantEquipmentAmount(member.loadout, key));
   for (const key of ["hp", "attack", "defense", "recovery"])
     stats[key] *= 1 + leaderEffects(state, member).filter((entry) => entry.kind === key).reduce((sum, entry) => sum + entry.amount, 0);
   stats.attack *= 1 - category(member.buffs, "weaken") * (1 - Math.min(0.8, combatAmount(state, member, "resilience")));
-  stats.attack *= 1 + category(member.buffs, "attack-up");
+  stats.attack *= 1 + Math.min(
+    radiantCategoryCaps["attack-up"],
+    Math.max(category(member.buffs, "attack-up"), conduitAttackUp(state))
+  );
+  stats.attack *= 1 + squadAura(state, "squad-attack");
   stats.defense *= 1 + Math.min(
     radiantCategoryCaps["defense-up"],
     Math.max(category(member.buffs, "defense-up"), conduitDefenseUp(state, member))
   );
+  stats.defense *= 1 + squadAura(state, "squad-defense") + defeatedCount(state) * combatAmount(state, member, "ruin-defense");
+  if (share) for (const wearer of state.bearers) {
+    if (wearer === member || wearer.hp === 0) continue;
+    const amount = combatAmount(state, wearer, "ally-defense-share");
+    if (amount > 0) stats.defense += amount * effectiveStats(state, wearer, false).defense;
+  }
   validateRadiantStats(stats);
   return stats;
+}
+function squadAura(state, kind) {
+  return state.bearers.reduce((sum, wearer) => sum + (wearer.hp > 0 ? combatAmount(state, wearer, kind) : 0), 0);
+}
+function defeatedCount(state) {
+  return state.bearers.filter((member) => member.hp === 0).length;
+}
+function conduitAttackUp(state) {
+  if (!state.enemies.some((target) => target.hp > 0 && target.debuffs.some((effect2) => effect2.category === "burn"))) return 0;
+  return Math.max(0, ...state.bearers.filter((wearer) => wearer.hp > 0).map((wearer) => combatAmount(state, wearer, "burning-attack")));
 }
 function conduitDefenseUp(state, member) {
   if (member.hp <= 0) return 0;
@@ -17764,10 +17847,11 @@ function belowFlareCost(state, member) {
 }
 function maximumHealth(state, member) {
   const bonus2 = member.hp > 0 && belowFlareCost(state, member) ? equipmentAmount(member, "reserve-health") : 0;
-  return rounded(member.stats.hp * (1 + bonus2));
+  return rounded(member.stats.hp * (1 + bonus2) * (1 + squadAura(state, "squad-hp")));
 }
-function radiantHealthBound(member) {
-  return rounded(member.stats.hp * (1 + radiantEquipmentAmount(member.loadout, "reserve-health")));
+function radiantHealthBound(state, member) {
+  const aura = state.bearers.reduce((sum, wearer) => sum + radiantEquipmentAmount(wearer.loadout, "squad-hp"), 0);
+  return rounded(member.stats.hp * (1 + radiantEquipmentAmount(member.loadout, "reserve-health")) * (1 + aura));
 }
 function healthCap(state, target) {
   return "loadout" in target ? maximumHealth(state, target) : rounded(target.stats.hp);
@@ -17799,18 +17883,26 @@ function gambleShift(state, actor2, won) {
 }
 function skillStatsFrom(loadout, slot, amount, maximumHealth2, distinct = false) {
   const ascended = slot === 1 ? loadout.ascension.skill1 === true : slot === 2 && loadout.ascension.skill2 === true;
-  const kit = radiantStarterKits[loadout.starter].kit;
-  const def = slot === "flare" ? kit.flare : slot === 1 ? kit.skill1 : kit.skill2;
-  const kinds2 = new Set(def.effects.map((entry) => entry.kind));
-  const debuff2 = kinds2.has("burn") || kinds2.has("weaken") || kinds2.has("expose");
-  const restore = kinds2.has("heal") || kinds2.has("shield");
-  const support = restore || ["attack-up", "defense-up", "reduction", "gain-up", "hot"].some((kind) => kinds2.has(kind));
-  const area = def.target === "all-enemies" && def.power > 0;
+  const { debuff: debuff2, restore, support, area, burn: burn2 } = skillTraits(loadout, slot);
   return {
-    skillPower: 1 + radiantRoleSkillPower[radiantStarterKits[loadout.starter].role] + (ascended ? radiantSkillAscension.skillPower : 0) + amount("skill-power") + (slot === 1 ? amount("skill1-power") : 0) + (debuff2 ? amount("debuff-power") : 0) + (restore ? amount("restore-power") : 0) + Math.floor(maximumHealth2 / radiantHealthSkillPowerStep) * amount("health-skill-power") + (slot === 2 ? amount("skill2-power") : 0) + (support ? amount("support-power") : 0) + (area ? amount("aoe-power") : 0) + (slot === "flare" ? amount("flare-power") : 0),
+    skillPower: 1 + radiantRoleSkillPower[radiantStarterKits[loadout.starter].role] + (ascended ? radiantSkillAscension.skillPower : 0) + amount("skill-power") + (slot === 1 ? amount("skill1-power") : 0) + (debuff2 ? amount("debuff-power") : 0) + (restore ? amount("restore-power") : 0) + Math.floor(maximumHealth2 / radiantHealthSkillPowerStep) * amount("health-skill-power") + (slot === 2 ? amount("skill2-power") : 0) + (support ? amount("support-power") : 0) + (area ? amount("aoe-power") : 0) + (slot === "flare" ? amount("flare-power") : 0) + (burn2 ? amount("burn-skill-power") : 0),
     skillDuration: Math.round(amount("skill-duration") + (debuff2 ? amount("debuff-duration") : 0)),
     skillEfficiency: (ascended ? radiantSkillAscension.efficiency : 0) + amount("skill-efficiency") + (slot === 2 ? amount("skill2-efficiency") : 0) + (distinct ? amount("prism-efficiency") : 0),
     gaugeGain: 1 + amount("gauge-gain") + (distinct ? amount("prism-gain") : 0)
+  };
+}
+function skillTraits(loadout, slot) {
+  const kit = radiantStarterKits[loadout.starter].kit;
+  const def = slot === "flare" ? kit.flare : slot === 1 ? kit.skill1 : kit.skill2;
+  const kinds2 = new Set(def.effects.map((entry) => entry.kind));
+  const restore = kinds2.has("heal") || kinds2.has("shield");
+  return {
+    debuff: kinds2.has("burn") || kinds2.has("weaken") || kinds2.has("expose"),
+    burn: kinds2.has("burn"),
+    restore,
+    support: restore || ["attack-up", "defense-up", "reduction", "gain-up", "hot"].some((kind) => kinds2.has(kind)),
+    area: def.target === "all-enemies" && def.power > 0,
+    damaging: def.power > 0
   };
 }
 function radiantLoadoutSkillStats(loadout, slot, distinct = false) {
@@ -17818,17 +17910,25 @@ function radiantLoadoutSkillStats(loadout, slot, distinct = false) {
 }
 function radiantSkillStats(state, id, slot) {
   const member = bearer(state, id);
-  return { ...skillStatsFrom(
+  const stats = skillStatsFrom(
     member.loadout,
     slot,
     (kind) => combatAmount(state, member, kind),
     member.stats.hp,
     distinctElements(state.bearers.map((entry) => entry.loadout))
-  ), gaugeGain: gaugeGain(state, member) };
+  );
+  return { ...stats, skillPower: stats.skillPower + squadSkillPower(state, member, slot), gaugeGain: gaugeGain(state, member) };
+}
+function squadSkillPower(state, member, slot) {
+  const element = (entry) => radiantStarterKits[entry.loadout.starter].elementId;
+  const oceanic = state.bearers.filter((entry) => entry !== member && element(entry) === "oceanic").length;
+  const living3 = new Set(state.bearers.filter((entry) => entry.hp > 0).map(element)).size;
+  const shielded = member.shields.length > 0 && skillTraits(member.loadout, slot).restore ? squadAura(state, "shielded-restore-power") : 0;
+  return oceanic * combatAmount(state, member, "oceanic-power") + living3 * combatAmount(state, member, "census-power") + defeatedCount(state) * combatAmount(state, member, "ruin-power") + shielded;
 }
 function gaugeGain(state, member) {
   const distinct = distinctElements(state.bearers.map((entry) => entry.loadout));
-  return 1 + equipmentAmount(member, "gauge-gain") + (distinct ? equipmentAmount(member, "prism-gain") : 0) + category(member.buffs, "gain-up");
+  return 1 + equipmentAmount(member, "gauge-gain") + (distinct ? equipmentAmount(member, "prism-gain") : 0) + category(member.buffs, "gain-up") + squadAura(state, "squad-gain");
 }
 var excludedSources = null;
 function gearKey(source) {
@@ -17854,6 +17954,36 @@ function leaderEffects(state, recipient) {
 }
 function combatAmount(state, actor2, kind) {
   return equipmentAmount(actor2, kind) + leaderEffects(state, actor2).filter((entry) => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0);
+}
+function gearSourceOf(member, kind) {
+  const id = member.loadout.id;
+  for (const slot of member.loadout.gear ?? [])
+    if (slot !== null && radiantConduitPrimitives(slot).some((entry) => entry.kind === kind)) return { kind: "gear", bearerId: id, conduitId: slot.id };
+  return member.loadout.masterId !== null && radiantMasters[member.loadout.masterId].effects.some((entry) => entry.kind === kind) ? { kind: "master", bearerId: id } : void 0;
+}
+function allyDirect(state, actor2, target, normal2) {
+  const burn2 = target.debuffs.find((effect2) => effect2.category === "burn");
+  let sum = 0;
+  for (const wearer of state.bearers) {
+    if (wearer.hp === 0) continue;
+    const id = wearer.loadout.id;
+    if (wearer !== actor2 && burn2 && burn2.source.kind !== "enemy" && burn2.source.bearerId === id)
+      sum += combatAmount(state, wearer, "burn-ally-direct");
+    if (normal2 && wearer !== actor2 && target.marks?.some((mark) => mark.casterId === id)) sum += combatAmount(state, wearer, "skill-mark");
+    if (actor2.shields.some((layer) => (layer.source.kind === "skill" || layer.source.kind === "flare") && layer.source.bearerId === id))
+      sum += combatAmount(state, wearer, "skill-shield-direct");
+  }
+  return sum;
+}
+function skillShieldBrace(state, holder) {
+  return state.bearers.reduce((sum, wearer) => sum + (wearer.hp > 0 && holder.shields.some((layer) => (layer.source.kind === "skill" || layer.source.kind === "flare") && layer.source.bearerId === wearer.loadout.id) ? combatAmount(state, wearer, "skill-shield-brace") : 0), 0);
+}
+function targetEfficiency(state, actor2, def, targetId) {
+  if (def.power <= 0 || targetId === void 0) return 0;
+  const weaken2 = enemy(state, targetId).debuffs.find((effect2) => effect2.category === "weaken");
+  if (!weaken2 || weaken2.source.kind === "enemy" || weaken2.source.bearerId === actor2.loadout.id) return 0;
+  const wearer = bearer(state, weaken2.source.bearerId);
+  return wearer.hp > 0 ? combatAmount(state, wearer, "weaken-ally-efficiency") : 0;
 }
 function outgoingDamageMultiplier(state, actor2, target, periodic = false) {
   const element = radiantStarterKits[actor2.loadout.starter].elementId;
@@ -17887,7 +18017,8 @@ function validateCategories(state, effects, allowed) {
   if (!Array.isArray(effects)) throw new Error("Invalid radiant category ledger.");
   const seen = /* @__PURE__ */ new Set();
   for (const effect2 of effects) {
-    if (!effect2 || typeof effect2 !== "object" || Object.keys(effect2).length !== 4 || !allowed.includes(effect2.category) || seen.has(effect2.category))
+    const amped = effect2 && typeof effect2 === "object" && "amp" in effect2;
+    if (!effect2 || typeof effect2 !== "object" || Object.keys(effect2).length !== (amped ? 5 : 4) || !allowed.includes(effect2.category) || seen.has(effect2.category) || amped && (effect2.category !== "burn" || !(typeof effect2.amp === "number" && effect2.amp > 0 && effect2.amp <= radiantOmnicRules.burnAmpCap + 1e-9)))
       throw new Error("Invalid radiant category effect.");
     seen.add(effect2.category);
     validateSource(state, effect2.source);
@@ -18180,7 +18311,7 @@ function validateRadiantCombat(state) {
   for (const member of [...state.bearers, ...state.enemies]) {
     validateRadiantStats(member.stats);
     safe(member.hp, "current health");
-    if (member.hp > ("loadout" in member ? radiantHealthBound(member) : Math.round(member.stats.hp)))
+    if (member.hp > ("loadout" in member ? radiantHealthBound(state, member) : Math.round(member.stats.hp)))
       throw new Error("Radiant health exceeds maximum.");
     if (!Array.isArray(member.shields)) throw new Error("Invalid radiant Shields.");
     let shieldTotal = 0;
@@ -18214,12 +18345,29 @@ function validateRadiantCombat(state) {
       if (!(radiantEquipmentAmount(member.loadout, "phase-shield") > 0)) throw new Error("Invalid radiant Granite Hourglass ledger.");
     }
     if (member.stasis !== void 0 && (!["current", "next"].includes(member.stasis) || !(radiantEquipmentAmount(member.loadout, "last-block") > 0))) throw new Error("Invalid radiant Stasis Reliquary state.");
+    if (member.reflected !== void 0) {
+      safe(member.reflected, "Mercy Reflector ledger", 1);
+      if (!(radiantEquipmentAmount(member.loadout, "shield-reflect") > 0)) throw new Error("Invalid radiant Mercy Reflector ledger.");
+    }
     validateCategories(state, member.buffs, allyCategories);
     validateSignatures(state, member);
   }
+  if (state.flared !== void 0 && (!Array.isArray(state.flared) || !state.flared.length || new Set(state.flared).size !== state.flared.length || state.flared.some((id) => {
+    const owner = state.bearers.find((member) => member.loadout.id === id);
+    return !owner || !(radiantEquipmentAmount(owner.loadout, "flare-round-heal") + radiantEquipmentAmount(owner.loadout, "flare-round-charge") > 0);
+  }))) throw new Error("Invalid radiant Stillhour Carillon ledger.");
   let paid = 0, budget = 0;
   for (const member of state.enemies) {
     if (member.elementId !== null && !isCombatElement(member.elementId)) throw new Error("Invalid enemy combat element.");
+    if (member.marks !== void 0) {
+      if (!Array.isArray(member.marks) || !member.marks.length || new Set(member.marks.map((mark) => mark?.casterId)).size !== member.marks.length) throw new Error("Invalid radiant enemy marks.");
+      for (const mark of member.marks) {
+        const owner = mark && typeof mark === "object" && Object.keys(mark).length === 2 ? state.bearers.find((entry) => entry.loadout.id === mark.casterId) : void 0;
+        if (!owner || !(radiantEquipmentAmount(owner.loadout, "skill-mark") > 0)) throw new Error("Invalid radiant enemy mark.");
+        safe(mark.remaining, "mark clock", 1);
+        if (mark.remaining > radiantOmnicRules.markTurns) throw new Error("Invalid radiant enemy mark clock.");
+      }
+    }
     validateCategories(state, member.debuffs, enemyCategories);
     validateRadiantCurrencyLedger(member.currency);
     if (member.currency.baselineHP !== Math.round(member.stats.hp) || member.currency.lowestHP > member.hp)
@@ -18344,6 +18492,22 @@ function healthMote(state, events, target, source) {
   owner.hp += effective;
   events.push({ type: "health-mote", enemyId: target.id, bearerId: owner.loadout.id, offered, effective });
 }
+var squadSourceKinds = [
+  "enemy-defense",
+  "ally-guard",
+  "squad-hp",
+  "squad-attack",
+  "squad-gain",
+  "squad-defense",
+  "ally-defense-share",
+  "burn-ally-direct",
+  "skill-shield-direct",
+  "skill-shield-brace",
+  "shielded-restore-power",
+  "skill-mark",
+  "burning-attack",
+  "weaken-ally-efficiency"
+];
 function gearSources(state, holder) {
   const id = holder.loadout.id, seen = /* @__PURE__ */ new Set(), sources = [];
   for (const slot of holder.loadout.gear ?? []) if (slot !== null && !seen.has(slot.id)) {
@@ -18354,7 +18518,7 @@ function gearSources(state, holder) {
   if (leaderEffects(state, holder).length > 0) sources.push({ kind: "leader", bearerId: state.bearers[0].loadout.id });
   for (const member of state.bearers) if (member !== holder) {
     for (const slot of member.loadout.gear ?? [])
-      if (slot !== null && radiantConduitPrimitives(slot).some((entry) => entry.kind === "enemy-defense" || entry.kind === "ally-guard"))
+      if (slot !== null && radiantConduitPrimitives(slot).some((entry) => squadSourceKinds.includes(entry.kind)))
         sources.push({ kind: "gear", bearerId: member.loadout.id, conduitId: slot.id });
   }
   return sources;
@@ -18526,6 +18690,8 @@ function applyCategory(events, targetId, effects, kind, source, magnitude2, turn
   if (!entry) effects.push(entry = { category: kind, source: structuredClone(source), magnitude: capped, remaining });
   else {
     if (capped > entry.magnitude) {
+      const owner = (value2) => value2.kind === "enemy" ? `enemy:${value2.enemyId}` : value2.bearerId;
+      if (entry.amp !== void 0 && owner(entry.source) !== owner(source)) delete entry.amp;
       entry.magnitude = capped;
       entry.source = structuredClone(source);
     }
@@ -19102,7 +19268,7 @@ function normal(state, events, actor2, targetId, hitCharge) {
   const offered = () => radiantDirectDamage(
     effectiveRadiantStats(state, actor2.loadout.id).attack,
     gearDefense(state, actor2, target.stats.defense),
-    1 + combatAmount(state, actor2, "normal") + combatAmount(state, actor2, "direct") + cooperation(state, actor2),
+    1 + combatAmount(state, actor2, "normal") + combatAmount(state, actor2, "direct") + cooperation(state, actor2) + allyDirect(state, actor2, target, true),
     (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor2, target)
   );
   const amount = offered();
@@ -19150,13 +19316,24 @@ function cast(state, events, actor2, input, hitCharge) {
   const enemyTargets = def.target === "all-enemies" ? state.enemies.filter((member) => member.hp > 0) : primary ? [primary] : [];
   const struck = /* @__PURE__ */ new Set();
   const weakened = new Set(enemyTargets.filter((target) => target.debuffs.some((effect2) => effect2.category === "weaken")));
+  const weakenedBy = (target) => target.debuffs.find((effect2) => effect2.category === "weaken")?.source;
+  const targetPower = (target) => {
+    const by = weakened.has(target) ? weakenedBy(target) : void 0;
+    return by && by.kind !== "enemy" && by.bearerId !== id ? combatAmount(state, actor2, "weakened-ally-power") : 0;
+  };
   let hits = 0;
   if (def.target !== "none") for (const target of enemyTargets) {
     if (target.hp === 0) continue;
     const offered = () => Math.max(input.hits, radiantDirectDamage(
       excludedSources ? effectiveRadiantStats(state, id).attack : stats.attack,
-      gearDefense(state, actor2, target.stats.defense, ignore2, true),
-      power2 * input.damageScale * (excludedSources ? radiantSkillStats(state, id, input.slot).skillPower + gambleShift(state, actor2, input.won) : skill2.skillPower) * (1 + (input.kind === "flare" ? combatAmount(state, actor2, "flare") : 0) + combatAmount(state, actor2, "direct") + combatAmount(state, actor2, "skill-direct") + cooperation(state, actor2) + bonus2),
+      gearDefense(
+        state,
+        actor2,
+        target.stats.defense,
+        ignore2 + (weakened.has(target) ? combatAmount(state, actor2, "weakened-pierce") : 0),
+        true
+      ),
+      power2 * input.damageScale * ((excludedSources ? radiantSkillStats(state, id, input.slot).skillPower + gambleShift(state, actor2, input.won) : skill2.skillPower) + targetPower(target)) * (1 + (input.kind === "flare" ? combatAmount(state, actor2, "flare") : 0) + combatAmount(state, actor2, "direct") + combatAmount(state, actor2, "skill-direct") + cooperation(state, actor2) + bonus2 + allyDirect(state, actor2, target, false)),
       (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor2, target)
     ));
     const total = offered();
@@ -19198,7 +19375,8 @@ function cast(state, events, actor2, input, hitCharge) {
       const strength = valueOf(effect2) * input.effectScale * skill2.skillPower;
       const ember = effect2.kind === "burn" && livingStarter(state, "ember") ? 1 + radiantPassiveValues.emberBurn : 1;
       const magnitude2 = effect2.kind === "burn" ? strength * stats.attack * outgoingDamageMultiplier(state, actor2, target, true) * ember : strength;
-      debuff(state, events, target, effect2.kind, source, magnitude2, duration(effect2.turns));
+      const longer = effect2.kind === "burn" ? combatAmount(state, actor2, "burn-duration") : effect2.kind === "weaken" ? combatAmount(state, actor2, "weaken-duration") : 0;
+      debuff(state, events, target, effect2.kind, source, magnitude2, duration(effect2.turns) + Math.round(longer));
     }
   }
   const lowest = woundedAlly(state);
@@ -19209,9 +19387,17 @@ function cast(state, events, actor2, input, hitCharge) {
     const recipients = alliesFor(effect2.to);
     const carried = effect2.kind === "heal" && ferry?.to === effect2.to && recipients.length ? unreturned / recipients.length : 0;
     for (const ally of recipients) {
-      const magnitude2 = valueOf(effect2) * input.effectScale * skill2.skillPower * ally.stats.hp + carried;
-      if (effect2.kind === "heal") restored = heal2(state, events, ally, source, magnitude2) > 0 || restored;
-      else shield2(state, events, ally, source, magnitude2);
+      const line = radiantOmnicRules.lowHealthLine;
+      const low = effect2.kind === "heal" && ally.hp < line * maximumHealth(state, ally);
+      const powered = skill2.skillPower + (low ? combatAmount(state, actor2, "low-heal-power") : 0);
+      const magnitude2 = valueOf(effect2) * input.effectScale * powered * ally.stats.hp + carried;
+      if (effect2.kind === "heal") {
+        const gained = heal2(state, events, ally, source, magnitude2);
+        restored = gained > 0 || restored;
+        const lift = combatAmount(state, actor2, "lift-guard"), from = gearSourceOf(actor2, "lift-guard");
+        if (low && gained > 0 && lift > 0 && from && ally.hp >= line * maximumHealth(state, ally))
+          applyCategory(events, ally.loadout.id, ally.buffs, "defense-up", from, lift, 1);
+      } else shield2(state, events, ally, source, magnitude2);
     }
   }
   if (restored && own?.kind === "current") gainCounter(events, actor2);
@@ -19265,6 +19451,7 @@ function skillAction(state, events, actor2, action, hitCharge) {
   if (def.target === "one-enemy" && (action.targetId === void 0 || enemy(state, action.targetId).hp <= 0))
     throw new Error("This skill requires a selected living enemy.");
   const stats = radiantSkillStats(state, id, action.slot);
+  stats.skillEfficiency += targetEfficiency(state, actor2, def, action.targetId);
   const spent = spendSkill(state.gauge, id, action.slot, stats.skillEfficiency);
   state.gauge = spent.state;
   events.push({ type: "skill", bearerId: id, slot: action.slot, name: def.name, cost: spent.cost });
@@ -19350,7 +19537,7 @@ function enemyAttack(state, events, action) {
       const output = Math.max(0.2, (1 - guard) * (1 - reduction2));
       const beforeProtection = radiantDirectDamage(actor2.stats.attack * (1 - weakening), stats.defense, action.coefficient, output * element);
       const cap = maximumHealth(state, target);
-      const protection = (target.hp > cap * 0.75 ? combatAmount(state, target, "shelter") : 0) + (beforeProtection > cap * 0.2 ? combatAmount(state, target, "brace") : 0);
+      const protection = (target.hp > cap * 0.75 ? combatAmount(state, target, "shelter") : 0) + (beforeProtection > cap * 0.2 ? combatAmount(state, target, "brace") : 0) + (beforeProtection > cap * radiantOmnicRules.heavyHitLine ? skillShieldBrace(state, target) : 0);
       const exposed = target.stasis === "next" ? 1 + radiantStasisVulnerability : 1;
       return radiantDirectDamage(
         actor2.stats.attack * (1 - weakening),
@@ -19402,6 +19589,9 @@ function enemyAttack(state, events, action) {
   }
   if (damaged) springThornTraps(state, events, actor2);
 }
+function burnTick(state, burn2) {
+  return Math.max(1, rounded(burn2.magnitude * (1 + burnBoost(state, burn2.source) + (burn2.amp ?? 0))));
+}
 function tick(events, targetId, alive2, effects, kinds2) {
   for (const effect2 of effects) if (kinds2.includes(effect2.category)) {
     effect2.remaining--;
@@ -19422,14 +19612,11 @@ function finishRound(state, events) {
     throw new Error("Every living enemy must act before completing its phase.");
   for (const target of state.enemies.filter((m) => m.hp > 0)) {
     const burn2 = target.debuffs.find((effect2) => effect2.category === "burn");
-    if (burn2) packet(
-      state,
-      events,
-      target,
-      burn2.source,
-      "periodic",
-      Math.max(1, rounded(burn2.magnitude * (1 + burnBoost(state, burn2.source))))
-    );
+    if (burn2) packet(state, events, target, burn2.source, "periodic", burnTick(state, burn2));
+  }
+  for (const target of state.enemies) if (target.marks) {
+    target.marks = target.marks.filter((mark) => --mark.remaining > 0);
+    if (!target.marks.length) delete target.marks;
   }
   if (state.phase !== "victory") tickSignatures(state, events);
   for (const target of state.enemies)
@@ -19492,6 +19679,7 @@ function processRadiantGear(state, events, action) {
   const defeated = new Set(events.filter((event2) => event2.type === "defeated").map((event2) => event2.targetId));
   const shielded = new Set(state.bearers.filter((owner) => owner.shields.length > 0).map((owner) => owner.loadout.id));
   const snapshots = new Map(state.bearers.filter((owner) => owner.hp > 0).map((owner) => [owner.loadout.id, effectiveRadiantStats(state, owner.loadout.id)]));
+  const actorStruck = "bearerId" in action && (action.type === "skill" || action.type === "flare") ? new Set(nativeEvents.filter((event2) => event2.type === "damage" && event2.origin === "direct" && (event2.source.kind === "skill" || event2.source.kind === "flare") && event2.source.bearerId === action.bearerId && event2.healthLoss + event2.absorbed > 0).map((event2) => event2.targetId)) : /* @__PURE__ */ new Set();
   for (const owner of state.bearers) {
     if (owner.hp === 0) continue;
     const id = owner.loadout.id, stats = snapshots.get(id);
@@ -19728,12 +19916,159 @@ function processRadiantGear(state, events, action) {
           case "round-team-heal":
             if (round) for (const ally of state.bearers) heal2(state, events, ally, source, amount * stats.recovery);
             break;
+          // D-493 B3a (Omnic). "Maximum Health" bases use the frozen maximum, like kit heals.
+          case "skill-mark":
+            if (ownAction && (action.type === "skill" || action.type === "flare"))
+              for (const targetId of new Set(direct.filter((event2) => event2.healthLoss + event2.absorbed > 0).map((event2) => event2.targetId))) {
+                const marked = state.enemies.find((member) => member.id === targetId && member.hp > 0);
+                if (!marked) continue;
+                const marks = marked.marks ??= [];
+                const existing = marks.find((mark) => mark.casterId === id);
+                if (existing) existing.remaining = radiantOmnicRules.markTurns;
+                else marks.push({ casterId: id, remaining: radiantOmnicRules.markTurns });
+              }
+            break;
+          case "defense-heal":
+            if (normalDirect && wounded) {
+              if (state.bearers.every((member) => member.hp === 0 || member.hp >= maximumHealth(state, member)))
+                grant(wounded, radiantOmnicRules.defenseHealCharge);
+              else heal2(
+                state,
+                events,
+                wounded,
+                source,
+                Math.min(amount * stats.defense, radiantOmnicRules.defenseHealCap * wounded.stats.hp)
+              );
+            }
+            break;
+          case "shield-charge":
+            if (action.type === "enemy-attack")
+              for (const holderId of new Set(incoming.filter((event2) => event2.absorbed > 0).map((event2) => event2.targetId)))
+                grant(bearer(state, holderId), amount);
+            break;
+          case "first-heal":
+            if (ownAction && direct.length > 0 && boundedIncoming) {
+              for (const ally of state.bearers) heal2(state, events, ally, source, amount * ally.stats.hp);
+              triggered = true;
+            }
+            break;
+          case "first-skill-charge":
+            if (ownAction && action.type === "skill" && direct.length > 0 && boundedIncoming) {
+              for (const ally of state.bearers) if (ally !== owner) grant(ally, amount);
+              triggered = true;
+            }
+            break;
+          case "first-skill-shield":
+            if (ownAction && (action.type === "skill" || action.type === "flare") && direct.length > 0 && boundedIncoming && wounded) {
+              shield2(state, events, wounded, source, amount * wounded.stats.hp);
+              triggered = true;
+            }
+            break;
+          case "flare-round-heal":
+            if (round && state.flared?.includes(id)) for (const ally of state.bearers) heal2(state, events, ally, source, amount * ally.stats.hp);
+            break;
+          case "flare-round-charge":
+            if (round && state.flared?.includes(id)) for (const ally of state.bearers) grant(ally, amount);
+            break;
+          case "weaken-guard":
+          case "weaken-heal":
+            if (ownAction && (action.type === "skill" || action.type === "flare") && wounded && owned.some((event2) => event2.type === "status" && !event2.clockOnly && event2.status === "weaken" && (event2.source.kind === "skill" || event2.source.kind === "flare"))) {
+              if (primitive.kind === "weaken-guard") applyCategory(events, wounded.loadout.id, wounded.buffs, "defense-up", source, amount, 1);
+              else if (wounded.hp < radiantOmnicRules.weakenHealLine * maximumHealth(state, wounded))
+                heal2(state, events, wounded, source, amount * wounded.stats.hp);
+            }
+            break;
+          case "shield-echo":
+            if (ownAction && (action.type === "skill" || action.type === "flare")) {
+              const given = owned.filter((event2) => event2.type === "shield" && (event2.source.kind === "skill" || event2.source.kind === "flare"));
+              const holders = [...new Set(given.map((event2) => event2.targetId))];
+              const other = holders.length === 1 ? woundedAlly(state, holders[0]) : void 0;
+              if (other) shield2(state, events, other, source, amount * given.reduce((sum, event2) => sum + event2.amount, 0));
+            }
+            break;
+          case "skill-drain-ally":
+            if (ownAction && (action.type === "skill" || action.type === "flare") && wounded) {
+              const removed = direct.reduce((sum, event2) => sum + event2.healthLoss, 0);
+              if (removed > 0) heal2(
+                state,
+                events,
+                wounded,
+                source,
+                Math.min(amount * removed, radiantOmnicRules.drainAllyCap * wounded.stats.hp)
+              );
+            }
+            break;
+          case "burn-tick-heal":
+            for (const event2 of nativeEvents) if (event2.type === "damage" && event2.origin === "periodic" && event2.healthLoss > 0 && state.enemies.some((member) => member.id === event2.targetId))
+              for (const ally of state.bearers) heal2(state, events, ally, source, amount * ally.stats.hp);
+            break;
+          case "shield-reflect":
+            if (action.type === "enemy-attack" && absorbed.length) {
+              const attacker = state.enemies.find((member) => member.id === action.enemyId);
+              const room = radiantOmnicRules.reflectCap * stats.attack - (owner.reflected ?? 0);
+              const value2 = Math.floor(Math.min(amount * absorbed.reduce((sum, entry) => sum + entry.amount, 0), room));
+              if (attacker && attacker.hp > 0 && value2 >= 1) {
+                packet(state, events, attacker, source, "generated", value2);
+                owner.reflected = (owner.reflected ?? 0) + value2;
+              }
+            }
+            break;
+          case "first-turn-attack":
+            if (ownAction && state.acted.length === 0) {
+              for (const ally of state.bearers) if (ally !== owner && ally.hp > 0)
+                applyCategory(events, ally.loadout.id, ally.buffs, "attack-up", source, amount, 1);
+            }
+            break;
+          case "burn-amp":
+            if ("bearerId" in action && action.bearerId !== id) for (const targetId of actorStruck) {
+              const burn2 = enemy(state, targetId).debuffs.find((effect2) => effect2.category === "burn");
+              if (burn2 && burn2.source.kind !== "enemy" && burn2.source.bearerId === id)
+                burn2.amp = Math.min(radiantOmnicRules.burnAmpCap, (burn2.amp ?? 0) + amount);
+            }
+            break;
+          case "burn-transfer":
+            for (const targetId of defeated) {
+              const fallen = state.enemies.find((member) => member.id === targetId);
+              const burn2 = fallen?.debuffs.find((effect2) => effect2.category === "burn");
+              if (!fallen || !burn2) continue;
+              const next = state.enemies.filter((member) => member.hp > 0 && member !== fallen).reduce((best, member) => !best || member.hp / member.stats.hp > best.hp / best.stats.hp ? member : best, void 0);
+              if (next) packet(state, events, next, source, "generated", Math.max(1, rounded(amount * burnTick(state, burn2) * burn2.remaining)));
+            }
+            break;
+          case "overheal-shield":
+            if (ownAction && (action.type === "skill" || action.type === "flare")) {
+              const over = /* @__PURE__ */ new Map();
+              for (const event2 of owned) if (event2.type === "heal" && (event2.source.kind === "skill" || event2.source.kind === "flare") && event2.offered > event2.effective) over.set(event2.targetId, (over.get(event2.targetId) ?? 0) + event2.offered - event2.effective);
+              for (const [targetId, extra] of over) {
+                const ally = bearer(state, targetId);
+                if (ally.hp > 0) refreshShield(state, events, ally, source, Math.min(amount * extra, radiantOmnicRules.overhealCap * ally.stats.hp));
+              }
+            }
+            break;
         }
       }
       if (triggered) state.gearTriggered.push(key);
     }
   }
-  if (action.type === "finish-enemy-phase") for (const member of state.bearers) delete member.phaseLoss;
+  if (action.type === "finish-enemy-phase") {
+    for (const member of state.bearers) {
+      delete member.phaseLoss;
+      delete member.reflected;
+    }
+    delete state.flared;
+  }
+}
+function refreshShield(state, events, target, source, magnitude2) {
+  const key = gearKey(source);
+  const existing = target.shields.find((layer) => (layer.source.kind === "gear" || layer.source.kind === "master" || layer.source.kind === "leader") && gearKey(layer.source) === key);
+  if (!existing) {
+    shield2(state, events, target, source, magnitude2);
+    return;
+  }
+  const gained = rounded(magnitude2) - existing.remaining;
+  if (gained <= 0) return;
+  existing.remaining += gained;
+  events.push({ type: "shield", source, targetId: target.loadout.id, amount: gained, shieldId: existing.id });
 }
 function applyRadiantCombatAction(input, action) {
   validateRadiantCombat(input);
@@ -19776,6 +20111,8 @@ function applyRadiantCombatAction(input, action) {
       bonusOffered: hitCharge.bonusOffered
     });
     processRadiantGear(state, events, action);
+    if (action.type === "flare" && radiantEquipmentAmount(actor2.loadout, "flare-round-heal") + radiantEquipmentAmount(actor2.loadout, "flare-round-charge") > 0 && !state.flared?.includes(action.bearerId))
+      (state.flared ??= []).push(action.bearerId);
     state.acted.push(action.bearerId);
     if (action.type === "skill") state.skilled.push(action.bearerId);
     if (state.phase === "player" && state.bearers.filter((m) => m.hp > 0).every((m) => state.acted.includes(m.loadout.id)))

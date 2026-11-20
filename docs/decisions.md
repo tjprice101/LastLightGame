@@ -33,6 +33,17 @@
   removed. Implementation choice: Horizon Heartcase keeps Health above the
   normal maximum until damage (no event-less Health loss). B1+B2 study:
   Calamity EX+1/2/3 94.9/73.6/62.5%, ordinary 98.1%.
+- **B3 split (2026-11-20):** B3a (29 Omnic rows that need no new system),
+  B3b (next-action tokens, 13 rows), B3c (rescue ledger, revive, Accord,
+  taunt, 3 rows). G12 (extra skill after Convergent Light) belongs to B4
+  (Throne of Borrowed Tomorrows).
+- **B3a implemented (unreleased).** Implementation choices (owner may
+  reverse): squad auras multiply separately from the gear pool; Health above
+  a maximum lowered by a fallen aura wearer stays until damage; Worldtree
+  Heart raises its existing Shield to the new amount instead of replacing it;
+  Conduit effects that act on other allies need their wearer alive. Open item:
+  Shared Tide Lifesea Engine (Oceanic) only triggers on a skill that Shields
+  exactly one ally, and no released Oceanic kit has one.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 

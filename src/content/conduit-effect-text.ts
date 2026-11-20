@@ -1,6 +1,6 @@
 import {
   radiantAllyGuardThreshold, radiantConduitPrimitives, radiantGambleRules, radiantHealthSkillPowerStep, radiantShieldGuardCap,
-  radiantStasisVulnerability, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
+  radiantOmnicRules, radiantStasisVulnerability, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
 import type { ConduitId } from './conduits';
 
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
@@ -107,6 +107,46 @@ const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => stri
   'exposed-heal': a => `Once per action, a damaging Normal Attack, skill or Convergent Light on an enemy with Exposure heals this bearer ${percent(a)} of their maximum Health.`,
   'flare-power': a => `Convergent Light gains ${percent(a)} Skill Power.`,
   'twin-charge': a => `Each Normal Attack that hits Health or a Shield grants this bearer and the other living ally with the lowest Luminosity percentage ${number(a)} Luminosity each, rounded once.`,
+  'squad-hp': a => `While this bearer lives, every squad member has ${percent(a)} more maximum Health (each living wearer adds its own). Health above a lowered maximum stays until lost.`,
+  'squad-attack': a => `While this bearer lives, every squad member has ${percent(a)} more Attack (each living wearer adds its own).`,
+  'squad-gain': a => `While this bearer lives, every squad member has Gauge Gain +${percent(a)} (each living wearer adds its own).`,
+  'squad-defense': a => `While this bearer lives, every squad member has ${percent(a)} more Defense (each living wearer adds its own).`,
+  'ally-defense-share': a => `While this bearer lives, other living allies gain Defense equal to ${percent(a)} of this bearer's current Defense.`,
+  'oceanic-power': a => `Skill Power increases by ${percent(a)} for each other Oceanic squad member, including defeated ones.`,
+  'census-power': a => `Skill Power increases by ${percent(a)} for each different element among living squad members.`,
+  'ruin-power': a => `Skill Power increases by ${percent(a)} for each currently defeated squad member.`,
+  'ruin-defense': a => `Defense increases by ${percent(a)} for each currently defeated squad member.`,
+  'weakened-pierce': a => `Skills and Convergent Light ignore ${percent(a)} of a Weakened enemy's Defense, up to 80% total with other Defense ignore and reduction.`,
+  'weakened-ally-power': a => `Skills and Convergent Light gain ${percent(a)} Skill Power against an enemy Weakened by another ally.`,
+  'low-heal-power': a => `Healing from this bearer's skills and Convergent Light gains ${percent(a)} Skill Power on allies below ${percent(radiantOmnicRules.lowHealthLine)} Health.`,
+  'lift-guard': a => `An ally healed by this bearer's skill or Convergent Light from below ${percent(radiantOmnicRules.lowHealthLine)} Health to at least ${percent(radiantOmnicRules.lowHealthLine)} gains Defense Up ${percent(a)} through the next enemy phase.`,
+  'burn-skill-power': a => `Skills and Convergent Light that apply Burn gain ${percent(a)} Skill Power.`,
+  'burn-duration': a => `Burn from this bearer's skills and Convergent Light lasts ${number(a)} more turn${a === 1 ? '' : 's'}, up to 6 turns.`,
+  'burn-ally-direct': a => `While this bearer lives, other allies deal ${percent(a)} more direct damage to enemies carrying this bearer's Burn.`,
+  'skill-shield-direct': a => `While this bearer lives, allies holding a Shield from this bearer's skills or Convergent Light deal ${percent(a)} more direct damage.`,
+  'skill-shield-brace': a => `While this bearer lives, allies holding a Shield from this bearer's skills or Convergent Light take ${percent(Math.min(.8, a))} less damage from enemy hits above ${percent(radiantOmnicRules.heavyHitLine)} of their maximum Health (up to 80% total with other reductions of this kind).`,
+  'shielded-restore-power': a => `While this bearer lives, each living ally holding a Shield gains ${percent(a)} Skill Power on skills and Convergent Light that heal or grant Shields.`,
+  'skill-mark': a => `This bearer's damaging skills and Convergent Light mark each surviving enemy they hit for ${radiantOmnicRules.markTurns} turns. While this bearer lives, other allies' Normal Attacks on a marked enemy deal ${percent(a)} more direct damage.`,
+  'burn-amp': a => `Each time another ally's skill or Convergent Light damages an enemy carrying this bearer's Burn, that Burn deals ${percent(a)} more damage, up to +${percent(radiantOmnicRules.burnAmpCap)}. Reapplying the Burn keeps the bonus; a stronger Burn from another ally replaces it.`,
+  'burn-transfer': a => `When an enemy carrying Burn is defeated, ${percent(a)} of its remaining Burn damage (one tick per remaining turn) strikes the other living enemy with the highest Health percentage as one Conduit-generated strike.`,
+  'overheal-shield': a => `This bearer's skills and Convergent Light turn ${percent(a)} of overhealing into a Shield for the healed ally, up to ${percent(radiantOmnicRules.overhealCap)} of that ally's maximum Health. A new Shield from this Conduit raises the previous one to the new amount instead of adding to it.`,
+  'defense-heal': a => `Each Normal Attack heals the living ally with the lowest Health percentage for ${percent(a)} of this bearer's current Defense, up to ${percent(radiantOmnicRules.defenseHealCap)} of that ally's maximum Health; if every living ally is at full Health, that ally gains ${radiantOmnicRules.defenseHealCharge} Luminosity instead, rounded once.`,
+  'shield-charge': a => `Whenever an enemy attack damages any ally's Shield, that ally gains ${number(a)} Luminosity, once per attack, rounded once.`,
+  'first-heal': a => `Once per turn, this bearer's first damaging action heals every living ally ${percent(a)} of their own maximum Health.`,
+  'first-skill-charge': a => `Once per turn, this bearer's first damaging Skill 1 or Skill 2 grants each other living ally ${number(a)} Luminosity, rounded once.`,
+  'first-skill-shield': a => `Once per turn, this bearer's first damaging skill or Convergent Light gives the living ally with the lowest Health percentage a Shield equal to ${percent(a)} of their maximum Health.`,
+  'flare-round-heal': a => `At the start of the turn after this bearer uses Convergent Light, heal every living ally ${percent(a)} of their own maximum Health.`,
+  'flare-round-charge': a => `At the start of the turn after this bearer uses Convergent Light, every living ally gains ${number(a)} Luminosity, rounded once.`,
+  'weaken-guard': a => `Once per skill or Convergent Light from this bearer that applies Weaken, the most-wounded living ally gains Defense Up ${percent(a)} through the next enemy phase.`,
+  'weaken-heal': a => `Once per skill or Convergent Light from this bearer that applies Weaken, the most-wounded living ally heals ${percent(a)} of their maximum Health if below ${percent(radiantOmnicRules.weakenHealLine)} Health.`,
+  'shield-echo': a => `A skill or Convergent Light from this bearer that Shields only one ally also gives the most-wounded other living ally a Shield worth ${percent(a)} of that amount.`,
+  'skill-drain-ally': a => `This bearer's damaging skills and Convergent Light heal the living ally with the lowest Health percentage for ${percent(a)} of the enemy Health they removed, up to ${percent(radiantOmnicRules.drainAllyCap)} of that ally's maximum Health per cast.`,
+  'burning-attack': a => `While this bearer lives and any enemy carries Burn, every living squad member has Attack Up ${percent(Math.min(1, a))} (strongest Attack Up applies, up to 100%).`,
+  'burn-tick-heal': a => `While this bearer lives, each Burn tick from an Element-Bearer ability that damages enemy Health heals every living squad member ${percent(a)} of their own maximum Health.`,
+  'shield-reflect': a => `Shields from this bearer's abilities reflect ${percent(a)} of the damage they absorb to the attacker, up to ${percent(radiantOmnicRules.reflectCap)} of this bearer's current Attack per enemy phase across all holders.`,
+  'weaken-duration': a => `Weaken from this bearer's skills and Convergent Light lasts ${number(a)} more turn${a === 1 ? '' : 's'}, up to 6 turns.`,
+  'weaken-ally-efficiency': a => `While this bearer lives, other allies gain ${percent(a)} Skill Efficiency on damaging Skill 1 or Skill 2 aimed at an enemy carrying this bearer's Weaken (total discount up to 50%).`,
+  'first-turn-attack': a => `When this bearer acts before every other living ally in a turn, those allies gain Attack Up ${percent(a)} for the rest of the turn.`,
 };
 
 /** Radiant effects that combat sums across every equipped Conduit before applying them once. */
@@ -117,6 +157,8 @@ export const radiantSummedConduitEffects = [
   'skill-power', 'skill1-power', 'debuff-power', 'restore-power', 'health-skill-power', 'skill-efficiency', 'skill-duration',
   'debuff-duration', 'gauge-gain', 'capacity', 'direct', 'skill-pierce', 'enemy-defense',
   'skill2-power', 'skill2-efficiency', 'skill-direct', 'support-power', 'aoe-power', 'shield-guard', 'flare-power',
+  'oceanic-power', 'census-power', 'ruin-power', 'ruin-defense', 'weakened-pierce', 'weakened-ally-power', 'low-heal-power',
+  'burn-skill-power', 'shielded-restore-power', 'weaken-ally-efficiency',
 ] as const satisfies readonly RadiantConduitEffect[];
 
 /** Exact player-facing text for one Radiant primitive, shared by menus and the battle reference. */

@@ -18,7 +18,7 @@ export function radiantReadout(state: RadiantCombatState): RadiantReadout {
   validateRadiantCombat(state);
   return { units: Object.fromEntries([...state.bearers, ...state.enemies].map(unit => [
     'loadout' in unit ? unit.loadout.id : unit.id,
-    { hp: unit.hp, maximum: 'loadout' in unit ? radiantHealthBound(unit) : Math.round(unit.stats.hp), shield: unit.shields.reduce((sum, layer) => sum + layer.remaining, 0),
+    { hp: unit.hp, maximum: 'loadout' in unit ? radiantHealthBound(state, unit) : Math.round(unit.stats.hp), shield: unit.shields.reduce((sum, layer) => sum + layer.remaining, 0),
       layers: structuredClone(unit.shields) },
   ])), gauge: structuredClone(state.gauge), currency: state.currencyEarned, round: state.round };
 }

@@ -2436,3 +2436,88 @@ tooltips, slot/area/support traits, Starvein condition, Citadel aura and
 non-stacking, Heartcase maximum Health and Defense, Granite ledger, Pale
 Bulwark, Stasis block and vulnerability, Nullsong stream isolation and both
 outcomes, Meridian, Verdict, direct damage).
+
+## Conduit restoration B3a: Omnic without new systems (D-493, Battle Flurry Phase 4c)
+
+29 of the 45 Omnic Conduits carry their approved B3 restore text. Unreleased
+with B1 and B2. The other 16 Omnics keep their Radiant-era designs until B3b
+(next-action tokens) and B3c (rescue, revive, Accord, taunt).
+
+- **Squad auras (per living wearer).** `squad-hp` (Ouroboros Core, Seraph
+  Mirror, Fractured Mercy Governor), `squad-attack` (Nightglass Archive),
+  `squad-gain` and `squad-defense` (Firstlight Concordance) sum over living
+  wearers and multiply separately from the gear pool, like Leader effects.
+  Frozen stats are unchanged. Maximum Health reads them in
+  `radiantMaximumHealth`; when a wearer falls, Health above the lowered
+  maximum stays until lost to damage (Heartcase rule). `radiantHealthBound`
+  now takes the state and includes every possible raise.
+- **Faultkeeper Loom** (`ally-defense-share`): other living allies add 25% of
+  the wearer's current Defense, read without flat shares (no recursion).
+- **Combat-only Skill Power** (menus show the loadout value without it):
+  Clearwater (`oceanic-power` × other Oceanic members, defeated included),
+  Pyre Census (`census-power` × distinct elements among living members),
+  Ruinselect (`ruin-power` and `ruin-defense` × currently defeated members),
+  Leviathan Ward Loom (`shielded-restore-power` on heal or Shield slots while
+  the holder has a Shield). Ember Iris's `burn-skill-power` is a slot trait
+  and shows in menus.
+- **Per-target hooks in a cast.** Eclipse Mantle: Weakened targets (Weaken read
+  before the hit) lose 35% Defense inside the C14 80% cap and give +20% Skill
+  Power when another ally applied the Weaken. Worldroot Graft: kit heals on
+  allies below 40% of current maximum Health gain +50% Skill Power; an ally
+  lifted to 40% or more gains Defense Up +30% (1 turn, gear source).
+  Ember Iris and Undertide Chronometer add 1 turn to the wearer's skill Burn
+  or Weaken (fixed, cap 6).
+- **Ally direct damage** (C11 additive layer): Ember Iris +10% for other allies
+  on enemies carrying the wearer's Burn; Nightglass +12.5% for other allies'
+  Normal Attacks on a marked enemy; Aegis Covenant Crown +10% for holders of the
+  wearer's skill or Convergent Light Shield, plus 30% less damage from enemy
+  hits above 20% of maximum Health (joins `brace`, 80% combined). All need the
+  wearer alive.
+- **Nightglass marks** (`RadiantEnemy.marks`, one per wearer): damaging skills
+  and Convergent Light mark surviving enemies hit for 2 turns; clocks tick at
+  the end of the enemy phase. Shown as an enemy tag.
+- **Cinder Testament** (`amp` on the Burn entry, Burn only): +20% per other
+  ally's skill or Convergent Light that damages an enemy carrying the wearer's
+  Burn, cap +60% (fixed). Kept when the same caster refreshes; cleared when a
+  stronger Burn from another caster replaces it. Tick =
+  magnitude × (1 + Burn boost + amp). Shown as an enemy tag.
+- **Eternal Cinder** (`burn-transfer`): when an enemy carrying Burn is defeated,
+  tick × remaining turns strikes the living enemy with the highest Health
+  percentage (generated). A Burn tick that defeats its holder transfers the
+  turns left after that tick.
+- **Worldtree Heart** (`overheal-shield`): 60% of overhealing from the wearer's
+  skills becomes a Shield, cap 20% of that ally's maximum Health.
+  Implementation choice: a later Shield raises the existing one to the new
+  amount instead of replacing it (the impact replay needs every Shield change
+  as an event, and an event can only add).
+- **Triggers:** Kirin Cradle (heal for 100% current Defense, cap 50% maximum
+  Health; all full: 8 Luminosity), Leviathan Pump (any Shield absorbing an
+  enemy attack fills its holder once per attack), Seraph Mirror, Sky Sovereign
+  Escapement and Tempest Shelter Sovereign (once per turn via the gear trigger
+  ledger), Stillhour Carillon (`state.flared` holds wearers who used
+  Convergent Light this turn; the next turn start heals and fills, then it
+  clears), Fractured Mercy (once per Weaken-applying cast), Shared Tide
+  (single-holder skill Shields echo at 50%), Sap Cathedral (15% of enemy
+  Health removed, cap 10% per cast), Phoenix Lifeforge (squad Attack Up +100%
+  joins the category while any enemy burns; each ability Burn tick that
+  damages Health heals the squad 8%), Mercy Reflector (`reflected` ledger per
+  enemy phase, cap 150% of current Attack), Undertide (other allies' damaging
+  Skill 1/2 aimed at an enemy carrying the wearer's Weaken: +15% Skill
+  Efficiency, applied in `skillAction`), Solace Monolith (acting first gives
+  other living allies Attack Up +20% for the turn).
+- **Not yet:** Undertide's discount on Convergent Light (B3b, when the flare
+  event carries its cost for the impact replay). The battle fan shows the cost
+  before a target is chosen, so a skill affordable only with Undertide's
+  discount appears unaffordable there.
+- **Bases:** "% of maximum Health" heal and Shield bases use the frozen maximum
+  Health, as kit heals do; caps and thresholds read the current maximum.
+- **Attribution:** other members' aura, Burn, mark, Shield-holder, Lifeforge
+  and Undertide Conduits join `gearSources` for D-492 callouts.
+- **Fixtures updated:** no Conduit carries Recovery any more (the always-on
+  stat test covers Health, Attack and Defense); the triage healing test drops
+  Worldroot Graft; Cinder Testament's search keyword is now "burn".
+
+Validation: `src/game/conduit-restoration-b3a.test.ts` (rows, fixed rules,
+tooltips, auras and fallen wearers, Faultkeeper, combat-only Skill Power,
+Ward Loom, Lifeforge, Eclipse, Ember Iris, Aegis Crown, Undertide, Graft, every
+trigger, marks and Burn bonus tags, validation of the new fields, replay).

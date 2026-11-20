@@ -113,7 +113,8 @@ describe('exhaustive stable-ID radiant conversion', () => {
 });
 
 describe('real four-stat and action modifiers', () => {
-  it.each(['hp', 'attack', 'defense', 'recovery'] as const)('%s modifies only its frozen stat', kind => {
+  // D-493 B3a: no Conduit carries Recovery after Kirin Cradle and Sap Cathedral were restored.
+  it.each(['hp', 'attack', 'defense'] as const)('%s modifies only its frozen stat', kind => {
     const id = ids.find(id => radiantConduitPrimitives({ id, rank: 0 }).some(effect => effect.kind === kind))!;
     const element = conduits.find(entry => entry.id === id)!.element;
     const starter = (Object.keys(radiantBearerKits) as RadiantBearerId[]).find(id => !element || radiantBearerKits[id].elementId === element)!;
@@ -218,7 +219,7 @@ describe('bounded, sourced Conduit triggers', () => {
     expect(result.state.chargeSeed).toBe(state.chargeSeed);
   });
   it('native healing grants charge once per action, but generated healing and overhealing cannot', () => {
-    const state = ready(fixture(['rootbound-triage-vault', 'botanic-graft-covenant'], 'sprout', ['ember', 'tide']));
+    const state = ready(fixture(['rootbound-triage-vault'], 'sprout', ['ember', 'tide']));
     state.bearers.forEach(owner => { owner.hp = 1; });
     const result = act(state, { type: 'flare', bearerId: 'sprout' });
     // Worldseed's Luminosity Gain Up (+30%) multiplies the heal-charge grant: round(6 x 1.3) = 8.

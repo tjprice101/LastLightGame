@@ -104,6 +104,13 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
         chips.push(`${counterLabels[own.kind]} ${own.count}/${radiantSignatureCaps[own.kind]}`);
     }
   }
+  // D-493 B3a: Conduit marks and Burn bonuses carried by enemies.
+  for (const target of state.enemies) {
+    if (target.hp === 0) continue;
+    for (const mark of target.marks ?? []) tag(target.id, `Nightglass Mark (${nameOf(mark.casterId)}) · ${turns(mark.remaining)}`);
+    const amp = target.debuffs.find(effect => effect.category === 'burn')?.amp;
+    if (amp) tag(target.id, `Cinder Testament · Burn +${pct(amp)}`);
+  }
   return { owners, holders };
 }
 
