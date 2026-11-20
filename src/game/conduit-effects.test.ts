@@ -124,7 +124,8 @@ describe('real four-stat and action modifiers', () => {
     expect(actual[kind]).toBeCloseTo(base[kind] * (1 + radiantGearAmount(loadout.gear, kind)));
     expect(Object.keys(actual)).toEqual(['hp', 'attack', 'defense', 'recovery']);
   });
-  it.each(['precision-escapement', 'fieldbrace-coupler', 'breach-pendulum'] as ConduitId[])('%s increases actual Normal damage without extra RNG', id => {
+  // D-493 crit step: Precision Escapement and Fieldbrace Coupler now act through critical hits (critical-hits.test.ts).
+  it.each(['breach-pendulum', 'hammerbalance-link'] as ConduitId[])('%s increases actual Normal damage without extra RNG', id => {
     const control = normal(fixture()), result = normal(fixture([id]));
     const hit = result.events.find(event => event.type === 'damage' && event.source.kind === 'normal')!;
     expect(hit.type === 'damage' && hit.healthLoss).toBeGreaterThan(

@@ -7,7 +7,8 @@
 - B1 (spec: [combat.md](../../combat.md#conduit-restoration-b1-common--rare-d-493-battle-flurry-phase-4c)).
 - **B3a implemented, unreleased (2026-11-20):** 29 Omnic rows that need no new system (spec: [combat.md](../../combat.md#conduit-restoration-b3a-omnic-without-new-systems-d-493-battle-flurry-phase-4c)). B3b (next-action tokens: Dawn Witness, Paradox Spindle, Skythread, Stormstep, Thunderbird, Verdant Covenant, Phoenix Temper, Rosefault, Secondbeat, Sootwake, Tempest Return, Covercharge, Triage) and B3c (Atlas Bastion taunt, Phoenix Reactor revive, Accord) remain. G12 belongs to B4 (Throne of Borrowed Tomorrows).
 - **Crits return (owner, 2026-11-20, D-493 note):** O1 and C9/C10 are replaced by real critical hits (old base values, enemy crits, Critical Up instead of Exposure). A planned crit step runs before B3b and converts the built O1 rows.
-- Next: crit step, then B3b, B3c, B4, B5 on `battle-flurry-phase3`; then one enemy retune on the final
+- **Crit step implemented, unreleased (2026-11-20):** real critical hits ([combat.md](../../combat.md#critical-hits-and-critical-up-d-493-crit-step-battle-flurry-phase-4c)). The 18 built O1 rows now carry their pre-Radiant crit stats and triggers verbatim; the "Restore as" cells below that mention "more direct damage" or "enemy with Exposure" for O1 rows are superseded by the pre-Radiant column. C9, C10 and M3 are retired. Remaining O1 rows (B3b, B4, B5) are built with real crits.
+- Next: B3b, B3c, B4, B5 on `battle-flurry-phase3`; then one enemy retune on the final
   Conduit set and a single release with the matching server deploy (owner
   choice, D-493).
 
@@ -65,7 +66,7 @@ stay inactive ([moon-sunshade-events.md](../../moon-sunshade-events.md)).
 |---|---|---|
 | M1 | Elemental Gauge, "X% Elemental Gauge", "X% of capacity" | Luminosity; X% becomes X Luminosity (C7). |
 | M2 | Elemental Gauge Capacity +X% | Extra Luminosity room above the Convergent Light cost (C8, O2). |
-| M3 | Critical Rate, Critical Damage Multiplier, critical triggers | Radiant has no critical hits. Deterministic conversion (C9, C10, O1). |
+| M3 | (Retired by the crit step: real crits) Critical Rate, Critical Damage Multiplier, critical triggers | Radiant has no critical hits. Deterministic conversion (C9, C10, O1). |
 | M4 | Direct Attack | Attack. |
 | M5 | Separate "Direct Damage" bonus layer | Joins the existing additive damage layer in `cast()` (C11). |
 | M6 | Defend / guard triggers | None in the Phase Zero texts. `guard-*` primitives exist only in Radiant-era designs and Leaders; restored designs drop them; Leaders keep the D-473 O1 interim (O3). |
@@ -90,8 +91,8 @@ stay inactive ([moon-sunshade-events.md](../../moon-sunshade-events.md)).
 | C6 | Gauge Gain from gear | Gauge Gain = 1 + gear Gauge Gain + Luminosity Gain Up. Gear part verbatim, uncapped (old); category cap +100% unchanged. Rounded once per gain. |
 | C7 | Luminosity grants | Old X% (of capacity) = X Luminosity (old base capacity 100), then Gauge Gain, rounded once, limited by capacity. Flat Moon grants unchanged. |
 | C8 | Capacity | "+X% capacity" = capacity × (1 + X), rounded down; summed across gear, at most +100%. Convergent Light cost unchanged; never fills Luminosity. |
-| C9 | Critical stat conversion | Critical Rate +R points = +0.5R% direct damage on Normal Attacks, skills and Convergent Light. Critical Damage Multiplier +M% = +0.25M%. Basis: old base multiplier 1.5× (a crit added 50%); old base rate 10-25% (M weight ≈ 0.15 × 1.5 ≈ 0.25). Next-action crit tokens use the same factors. |
-| C10 | Critical triggers | "First critical X each turn" = first damaging X each turn. Ungated "critical X" = X that damages an enemy with Exposure. "Fails to crit" = against an enemy without Exposure. "Every third critical" = every third damaging action against an enemy with Exposure. "Enemy critical hits" = enemy hits above 20% of the holder's maximum Health. |
+| C9 | (Retired by the crit step) Critical stat conversion | Critical Rate +R points = +0.5R% direct damage on Normal Attacks, skills and Convergent Light. Critical Damage Multiplier +M% = +0.25M%. Basis: old base multiplier 1.5× (a crit added 50%); old base rate 10-25% (M weight ≈ 0.15 × 1.5 ≈ 0.25). Next-action crit tokens use the same factors. |
+| C10 | (Retired by the crit step) Critical triggers | "First critical X each turn" = first damaging X each turn. Ungated "critical X" = X that damages an enemy with Exposure. "Fails to crit" = against an enemy without Exposure. "Every third critical" = every third damaging action against an enemy with Exposure. "Enemy critical hits" = enemy hits above 20% of the holder's maximum Health. |
 | C11 | Direct Damage bonuses | Old separate "Direct Damage" bonuses (Worldbreaker +65%, Causality +125%) and C9 bonuses add into the existing `(1 + flare + cooperation + bonus)` layer. |
 | C12 | Rank scaling | ×(1 + 0.1·rank) only on beneficial values at the old scaling positions (catalog §1.2). Fixed: penalties, thresholds, chances, durations, turn counts, caps, per-encounter limits, flat Skill Duration. Exceptions: Stasis chance 10 + 2·rank %; Causality Efficiency 50 + 2·rank %; Nullsong +75% scales, −75% and 50% fixed. Masters have no ranks. |
 | C13 | Slot triggers | "Skill 1" = slot 1; "Skill 2" = slot 2; "Skills" = Skill 1, Skill 2 and Convergent Light (old trait checks covered Last Flare, catalog §1.6). Traits from the kit definition: damaging, hits all enemies, heals or grants Shields, applies Weaken/Expose/Burn, support (heals, Shields or buffs allies). |

@@ -240,15 +240,16 @@ Calamitic (7-star) numbers sit about 10-15% above the 6-star batch.
 - Passive, Virtuous Bloom: Rosetta marks one enemy as her Quarry. Each other
   ally whose attack hits the Quarry this turn counts as a contributor.
 - Skill 1, Golden Thorn Volley (25): 4-hit Tranquilitic attack on one enemy
-  (250%), marks it as Quarry, Exposes target (+15% damage taken, 2 turns).
+  (250%), marks it as Quarry, gives target Critical Up (+30% Critical Rate, 2
+  turns).
 - Skill 2, Crimson Skyfall (40): 5-hit Tranquilitic attack on the Quarry, or on
   the current target if there is none (300%, +40% per contributor this turn).
 - Convergent Light, Rose Beyond the Sun: 12-hit Tranquilitic attack on the Quarry, or on
-  the current target if there is none (1350%), Exposes target (+30% damage
-  taken, 3 turns), heals each contributor this turn (20% of max Health).
-- Leader, Quarry Oath: boosts damage of Tranquilitic allies against Exposed
-  enemies (+25%); a Tranquilitic ally's Normal Attack hit Exposes the target
-  (+8% damage taken, this turn).
+  the current target if there is none (1350%), gives target Critical Up (+60%
+  Critical Rate, 3 turns), heals each contributor this turn (20% of max Health).
+- Leader, Quarry Oath: boosts damage of Tranquilitic allies against enemies
+  with Critical Up (+25%); a Tranquilitic ally's Normal Attack hit gives the
+  target Critical Up (+16% Critical Rate, this turn).
 
 ### Thornia (`thornia`), Chaotic Tank. Signature: Thorn Trap
 - Passive, Forbidden Garden: when an enemy with Thornia's Thorn Trap damages an
@@ -316,10 +317,10 @@ Calamitic (7-star) numbers sit about 10-15% above the 6-star batch.
 - Skill 1, Shatterfall (25): 5-hit Chaotic attack on all enemies (200%).
 - Skill 2, Glass Meridian (40): 6-hit Chaotic attack on one enemy (360%, +20% per
   Incision on it), then consumes its Incisions.
-- Convergent Light, Denial of Fate: 12-hit Chaotic attack on all enemies (1000%), Exposes
-  all enemies (+25% damage taken, 2 turns).
+- Convergent Light, Denial of Fate: 12-hit Chaotic attack on all enemies (1000%), gives
+  all enemies Critical Up (+50% Critical Rate, 2 turns).
 - Leader, Fractalized Incision: boosts damage of Chaotic allies against enemies
-  at full Health (+25%) and against Exposed enemies (+20%).
+  at full Health (+25%) and against enemies with Critical Up (+20%).
 
 ## Batch 3: Elemental War (10), owner-approved 2026-11-16
 
@@ -338,9 +339,9 @@ target Tanks more often), so no skill repeats it.
 - Convergent Light, Ocean Beyond the Map: 12-hit Oceanic attack on the Surveyed enemy, or
   on the current target if there is none (1250%), spends all Survey (each ignores
   20% of its Defense).
-- Leader, Uncharted Meridian: an Oceanic ally's Normal Attack hit Exposes the
-  target (+10% damage taken, this turn) and fills each other ally's Luminosity
-  (+1).
+- Leader, Uncharted Meridian: an Oceanic ally's Normal Attack hit gives the
+  target Critical Up (+20% Critical Rate, this turn) and fills each other ally's
+  Luminosity (+1).
 
 ### Orvella (`orvella`), Botanic Tank. Signature: Foundation
 - Passive, Load-Bearing Will: while Orvella's Foundation has durability, it
@@ -406,8 +407,8 @@ target Tanks more often), so no skill repeats it.
 - Passive, Turning Season: each skill advances the Season from Sprout to Bloom
   to Harvest. In Harvest, the next skill or Convergent Light deals +35% and ignores 20% of
   Defense, then the Season returns to Sprout. Battles start in Sprout.
-- Skill 1, Reaper's Claim (25): 4-hit Botanic attack on one enemy (250%), Exposes
-  target (+12% damage taken, 2 turns).
+- Skill 1, Reaper's Claim (25): 4-hit Botanic attack on one enemy (250%), gives
+  target Critical Up (+24% Critical Rate, 2 turns).
 - Skill 2, Turn the Bough (40): 6-hit Botanic attack on all enemies (170%).
 - Convergent Light, All That Ripens: 12-hit Botanic attack on one enemy (1250%).
 - Leader, Turning Season: boosts damage of Botanic allies against enemies at or

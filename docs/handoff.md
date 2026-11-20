@@ -1,5 +1,54 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c crit step: critical hits and Critical Up (D-493, 2026-11-20)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#critical-hits-and-critical-up-d-493-crit-step-battle-flurry-phase-4c).
+- Owner answers (Plan mode): Critical Up is an enemy mark replacing Exposure;
+  pre-Radiant crit scope (Normal Attacks, skills, Convergent Light, kit
+  signature strikes, kit Burn ticks; never Conduit-generated); every enemy
+  10% / 1.5x; Elemental Crit restored.
+- Separate `critSeed` stream; per-bearer pre-Radiant Critical Rate and
+  Critical Damage (`radiantCriticalStats`); Critical Up = 2 points of Critical
+  Rate per stored point. 18 built rows (B1, B2, B3a) now carry real crit
+  stats and triggers (new kinds `crit-rate`, `crit-damage`, `skill-crit-damage`,
+  `flare-crit-rate`, `flare-crit-damage`, `crit-heal`, `first-crit-*`,
+  `burn-ally-crit`, `skill-shield-crit`); C9, C10 and M3 retired.
+- UI: gold-rimmed "Critical" / "Elemental Crit" numbers, GPU pulse, static
+  under Reduce motion; "Critical Up · +N% Critical Rate" status rows;
+  Critical Rate and Critical Damage in character stats; glossary entries;
+  kit text and the Phase 3 drafts now say Critical Up.
+- Implementation choices (owner may reverse): fixed crit stats (no growth);
+  the x2 Critical Up conversion (Golden Thorn Volley +30, Rose Beyond the Sun
+  +60, Denial of Fate +50, Reaper's Claim +24); encounters saved before this
+  step finish without crits on the old Exposure rule (no version bump);
+  no extra crit hit-stop (R2); old x1.5 Last Flare crit bonus not restored.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- Full `npx vitest run` (with the study running): 10,889 of 10,895; the 6
+  failures were stale no-crit assertions and stat-row counts, fixed and rerun
+  per file (battle-screen, hub, kit-text, information-layout: all pass). New
+  `src/game/critical-hits.test.ts`: 16 of 16 (includes pre-crit save
+  load/settle/reload and tamper rejection); battle-screen crit number test
+  passes.
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced; crit step vs B3a): ordinary 99.8% (99.8%); Calamity EX+1/2/3
+  97.2/86.6/80.1% (96.8/85.2/78.7%); Oblivion 141-160 100%, 161-180 90.5%
+  (unchanged); Training 101-120 100% (88.9%; 18 samples); Dungeon 101-120
+  100%. Flare-saving Calamity 100/99.5/94.9% (100/100/95.4%).
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+- `capture_frames.mjs --battle attack --stream` (Elise, Bliss, Crinso
+  leaders): renders; the preview seeds landed no critical hit, so the crit
+  look is covered by the markup test only.
+
+**Not verified:** a critical hit seen in game (unreleased).
+
+**Next:** B3b (next-action tokens, 13 rows incl. 7 O1 rows now built with
+real crits; flare event gains `cost`; Undertide's Convergent Light discount;
+decide Shared Tide). Fresh Opus session, Plan mode. Start the study early.
+
 ## Battle Flurry Phase 4c B3a: Omnic Conduit restoration, no new systems (D-493, 2026-11-20)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release after

@@ -296,6 +296,9 @@ export class GpuBattleEffects implements RadiantBattleEffects {
         scene.pulse(GpuBattleEffects.centre(rect), Math.max(120, slot), style, .4);
       if (kind === 'flare') point = { x: point.x + (Math.random() - .5) * size * .24, y: point.y + (Math.random() - .5) * size * .24 };
       scene.burst(point, kind, style, size, intensity);
+      // D-493 crit step: a critical hit adds a bright pulse on the target (stronger for an Elemental Crit).
+      if (packet.type === 'damage' && packet.critical) scene.pulse(point, packet.critical === 'elemental' ? 240 : 170, style,
+        packet.critical === 'elemental' ? .85 : .6);
       if (finisher && own && flare && (kind === 'finisher' || kind === 'support'))
         struck.push({ point: GpuBattleEffects.centre(rect), size, style, support: kind === 'support' });
     }

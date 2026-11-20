@@ -17,17 +17,18 @@ const approved: Record<string, [string, number, true?][]> = {
   'parallax-relay': [['hp', .1], ['flare', .1]],
   'fracture-reservoir': [['capacity', .4]],
   'prism-splinter-socket': [['gauge-gain', .075], ['skill-efficiency', .05]],
-  'precision-escapement': [['direct', .025]],
-  'fieldbrace-coupler': [['direct', .125]],
+  // Crit step (D-493, 2026-11-20): real Critical Rate (points) and Critical Damage replace the C9 conversion.
+  'precision-escapement': [['crit-damage', .1]],
+  'fieldbrace-coupler': [['crit-rate', .25]],
   'reserve-torque-crank': [['capacity', .25], ['gauge-gain', .1]],
   'crosspin-governor': [['skill-power', .4]],
   'aegis-capacitor': [['hp', .15], ['defense', .15]],
   'breach-pendulum': [['enemy-defense', .1]],
-  'coilfeed-ratchet': [['skill-efficiency', .08], ['skill-power', .08], ['direct', .04]],
+  'coilfeed-ratchet': [['skill-efficiency', .08], ['skill-power', .08], ['crit-rate', .08]],
   'duplex-heart': [['ally-heal-self', .05]],
-  'falcon-sight': [['hp', .09], ['direct', .125]],
+  'falcon-sight': [['hp', .09], ['crit-rate', .25]],
   'glassroot-gimbal': [['health-skill-power', .05]],
-  'hammerbalance-link': [['attack', .17], ['direct', .0375]],
+  'hammerbalance-link': [['attack', .17], ['crit-damage', .15]],
   'lifeline-flywheel': [['drain', .1]],
   'opal-indexer': [['debuff-power', .75], ['debuff-duration', 1, true]],
   'resonance-crucible': [['defense', .15], ['hp', .1], ['skill-duration', 1, true]],
@@ -35,7 +36,7 @@ const approved: Record<string, [string, number, true?][]> = {
   'spearwheel-engine': [['skill-pierce', .1]],
   'springwell-pump': [['restore-power', .2]],
   'twinpulse-bellows': [['twin-charge', 7]],
-  'wardglass-transformer': [['direct', .0875], ['defense', -.07, true]],
+  'wardglass-transformer': [['crit-damage', .35], ['defense', -.07, true]],
 };
 
 function gear(rank: number, ...ids: ConduitId[]): RadiantGear {
@@ -69,11 +70,13 @@ describe('D-493 B1 restoration: approved designs', () => {
     expect(radiantConduitPrimitives({ id: 'crosspin-governor', rank: 5 })[0].amount).toBeCloseTo(.6);
     expect(radiantConduitPrimitives({ id: 'opal-indexer', rank: 5 })[1]).toEqual({ kind: 'debuff-duration', amount: 1, fixed: true });
     expect(radiantConduitPrimitives({ id: 'wardglass-transformer', rank: 5 })[1].amount).toBe(-.07);
-    expect(radiantConduitPrimitives({ id: 'wardglass-transformer', rank: 5 })[0].amount).toBeCloseTo(.13125);
+    expect(radiantConduitPrimitives({ id: 'wardglass-transformer', rank: 5 })[0].amount).toBeCloseTo(.525);
   });
   it('writes exact tooltips for the new effects', () => {
     expect(radiantConduitEffectText('wardglass-transformer')).toBe(
-      'Normal Attacks, skills and Convergent Light deal 8.75% more direct damage. Defense decreases by 7%.');
+      "Critical Damage +35% (multiplies this bearer's base Critical Damage). Defense decreases by 7%.");
+    expect(radiantConduitEffectText('fieldbrace-coupler')).toBe(
+      'Critical Rate +25 percentage points on Normal Attacks, skills, Convergent Light, signature strikes and Burn.');
     expect(radiantConduitEffectText('fracture-reservoir')).toContain('Luminosity capacity increases by 40% above the Convergent Light cost');
     expect(radiantConduitEffectText('glassroot-gimbal')).toBe(
       "Skill Power increases by 5% for every full 450 of this bearer's maximum Health.");
@@ -153,11 +156,6 @@ describe('D-493 B1 restoration: Luminosity', () => {
 describe('D-493 B1 restoration: damage and Defense', () => {
   const normalDamage = (squad: [RadiantBearerId, ConduitId[]?][]) =>
     damageTo(act(fixture(squad), { type: 'normal', bearerId: squad[0][0], targetId: 'enemy' }).events, 'normal');
-  it('direct-damage bonuses join the additive layer for Normal Attacks and skills (C9, C11)', () => {
-    expect(normalDamage([['ember', ['fieldbrace-coupler']]])).toBeGreaterThan(normalDamage([['ember']]));
-    const cast = (ids: ConduitId[]) => damageTo(skill(fixture([['ember', ids]]), 'ember', 2).events, 'skill');
-    expect(cast(['fieldbrace-coupler'])).toBeGreaterThan(cast([]));
-  });
   it('Spearwheel Engine ignores Defense on skills only', () => {
     expect(normalDamage([['ember', ['spearwheel-engine']]])).toBe(normalDamage([['ember']]));
     const cast = (ids: ConduitId[]) => damageTo(skill(fixture([['ember', ids]]), 'ember', 2).events, 'skill');

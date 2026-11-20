@@ -158,6 +158,27 @@ const bearerTuning: Record<RadiantBearerId, {
     leader: 'Fractalized Incision', leaderStat: 'attack', leaderBonus: .14, family: 'Glass Meridian' },
 };
 
+/** D-493 crit step: base Critical Rate (fraction) and Critical Damage (multiplier) per bearer, the pre-Radiant
+ * values. Fixed: no level, form or rank growth. A critical hit multiplies direct damage by `damage`. */
+export interface RadiantCriticalStats { rate: number; damage: number }
+export const radiantCriticalStats: Readonly<Record<RadiantBearerId, RadiantCriticalStats>> = {
+  ember: { rate: .15, damage: 1.5 }, tide: { rate: .1, damage: 1.5 }, sprout: { rate: .2, damage: 1.5 },
+  rosetta: { rate: .2, damage: 1.6 }, thornia: { rate: .1, damage: 1.5 }, crinso: { rate: .25, damage: 1.7 },
+  atmoso: { rate: .2, damage: 1.6 }, aurora: { rate: .12, damage: 1.5 }, bliss: { rate: .25, damage: 1.7 },
+  bruno: { rate: .08, damage: 1.5 }, disciple: { rate: .12, damage: 1.5 }, elise: { rate: .25, damage: 1.7 },
+  razor: { rate: .1, damage: 1.5 }, maerion: { rate: .12, damage: 1.5 }, caevren: { rate: .1, damage: 1.5 },
+  vespera: { rate: .12, damage: 1.5 }, ilyss: { rate: .12, damage: 1.5 }, asteriel: { rate: .12, damage: 1.5 },
+  serapha: { rate: .12, damage: 1.5 }, nerithe: { rate: .18, damage: 1.6 }, orvella: { rate: .1, damage: 1.5 },
+  vaelor: { rate: .22, damage: 1.65 }, caldrex: { rate: .1, damage: 1.5 }, solenne: { rate: .12, damage: 1.5 },
+  myrthen: { rate: .22, damage: 1.65 }, neralis: { rate: .12, damage: 1.5 }, varkhel: { rate: .1, damage: 1.5 },
+  seravelle: { rate: .14, damage: 1.5 }, velmira: { rate: .23, damage: 1.65 }, ozriel: { rate: .1, damage: 1.5 },
+  ilvaris: { rate: .15, damage: 1.55 }, kaelith: { rate: .22, damage: 1.7 },
+};
+/** Every enemy: flat Critical Rate and Critical Damage (owner, 2026-11-20). */
+export const radiantEnemyCritical: RadiantCriticalStats = { rate: .1, damage: 1.5 };
+/** Above 100% Critical Rate, a second roll against the excess makes an Elemental Crit: Critical Damage x this. */
+export const radiantElementalCritFactor = 1.5;
+
 export const releasedRadiantIds = starters.filter(entry => characterReleased(entry.id)).map(entry => entry.id) as RadiantBearerId[];
 function kitFor(id: RadiantBearerId): RadiantKitDef {
   if (!Object.hasOwn(radiantKits, id)) throw new Error(`Missing radiant kit for released Element-Bearer: ${id}`);

@@ -166,12 +166,13 @@ export function radiantAccountLoadouts(account: Account): RadiantLoadout[] {
 }
 function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun['calibration'],
   loadouts: RadiantLoadout[], entropy: ReturnType<RadiantRunAuthority['entry']>, encounter = 1,
-  continuation?: RadiantContinuation): FrozenRadiantRun {
+  continuation?: RadiantContinuation, criticalHits = true): FrozenRadiantRun {
   if (!uuid.test(entropy.runId)) invalid('Invalid authority run ID.');
   [entropy.encounterSeed, entropy.chargeSeed, entropy.targetSeed].forEach(seed);
   const enemies = adaptRadiantPressureEncounter(anchor, entropy.encounterSeed,
     radiantCalibration(calibration));
-  const initial = createRadiantCombat(loadouts, enemies, entropy.chargeSeed);
+  // D-493 crit step: encounters saved before critical hits rebuild without the crit stream (and replay without crits).
+  const initial = createRadiantCombat(loadouts, enemies, entropy.chargeSeed, criticalHits);
   if (continuation) {
     const previous = continuation.state;
     if (previous.phase !== 'victory' || !previous.bearers.some(member => member.hp > 0))
@@ -478,9 +479,10 @@ export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
     }
     const expected = initialize(run.anchor, run.calibration, run.initial.bearers.map(unit => unit.loadout),
       { runId: run.id, encounterSeed: run.encounterSeed, chargeSeed: run.initialChargeSeed,
-        targetSeed: run.initialTargetSeed }, run.encounter, continuation);
+        targetSeed: run.initialTargetSeed }, run.encounter, continuation, run.initial.critSeed !== undefined);
     if (canonical(expected.enemies) !== canonical(run.enemies) ||
       canonical(expected.initial) !== canonical(run.initial) ||
+      (run.state.critSeed === undefined) !== (run.initial.critSeed === undefined) ||
       run.state.bearers.length !== run.initial.bearers.length ||
       run.state.bearers.some((unit, i) => canonical(unit.loadout) !== canonical(run.initial.bearers[i].loadout)) ||
       run.state.enemies.length !== run.enemies.length ||
@@ -548,6 +550,8 @@ function validEvent(value: unknown): boolean {
   if (value.type === 'status' && !['attack-up', 'defense-up', 'reduction', 'gain-up', 'hot', 'weaken', 'expose', 'burn',
     'weaken-removed'].includes(String(value.status))) return false;
   if (value.type === 'status' && value.clockOnly !== undefined && value.clockOnly !== true) return false;
+  // D-493 crit step: optional critical-hit flag on damage; journals saved before it have none.
+  if (value.critical !== undefined && (value.type !== 'damage' || !['critical', 'elemental'].includes(String(value.critical)))) return false;
   if (value.type === 'skill' && value.slot !== 1 && value.slot !== 2) return false;
   if (value.type === 'signature' && (!radiantSignatureOps.has(String(value.op)) ||
     (value.holderId !== undefined && !validId(value.holderId)))) return false;

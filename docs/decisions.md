@@ -56,6 +56,22 @@
   other streams), which hits can crit (Normal Attacks, skills, Convergent
   Light; Burn and Conduit-generated strikes), presentation, and the exact
   Exposure-to-Critical-Up kit translations.
+- **Crit step plan answers (owner, 2026-11-20, Plan mode):** Critical Up stays
+  an enemy mark (hits on it gain Critical Rate); pre-Radiant crit scope
+  (Normal Attacks, skills, Convergent Light, kit signature strikes and kit Burn
+  ticks; Conduit-generated damage never; one roll per target per action);
+  every enemy 10% / 1.5x; Elemental Crit restored (second roll above 100%,
+  x1.5).
+- **Crit step implemented (unreleased, 2026-11-20).** Separate `critSeed`
+  stream; 18 built rows converted to real crit stats and triggers
+  ([combat spec](combat.md#critical-hits-and-critical-up-d-493-crit-step-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): crit stats are fixed (no
+  level/form/rank growth); Critical Up converts at 2 points of Critical Rate
+  per old Exposure point (Golden Thorn Volley +30, Rose Beyond the Sun +60,
+  Denial of Fate +50, Reaper's Claim +24); encounters saved before the step
+  finish without crits under the old Exposure rule (no version bump, nothing
+  retired); no extra crit hit-stop (R2); the old x1.5 Last Flare crit-chance
+  bonus is not restored.
 - **Save compatibility is a standing acceptance check (owner, 2026-11-20).**
   Every batch proves that saves and saved encounters written before it still
   load and can start a battle (new event types and state fields must pass the

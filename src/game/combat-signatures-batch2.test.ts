@@ -12,7 +12,8 @@ function loadout(starter: RadiantBearerId): RadiantLoadout {
 function battle(starters: RadiantBearerId[], enemies = 1, hp = 1000000): RadiantCombatState {
   return createRadiantCombat(starters.map(loadout), Array.from({ length: enemies }, (_, index) => ({
     elementId: null, id: `enemy-${index}`, stats: { hp, attack: 20, defense: 0, recovery: 0 }, currencyBudget: 10,
-  })), 0);
+  // Signature arithmetic is checked without critical hits (critical-hits.test.ts covers crits).
+  })), 0, false);
 }
 function act(state: RadiantCombatState, action: RadiantCombatAction) {
   return applyRadiantCombatAction(state, action);

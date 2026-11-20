@@ -11,20 +11,21 @@ import { radiantFlareCost } from './combat-gauge';
 
 /** D-493 batch B2 (Legendary), restore text at +0 (phase4-conduit-restoration.md). */
 const approved: Record<string, [string, number][]> = {
-  'astral-prism': [['hp', .1], ['direct', .2125]],
+  // Crit step (D-493, 2026-11-20): real Critical Rate and Critical Damage replace the C9/C10 conversion.
+  'astral-prism': [['hp', .1], ['crit-rate', .3], ['crit-damage', .25]],
   'citadel-spine': [['attack', .15], ['gauge-gain', .07], ['ally-guard', .35]],
   'execution-orrery': [['skill2-power', .99], ['skill2-efficiency', .1]],
   'granite-hourglass': [['phase-shield', .3]],
-  'horizon-heartcase': [['flare', .1375], ['reserve-health', .2], ['reserve-defense', .1]],
+  'horizon-heartcase': [['flare-crit-damage', .35], ['flare-crit-rate', .1], ['reserve-health', .2], ['reserve-defense', .1]],
   'immortal-vessel': [['hp', .5], ['defense', .15]],
-  'judgment-lens': [['skill-direct', .125], ['support-power', .5]],
+  'judgment-lens': [['skill-crit-damage', .5], ['support-power', .5]],
   'meridian-inverter': [['restore-charge', 4]],
   'nullsong-transmission': [['gamble-power', .75]],
   'pale-bulwark-diadem': [['shield-guard', .5]],
   'siege-cantilever': [['aoe-power', 1.5]],
   'starvein-conductor': [['prism-efficiency', .35], ['prism-gain', .1]],
   'stasis-reliquary': [['last-block', .1]],
-  'verdict-caliper': [['exposed-heal', .25]],
+  'verdict-caliper': [['crit-heal', .25]],
   'worldbreaker-drive': [['flare-power', .99], ['direct', .65]],
 };
 
@@ -198,20 +199,21 @@ describe('D-493 B2 restoration: RNG, Luminosity and sustain', () => {
     expect(grants.map(event => event.bearerId).sort()).toEqual(['ember', 'sprout', 'tide']);
     expect(result.state.gauge.members.slice(1).map(entry => entry.charge)).toEqual([4, 4]);
   });
-  it('Verdict Caliper heals 25% of maximum Health once per action against an enemy with Exposure', () => {
-    const heals = (exposed: boolean) => {
+  it('Verdict Caliper heals 25% of maximum Health once per action that lands a critical hit', () => {
+    const heals = (critical: boolean) => {
       const state = fixture([['ember', ['verdict-caliper']]]);
       state.bearers[0].hp = 10;
-      if (exposed) state.enemies[0].debuffs.push({ category: 'expose', source: { kind: 'skill', bearerId: 'ember' }, magnitude: .2, remaining: 2 });
+      // Critical Up at its cap (+160 points) makes the hit certain to crit; without the crit stream no hit can crit.
+      if (critical) state.enemies[0].debuffs.push({ category: 'expose', source: { kind: 'skill', bearerId: 'ember' }, magnitude: .8, remaining: 2 });
+      else delete state.critSeed;
       return of(act(state, { type: 'normal', bearerId: 'ember', targetId: 'enemy' }).events, 'heal').filter(event => event.source.kind === 'gear');
     };
     expect(heals(false)).toEqual([]);
     expect(heals(true)).toEqual([expect.objectContaining({ offered: Math.round(.25 * fixture([['ember']]).bearers[0].stats.hp) })]);
   });
-  it('Worldbreaker Drive and Astral Prism add direct damage to Normal Attacks', () => {
+  it('Worldbreaker Drive adds direct damage to Normal Attacks', () => {
     const hit = (ids: ConduitId[]) =>
       of(act(fixture([['ember', ids]]), { type: 'normal', bearerId: 'ember', targetId: 'enemy' }).events, 'damage')[0].offered;
-    expect(hit(['worldbreaker-drive'])).toBeGreaterThan(hit(['astral-prism']));
-    expect(hit(['astral-prism'])).toBeGreaterThan(hit([]));
+    expect(hit(['worldbreaker-drive'])).toBeGreaterThan(hit([]));
   });
 });

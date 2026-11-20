@@ -3,7 +3,7 @@ import { getStarter } from '../content/starters';
 import { radiantAttunement } from '../content/combat-kits';
 import { grantRadiantDrop, personalChargeMaximum, personalChargeUnit, radiantChargeRules, radiantFlareCost, radiantSkillCost,
   readyFlare, readySkill } from '../game/combat-gauge';
-import { radiantSkillStats, type RadiantCombatState } from '../game/combat-engine';
+import { radiantSkillStats, type RadiantCombatState, type RadiantCritical } from '../game/combat-engine';
 import { radiantKits, radiantSkillAcceptsTarget, radiantSkillCosts, type RadiantKitId, type RadiantSkillSlot } from '../content/radiant-kits';
 import { abilityIcon } from './ability-icon';
 import { radiantSkillName, radiantSkillText, radiantFlareText } from './kit-text';
@@ -312,7 +312,7 @@ export class RadiantBattleView {
           <p data-radiant-no-effects>No active effects.</p></section>`).join('')}</div>
         <p>Tap members in any order: each action resolves at once on this device. End Turn skips members who have not acted; the enemy phase follows once every living member has acted.
         Prismatica gathered during the encounter fills the Haul, which is saved with your rewards when the encounter ends (victory or defeat). Leaving mid-encounter forfeits that encounter’s unsaved Haul; rewards saved from earlier encounters are kept.</p>
-        <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
+        <p>Normal Attack and Defense each use this member’s action for the round. Hits can land critical hits (see Critical Hit in the glossary).
         A damaging Normal hit generates ${radiantChargeRules.normal} Luminosity for its attacker and a separate 1 for each other living same-element ally.
         Surviving each direct incoming hit on Health or Shields grants ${radiantChargeRules.incomingAttack} Luminosity to the recipient only.
         Personal capacity is 100, or 200 from form 4. Convergent Light, defeats, Defense, new rounds, generated and periodic damage grant no base personal Luminosity.</p>
@@ -1704,13 +1704,15 @@ export class RadiantBattleView {
     };
     const enemyElement = (id: string) => state.enemies.find(enemy => enemy.id === id)?.elementId ?? null;
     const enemies = new Set(state.enemies.map(enemy => enemy.id));
-    const show = (targetId: string, text: string, kind: string, tag?: string) => {
+    // D-493 crit step: critical hits get a larger, gold-rimmed number, a sharper pop and a 'Critical' tag.
+    const show = (targetId: string, text: string, kind: string, tag?: string, crit?: RadiantCritical) => {
       const anchor = this.host.querySelector(`[data-radiant-art="${targetId}"]`);
       if (!anchor) return;
       const box = anchor.getBoundingClientRect();
       const stack = this.numberStacks.get(targetId) ?? 0;
       this.numberStacks.set(targetId, stack + 1);
-      const node = this.spawn(`radiant-number is-${kind}${compact ? ' is-compact' : ''}`,
+      const critClass = crit === 'elemental' ? ' is-crit is-elemental-crit' : crit ? ' is-crit' : '';
+      const node = this.spawn(`radiant-number is-${kind}${critClass}${compact ? ' is-compact' : ''}`,
         box.left + box.width / 2 + (random() - .5) * box.width * .3, box.top + box.height * .32 - (stack % 5) * (compact ? 16 : 22));
       node.innerHTML = `${tag ? `<small>${escape(tag)}</small>` : ''}<b>${escape(text)}</b>`;
       const release = () => {
@@ -1719,12 +1721,12 @@ export class RadiantBattleView {
       };
       if (reducedMotion()) { node.classList.add('is-static'); this.staticCue(node, staticImpactMs, release); return; }
       floats.push(this.animate(node, [
-        { opacity: 0, transform: 'translate(-50%, 8px) scale(.6)', easing: 'cubic-bezier(.2,.9,.3,1.3)' },
-        { opacity: 1, transform: 'translate(-50%, -10px) scale(1.2)', offset: .14, easing: 'ease-out' },
+        { opacity: 0, transform: `translate(-50%, 8px) scale(${crit ? .4 : .6})`, easing: 'cubic-bezier(.2,.9,.3,1.3)' },
+        { opacity: 1, transform: `translate(-50%, -10px) scale(${crit === 'elemental' ? 1.55 : crit ? 1.4 : 1.2})`, offset: .14, easing: 'ease-out' },
         { opacity: 1, transform: 'translate(-50%, -16px) scale(1)', offset: .3, easing: 'linear' },
         { opacity: 1, transform: 'translate(-50%, -30px) scale(1)', offset: .78, easing: 'ease-in' },
         { opacity: 0, transform: 'translate(-50%, -44px) scale(.92)' },
-      ], kind === 'weak' ? 1000 : 860, { easing: 'linear' }).finally(() => {
+      ], crit ? 1150 : kind === 'weak' ? 1000 : 860, { easing: 'linear' }).finally(() => {
         release();
         node.dispatchEvent(new Event('radiant-fx-done'));
       }));
@@ -1734,10 +1736,13 @@ export class RadiantBattleView {
         const attacker = event.source.kind === 'enemy' ? enemyElement(event.source.enemyId) : bearerElement(event.source.bearerId);
         const defender = enemies.has(event.targetId) ? enemyElement(event.targetId) : bearerElement(event.targetId);
         const weak = event.origin === 'direct' && elementDamageMultiplier(attacker, defender) > 1;
+        const critTag = event.critical === 'elemental' ? 'Elemental Crit' : event.critical ? 'Critical' : undefined;
+        const tag = [critTag, weak ? 'Weakness' : undefined].filter(Boolean).join(' · ') || undefined;
         if (event.healthLoss > 0) show(event.targetId, amountText(event.healthLoss),
           !enemies.has(event.targetId) ? 'hurt' : event.origin === 'periodic' ? 'periodic' : weak ? 'weak' : 'damage',
-          weak ? 'Weakness' : undefined);
-        if (event.absorbed > 0) show(event.targetId, `Shield −${amountText(event.absorbed)}`, 'absorb');
+          tag, event.critical);
+        else if (event.critical && event.absorbed > 0) show(event.targetId, `Shield −${amountText(event.absorbed)}`, 'absorb', critTag, event.critical);
+        if (event.absorbed > 0 && !(event.critical && event.healthLoss === 0)) show(event.targetId, `Shield −${amountText(event.absorbed)}`, 'absorb');
       } else if (event.type === 'heal' && event.effective > 0) show(event.targetId, `+${amountText(event.effective)}`, 'heal');
       else if (event.type === 'shield' && event.amount > 0) show(event.targetId, `Shield +${amountText(event.amount)}`, 'shield');
     }

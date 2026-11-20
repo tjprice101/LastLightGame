@@ -786,20 +786,23 @@ describe('Passives, Masters and Leaders under the Phase 3 kits', () => {
     expect(state.gauge.members[0].charge).toBe(0);
   });
 
-  it('lets Rosetta\'s Convergent Light Expose its target for a later squad strike (Skill Power scales Expose)', () => {
+  it('lets Rosetta\'s Convergent Light give its target Critical Up (Skill Power scales it; 2 points of Critical Rate per point)', () => {
     let state = charged(createRadiantCombat([
       loadout('rosetta', { id: 'rosetta' }), loadout('ember', { id: 'ember' }),
     ], [{ elementId: null, id: 'enemy', stats: { hp: 10000, attack: 10, defense: 10, recovery: 0 }, currencyBudget: 100 }], 0), 'sparkling', 'rosetta');
     const marked = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'rosetta', targetId: 'enemy' });
-    // Sparkling 70% x Attacker Skill Power 1.5 x 30% = 31.5% Expose for 3 turns.
+    // Sparkling 70% x Attacker Skill Power 1.5 x 30% = 31.5 stored (+63 points Critical Rate) for 3 turns.
     const expose = marked.state.enemies[0].debuffs.find(effect => effect.category === 'expose')!;
     expect(expose).toMatchObject({ source: { kind: 'flare', bearerId: 'rosetta' }, remaining: 3 });
     expect(expose.magnitude).toBeCloseTo(.315);
     state = nextRound(marked.state);
     const attack = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ember', targetId: 'enemy' });
-    expect(attack.events.find(event => event.type === 'damage')).toMatchObject({
-      offered: radiantDirectDamage(effectiveRadiantStats(state, 'ember').attack, 10, 1, 1 + expose.magnitude),
-    });
+    const hit = attack.events.find(event => event.type === 'damage');
+    // Critical Up no longer raises damage taken: the hit is the plain amount, or a critical hit at Infernis's 1.5x.
+    const attackStat = effectiveRadiantStats(state, 'ember').attack;
+    expect(hit?.type).toBe('damage');
+    if (hit?.type === 'damage')
+      expect(hit.offered).toBe(radiantDirectDamage(attackStat, 10, 1, hit.critical ? 1.5 : 1));
     expect(state.enemies[0].debuffs.find(effect => effect.category === 'expose')!.remaining).toBe(2);
   });
 

@@ -4,7 +4,7 @@ import { radiantConduitPrimitives, radiantConduits, radiantOmnicRules, type Radi
 import { radiantConduitEffectText } from '../content/conduit-effect-text';
 import { type RadiantBearerId, type RadiantLoadout } from '../content/combat-kits';
 import {
-  applyRadiantCombatAction, createRadiantCombat, effectiveRadiantStats, radiantLoadoutSkillStats, radiantMaximumHealth,
+  applyRadiantCombatAction, createRadiantCombat, effectiveRadiantStats, radiantCriticalRate, radiantLoadoutSkillStats, radiantMaximumHealth,
   radiantSkillStats, validateRadiantCombat, type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState,
 } from './combat-engine';
 import { radiantFlareCost } from './combat-gauge';
@@ -17,16 +17,17 @@ const approved: Record<string, [string, number][]> = {
   'tectonic-faultkeeper-loom': [['defense', .15], ['skill-power', .55], ['ally-defense-share', .25]],
   'atmospheric-griffin-turbine': [['attack', .198], ['team-charge', 10]],
   'tranquilitic-kirin-cradle': [['defense', .13], ['attack', .4], ['defense-heal', 1]],
-  'aquatic-leviathan-pump': [['defense', .09], ['direct', .125], ['shield-charge', 5]],
-  'ominous-nightglass-archive': [['squad-attack', .4], ['skill-mark', .125]],
+  // Crit step (D-493, 2026-11-20): real Critical Rate and Critical Damage replace the C9/C10 conversion.
+  'aquatic-leviathan-pump': [['defense', .09], ['crit-rate', .25], ['shield-charge', 5]],
+  'ominous-nightglass-archive': [['squad-attack', .4], ['skill-mark', .5]],
   'chaotic-ouroboros-core': [['capacity', .4], ['flare-shield', .1], ['squad-hp', .11]],
-  'luminous-seraph-mirror': [['first-heal', .06], ['squad-hp', .13]],
+  'luminous-seraph-mirror': [['first-crit-heal', .06], ['squad-hp', .13]],
   'tranquilitic-stillhour-carillon': [['hp', .24], ['gauge-gain', .3], ['flare-round-heal', .08], ['flare-round-charge', 10]],
   'aquatic-undertide-chronometer': [['defense', .14], ['skill-efficiency', .3], ['weaken-duration', 1], ['weaken-ally-efficiency', .15]],
   'efflorescent-worldtree-heart': [['hp', .28], ['skill-power', .35], ['overheal-shield', .6]],
   'clearwater-manifold': [['oceanic-power', .35]],
-  'aegis-return-spring': [['defense', .18], ['direct', .1], ['skill-shield-direct', .1], ['skill-shield-brace', .3]],
-  'flare-focusing-iris': [['attack', .11], ['burn-duration', 1], ['burn-skill-power', .8], ['burn-ally-direct', .1]],
+  'aegis-return-spring': [['defense', .18], ['crit-damage', .4], ['skill-shield-crit', .2], ['skill-shield-brace', .3]],
+  'flare-focusing-iris': [['attack', .11], ['burn-duration', 1], ['burn-skill-power', .8], ['burn-ally-crit', .2]],
   'cinder-metering-nozzle': [['attack', .45], ['burn-transfer', 1]],
   'firstlight-cam': [['hp', .07], ['skill-power', .45], ['squad-gain', .5], ['squad-defense', .08]],
   'tension-governor': [['skill-efficiency', .25], ['squad-hp', .11], ['weaken-guard', .3], ['weaken-heal', .06]],
@@ -36,9 +37,9 @@ const approved: Record<string, [string, number][]> = {
   'infernic-pyre-census': [['hp', .05], ['skill-power', .55], ['census-power', .2]],
   'ruinselect-prism': [['ruin-power', .55], ['ruin-defense', .04]],
   'oceanic-shared-tide-pump': [['hp', .13], ['skill-efficiency', .3], ['shield-echo', .5]],
-  'pulse-trigger-pawl': [['skill-power', .65], ['direct', .2], ['first-skill-charge', 8]],
-  'solace-anchor': [['attack', .16], ['direct', .0875], ['first-turn-attack', .2]],
-  'pressurecrest-governor': [['defense', .17], ['direct', .15], ['first-skill-shield', .15]],
+  'pulse-trigger-pawl': [['skill-power', .65], ['crit-rate', .4], ['first-crit-skill-charge', 8]],
+  'solace-anchor': [['attack', .16], ['crit-damage', .35], ['first-turn-attack', .2]],
+  'pressurecrest-governor': [['defense', .17], ['crit-rate', .3], ['first-crit-skill-shield', .15]],
   'botanic-graft-covenant': [['hp', .22], ['skill-efficiency', .2], ['low-heal-power', .5], ['lift-guard', .3]],
   'mending-valve': [['attack', .17], ['skill-power', .4], ['skill-drain-ally', .15]],
 };
@@ -117,16 +118,20 @@ describe('D-493 B3a: squad auras and dynamic stats', () => {
     // Healing cannot raise Health above the lowered maximum; the extra stays until lost.
     expect(unit(fallen, 'tide').hp).toBeGreaterThan(radiantMaximumHealth(fallen, 'tide'));
   });
-  it('Nightglass Archive raises squad Attack and marks enemies for other allies\' Normal Attacks (2 turns)', () => {
+  it('Nightglass Archive raises squad Attack and marks enemies for other allies\' Normal Attacks (2 turns, +50% Critical Damage)', () => {
     const base = fixture([['velmira'], ['tide']]);
     const state = fixture([['velmira', ['ominous-nightglass-archive']], ['tide']]);
     expect(effectiveRadiantStats(state, 'tide').attack).toBeCloseTo(effectiveRadiantStats(base, 'tide').attack * 1.4);
     const marked = skill(state, 'velmira', 1, 'enemy').state;
     expect(marked.enemies[0].marks).toEqual([{ casterId: 'velmira', remaining: 2 }]);
+    // Critical Up of .45 (+90 points) lifts Tizu's 10% to exactly 100%: every hit crits, never Elemental.
+    marked.enemies[0].debuffs = [{ category: 'expose', source: { kind: 'skill', bearerId: 'velmira' }, magnitude: .45, remaining: 2 }];
+    expect(radiantCriticalRate(marked, 'tide', 'enemy')).toBeCloseTo(1);
     const unmarked = structuredClone(marked);
     delete unmarked.enemies[0].marks;
     const hit = (s: RadiantCombatState) => directTo(act(s, { type: 'normal', bearerId: 'tide', targetId: 'enemy' }).events, 'enemy');
     expect(hit(marked)).toBeGreaterThan(hit(unmarked));
+    marked.enemies[0].debuffs = [];
     const once = enemyPhase(marked, ['tide']).round.state;
     expect(once.enemies[0].marks).toEqual([{ casterId: 'velmira', remaining: 1 }]);
     const twice = enemyPhase(once, ['tide']).round.state;
@@ -190,7 +195,7 @@ describe('D-493 B3a: per-target hooks', () => {
     expect(damage(bySelf)).toBeGreaterThan(plain);
     expect(damage(byAlly)).toBeGreaterThan(damage(bySelf));
   });
-  it('Ember Iris: Burn skills gain Skill Power, Burn lasts 1 more turn and allies hit burning enemies harder', () => {
+  it('Ember Iris: Burn skills gain Skill Power, Burn lasts 1 more turn and allies gain Critical Rate on burning enemies', () => {
     const base = fixture([['ember'], ['tide']]);
     const state = fixture([['ember', ['flare-focusing-iris']], ['tide']]);
     expect(radiantSkillStats(state, 'ember', 1).skillPower - radiantSkillStats(base, 'ember', 1).skillPower).toBeCloseTo(.8);
@@ -199,18 +204,26 @@ describe('D-493 B3a: per-target hooks', () => {
     expect(burnTurns(structuredClone(state))).toBe(burnTurns(structuredClone(base)) + 1);
     const burning = skill(state, 'ember', 1, 'enemy').state, clean = structuredClone(burning);
     clean.enemies[0].debuffs = [];
-    const hit = (s: RadiantCombatState) => directTo(act(s, { type: 'normal', bearerId: 'tide', targetId: 'enemy' }).events, 'enemy');
-    expect(hit(burning) / hit(clean)).toBeCloseTo(1.1, 1);
+    expect(radiantCriticalRate(burning, 'tide', 'enemy') - radiantCriticalRate(clean, 'tide', 'enemy')).toBeCloseTo(.2);
+    // The wearer's own hits on its Burn gain nothing.
+    expect(radiantCriticalRate(burning, 'ember', 'enemy')).toBeCloseTo(radiantCriticalRate(clean, 'ember', 'enemy'));
   });
-  it('Aegis Covenant Crown: holders of the wearer\'s skill Shield deal more damage and take less from heavy hits', () => {
-    const state = fixture([['solenne', ['aegis-return-spring']], ['rosetta']], 0, 3000);
-    const shielded = skill(state, 'solenne', 2).state;
-    const bare = structuredClone(shielded);
-    unit(bare, 'rosetta').shields = [];
-    const hit = (s: RadiantCombatState) => directTo(act(s, { type: 'normal', bearerId: 'rosetta', targetId: 'enemy' }).events, 'enemy');
-    expect(hit(shielded)).toBeGreaterThan(hit(bare));
-    const offered = (s: RadiantCombatState) => directTo(enemyPhase(s, ['rosetta'], 3).hit.events, 'rosetta');
-    expect(offered(structuredClone(shielded))).toBeLessThan(offered(structuredClone(bare)));
+  it('Aegis Covenant Crown: holders of the wearer\'s skill Shield gain Critical Rate and take less from enemy critical hits', () => {
+    // Find a seed whose first enemy hit is a critical hit (shielded and bare copies share the crit stream).
+    for (let seed = 0; seed < 200; seed++) {
+      const state = fixture([['solenne', ['aegis-return-spring']], ['rosetta']], seed, 3000);
+      const shielded = skill(state, 'solenne', 2).state;
+      const bare = structuredClone(shielded);
+      unit(bare, 'rosetta').shields = [];
+      expect(radiantCriticalRate(shielded, 'rosetta', 'enemy') - radiantCriticalRate(bare, 'rosetta', 'enemy')).toBeCloseTo(.2);
+      const hit = (s: RadiantCombatState) => of(enemyPhase(s, ['rosetta'], 3).hit.events, 'damage').filter(event => event.targetId === 'rosetta');
+      const guarded = hit(structuredClone(shielded)), open = hit(structuredClone(bare));
+      if (!open[0]?.critical) continue;
+      expect(guarded[0].critical).toBe(open[0].critical);
+      expect(guarded.reduce((sum, event) => sum + event.offered, 0)).toBeLessThan(open.reduce((sum, event) => sum + event.offered, 0));
+      return;
+    }
+    throw new Error('No seed produced an enemy critical hit.');
   });
   it('Undertide Chronometer: Weaken lasts 1 more turn; others pay less for damaging skills on that enemy', () => {
     const base = fixture([['tide'], ['nerithe']]);
@@ -262,17 +275,27 @@ describe('D-493 B3a: triggers', () => {
     };
     expect(run(['aquatic-leviathan-pump']) - run([])).toBe(5);
   });
-  it('Seraph Mirror, Sky Sovereign and Tempest Shelter fire on the first damaging action', () => {
-    const seraph = fixture([['rosetta', ['luminous-seraph-mirror']], ['tide']]);
-    unit(seraph, 'tide').hp = 100;
-    const healed = act(seraph, { type: 'normal', bearerId: 'rosetta', targetId: 'enemy' });
-    expect(gearEvents(healed.events, 'luminous-seraph-mirror').filter(event => event.type === 'heal' && event.targetId === 'tide')).toHaveLength(1);
-    const sky = skill(fixture([['atmoso', ['pulse-trigger-pawl']], ['tide']]), 'atmoso', 1, 'enemy');
-    expect(gauge(sky.state, 'tide').charge).toBe(8);
-    const shelter = fixture([['atmoso', ['pressurecrest-governor']], ['tide']]);
-    unit(shelter, 'tide').hp = 100;
-    const shielded = skill(shelter, 'atmoso', 1, 'enemy');
-    expect(gearEvents(shielded.events, 'pressurecrest-governor').filter(event => event.type === 'shield' && event.targetId === 'tide')).toHaveLength(1);
+  it('Seraph Mirror, Sky Sovereign and Tempest Shelter fire on the first action that lands a critical hit', () => {
+    // Critical Up at its cap (+160 points) makes every hit on `enemy` a critical hit; without the crit stream none is.
+    const certain = (state: RadiantCombatState, critical: boolean) => {
+      if (critical) state.enemies[0].debuffs = [{ category: 'expose', source: { kind: 'skill', bearerId: state.bearers[0].loadout.id }, magnitude: .8, remaining: 2 }];
+      else delete state.critSeed;
+      return state;
+    };
+    for (const critical of [true, false]) {
+      const seraph = certain(fixture([['rosetta', ['luminous-seraph-mirror']], ['tide']]), critical);
+      unit(seraph, 'tide').hp = 100;
+      const healed = act(seraph, { type: 'normal', bearerId: 'rosetta', targetId: 'enemy' });
+      expect(gearEvents(healed.events, 'luminous-seraph-mirror').filter(event => event.type === 'heal' && event.targetId === 'tide'))
+        .toHaveLength(critical ? 1 : 0);
+      const sky = skill(certain(fixture([['atmoso', ['pulse-trigger-pawl']], ['tide']]), critical), 'atmoso', 1, 'enemy');
+      expect(gauge(sky.state, 'tide').charge).toBe(critical ? 8 : 0);
+      const shelter = certain(fixture([['atmoso', ['pressurecrest-governor']], ['tide']]), critical);
+      unit(shelter, 'tide').hp = 100;
+      const shielded = skill(shelter, 'atmoso', 1, 'enemy');
+      expect(gearEvents(shielded.events, 'pressurecrest-governor').filter(event => event.type === 'shield' && event.targetId === 'tide'))
+        .toHaveLength(critical ? 1 : 0);
+    }
   });
   it('Stillhour Carillon: the turn after its Convergent Light heals and fills every living ally', () => {
     const state = fixture([['serapha', ['tranquilitic-stillhour-carillon']], ['tide']]);

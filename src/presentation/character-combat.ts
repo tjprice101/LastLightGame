@@ -1,5 +1,5 @@
 import { radiantAttunement, radiantBearerKits, radiantEquipmentAmount, radiantFlarePower, radiantLeaderBonus, radiantMasters, resolveRadiantStarterStats,
-  radiantRoleSkillPower, radiantSupportSquadHeal, radiantTankTargetWeight,
+  radiantRoleSkillPower, radiantSupportSquadHeal, radiantTankTargetWeight, radiantCriticalStats,
   type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
 import type { RadiantSkillSlot } from '../content/radiant-kits';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
@@ -90,7 +90,18 @@ export function radiantStatsPanel(loadout: RadiantLoadout, label = 'Current comb
     const direction = statDirection(base[key], values[key]);
     const modified = direction !== 'unchanged';
     return `<div data-radiant-stat="${key}"><dt>${radiantStatLabels[key]}</dt><dd><strong${modified ? ` class="stat-change stat-change--${direction}"` : ''}>${formatStat(values[key])}</strong>${modified ? `<span class="info-label">Before Conduits: ${formatStat(base[key])}</span>` : ''}</dd></div>`;
-  }).join('')}</dl>`;
+  }).join('')}${radiantCriticalRows(loadout)}</dl>`;
+}
+/** D-493 crit step: Critical Rate (base + Conduit points) and Critical Damage (base x Conduit bonus), always-on parts only. */
+function radiantCriticalRows(loadout: RadiantLoadout): string {
+  const base = radiantCriticalStats[loadout.starter];
+  const rate = base.rate + radiantEquipmentAmount(loadout, 'crit-rate');
+  const damage = base.damage * (1 + radiantEquipmentAmount(loadout, 'crit-damage'));
+  const row = (key: string, label: string, value: string, before: string) =>
+    `<div data-radiant-stat="${key}"><dt>${label}</dt><dd><strong${value !== before ? ' class="stat-change stat-change--increase"' : ''}>${value}</strong>${
+      value !== before ? `<span class="info-label">Before Conduits: ${before}</span>` : ''}</dd></div>`;
+  return row('crit-rate', 'Critical Rate', percent(rate), percent(base.rate)) +
+    row('crit-damage', 'Critical Damage', `×${number(damage)}`, `×${number(base.damage)}`);
 }
 
 /** Same row markup as stat-preview.ts statPreview, over the four combat stats. */
@@ -149,7 +160,7 @@ export function radiantRoleTrait(id: RadiantBearerId): string {
   return `Support: +50% Health, +${percent(radiantRoleSkillPower.Support)} Skill Power. Each skill and Convergent Light also heals all allies (${percent(radiantSupportSquadHeal)} of max Health; not scaled by Skill Power).`;
 }
 
-/** Skill Duration per slot (D-493: Weaken/Exposure/Burn skills may gain extra turns). */
+/** Skill Duration per slot (D-493: Weaken/Critical Up/Burn skills may gain extra turns). */
 function durationText(loadout: RadiantLoadout): string {
   const turns = ([1, 2, 'flare'] as const).map(slot => radiantLoadoutSkillStats(loadout, slot).skillDuration);
   const label = (value: number) => `+${value} turn${value === 1 ? '' : 's'}`;
@@ -247,10 +258,11 @@ export function radiantBasicArticles(loadout: RadiantLoadout): string {
 export function radiantKitGlossary(): string {
   return `<dl class="info-glossary radiant-glossary">
     <div><dt>Turns</dt><dd>Durations count player turns. A timed effect cast this turn counts its first turn at the end of this turn's enemy phase.</dd></div>
-    <div><dt>Categories</dt><dd>Allies hold Attack Up, Defense Up, Damage Reduction, Luminosity Gain Up and Health Over Time; enemies hold Weaken, Expose and Burn. The same category does not stack: the strongest applies and the duration becomes the longer one. Different categories combine. Caps: Attack Up and Defense Up +100%, Damage Reduction 75%, Luminosity Gain Up +100%, Health Over Time 30% of max Health per turn, Weaken 50%, Expose +80%.</dd></div>
+    <div><dt>Categories</dt><dd>Allies hold Attack Up, Defense Up, Damage Reduction, Luminosity Gain Up and Health Over Time; enemies hold Weaken, Critical Up and Burn. The same category does not stack: the strongest applies and the duration becomes the longer one. Different categories combine. Caps: Attack Up and Defense Up +100%, Damage Reduction 75%, Luminosity Gain Up +100%, Health Over Time 30% of max Health per turn, Weaken 50%, Critical Up +160% Critical Rate.</dd></div>
     <div><dt>Burn</dt><dd>Deals damage based on the caster's Attack at the end of each enemy phase, ignoring Defense. No cap.</dd></div>
     <div><dt>Weaken</dt><dd>Lowers the holder's Attack.</dd></div>
-    <div><dt>Expose</dt><dd>Raises the direct damage the enemy takes.</dd></div>
+    <div><dt>Critical Hit</dt><dd>Each Normal Attack, skill, Convergent Light, signature strike and Burn tick rolls once per target against the attacker's Critical Rate (each bearer has a base rate; every enemy has 10%). A critical hit multiplies that damage by the attacker's Critical Damage (enemies 1.5x). Above 100% Critical Rate, a second roll against the excess makes an Elemental Crit: Critical Damage x1.5 again. Conduit-generated strikes never crit.</dd></div>
+    <div><dt>Critical Up</dt><dd>Hits on the enemy gain the listed Critical Rate, added to the attacker's.</dd></div>
     <div><dt>Shield</dt><dd>Absorbs damage until broken. Shields from skills and Convergent Light stack. Kit heals and Shields are a percentage of the recipient's max Health.</dd></div>
     <div><dt>Targets</dt><dd>One-enemy skills hit the current target. Ally skills reach all allies, the other allies, the caster, or the ally with the lowest Health.</dd></div>
     <div><dt>Luminosity</dt><dd>Normal Attack hits fill ${radiantChargeRules.normal}; each enemy hit taken fills ${radiantChargeRules.incomingAttack}. Skill 1 costs 25, Skill 2 costs 40, a Convergent Light costs 100 (Sparkling) or 200 (Glimmering and Ultimate). Skills and Convergent Light fill none.</dd></div>

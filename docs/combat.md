@@ -2467,7 +2467,8 @@ with B1 and B2. The other 16 Omnics keep their Radiant-era designs until B3b
   lifted to 40% or more gains Defense Up +30% (1 turn, gear source).
   Ember Iris and Undertide Chronometer add 1 turn to the wearer's skill Burn
   or Weaken (fixed, cap 6).
-- **Ally direct damage** (C11 additive layer): Ember Iris +10% for other allies
+- **Ally direct damage** (superseded by the crit step below: these three now
+  grant Critical Rate or Critical Damage) (C11 additive layer): Ember Iris +10% for other allies
   on enemies carrying the wearer's Burn; Nightglass +12.5% for other allies'
   Normal Attacks on a marked enemy; Aegis Covenant Crown +10% for holders of the
   wearer's skill or Convergent Light Shield, plus 30% less damage from enemy
@@ -2521,3 +2522,77 @@ Validation: `src/game/conduit-restoration-b3a.test.ts` (rows, fixed rules,
 tooltips, auras and fallen wearers, Faultkeeper, combat-only Skill Power,
 Ward Loom, Lifeforge, Eclipse, Ember Iris, Aegis Crown, Undertide, Graft, every
 trigger, marks and Burn bonus tags, validation of the new fields, replay).
+
+## Critical hits and Critical Up (D-493 crit step, Battle Flurry Phase 4c)
+
+Owner decision 2026-11-20 (reverses D-473 O4 and replaces the C9/C10
+deterministic conversion). Unreleased with B1-B3a.
+
+- **Base values** (`radiantCriticalStats`, `src/content/combat-kits.ts`): the
+  pre-Radiant Critical Rate and Critical Damage per bearer (rate 8-25%,
+  damage 1.5x-1.7x). Fixed: level, form and rank do not change them
+  (implementation choice; the old potency scaling is not restored). Every enemy:
+  10%, 1.5x (`radiantEnemyCritical`).
+- **Which hits roll:** Normal Attacks, Skill 1/2 and Convergent Light (one roll
+  per target per cast, before the hit split, so every hit on that target shares
+  the outcome), kit signature strikes (Cyclone, Shuriken recall, Thorn Trap,
+  Flame Arc detonation, Foundation and Wounds spends) and kit Burn ticks (with
+  the caster's stats; Defense still ignored). Enemy attacks roll once per target
+  per action. Conduit-generated packets (reflect, splash, Burn transfer) never
+  crit.
+- **Formula:** chance = base + `crit-rate` Conduits (+ `flare-crit-rate` on
+  Convergent Light) + 2 × the target's Critical Up + ally Critical Rate (Ember
+  Coronation Iris on the wearer's Burn, Aegis Covenant Crown for its Shield
+  holders). One roll against min(1, chance); above 100%, a second roll against
+  the excess makes an Elemental Crit. Critical multiplier = base Critical
+  Damage × (1 + `crit-damage` + `skill-crit-damage` on skills and Convergent
+  Light + `flare-crit-damage` on Convergent Light + Nightglass mark bonus on
+  other allies' Normal Attacks) × 1.5 for an Elemental Crit. It joins the
+  output multiplier before the single rounding (floor 1, mitigation, pierce,
+  guard and Shields unchanged). Enemy crits: 1.5x, applied before guard,
+  reduction and protection; Aegis Crown's 30% reduction applies to enemy
+  critical hits only (the 20% heavy-hit stand-in is removed).
+- **RNG:** a separate `critSeed` stream (Xorshift32, seeded from the charge
+  seed with its own constant). Charge, Conduit, target, encounter and reward
+  streams never move (tests compare against a crit-free run). Rolls happen
+  outside the D-492 `attribute()` recomputes; the multiplier is pure, so
+  Critical Damage Conduits are credited in `boosts`.
+- **Critical Up** (internal category `expose`, unchanged for saves): hits on
+  the enemy gain 2 points of Critical Rate per stored point (cap 0.8 stored =
+  +160 points); it no longer raises damage taken. Kit values: Golden Thorn
+  Volley +30, Rose Beyond the Sun +60, Denial of Fate +50 (all enemies),
+  Reaper's Claim +24 (before Skill Power and tier scaling). Leader and Master
+  `normal-expose` amounts show doubled; `exposed` conditions read Critical Up.
+- **Restored crit rows** (pre-Radiant values): Precision Escapement (+10%
+  Critical Damage), Fieldbrace Coupler (+25 points), Falcon Sight (+25),
+  Wardglass Transformer (+35%), Hammerbalance Link (+15%), Coilfeed Ratchet
+  (+8), Astral Prism (+30, +25%), Judgment Lens (damaging skills +50%), Horizon
+  Heartcase (Convergent Light +35%, +10), Verdict Caliper (heal after a
+  critical hit), Leviathan Pump (+25), Seraph Mirror (first critical action
+  each turn), Nightglass Archive (+50% Critical Damage on marks), Aegis Covenant
+  Crown (+40%; holders +20 points and 30% less from enemy crits), Ember
+  Coronation Iris (others +20 points on its Burn), Sky Sovereign Escapement
+  (+40; first critical Skill 1/2), Solace Witness Monolith (+35%), Tempest
+  Shelter Sovereign (+30; first critical skill). Worldbreaker Drive's verbatim
+  direct-damage bonus is unchanged.
+- **Saves:** encounters saved before this step have no `critSeed`; they
+  rebuild, replay and settle without critical hits and with the old Exposure
+  rule (`createRadiantCombat(..., criticalHits=false)`,
+  `validateFrozenRadiantRun` passes `run.initial.critSeed !== undefined`). A run
+  whose state and initial disagree on the stream is rejected. Damage events may
+  carry `critical: 'critical' | 'elemental'` (allowlisted on damage only).
+- **Presentation:** a larger, gold-rimmed number with a "Critical" or
+  "Elemental Crit" tag (joined with "Weakness" when both apply) and a GPU pulse
+  on the target; static tag under Reduce motion. No extra hit-stop (R2 keeps
+  hit-stop by tier). Status rows show "Critical Up · +N% Critical Rate".
+  Character stats show Critical Rate and Critical Damage (always-on Conduit
+  parts, with "Before Conduits"). The glossary defines Critical Hit and
+  Critical Up once. `radiantCriticalRate(state, bearer, enemy, slot)` reads a
+  hit's chance.
+
+Validation: `src/game/critical-hits.test.ts` (base values, stream isolation,
+observed rate, single rounding, Elemental Crit, per-target roll, Burn ticks,
+generated packets, enemy crits, Critical Up, crit Conduits and attribution,
+pre-crit save load/settle/reload, tampered flag and stripped stream); updated
+B1/B2/B3a restoration tests, kit text (drafts updated to Critical Up), hub and
+information layout stat rows.

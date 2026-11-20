@@ -51,7 +51,8 @@ describe('shared information templates', () => {
       document.body.innerHTML = radiantCharacterSheet(resolved!.loadout);
       expect(Array.from(document.querySelectorAll('[data-info-section]')).map(section => section.getAttribute('data-info-section')))
         .toEqual(['profile', 'stats', 'skill-stats', 'leader', 'skills', 'flares', 'passive', 'equipment']);
-      expect(document.querySelectorAll('[data-radiant-stat]')).toHaveLength(4);
+      // Four combat stats plus Critical Rate and Critical Damage (D-493 crit step).
+      expect(document.querySelectorAll('[data-radiant-stat]')).toHaveLength(6);
       expect(document.querySelectorAll('[data-radiant-flare]')).toHaveLength(3);
       expect(document.querySelectorAll('[data-radiant-flare].is-locked')).toHaveLength(2);
       for (const tier of Array.from(document.querySelectorAll('[data-radiant-flare]'))) {

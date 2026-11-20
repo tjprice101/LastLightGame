@@ -1,6 +1,7 @@
 import {
   radiantFlarePower, radiantLeaderEffects, radiantEquipmentAmount, radiantMasters, radiantRoleSkillPower, radiantSkillAscension,
   radiantStarterKits, radiantSupportSquadHeal, resolveRadiantStarterStats,
+  radiantCriticalStats, radiantElementalCritFactor, radiantEnemyCritical,
   validateRadiantLoadout, validateRadiantStats,
   type RadiantLoadout, type RadiantStats,
 } from '../content/combat-kits';
@@ -15,7 +16,7 @@ import {
 import { squadMemberLimit } from '../content/squad-rules';
 import { type ConduitId } from '../content/conduits';
 import {
-  radiantAllyGuardThreshold, radiantConduitPrimitives, radiantGambleRules, radiantHealthSkillPowerStep, radiantOmnicRules,
+  radiantAllyGuardThreshold, radiantConduitPrimitives, radiantCriticalUpRate, radiantGambleRules, radiantHealthSkillPowerStep, radiantOmnicRules,
   radiantShieldGuardCap, radiantStasisVulnerability, type RadiantConduitEffect, type RadiantConduitDesign,
 } from '../content/conduit-effects';
 import type { ElementId } from '../content/activities';
@@ -150,12 +151,16 @@ export interface RadiantCombatState {
   chargeSeed: number;
   /** D-493 O11: separate Conduit RNG stream, present only when a random Conduit is equipped. */
   conduitSeed?: number;
+  /** D-493 crit step: separate critical-hit RNG stream. Present on every encounter created since the crit step; encounters
+   * saved before it have none and resolve without critical hits (Critical Up then still raises damage taken, as Exposure did). */
+  critSeed?: number;
   /** D-493 Stillhour Carillon: wearers who used Convergent Light this turn (omitted when none). */
   flared?: string[];
   nextShieldId: number;
   currencyEarned: number;
 }
 export type RadiantTimedStatus = RadiantCategory | 'weaken-removed';
+export type RadiantCritical = 'critical' | 'elemental';
 /** Every signature bookkeeping op (runtime list so saved journals can be validated). */
 export const radiantSignatureOpList = ['seed', 'seed-wither', 'cover', 'cyclone', 'gust', 'cyclone-release',
   'lodge', 'recall', 'return', 'wounds', 'detonate', 'refund',
@@ -178,7 +183,9 @@ export type RadiantCombatEvent =
       /** Present when Cover moved this share of an enemy hit onto its caster. */
       redirected?: true;
       /** D-492: share of `offered` added by each stat/multiplier Conduit (bearer hits), or damage it prevented (enemy hits). */
-      boosts?: RadiantBoost[] }
+      boosts?: RadiantBoost[];
+      /** D-493 crit step: present when this hit was a critical hit ('elemental' above 100% Critical Rate). */
+      critical?: RadiantCritical }
   | { type: 'heal'; source: RadiantSource; targetId: string; snapshot: number; offered: number; effective: number;
       /** D-492: share of `effective` added by the `healing` Conduit bonus. */
       boosts?: RadiantBoost[] }
@@ -380,6 +387,60 @@ function rollConduit(state: RadiantCombatState): number {
   state.conduitSeed = x;
   return x / 0x100000000;
 }
+function initialCritSeed(chargeSeed: number): number {
+  return (Math.imul(chargeSeed ^ 0x2545f491, 0x9e3779b1) + 0x7f4a7c15) >>> 0;
+}
+/** D-493 crit step: critical hits resolve only on encounters that carry the crit stream. */
+function critsOn(state: RadiantCombatState): boolean {
+  return state.critSeed !== undefined;
+}
+function rollCritStream(state: RadiantCombatState): number {
+  if (state.critSeed === undefined || excludedSources) throw new Error('Radiant critical roll outside its stream.');
+  // Xorshift32 with its own seed: neither the charge, Conduit nor target streams move.
+  let x = state.critSeed || 0x6a09e667;
+  x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0;
+  state.critSeed = x;
+  return x / 0x100000000;
+}
+/** One roll against min(1, rate); above 100%, a second roll against the excess makes an Elemental Crit. */
+function rollCritical(state: RadiantCombatState, rate: number): RadiantCritical | undefined {
+  if (!critsOn(state) || !(rate > 0)) return undefined;
+  if (rollCritStream(state) >= Math.min(1, rate)) return undefined;
+  return rate > 1 && rollCritStream(state) < rate - 1 ? 'elemental' : 'critical';
+}
+/** What a bearer's hit is: a Normal Attack, a skill or Convergent Light cast, or another native packet (signature strike, Burn). */
+export type RadiantCritSlot = 'normal' | 'skill' | 'flare' | 'other';
+/** D-493 crit step: Critical Rate of a bearer's hit on an enemy right now (presentation and tests); 0 without crits. */
+export function radiantCriticalRate(state: RadiantCombatState, bearerId: string, enemyId: string, slot: RadiantCritSlot = 'normal'): number {
+  return critsOn(state) ? bearerCritRate(state, bearer(state, bearerId), enemy(state, enemyId), slot) : 0;
+}
+/** Critical Rate of a bearer's hit on `target`: base + Conduits + Critical Up on the target + allies' Conduits. */
+function bearerCritRate(state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy, slot: RadiantCritSlot): number {
+  return radiantCriticalStats[actor.loadout.starter].rate + combatAmount(state, actor, 'crit-rate') +
+    (slot === 'flare' ? combatAmount(state, actor, 'flare-crit-rate') : 0) +
+    radiantCriticalUpRate * exposure(target) + allyCritRate(state, actor, target);
+}
+/** Damage multiplier of a bearer's hit with the rolled outcome (1 when not critical). Pure, so D-492 recomputes credit
+ * Critical Damage Conduits. */
+function bearerCritMultiplier(
+  state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy, slot: RadiantCritSlot, critical: RadiantCritical | undefined,
+): number {
+  if (critical === undefined) return 1;
+  const bonus = combatAmount(state, actor, 'crit-damage') +
+    (slot === 'skill' || slot === 'flare' ? combatAmount(state, actor, 'skill-crit-damage') : 0) +
+    (slot === 'flare' ? combatAmount(state, actor, 'flare-crit-damage') : 0) +
+    (slot === 'normal' ? allyMarkCritDamage(state, actor, target) : 0);
+  return radiantCriticalStats[actor.loadout.starter].damage * (1 + bonus) *
+    (critical === 'elemental' ? radiantElementalCritFactor : 1);
+}
+function rollBearerCritical(
+  state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy, slot: RadiantCritSlot,
+): RadiantCritical | undefined {
+  return critsOn(state) ? rollCritical(state, bearerCritRate(state, actor, target, slot)) : undefined;
+}
+function enemyCritMultiplier(critical: RadiantCritical | undefined): number {
+  return critical === undefined ? 1 : radiantEnemyCritical.damage * (critical === 'elemental' ? radiantElementalCritFactor : 1);
+}
 /** D-493 Nullsong Transmission: Skill Power change for a cast whose roll was `won` (undefined = no roll). */
 function gambleShift(state: RadiantCombatState, actor: RadiantBearer, won: boolean | undefined): number {
   const amount = combatAmount(state, actor, 'gamble-power');
@@ -492,23 +553,27 @@ function gearSourceOf(member: RadiantBearer, kind: RadiantConduitEffect): Radian
   return member.loadout.masterId !== null && radiantMasters[member.loadout.masterId].effects.some(entry => entry.kind === kind)
     ? { kind: 'master', bearerId: id } : undefined;
 }
-/** D-493 B3a: direct-damage bonuses granted by another living bearer's Conduit (Ember Iris Burn, Nightglass mark on
- * Normal Attacks, Aegis Covenant Crown Shield holder). */
-function allyDirect(state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy, normal: boolean): number {
+/** D-493 Critical Rate granted by another living bearer's Conduit: Ember Coronation Iris (others, against an enemy carrying
+ * the wearer's Burn) and Aegis Covenant Crown (holders of a Shield from the wearer's skills or Convergent Light). */
+function allyCritRate(state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy): number {
   const burn = target.debuffs.find(effect => effect.category === 'burn');
   let sum = 0;
   for (const wearer of state.bearers) {
     if (wearer.hp === 0) continue;
     const id = wearer.loadout.id;
     if (wearer !== actor && burn && burn.source.kind !== 'enemy' && burn.source.bearerId === id)
-      sum += combatAmount(state, wearer, 'burn-ally-direct');
-    if (normal && wearer !== actor && target.marks?.some(mark => mark.casterId === id)) sum += combatAmount(state, wearer, 'skill-mark');
+      sum += combatAmount(state, wearer, 'burn-ally-crit');
     if (actor.shields.some(layer => (layer.source.kind === 'skill' || layer.source.kind === 'flare') && layer.source.bearerId === id))
-      sum += combatAmount(state, wearer, 'skill-shield-direct');
+      sum += combatAmount(state, wearer, 'skill-shield-crit');
   }
   return sum;
 }
-/** D-493 Aegis Covenant Crown: damage reduction against heavy enemy hits for holders of a wearer's skill Shield. */
+/** D-493 Nightglass Archive: other allies' Normal Attacks on an enemy the living wearer marked gain Critical Damage. */
+function allyMarkCritDamage(state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy): number {
+  return state.bearers.reduce((sum, wearer) => sum + (wearer.hp > 0 && wearer !== actor &&
+    target.marks?.some(mark => mark.casterId === wearer.loadout.id) ? combatAmount(state, wearer, 'skill-mark') : 0), 0);
+}
+/** D-493 Aegis Covenant Crown: damage reduction against enemy critical hits for holders of a wearer's skill Shield. */
 function skillShieldBrace(state: RadiantCombatState, holder: RadiantBearer): number {
   return state.bearers.reduce((sum, wearer) => sum + (wearer.hp > 0 && holder.shields.some(layer =>
     (layer.source.kind === 'skill' || layer.source.kind === 'flare') && layer.source.bearerId === wearer.loadout.id)
@@ -828,6 +893,8 @@ export function validateRadiantCombat(state: RadiantCombatState): void {
   if ((state.conduitSeed !== undefined) !== usesConduitRng(state.bearers.map(member => member.loadout)) ||
     (state.conduitSeed !== undefined && (!Number.isSafeInteger(state.conduitSeed) || state.conduitSeed < 0 || state.conduitSeed > 0xffffffff)))
     throw new Error('Invalid radiant Conduit RNG stream.');
+  if (state.critSeed !== undefined && (!Number.isSafeInteger(state.critSeed) || state.critSeed < 0 || state.critSeed > 0xffffffff))
+    throw new Error('Invalid radiant critical RNG stream.');
   for (let index = 0; index < state.bearers.length; index++) {
     const member = state.bearers[index];
     validateRadiantLoadout(member.loadout);
@@ -919,6 +986,8 @@ export function validateRadiantParty(loadouts: RadiantLoadout[]): void {
 }
 export function createRadiantCombat(
   loadouts: RadiantLoadout[], enemies: { id: string; elementId: ElementId | null; stats: RadiantStats; currencyBudget: number }[], chargeSeed: number,
+  /** D-493 crit step: false only to rebuild an encounter saved before critical hits (it has no crit stream). */
+  criticalHits = true,
 ): RadiantCombatState {
   const state: RadiantCombatState = {
     version: 8,
@@ -939,6 +1008,7 @@ export function createRadiantCombat(
       baseCost: radiantStarterKits[loadout.starter].baseCost, charge: 0, living: true, ...gaugeExtras(loadout, distinctElements(loadouts)) })) },
     phase: 'player', round: 1, acted: [], skilled: [], enemyActed: [], gearTriggered: [],
     chargeSeed, ...(usesConduitRng(loadouts) ? { conduitSeed: initialConduitSeed(chargeSeed) } : {}),
+    ...(criticalHits ? { critSeed: initialCritSeed(chargeSeed) } : {}),
     nextShieldId: 1, currencyEarned: 0,
   };
   for (const member of state.gauge.members) {
@@ -984,7 +1054,7 @@ function healthMote(state: RadiantCombatState, events: RadiantCombatEvent[], tar
 /** D-493 kinds on one bearer's Conduits that change another squad member's amounts. */
 const squadSourceKinds: readonly RadiantConduitEffect[] = [
   'enemy-defense', 'ally-guard', 'squad-hp', 'squad-attack', 'squad-gain', 'squad-defense', 'ally-defense-share',
-  'burn-ally-direct', 'skill-shield-direct', 'skill-shield-brace', 'shielded-restore-power', 'skill-mark', 'burning-attack',
+  'burn-ally-crit', 'skill-shield-crit', 'skill-shield-brace', 'shielded-restore-power', 'skill-mark', 'burning-attack',
   'weaken-ally-efficiency',
 ];
 /** D-492: Conduit sources that can change amounts for this bearer (its gear, its Master, the living same-element Leader). */
@@ -1041,7 +1111,7 @@ function hitBoosts(boosts: RadiantBoost[] | undefined, hit: number, hits: number
 function packet(
   state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer | RadiantEnemy,
   source: RadiantSource, origin: 'direct' | 'periodic' | 'generated', offered: number, hitCharge?: RadiantHitCharge,
-  redirected = false, boosts?: RadiantBoost[],
+  redirected = false, boosts?: RadiantBoost[], critical?: RadiantCritical,
 ): { healthLoss: number; absorbed: number; shields: { source: RadiantSource; amount: number }[] } {
   safe(offered, 'damage packet', 1);
   living(target.hp);
@@ -1079,7 +1149,7 @@ function packet(
   }
   const targetId = 'loadout' in target ? target.loadout.id : target.id;
   events.push({ type: 'damage', source, targetId, origin, offered, absorbed, healthLoss, shields,
-    ...(redirected ? { redirected: true as const } : {}), ...(boosts ? { boosts } : {}) });
+    ...(redirected ? { redirected: true as const } : {}), ...(boosts ? { boosts } : {}), ...(critical ? { critical } : {}) });
   if (refusal?.signature?.kind === 'refusal') {
     refusal.signature.spent.push(targetId);
     events.push({ type: 'signature', bearerId: refusal.loadout.id, op: 'refusal', holderId: targetId, amount: target.hp });
@@ -1267,9 +1337,10 @@ function refuser(state: RadiantCombatState, target: RadiantBearer): RadiantBeare
   return state.bearers.find(member => member.hp > 0 && member.signature?.kind === 'refusal' &&
     !member.signature.spent.includes(target.loadout.id));
 }
-/** Damage taken from allies' direct hits: Expose, plus Fate-seared Marks and Incisions while their owner lives. */
+/** Damage taken from allies' direct hits: Fate-seared Marks and Incisions while their owner lives. Critical Up (internal
+ * `expose`) raises Critical Rate instead; on encounters saved before the crit step it still adds damage taken. */
 function vulnerability(state: RadiantCombatState, target: RadiantEnemy): number {
-  let taken = exposure(target);
+  let taken = critsOn(state) ? 0 : exposure(target);
   for (const member of state.bearers) {
     const own = member.signature;
     if (member.hp === 0) continue;
@@ -1323,11 +1394,13 @@ function strike(
   source: RadiantSource, coefficient: number,
 ): void {
   if (target.hp === 0 || coefficient <= 0) return;
+  const critical = rollBearerCritical(state, actor, target, 'other');
   const offered = () => radiantDirectDamage(effectiveRadiantStats(state, actor.loadout.id).attack,
     gearDefense(state, actor, target.stats.defense),
-    coefficient, (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target));
+    coefficient, (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target) *
+      bearerCritMultiplier(state, actor, target, 'other', critical));
   const amount = offered();
-  packet(state, events, target, source, 'direct', amount, undefined, false, attribute(state, actor, amount, offered));
+  packet(state, events, target, source, 'direct', amount, undefined, false, attribute(state, actor, amount, offered), critical);
 }
 /** Gale Cadence: release Atmoso's Cyclone on all enemies (`multiplier` x its stored coefficient), then clear it. */
 function releaseCyclone(
@@ -1481,14 +1554,17 @@ function signatureClauses(
         for (const target of enemyTargets) {
           const burn = target.debuffs.find(effect => effect.category === 'burn');
           if (target.hp === 0 || !burn || burn.source.kind === 'enemy' || burn.source.bearerId !== id) continue;
-          const turns = Math.min(value, burn.remaining), amount = Math.max(1, rounded(burn.magnitude * turns));
+          // D-493 crit step: the detonation rolls once with Infernis's Critical Rate (Defense still ignored).
+          const critical = rollBearerCritical(state, actor, target, 'other');
+          const turns = Math.min(value, burn.remaining);
+          const amount = Math.max(1, rounded(burn.magnitude * turns * bearerCritMultiplier(state, actor, target, 'other', critical)));
           const burnSource = structuredClone(burn.source);
           burn.remaining -= turns;
           if (burn.remaining === 0) target.debuffs.splice(target.debuffs.indexOf(burn), 1);
           events.push({ type: 'status', targetId: target.id, status: 'burn', source: structuredClone(burnSource),
             magnitude: burn.magnitude, remaining: burn.remaining });
           events.push({ type: 'signature', bearerId: id, op: 'detonate', holderId: target.id, amount: turns });
-          packet(state, events, target, burnSource, 'periodic', amount);
+          packet(state, events, target, burnSource, 'periodic', amount, undefined, false, undefined, critical);
         }
         break;
       case 'seed':
@@ -1640,8 +1716,11 @@ function signatureClauses(
         const amount = rounded(own.foundation.durability * value * input.damageScale);
         own.foundation = null;
         events.push({ type: 'signature', bearerId: id, op: 'foundation', amount: 0 });
-        if (amount > 0) for (const target of enemyTargets.filter(entry => entry.hp > 0))
-          packet(state, events, target, source, 'direct', amount, hitCharge);
+        if (amount > 0) for (const target of enemyTargets.filter(entry => entry.hp > 0)) {
+          const critical = rollBearerCritical(state, actor, target, 'other');
+          packet(state, events, target, source, 'direct',
+            Math.max(1, rounded(amount * bearerCritMultiplier(state, actor, target, 'other', critical))), hitCharge, false, undefined, critical);
+        }
         break;
       }
       case 'burn-up': {
@@ -1710,7 +1789,11 @@ function signatureClauses(
         const amount = rounded(own.wounds * value * input.damageScale);
         own.wounds = 0;
         events.push({ type: 'signature', bearerId: id, op: 'wounds', amount: 0 });
-        if (amount > 0) packet(state, events, primary, source, 'direct', amount, hitCharge);
+        if (amount > 0) {
+          const critical = rollBearerCritical(state, actor, primary, 'other');
+          packet(state, events, primary, source, 'direct',
+            Math.max(1, rounded(amount * bearerCritMultiplier(state, actor, primary, 'other', critical))), hitCharge, false, undefined, critical);
+        }
         break;
       }
     }
@@ -1750,14 +1833,15 @@ function normal(
   const target = enemy(state, targetId);
   living(target.hp);
   const source: RadiantSource = { kind: 'normal', bearerId: actor.loadout.id };
+  const critical = rollBearerCritical(state, actor, target, 'normal');
   const offered = () => radiantDirectDamage(effectiveRadiantStats(state, actor.loadout.id).attack,
     gearDefense(state, actor, target.stats.defense),
-    1 + combatAmount(state, actor, 'normal') + combatAmount(state, actor, 'direct') + cooperation(state, actor) +
-      allyDirect(state, actor, target, true),
-    (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target));
+    1 + combatAmount(state, actor, 'normal') + combatAmount(state, actor, 'direct') + cooperation(state, actor),
+    (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target) *
+      bearerCritMultiplier(state, actor, target, 'normal', critical));
   const amount = offered();
   const impact = packet(state, events, target, source, 'direct', amount, hitCharge, false,
-    attribute(state, actor, amount, offered));
+    attribute(state, actor, amount, offered), critical);
   return impact.healthLoss + impact.absorbed > 0 ? 1 : 0;
 }
 interface RadiantCast {
@@ -1825,6 +1909,9 @@ function cast(
   let hits = 0;
   if (def.target !== 'none') for (const target of enemyTargets) {
     if (target.hp === 0) continue;
+    // D-493 crit step: one roll per target per cast, before the hit split.
+    const slot: RadiantCritSlot = input.kind === 'flare' ? 'flare' : 'skill';
+    const critical = rollBearerCritical(state, actor, target, slot);
     const offered = () => Math.max(input.hits, radiantDirectDamage(
       excludedSources ? effectiveRadiantStats(state, id).attack : stats.attack,
       gearDefense(state, actor, target.stats.defense,
@@ -1833,15 +1920,16 @@ function cast(
         ? radiantSkillStats(state, id, input.slot).skillPower + gambleShift(state, actor, input.won) : skill.skillPower) +
         targetPower(target)) *
         (1 + (input.kind === 'flare' ? combatAmount(state, actor, 'flare') : 0) + combatAmount(state, actor, 'direct') +
-          combatAmount(state, actor, 'skill-direct') + cooperation(state, actor) + bonus + allyDirect(state, actor, target, false)),
-      (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target)));
+          cooperation(state, actor) + bonus),
+      (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target) *
+        bearerCritMultiplier(state, actor, target, slot, critical)));
     const total = offered();
     const boosts = attribute(state, actor, total, offered);
     for (let hit = 0; hit < input.hits && target.hp > 0; hit++) {
       const amount = Math.floor(total / input.hits) + (hit === input.hits - 1 ? total % input.hits : 0);
       if (!amount) continue;
       const impact = packet(state, events, target, source, 'direct', amount, hitCharge, false,
-        hitBoosts(boosts, hit, input.hits));
+        hitBoosts(boosts, hit, input.hits), critical);
       if (impact.healthLoss + impact.absorbed > 0) { hits++; struck.add(target); }
     }
   }
@@ -2016,20 +2104,24 @@ function enemyAttack(
     const reduction = category(target.buffs, 'reduction');
     const weakening = category(actor.debuffs, 'weaken');
     const element = elementDamageMultiplier(actor.elementId, radiantStarterKits[target.loadout.starter].elementId);
+    // D-493 crit step: every enemy rolls once per target per action (flat Critical Rate and Critical Damage).
+    const critical = critsOn(state) ? rollCritical(state, radiantEnemyCritical.rate) : undefined;
+    const crit = enemyCritMultiplier(critical);
     const incoming = (): number => {
       const stats = effectiveRadiantStats(state, target.loadout.id);
       // D-473 O1 interim: `guard` reduces damage while this bearer used a skill this turn (no 50% Defend base).
       const guard = state.skilled.includes(target.loadout.id) ? Math.min(.6, combatAmount(state, target, 'guard')) : 0;
       const output = Math.max(.2, (1 - guard) * (1 - reduction));
-      const beforeProtection = radiantDirectDamage(actor.stats.attack * (1 - weakening), stats.defense, action.coefficient, output * element);
+      const beforeProtection = radiantDirectDamage(actor.stats.attack * (1 - weakening), stats.defense, action.coefficient,
+        output * element * crit);
       const cap = maximumHealth(state, target);
       const protection = (target.hp > cap * .75 ? combatAmount(state, target, 'shelter') : 0) +
         (beforeProtection > cap * .2 ? combatAmount(state, target, 'brace') : 0) +
-        (beforeProtection > cap * radiantOmnicRules.heavyHitLine ? skillShieldBrace(state, target) : 0);
+        (critical ? skillShieldBrace(state, target) : 0);
       // D-493 Stasis Reliquary: +25% damage taken in the enemy phase after a block (state, not a Conduit amount).
       const exposed = target.stasis === 'next' ? 1 + radiantStasisVulnerability : 1;
       return radiantDirectDamage(actor.stats.attack * (1 - weakening), stats.defense, action.coefficient,
-        Math.max(.2, output * (1 - Math.min(.8, protection))) * element * exposed);
+        Math.max(.2, output * (1 - Math.min(.8, protection))) * element * exposed * crit);
     };
     const total = incoming();
     // D-492: damage prevented by the target's Defense, guard, shelter and brace Conduits.
@@ -2044,7 +2136,7 @@ function enemyAttack(
       if (moved > 0 && coverer) {
         const taken = rounded(moved * (1 - (coverer.loadout.starter === 'bruno' ? radiantPassiveValues.brunoRedirect : 0)));
         if (taken > 0) {
-          const redirected = packet(state, events, coverer, source, 'direct', taken, undefined, true);
+          const redirected = packet(state, events, coverer, source, 'direct', taken, undefined, true, undefined, critical);
           refundFullBlock(state, events, coverer, redirected, taken);
           // Weight of the Watch counts redirected hits; Names Still Carried does not.
           if (coverer.hp > 0 && redirected.healthLoss + redirected.absorbed > 0) hitGain(events, coverer);
@@ -2053,7 +2145,7 @@ function enemyAttack(
       }
       if (amount - moved <= 0) continue;
       const taken = holdStillness(events, target, amount - moved);
-      const part = packet(state, events, target, source, 'direct', taken, undefined, false, hitBoosts(prevented, hit, hits));
+      const part = packet(state, events, target, source, 'direct', taken, undefined, false, hitBoosts(prevented, hit, hits), critical);
       // Every landed hit counts as damage for Thorn Traps, including a lethal hit Ozriel's Refusal turned to 0 loss.
       damaged = true;
       refundFullBlock(state, events, target, part, taken);
@@ -2093,7 +2185,13 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
     throw new Error('Every living enemy must act before completing its phase.');
   for (const target of state.enemies.filter(m => m.hp > 0)) {
     const burn = target.debuffs.find(effect => effect.category === 'burn');
-    if (burn) packet(state, events, target, burn.source, 'periodic', burnTick(state, burn));
+    if (!burn) continue;
+    // D-493 crit step: a kit Burn tick rolls with its caster's Critical Rate and Critical Damage (Defense still ignored).
+    const owner = burn.source.kind === 'enemy' ? undefined : bearer(state, burn.source.bearerId);
+    const critical = owner ? rollBearerCritical(state, owner, target, 'other') : undefined;
+    const amount = owner && critical
+      ? Math.max(1, rounded(burnTick(state, burn) * bearerCritMultiplier(state, owner, target, 'other', critical))) : burnTick(state, burn);
+    packet(state, events, target, burn.source, 'periodic', amount, undefined, false, undefined, critical);
   }
   // D-493 Nightglass Archive: mark clocks tick with the enemy phase.
   for (const target of state.enemies) if (target.marks) {
@@ -2195,6 +2293,8 @@ function processRadiantGear(
       .map(entry => ({ event, amount: entry.amount })));
     const ownAction = 'bearerId' in action && action.bearerId === id;
     const normalHit = ownAction && action.type === 'normal' && direct.some(event => event.healthLoss > 0);
+    // D-493 crit step: this bearer's own action landed at least one critical hit that damaged an enemy.
+    const criticalHit = direct.some(event => event.critical !== undefined && event.healthLoss + event.absorbed > 0);
     const normalDirect = ownAction && action.type === 'normal' && direct.some(event => event.healthLoss + event.absorbed > 0);
     const flareCast = ownAction && action.type === 'flare';
     // D-473 O1 interim: Defend-triggered effects fire when this bearer uses Skill 1 or Skill 2.
@@ -2368,10 +2468,10 @@ function processRadiantGear(
               for (const targetId of new Set(restored.filter(event => event.source.kind === 'skill' || event.source.kind === 'flare')
                 .map(event => event.targetId))) grant(bearer(state, targetId), amount);
             break;
-          case 'exposed-heal':
-            // D-493 Verdict Caliper: once per action, a damaging action on an enemy with Exposure.
-            if (ownAction && direct.some(event => event.healthLoss + event.absorbed > 0 &&
-              exposure(enemy(state, event.targetId)) > 0)) heal(state, events, owner, source, amount * owner.stats.hp);
+          case 'crit-heal':
+            // D-493 Verdict Caliper: once per action, a damaging action that lands a critical hit.
+            if (ownAction && direct.some(event => event.healthLoss + event.absorbed > 0 && event.critical))
+              heal(state, events, owner, source, amount * owner.stats.hp);
             break;
           case 'twin-charge':
             // D-493 Twinpulse Bellows: this bearer and the other living ally with the lowest Luminosity percentage.
@@ -2417,23 +2517,23 @@ function processRadiantGear(
               for (const holderId of new Set(incoming.filter(event => event.absorbed > 0).map(event => event.targetId)))
                 grant(bearer(state, holderId), amount);
             break;
-          case 'first-heal':
-            // Seraph Mirror: once per turn, this bearer's first damaging action heals every living ally.
-            if (ownAction && direct.length > 0 && boundedIncoming) {
+          case 'first-crit-heal':
+            // Seraph Mirror: once per turn, this bearer's first critical damaging action heals every living ally.
+            if (ownAction && criticalHit && boundedIncoming) {
               for (const ally of state.bearers) heal(state, events, ally, source, amount * ally.stats.hp);
               triggered = true;
             }
             break;
-          case 'first-skill-charge':
-            // Sky Sovereign Escapement: once per turn, the first damaging Skill 1 or Skill 2 fills each other living ally.
-            if (ownAction && action.type === 'skill' && direct.length > 0 && boundedIncoming) {
+          case 'first-crit-skill-charge':
+            // Sky Sovereign Escapement: once per turn, the first critical damaging Skill 1 or Skill 2 fills each other living ally.
+            if (ownAction && action.type === 'skill' && criticalHit && boundedIncoming) {
               for (const ally of state.bearers) if (ally !== owner) grant(ally, amount);
               triggered = true;
             }
             break;
-          case 'first-skill-shield':
-            // Tempest Shelter Sovereign: once per turn, the first damaging skill or Convergent Light Shields the lowest ally.
-            if (ownAction && (action.type === 'skill' || action.type === 'flare') && direct.length > 0 && boundedIncoming && wounded) {
+          case 'first-crit-skill-shield':
+            // Tempest Shelter Sovereign: once per turn, the first critical damaging skill or Convergent Light Shields the lowest ally.
+            if (ownAction && (action.type === 'skill' || action.type === 'flare') && criticalHit && boundedIncoming && wounded) {
               shield(state, events, wounded, source, amount * wounded.stats.hp);
               triggered = true;
             }
