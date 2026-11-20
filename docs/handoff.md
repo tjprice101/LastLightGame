@@ -34,12 +34,12 @@
 - the Skill 2 capture: `capture_frames.mjs --battle skill2` times out because
   the fan's Skill 2 button stays hidden in headless runs (seen after Spectacle
   step 7; not caused by this change);
-- online journals: they carry `boosts` only after the authority bundle is
-  rebuilt and deployed (owner approval needed). Until then, online summaries
-  show event-producing Conduits only.
+- an online encounter played on the hosted build (released 2026-11-19: client
+  from `main` built by the Deploy workflow, `game-operation` deployed with the
+  rebuilt bundle; owner approved).
 
-**Next:** owner approves the deploy; owner feel review of callouts and the
-summary; owner reviews the 4b restoration draft batch by batch, then 4c.
+**Next:** owner feel review of callouts and the summary on the hosted build;
+owner reviews the 4b restoration draft (O1-O14, batches B1-B5), then 4c.
 
 ## Spectacle step 7: skill menu polish (2026-11-19)
 
