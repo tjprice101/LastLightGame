@@ -52,6 +52,13 @@ enemy crits, Critical Up replaces Exposure; see decisions D-493). Plan the crit
 step in a fresh Opus session in Plan mode before B3b; it also converts the
 about 20 built crit-conversion rows. Then B3b (next-action tokens; flare event
 gains `cost`). Start the pressure study early (it takes about an hour).
+**Standing requirement (owner, 2026-11-20):** every step must keep existing
+saves working. Each batch adds a test that loads saves and saved encounters
+(including settled journals) written before the change, and checks any new
+event type or state field against the saved-event allowlist in
+`src/online/battle-run.ts` (`eventFields` / `validEvent`). Background: the
+released game rejected any save holding a settled encounter with signature
+events (fix `562de239` on this branch, hotfix `c732c7ee` on `main`).
 
 ## Battle Flurry Phase 4c B2: Legendary Conduit restoration (D-493, 2026-11-19)
 

@@ -56,6 +56,10 @@
   other streams), which hits can crit (Normal Attacks, skills, Convergent
   Light; Burn and Conduit-generated strikes), presentation, and the exact
   Exposure-to-Critical-Up kit translations.
+- **Save compatibility is a standing acceptance check (owner, 2026-11-20).**
+  Every batch proves that saves and saved encounters written before it still
+  load and can start a battle (new event types and state fields must pass the
+  saved-event allowlist).
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 
