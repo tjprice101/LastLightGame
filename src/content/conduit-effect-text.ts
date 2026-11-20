@@ -1,4 +1,4 @@
-import { radiantConduitPrimitives, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
+import { radiantConduitPrimitives, radiantHealthSkillPowerStep, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
 import type { ConduitId } from './conduits';
 
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
@@ -6,10 +6,12 @@ const number = (value: number): string => String(Number(value.toPrecision(12)));
 const conditionalDamage = (amount: number, condition: string): string =>
   `Normal Attacks, skills and Convergent Light deal ${percent(amount)} more direct damage ${condition}.`;
 
+const change = (stat: string, a: number): string =>
+  a < 0 ? `${stat} decreases by ${percent(-a)}.` : `${stat} increases by ${percent(a)}.`;
 const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => string> = {
-  hp: a => `Maximum Health increases by ${percent(a)}.`,
-  attack: a => `Attack increases by ${percent(a)}.`,
-  defense: a => `Defense increases by ${percent(a)}.`,
+  hp: a => change('Maximum Health', a),
+  attack: a => change('Attack', a),
+  defense: a => change('Defense', a),
   recovery: a => `Recovery increases by ${percent(a)}.`,
   normal: a => `Normal Attacks deal ${percent(a)} more damage.`,
   flare: a => `Convergent Light deals ${percent(a)} more damage.`,
@@ -71,14 +73,31 @@ const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => stri
   'round-charge': a => `At each new round, this bearer gains ${number(a)} Luminosity, rounded once.`,
   'round-team-heal': a => `At each new round, heal every living ally for ${percent(a)} of this bearer's current Recovery.`,
   'skill-leech': a => `Once per action, this bearer's skills and Convergent Light heal the most-wounded living ally for ${percent(a)} of the direct Health damage they deal.`,
-  'shield-break': a => `This bearer's Normal Attacks, skills and Convergent Light deal ${percent(a)} more damage to enemy Shields.`,
+  'skill-power': a => `Skill Power for Skill 1, Skill 2 and Convergent Light increases by ${percent(a)}.`,
+  'skill1-power': a => `Skill 1 gains ${percent(a)} Skill Power.`,
+  'debuff-power': a => `Skills and Convergent Light that apply Weaken, Exposure or Burn gain ${percent(a)} Skill Power.`,
+  'restore-power': a => `Skills and Convergent Light that heal or grant Shields gain ${percent(a)} Skill Power.`,
+  'health-skill-power': a => `Skill Power increases by ${percent(a)} for every full ${radiantHealthSkillPowerStep} of this bearer's maximum Health.`,
+  'skill-efficiency': a => `Skill Efficiency increases by ${percent(a)}: Skill 1, Skill 2 and Convergent Light cost less Luminosity (total discount up to 50%).`,
+  'skill-duration': a => `Timed effects from this bearer's skills and Convergent Light last ${number(a)} more turn${a === 1 ? '' : 's'}, up to 6 turns. Shields, instant effects and signature resources are unchanged.`,
+  'debuff-duration': a => `Skills and Convergent Light that apply Weaken, Exposure or Burn gain ${number(a)} turn${a === 1 ? '' : 's'} of Skill Duration, up to 6 turns.`,
+  'gauge-gain': a => `Gauge Gain increases by ${percent(a)}: every Luminosity gain is multiplied, rounded once.`,
+  capacity: a => `Luminosity capacity increases by ${percent(a)} above the Convergent Light cost (total bonus up to 100%, rounded down). Convergent Light still costs the same.`,
+  direct: a => `Normal Attacks, skills and Convergent Light deal ${percent(a)} more direct damage.`,
+  'skill-pierce': a => `Skills and Convergent Light ignore ${percent(a)} of enemy Defense, up to 80% total with other Defense ignore and reduction.`,
+  'enemy-defense': a => `All enemies have ${percent(a)} less Defense against every squad member for the encounter, up to 80% total with Defense ignore. Copies do not stack; the strongest applies.`,
+  drain: a => `After each damaging action, this bearer heals ${percent(a)} of the direct damage it dealt to enemy Health and Shields.`,
+  'ally-heal-self': a => `Once per skill or Convergent Light that restores another ally's Health, this bearer heals ${percent(a)} of their maximum Health.`,
+  'twin-charge': a => `Each Normal Attack that hits Health or a Shield grants this bearer and the other living ally with the lowest Luminosity percentage ${number(a)} Luminosity each, rounded once.`,
 };
 
 /** Radiant effects that combat sums across every equipped Conduit before applying them once. */
 export const radiantSummedConduitEffects = [
   'hp', 'attack', 'defense', 'recovery', 'normal', 'flare', 'pierce', 'healing', 'shielding',
   'resilience', 'guard', 'leader', 'cooperation', 'opening', 'execution', 'burning', 'exposed',
-  'weakened', 'shielded', 'wounded', 'solo', 'first-action', 'burn-power', 'shelter', 'brace', 'start-charge', 'shield-break',
+  'weakened', 'shielded', 'wounded', 'solo', 'first-action', 'burn-power', 'shelter', 'brace', 'start-charge',
+  'skill-power', 'skill1-power', 'debuff-power', 'restore-power', 'health-skill-power', 'skill-efficiency', 'skill-duration',
+  'debuff-duration', 'gauge-gain', 'capacity', 'direct', 'skill-pierce', 'enemy-defense',
 ] as const satisfies readonly RadiantConduitEffect[];
 
 /** Exact player-facing text for one Radiant primitive, shared by menus and the battle reference. */

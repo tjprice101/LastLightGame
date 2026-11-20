@@ -13,7 +13,13 @@ export interface RadiantGaugeMember {
   baseCost: number;
   charge: number;
   living: boolean;
+  /** D-493 C8: Conduit capacity bonus above the Convergent Light cost (0 < x <= 1); omitted when 0. */
+  capacity?: number;
+  /** D-493 C4: Conduit Skill Efficiency on Convergent Light; omitted when 0. */
+  flareEfficiency?: number;
 }
+/** D-493 C8: total capacity bonus from Conduits. */
+export const radiantCapacityCap = 1;
 export interface RadiantGaugeState {
   members: RadiantGaugeMember[];
 }
@@ -46,7 +52,9 @@ export function personalChargeMaximum(member: RadiantGaugeMember): number {
   integer(member.form, 1, 'form');
   if (member.form > 6) throw new Error('Radiant form must use the saved six-form index.');
   integer(member.baseCost, 1, 'base cost');
-  const maximum = member.baseCost * (member.form >= 4 ? 2 : 1);
+  const bonus = member.capacity ?? 0;
+  if (!Number.isFinite(bonus) || bonus < 0 || bonus > radiantCapacityCap) throw new Error('Invalid radiant capacity bonus.');
+  const maximum = Math.floor(member.baseCost * (member.form >= 4 ? 2 : 1) * (1 + bonus));
   integer(maximum, 1, 'charge capacity');
   integer(maximum * personalChargeUnit, 1, 'charge capacity units');
   return maximum;
@@ -59,6 +67,11 @@ export function validateRadiantGauge(state: RadiantGaugeState): void {
     if (typeof member.id !== 'string' || !member.id || ids.has(member.id) || typeof member.living !== 'boolean' || !isCombatElement(member.elementId))
       throw new Error('Invalid radiant squad member.');
     ids.add(member.id);
+    const keys = Object.keys(member);
+    if (keys.some(key => !['id', 'elementId', 'form', 'convergenceRank', 'baseCost', 'charge', 'living', 'capacity', 'flareEfficiency'].includes(key)) ||
+        ('capacity' in member && !(typeof member.capacity === 'number' && member.capacity > 0)) ||
+        ('flareEfficiency' in member && !(typeof member.flareEfficiency === 'number' && Number.isFinite(member.flareEfficiency) && member.flareEfficiency > 0)))
+      throw new Error('Invalid radiant squad member.');
     integer(member.convergenceRank, 1, 'Convergent Light rank');
     if (member.convergenceRank > convergentLightRules.maximumRank ||
         (member.convergenceRank > 10 && member.form < convergentLightRules.ultimateEvolution) ||
@@ -81,9 +94,12 @@ function discounted(base: number, efficiency: number, floor: number): number {
   // A floor limits the discount; it never raises a cost above its base.
   return Math.max(Math.min(base, floor), Math.round(base * (1 - Math.min(radiantCostRules.efficiencyCap, efficiency))));
 }
-export function radiantFlareCost(member: RadiantGaugeMember, efficiency = 0): number {
-  return discounted(member.baseCost * (convergentLightTier(member.convergenceRank) === 'sparkling' ? 1 : 2),
-    efficiency, radiantCostRules.flareFloor);
+/** Convergent Light cost at a tier after Skill Efficiency (N2 cap and floor). */
+export function radiantFlareTierCost(baseCost: number, tier: ConvergentLightTier, efficiency = 0): number {
+  return discounted(baseCost * (tier === 'sparkling' ? 1 : 2), efficiency, radiantCostRules.flareFloor);
+}
+export function radiantFlareCost(member: RadiantGaugeMember, efficiency = member.flareEfficiency ?? 0): number {
+  return radiantFlareTierCost(member.baseCost, convergentLightTier(member.convergenceRank), efficiency);
 }
 export function radiantSkillCost(slot: RadiantSkillSlot, efficiency = 0): number {
   if (slot !== 1 && slot !== 2) throw new Error('Invalid radiant skill slot.');

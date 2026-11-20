@@ -1,5 +1,35 @@
 # Decision log
 
+## Battle Flurry Phase 4b approved: Conduit restoration (D-493, 2026-11-19)
+
+- **Owner-approved (2026-11-19), in full:** the
+  [restoration proposal](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+  as written: shared rules, mapping rules M1-M14, number sheet C1-C18, every
+  recommended answer O1-O14 and all five batches B1-B5 (195 live rows).
+- **Key answers:** no critical hits (deterministic C9/C10 conversion, D-473 O4
+  stands); Luminosity capacity above the Convergent Light cost (C8); ×0.2
+  rescale for always-on Health/Defense/Attack only (C1); the five D-480
+  reworks revert to their pre-Radiant effects (O5); distinct-design test
+  allows up to 6 primitives with unique (kind, amount) lists (O6); the 18
+  Sunshade Masters stay untouched (O7); a separate `conduit` RNG stream (O11);
+  Radiant-era Conduit designs are replaced wholesale (O14).
+- **Delivery (4c):** batch by batch, B1 first; each batch is coded, tested,
+  pressure-checked (O4: fallback proposal if an ordinary band moves more than
+  5 points) and released with a matching `game-operation` deploy before the
+  next. Saved holdings, ranks, loadouts and stable IDs are untouched.
+- **Supersedes:** D-480 for Starvein Conductor, Horizon Heartcase, Duplex
+  Heart, Reserve Torque Crank and Fieldbrace Coupler, once their batch ships.
+- **Release plan (owner choice, 2026-11-19, after the B1 study):** hold
+  releases; build B1-B5 on `battle-flurry-phase3`, then release once with a
+  single enemy retune measured on the final Conduit set. Reason: the B1 study
+  (`--retune`, balanced player, `radiant-trio-v1`) raised Calamity EX+1/2/3
+  from 85.2/52.8/33.3% to 91.7/60.6/45.8% and inactive Sunshade 101-140 from
+  92-94% to 100%; ordinary overall 96.9% to 98.0%, other bands under 5
+  points. The O4 Skill Power cap would not bind (B1 Skill Power is far below
+  +200%), so it is not a fix.
+- **B1 implemented (unreleased):** the 25 Common/Rare rows as approved;
+  the D-480 `shield-break` kind is removed (no remaining wearer).
+
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 
 - **Owner-approved plan (2026-11-19).** Phase 4 round 1 = 4a build (on-field

@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B1: Common + Rare Conduit restoration (D-493, 2026-11-19)
+
+**Implemented on `battle-flurry-phase3`, not released** (owner choice: release
+once after B5 with one enemy retune). Owner approved the full 4b proposal
+(number sheet, O1-O14, B1-B5). Spec:
+[combat spec](combat.md#conduit-restoration-b1-common--rare-d-493-battle-flurry-phase-4c).
+- All 25 Common/Rare Conduits restored to their pre-Radiant effects (C1 ×0.2
+  rescale on always-on Health/Defense/Attack).
+- New kinds: Skill Power (flat, Skill 1, debuff, heal/Shield, per 450 Health),
+  Skill Efficiency (now also on Convergent Light), Skill Duration (never on
+  signature resources), Gauge Gain, capacity above the Convergent Light cost,
+  direct damage, skill-only pierce, squad enemy-Defense aura (no stacking),
+  drain, Duplex self-heal, Twinpulse fill. Fixed (rank-proof) primitives.
+- Gauge members carry optional `capacity` / `flareEfficiency` (validated).
+- `shield-break` removed. Character Skill stats panel shows per-slot
+  Duration and capacity.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded.
+- Full `npx vitest run`: 10,766 of 10,767; the one failure (a
+  `battle-local.test.ts` fixture expecting Reserve Torque Crank's D-480
+  effect) was updated and passes (14 of 14). New
+  `src/game/conduit-restoration-b1.test.ts`: 40 of 40.
+- `node toolsun_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced): ordinary 98.0% (was 96.9%); Calamity EX+1/2/3 91.7/60.6/45.8%
+  (was 85.2/52.8/33.3%); Sunshade 101-140 100% (was 92-94%); Dungeon 101-120
+  95.8%, War 121-140 97.7%, Oblivion 141-160 81.3%, 161-180 59.5%, Training
+  101-120 50%.
+- `node toolsundle_server_game.mjs`: bundle rebuilt; **not deployed**.
+
+**Not verified:** a look in game (unreleased).
+
+**Next:** B2 Legendary (15 rows) in a fresh Opus session; then B3-B5, one
+enemy retune on the final Conduit set, release with the authority deploy.
+
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 
 **Implemented on `battle-flurry-phase3`.** Spec:

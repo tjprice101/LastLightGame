@@ -2315,3 +2315,65 @@ damage, pure bookkeeping), `src/presentation/battle-conduit-contribution.test.ts
 Motion review: `node tools/capture_frames.mjs --battle attack --member 0
 --encounter nerithe-10 --stream` (Infernis's Normal Attack shows "Leader Skill
 +N damage"), desktop and `--width 390 --height 844`.
+
+## Conduit restoration B1: Common + Rare (D-493, Battle Flurry Phase 4c)
+
+The 25 Common and Rare Conduits now carry their pre-Radiant effects in today's
+terms, per the approved
+[restoration proposal](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+(B1 table; number sheet C1-C18). Legendary, Omnic, Calamitic and Master rows
+(B2-B5) keep their Radiant-era designs until their batch ships. Stable IDs,
+ranks, upgrade costs, ownership and loadouts are unchanged.
+
+- **New primitive kinds** (`src/content/conduit-effects.ts`, tooltips in
+  `conduit-effect-text.ts`):
+  - `skill-power` (Skill 1, Skill 2, Convergent Light), `skill1-power`,
+    `debuff-power` (skills whose kit definition applies Weaken, Expose or Burn),
+    `restore-power` (skills whose kit definition heals or grants Shields) and
+    `health-skill-power` (per full 450 of the bearer's maximum Health; the step
+    is fixed). Signature clauses do not count as traits (C13).
+  - `skill-efficiency`: adds to the slot Imbue; the 50% cap and the 1/70 floors
+    (`radiantCostRules`) are unchanged. It now also discounts Convergent Light.
+  - `skill-duration` and `debuff-duration`: whole turns on timed effects from
+    kit effects (Burn, Weaken, Expose, ally categories), total at most 6. They
+    never extend Shields, instant effects or signature resources (Cover, Thorn
+    Traps, Marks, Burn boost): signature clauses receive Skill Duration 0 (C5).
+  - `gauge-gain`: Gauge Gain = 1 + Conduit/Master Gauge Gain + Luminosity Gain
+    Up, rounded once per gain (C6).
+  - `capacity`: Luminosity capacity = floor(cost layers x (1 + bonus)); the
+    bonus is summed and capped at +100% (C8). Convergent Light cost and
+    readiness are unchanged; capacity never fills Luminosity.
+  - `direct`: Normal Attacks, skills and Convergent Light deal more direct
+    damage; it joins the existing additive layer (C9, C11).
+  - `skill-pierce` (skills and Convergent Light only) and `enemy-defense`
+    (all enemies, for every squad member, for the encounter; copies do not
+    stack, the strongest squad member's amount applies). Both share the 80%
+    cap with `pierce` and kit Defense ignore (C14).
+  - `drain` (heal from direct damage to enemy Health and Shields after each
+    damaging action), `ally-heal-self` (once per skill or Convergent Light
+    that restores another ally's Health) and `twin-charge` (each landed Normal
+    Attack fills the bearer and the other living ally with the lowest
+    Luminosity percentage; ties go to squad order).
+- **Fixed primitives** (`fixedEffect`, `fixed: true`) keep their amount at every
+  rank: Wardglass Transformer's Defense −7%, Opal Indexer's and Resonance
+  Crucible's +1 turn (C12). Negative stat amounts read "decreases by".
+- **Gauge state.** `RadiantGaugeMember` gains optional `capacity` and
+  `flareEfficiency`, stored only when positive and validated against the
+  frozen loadout; older states without them stay valid.
+- **Removed:** the D-480 `shield-break` kind (only Fieldbrace Coupler carried
+  it).
+- **Attribution (D-492).** Skill Power, direct damage, skill pierce and enemy
+  Defense recompute with the source removed, so callouts and the summary
+  credit them; another member's Breach Pendulum is credited on the hits it
+  helped. Not itemized: Gauge Gain and capacity.
+- **UI.** The character Skill stats panel shows per-slot Skill Power and
+  Efficiency, per-slot Skill Duration when slots differ, and Luminosity
+  capacity; Convergent Light costs include Skill Efficiency.
+
+Validation: `src/game/conduit-restoration-b1.test.ts` (every B1 row at +0,
+rank rules, tooltips, Skill stats and traits, Skill Duration on a real Burn,
+cost discounts, capacity and its cap, Gauge Gain rounding, Twinpulse,
+direct damage, skill-only pierce, Breach non-stacking and attribution,
+Wardglass penalty, Lifeline and Duplex sustain); `conduit-effects.test.ts`
+and `combat-consolidation.test.ts` (O6: up to 6 primitives, unique kind and
+amount lists).

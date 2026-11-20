@@ -117,11 +117,10 @@ describe('local Radiant authority', () => {
     expect((await reloaded.read()).run!.state.bearers[0].stats.hp).toBe(288);
     const device = structuredClone((await reloaded.read()).run!);
     const events = applyRadiantTurn(device, { type: 'normal', bearerId: 'ember', targetId: started.run.state.enemies[0].id });
-    // 15 Normal hit + 1 from Reserve Torque Crank (D-480).
-    expect(device.state.gauge.members[0].charge).toBe(16);
-    expect(events).toContainEqual(expect.objectContaining({
-      type: 'charge', gearSource: { kind: 'gear', bearerId: 'ember', conduitId: 'reserve-torque-crank' },
-    }));
+    // 15 Normal hit x Reserve Torque Crank's +10% Gauge Gain (D-493), rounded once: 17.
+    expect(device.state.gauge.members[0].charge).toBe(17);
+    expect(device.state.gauge.members[0].capacity).toBe(.25);
+    expect(events).toContainEqual(expect.objectContaining({ type: 'gauge-drop', bearerId: 'ember', amount: 17 }));
   });
 
   it('device play writes nothing until the settle saves the replayed encounter and its Haul', async () => {

@@ -1,9 +1,12 @@
 # Battle Flurry Phase 4b: Conduit restoration proposal (2026-11-19)
 
 **Status (2026-11-19):**
-- **Proposal, not owner-approved; docs only; no code changed.**
-- Next: owner approves the number sheet, the adaptation answers (O1-O14) and
-  each batch (B1-B5); then 4c code + server deploy.
+- **Owner-approved in full (D-493, 2026-11-19):** number sheet, O1-O14 as
+  recommended, batches B1-B5.
+- **B1 implemented, unreleased** (spec: [combat.md](../../combat.md#conduit-restoration-b1-common--rare-d-493-battle-flurry-phase-4c)).
+- Next: B2-B5 on `battle-flurry-phase3`; then one enemy retune on the final
+  Conduit set and a single release with the matching server deploy (owner
+  choice, D-493).
 
 Plan: [battle-flurry-overhaul.md](../battle-flurry-overhaul.md) §E and the
 Phase 4 round 1 note (D-492). Source of old effects:

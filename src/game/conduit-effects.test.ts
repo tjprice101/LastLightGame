@@ -16,11 +16,14 @@ import { adaptRadiantLoadouts, type RadiantAccountGear } from './combat-loadout'
 function gear(...ids: ConduitId[]): RadiantGear {
   return Array.from({ length: 8 }, (_, index) => ids[index] ? { id: ids[index], rank: 0 } : null);
 }
+function ranked(rank: number, ...ids: ConduitId[]): RadiantGear {
+  return gear(...ids).map(slot => slot && { ...slot, rank });
+}
 function member(starter: RadiantBearerId = 'ember', equipment?: RadiantGear, form = 6): RadiantLoadout {
   return { id: starter, starter, level: 0, form, convergenceRank: 1, weaponRank: 0, masterId: null, ascension: {}, gear: equipment };
 }
-function fixture(ids: ConduitId[] = [], starter: RadiantBearerId = 'ember', others: RadiantBearerId[] = []): RadiantCombatState {
-  return createRadiantCombat([member(starter, gear(...ids)), ...others.map(id => member(id))],
+function fixture(ids: ConduitId[] = [], starter: RadiantBearerId = 'ember', others: RadiantBearerId[] = [], rank = 0): RadiantCombatState {
+  return createRadiantCombat([member(starter, ranked(rank, ...ids)), ...others.map(id => member(id))],
     ['enemy', 'enemy2'].map(id => ({ elementId: null, id, stats: { hp: 100000, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
 }
 function act(state: RadiantCombatState, action: RadiantCombatAction) {
@@ -63,15 +66,18 @@ describe('exhaustive stable-ID radiant conversion', () => {
   });
   it.each(ids)('%s has a finite meaningful monotonic rank matrix and unchanged costs', id => {
     const conduit = conduits.find(entry => entry.id === id)!;
-    let previous = radiantConduitPrimitives({ id, rank: 0 });
+    const previous = radiantConduitPrimitives({ id, rank: 0 });
     expect(previous.length).toBeGreaterThan(0);
-    expect(previous.length).toBeLessThanOrEqual(2);
+    // D-493 O6: restored packages carry up to 6 primitives.
+    expect(previous.length).toBeLessThanOrEqual(6);
     const multipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200, Calamitic: 400 };
     for (let rank = 0; rank <= 5; rank++) {
       const current = radiantConduitPrimitives({ id, rank });
       current.forEach((primitive, index) => {
-        expect(primitive.amount).toBeGreaterThan(0);
         expect(Number.isFinite(primitive.amount)).toBe(true);
+        // D-493 C12: fixed primitives (penalties, flat Skill Duration) keep their amount at every rank.
+        if (primitive.fixed) { expect(primitive.amount).toBe(previous[index].amount); return; }
+        expect(primitive.amount).toBeGreaterThan(0);
         expect(primitive.amount).toBeCloseTo(previous[index].amount * (1 + .1 * rank));
       });
       expect(conduitUpgradeCost(conduit, rank)).toBe(
@@ -85,10 +91,8 @@ describe('exhaustive stable-ID radiant conversion', () => {
     const starter = (Object.keys(radiantBearerKits) as RadiantBearerId[])
       .find(key => !conduit.element || radiantBearerKits[key].elementId === conduit.element)!;
     for (let rank = 0; rank <= 5; rank++) {
-      let state = fixture([id], starter);
+      let state = fixture([id], starter, [], rank);
       state.bearers[0].hp = Math.floor(state.bearers[0].hp / 2);
-      state.bearers[0].loadout.gear![0]!.rank = rank;
-      state.bearers[0].stats = resolveRadiantStarterStats(state.bearers[0].loadout);
       const before = structuredClone(state);
       state = normal(state).state;
       expect(before.acted).toEqual([]);
@@ -117,7 +121,7 @@ describe('real four-stat and action modifiers', () => {
     expect(actual[kind]).toBeCloseTo(base[kind] * (1 + radiantGearAmount(loadout.gear, kind)));
     expect(Object.keys(actual)).toEqual(['hp', 'attack', 'defense', 'recovery']);
   });
-  it.each(['precision-escapement', 'spearwheel-engine'] as ConduitId[])('%s increases actual Normal damage without extra RNG', id => {
+  it.each(['precision-escapement', 'fieldbrace-coupler', 'breach-pendulum'] as ConduitId[])('%s increases actual Normal damage without extra RNG', id => {
     const control = normal(fixture()), result = normal(fixture([id]));
     const hit = result.events.find(event => event.type === 'damage' && event.source.kind === 'normal')!;
     expect(hit.type === 'damage' && hit.healthLoss).toBeGreaterThan(
@@ -136,10 +140,10 @@ describe('real four-stat and action modifiers', () => {
     const healing = (id?: ConduitId) => cast(id, 'sprout').events
       .filter(event => event.type === 'heal').reduce((sum, event) => sum + event.offered, 0);
     expect(healing('springwell-pump')).toBeGreaterThan(healing());
-    expect(cast('wardglass-transformer', 'tide').state.bearers[0].shields[0].remaining)
+    expect(cast('pale-bulwark-diadem', 'tide').state.bearers[0].shields[0].remaining)
       .toBeGreaterThan(cast(undefined, 'tide').state.bearers[0].shields[0].remaining);
   });
-  it('guard (after a skill) and resilience improve a real hostile phase and do not cleanse statuses', () => {
+  it('guard (after a skill) improves a real hostile phase and does not cleanse statuses', () => {
     const test = (id?: ConduitId) => {
       let state = fixture(id ? [id] : []);
       state.bearers[0].buffs.push({ category: 'weaken', source: { kind: 'enemy', enemyId: 'enemy' }, magnitude: .5, remaining: 2 });
@@ -147,9 +151,8 @@ describe('real four-stat and action modifiers', () => {
       state = skillUse(state, 'ember');
       return { attack, result: act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 2 }) };
     };
-    expect(test('opal-indexer').attack).toBeGreaterThan(test().attack);
     expect(test('stasis-reliquary').result.state.bearers[0].hp).toBeGreaterThan(test().result.state.bearers[0].hp);
-    expect(test('opal-indexer').result.state.bearers[0].buffs.filter(effect => effect.category === 'weaken')).toHaveLength(1);
+    expect(test('stasis-reliquary').result.state.bearers[0].buffs.filter(effect => effect.category === 'weaken')).toHaveLength(1);
   });
   it('leader gear only applies while first and alive; cooperation requires a previous ally action', () => {
     let state = fixture(['calamitic-choir-array-of-branded-stars'], 'ember', ['rosetta']);
@@ -172,11 +175,10 @@ describe('real four-stat and action modifiers', () => {
 
 describe('bounded, sourced Conduit triggers', () => {
   it('rounds upgraded charge once, caps it, and does not change combat RNG', () => {
-    const state = fixture(['coilfeed-ratchet']);
-    state.bearers[0].loadout.gear![0]!.rank = 3;
+    const state = fixture(['nullsong-transmission'], 'ember', [], 3);
     const result = normal(state);
-    // 15 Normal hit + round(3 x 1.3) = 19.
-    expect(result.state.gauge.members[0].charge).toBe(19);
+    // 15 Normal hit + round(4 x 1.3) = 20.
+    expect(result.state.gauge.members[0].charge).toBe(20);
     expect(result.state.chargeSeed).toBe(state.chargeSeed);
     state.gauge.members[0].charge = 199;
     expect(normal(state).state.gauge.members[0].charge).toBe(200);
@@ -195,7 +197,7 @@ describe('bounded, sourced Conduit triggers', () => {
     }
   });
   it('splash cannot generate another splash, charge drop or direct-kill reward', () => {
-    const state = createRadiantCombat([member('ember', gear('resonance-crucible', 'calamitic-causality-funeral-engine'))],
+    const state = createRadiantCombat([member('ember', gear('calamitic-worldbreaker-cannonade', 'calamitic-causality-funeral-engine'))],
       ['enemy', 'other'].map((id, index) => ({ id, elementId: null,
         stats: { hp: index === 0 ? 100000 : 1, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
     const result = normal(state);
@@ -302,7 +304,7 @@ describe('eligibility, frozen identity and read-only account boundary', () => {
 
 describe('Step 4 retune Conduit effects (D-480)', () => {
   it('skill-leech heals the most-wounded ally once per own skill from its direct Health damage', () => {
-    const state = fixture(['duplex-heart'], 'ember', ['tide']);
+    const state = fixture(['starvein-conductor'], 'ember', ['tide']);
     state.bearers[1].hp = 100;
     state.gauge.members[0].charge = 40;
     const result = act(state, { type: 'skill', bearerId: 'ember', slot: 2 });
@@ -311,44 +313,29 @@ describe('Step 4 retune Conduit effects (D-480)', () => {
     const heals = result.events.filter(event => event.type === 'heal' && event.source.kind === 'gear');
     expect(heals).toHaveLength(1);
     expect(heals[0].type === 'heal' && heals[0].targetId).toBe('tide');
-    expect(heals[0].type === 'heal' && heals[0].offered).toBe(Math.round(.1 * dealt));
+    expect(heals[0].type === 'heal' && heals[0].offered).toBe(Math.round(.15 * dealt));
     // A Normal Attack does not trigger it.
-    const plain = fixture(['duplex-heart'], 'ember', ['tide']);
+    const plain = fixture(['starvein-conductor'], 'ember', ['tide']);
     plain.bearers[1].hp = 100;
     expect(normal(plain).events.some(event => event.type === 'heal' && event.source.kind === 'gear')).toBe(false);
-  });
-  it('shield-break removes 30% more enemy Shield per point and reports absorbed as Shield removed', () => {
-    const shielded = (ids: ConduitId[]) => {
-      const state = fixture(ids);
-      state.enemies[0].shields.push({ id: state.nextShieldId++, source: { kind: 'enemy', enemyId: 'enemy' }, remaining: 100000 });
-      return normal(state);
-    };
-    const base = shielded([]), boosted = shielded(['fieldbrace-coupler']);
-    const hit = (result: ReturnType<typeof normal>) => result.events.find(event => event.type === 'damage' && event.targetId === 'enemy')!;
-    const [a, b] = [hit(base), hit(boosted)];
-    if (a.type !== 'damage' || b.type !== 'damage') throw new Error('Missing damage events.');
-    expect(a.absorbed).toBe(a.offered);
-    expect(b.absorbed).toBe(Math.floor(b.offered * 1.3));
-    expect(b.healthLoss).toBe(0);
-    expect(b.absorbed).toBe(b.shields.reduce((sum, entry) => sum + entry.amount, 0));
   });
 });
 
 describe('Conduit contribution attribution (D-492)', () => {
   const damage = (events: ReturnType<typeof act>['events']) =>
     events.filter((event): event is Extract<typeof event, { type: 'damage' }> => event.type === 'damage');
-  it('splits a Normal hit between opening and Normal-damage Conduits without changing the hit', () => {
+  it('splits a Normal hit between damage and Attack Conduits without changing the hit', () => {
     const bare = normal(fixture());
-    const boosted = normal(fixture(['prism-splinter-socket', 'siegebound-drive']));
+    const boosted = normal(fixture(['calamitic-horizon-cleaving-godpress', 'siegebound-drive']));
     const [plain] = damage(bare.events), [hit] = damage(boosted.events);
     const total = (boosts: typeof hit.boosts) => (boosts ?? []).reduce((sum, entry) => sum + entry.amount, 0);
     // Ember's own Leader effect is attributed in both; the Conduits add their own shares on top.
     expect(plain.boosts!.map(entry => entry.source.kind)).toEqual(['leader']);
     const shares = new Map(hit.boosts!.map(entry => [entry.source.kind === 'gear' ? entry.source.conduitId : entry.source.kind, entry.amount]));
-    expect([...shares.keys()].sort()).toEqual(['leader', 'prism-splinter-socket', 'siegebound-drive']);
+    expect([...shares.keys()].sort()).toEqual(['calamitic-horizon-cleaving-godpress', 'leader', 'siegebound-drive']);
     expect(total(hit.boosts) - total(plain.boosts)).toBeGreaterThan(0);
     expect(total(hit.boosts)).toBeLessThan(hit.offered);
-    expect(shares.get('prism-splinter-socket')!).toBeGreaterThan(shares.get('siegebound-drive')!);
+    expect(shares.get('calamitic-horizon-cleaving-godpress')!).toBeGreaterThan(shares.get('siegebound-drive')!);
   });
   it('records damage prevented by a Defense Conduit on enemy hits', () => {
     const attack = (ids: ConduitId[]) => {

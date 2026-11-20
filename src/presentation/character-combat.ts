@@ -1,9 +1,9 @@
-import { radiantAttunement, radiantBearerKits, radiantFlarePower, radiantLeaderBonus, radiantMasters, resolveRadiantStarterStats,
+import { radiantAttunement, radiantBearerKits, radiantEquipmentAmount, radiantFlarePower, radiantLeaderBonus, radiantMasters, resolveRadiantStarterStats,
   radiantRoleSkillPower, radiantSupportSquadHeal, radiantTankTargetWeight,
   type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
 import type { RadiantSkillSlot } from '../content/radiant-kits';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
-import { radiantChargeRules, radiantSkillCost } from '../game/combat-gauge';
+import { radiantCapacityCap, radiantChargeRules, radiantFlareTierCost, radiantSkillCost } from '../game/combat-gauge';
 import { radiantHealthMote, radiantLoadoutSkillStats, radiantMaximumDuration } from '../game/combat-engine';
 import { radiantFlareText, radiantLeaderSkillText, radiantSkillName, radiantSkillText } from './kit-text';
 import { getMasterConduit } from '../content/master-conduits';
@@ -117,7 +117,8 @@ export function radiantFlareTierUnlocked(loadout: RadiantLoadout, tier: Converge
 }
 
 function flareCost(loadout: RadiantLoadout, tier: ConvergentLightTier): string {
-  const cost = radiantBearerKits[loadout.starter].baseCost * (tier === 'sparkling' ? 1 : 2);
+  const cost = radiantFlareTierCost(radiantBearerKits[loadout.starter].baseCost, tier,
+    radiantLoadoutSkillStats(loadout, 'flare').skillEfficiency);
   return `${cost} Luminosity`;
 }
 
@@ -148,6 +149,18 @@ export function radiantRoleTrait(id: RadiantBearerId): string {
   return `Support: +50% Health, +${percent(radiantRoleSkillPower.Support)} Skill Power. Each skill and Convergent Light also heals all allies (${percent(radiantSupportSquadHeal)} of max Health; not scaled by Skill Power).`;
 }
 
+/** Skill Duration per slot (D-493: Weaken/Exposure/Burn skills may gain extra turns). */
+function durationText(loadout: RadiantLoadout): string {
+  const turns = ([1, 2, 'flare'] as const).map(slot => radiantLoadoutSkillStats(loadout, slot).skillDuration);
+  const label = (value: number) => `+${value} turn${value === 1 ? '' : 's'}`;
+  return turns.every(value => value === turns[0]) ? label(turns[0])
+    : `Skill 1 ${label(turns[0])} · Skill 2 ${label(turns[1])} · Convergent Light ${label(turns[2])}`;
+}
+/** D-493 C8: personal Luminosity capacity, including Conduit capacity above the Convergent Light cost. */
+function luminosityCapacity(loadout: RadiantLoadout): number {
+  return Math.floor(radiantBearerKits[loadout.starter].baseCost * (loadout.form >= 4 ? 2 : 1) *
+    (1 + Math.min(radiantCapacityCap, radiantEquipmentAmount(loadout, 'capacity'))));
+}
 /** N4 Skill stats for this loadout: per-slot Skill Power, Efficiency and cost, plus Duration and Gauge Gain. */
 export function radiantSkillStatsPanel(loadout: RadiantLoadout): string {
   const rows = ([1, 2, 'flare'] as const).map(slot => {
@@ -158,7 +171,8 @@ export function radiantSkillStatsPanel(loadout: RadiantLoadout): string {
   }).join('');
   const shared = radiantLoadoutSkillStats(loadout, 1);
   return `<dl class="info-stat-table radiant-skill-stats" aria-label="Skill stats">${rows}
-    <div data-radiant-skill-stat="duration"><dt>Skill Duration</dt><dd><strong>+${shared.skillDuration} turns</strong> on timed skill effects (max ${radiantMaximumDuration} turns)</dd></div>
+    <div data-radiant-skill-stat="duration"><dt>Skill Duration</dt><dd><strong>${durationText(loadout)}</strong> on timed skill effects (max ${radiantMaximumDuration} turns)</dd></div>
+    <div data-radiant-skill-stat="capacity"><dt>Luminosity capacity</dt><dd><strong>${luminosityCapacity(loadout)}</strong> Luminosity</dd></div>
     <div data-radiant-skill-stat="gauge"><dt>Gauge Gain</dt><dd><strong>${percent(shared.gaugeGain)}</strong> of every Luminosity gain</dd></div></dl>
     <p class="info-label">Skill Power scales skill and Convergent Light damage, Burn, heals, Shields and buff and debuff strength. It does not scale Normal Attack, fills or Conduit-generated effects. Skill Efficiency discounts costs (max 50%; Convergent Light cost at least 70).</p>`;
 }

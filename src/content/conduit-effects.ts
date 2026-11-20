@@ -18,42 +18,52 @@ export type RadiantConduitEffect =
   | 'hurt-heal' | 'break-heal' | 'burn-heal' | 'kill-heal' | 'kill-charge' | 'normal-splash'
   | 'flare-team-charge' | 'hurt-charge' | 'heal-team-charge' | 'guard-team-shield'
   | 'flare-weaken' | 'normal-reduction' | 'round-charge' | 'round-team-heal'
-  | 'skill-leech' | 'shield-break';
-export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number }
+  | 'skill-leech'
+  // D-493 restoration (Phase 4c): pre-Radiant Skill stats, Luminosity and damage layers.
+  | 'skill-power' | 'skill1-power' | 'debuff-power' | 'restore-power' | 'health-skill-power'
+  | 'skill-efficiency' | 'skill-duration' | 'debuff-duration' | 'gauge-gain' | 'capacity'
+  | 'direct' | 'skill-pierce' | 'enemy-defense' | 'drain' | 'ally-heal-self' | 'twin-charge';
+/** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration). */
+export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true }
 export type RadiantConduitDesign = readonly RadiantConduitPrimitive[];
 export const effect = (kind: RadiantConduitEffect, amount: number): RadiantConduitPrimitive => ({ kind, amount });
+/** A primitive that keeps its amount at every upgrade rank (D-493 C12). */
+export const fixedEffect = (kind: RadiantConduitEffect, amount: number): RadiantConduitPrimitive => ({ kind, amount, fixed: true });
+/** D-493 C12: Glassroot Gimbal's Health step (fixed at every rank). */
+export const radiantHealthSkillPowerStep = 450;
 export const pair = (kind: RadiantConduitEffect, amount: number, related: RadiantConduitEffect, extra: number): RadiantConduitDesign =>
   [effect(kind, amount), effect(related, extra)];
 
-// Stable-ID design decisions. Step 4 retune (D-480) reworked Fieldbrace Coupler, Reserve Torque Crank,
-// Duplex Heart, Horizon Heartcase and Starvein Conductor into sustain and anti-Shield effects.
+// Stable-ID design decisions. D-493 restores the pre-Radiant (Phase Zero) effects batch by batch
+// (B1 Common + Rare shipped in 4c; C1 x0.2 rescale on always-on Health/Defense/Attack). Rows not yet
+// restored keep their Radiant-era designs (D-480 for Horizon Heartcase and Starvein Conductor).
 // Fractions are ratios and charge values are whole personal charge.
 export const radiantConduits = {
   'vigil-core': [effect('hp', .2)],
-  'siegebound-drive': [effect('normal', .15)],
-  'bastion-lock': [effect('defense', .2)],
-  'parallax-relay': [effect('normal-expose', .08)],
-  'fracture-reservoir': [effect('start-charge', 10)],
-  'prism-splinter-socket': [effect('opening', .2)],
-  'precision-escapement': [effect('first-action', .2)],
-  'fieldbrace-coupler': [effect('shield-break', .3)],
-  'reserve-torque-crank': pair('leech', .15, 'normal-charge', 1),
-  'crosspin-governor': [effect('flare', .12)],
-  'aegis-capacitor': [effect('absorbed-charge', 6)],
-  'duplex-heart': [effect('skill-leech', .1)],
-  'falcon-sight': pair('exposed', .25, 'normal-expose', .1),
-  'spearwheel-engine': [effect('pierce', .18)],
-  'springwell-pump': [effect('healing', .3)],
-  'twinpulse-bellows': pair('start-charge', 15, 'guard-charge', 3),
-  'glassroot-gimbal': pair('shielded', .25, 'normal-shield', .3),
-  'lifeline-flywheel': [effect('leech', .12)],
-  'sentinel-aperture': [effect('brace', .15)],
-  'wardglass-transformer': [effect('shielding', .3)],
-  'hammerbalance-link': pair('attack', .18, 'wounded', .15),
-  'breach-pendulum': pair('opening', .25, 'pierce', .08),
-  'coilfeed-ratchet': pair('normal-charge', 3, 'guard-charge', 3),
-  'opal-indexer': pair('normal-weaken', .12, 'resilience', .15),
-  'resonance-crucible': [effect('normal-splash', .2)],
+  'siegebound-drive': pair('attack', .07, 'skill-efficiency', .05),
+  'bastion-lock': pair('defense', .07, 'skill-power', .25),
+  'parallax-relay': pair('hp', .1, 'flare', .1),
+  'fracture-reservoir': [effect('capacity', .4)],
+  'prism-splinter-socket': pair('gauge-gain', .075, 'skill-efficiency', .05),
+  'precision-escapement': [effect('direct', .025)],
+  'fieldbrace-coupler': [effect('direct', .125)],
+  'reserve-torque-crank': pair('capacity', .25, 'gauge-gain', .1),
+  'crosspin-governor': [effect('skill-power', .4)],
+  'aegis-capacitor': pair('hp', .15, 'defense', .15),
+  'duplex-heart': [effect('ally-heal-self', .05)],
+  'falcon-sight': pair('hp', .09, 'direct', .125),
+  'spearwheel-engine': [effect('skill-pierce', .1)],
+  'springwell-pump': [effect('restore-power', .2)],
+  'twinpulse-bellows': [effect('twin-charge', 7)],
+  'glassroot-gimbal': [effect('health-skill-power', .05)],
+  'lifeline-flywheel': [effect('drain', .1)],
+  'sentinel-aperture': [effect('skill1-power', .99)],
+  'wardglass-transformer': [effect('direct', .0875), fixedEffect('defense', -.07)],
+  'hammerbalance-link': pair('attack', .17, 'direct', .0375),
+  'breach-pendulum': [effect('enemy-defense', .1)],
+  'coilfeed-ratchet': [effect('skill-efficiency', .08), effect('skill-power', .08), effect('direct', .04)],
+  'opal-indexer': [effect('debuff-power', .75), fixedEffect('debuff-duration', 1)],
+  'resonance-crucible': [effect('defense', .15), effect('hp', .1), fixedEffect('skill-duration', 1)],
   'astral-prism': pair('first-action', .35, 'normal-expose', .15),
   'citadel-spine': pair('defense', .35, 'guard-shield', .6),
   'execution-orrery': [effect('execution', .6)],
@@ -148,9 +158,9 @@ export function validateRadiantGear(value: unknown, element: ElementId): Radiant
 export function radiantConduitPrimitives(slot: RadiantGearSlot): RadiantConduitPrimitive[] {
   getConduit(slot.id);
   validateConduitUpgradeLevel(slot.rank);
-  return radiantConduits[slot.id].map(entry => ({
-    kind: entry.kind, amount: entry.amount * (1 + .1 * slot.rank),
-  }));
+  return (radiantConduits[slot.id] as RadiantConduitDesign).map(entry => entry.fixed
+    ? { kind: entry.kind, amount: entry.amount, fixed: true as const }
+    : { kind: entry.kind, amount: entry.amount * (1 + .1 * slot.rank) });
 }
 export function radiantGearAmount(gear: RadiantGear | undefined, kind: RadiantConduitEffect): number {
   return (gear ?? []).flatMap(slot => slot === null ? [] : radiantConduitPrimitives(slot))

@@ -244,13 +244,14 @@ describe('consolidated live combat contract', () => {
     }
   });
 
-  it('gives every Conduit and Master a mechanically distinct one-or-two-effect design, ignoring numeric differences', () => {
+  it('gives every Conduit and Master a distinct design of one to six effects (D-493 O6: unique kind and amount lists)', () => {
     const designs = [...Object.values(radiantConduits), ...Object.values(radiantMasters).map(master => master.effects)];
     for (const design of designs) {
-      expect(design.length).toBeLessThanOrEqual(2);
+      expect(design.length).toBeLessThanOrEqual(6);
       expect(design.length).toBeGreaterThan(0);
     }
-    expect(new Set(designs.map(design => design.map(effect => effect.kind).sort().join('|'))).size).toBe(designs.length);
+    expect(new Set(designs.map(design => design.map(effect => `${effect.kind}:${effect.amount}`).sort().join('|'))).size)
+      .toBe(designs.length);
     const leaders = releasedRadiantIds.map(id => radiantLeaderEffects(loadout(id)).map(effect => effect.kind).sort().join('|'));
     expect(new Set(leaders).size).toBe(leaders.length);
   });
