@@ -58,7 +58,9 @@ saves working. Each batch adds a test that loads saves and saved encounters
 event type or state field against the saved-event allowlist in
 `src/online/battle-run.ts` (`eventFields` / `validEvent`). Background: the
 released game rejected any save holding a settled encounter with signature
-events (fix `562de239` on this branch, hotfix `c732c7ee` on `main`).
+events (fix `562de239` on this branch, hotfix `c732c7ee` on `main`,
+**released 2026-11-20**: pushed `main` and `overhaul/radiant-foundation`,
+Deploy Last Light run succeeded, `game-operation` deployed from `main`).
 
 ## Battle Flurry Phase 4c B2: Legendary Conduit restoration (D-493, 2026-11-19)
 
