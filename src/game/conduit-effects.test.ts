@@ -75,8 +75,10 @@ describe('exhaustive stable-ID radiant conversion', () => {
       const current = radiantConduitPrimitives({ id, rank });
       current.forEach((primitive, index) => {
         expect(Number.isFinite(primitive.amount)).toBe(true);
-        // D-493 C12: fixed primitives (penalties, flat Skill Duration) keep their amount at every rank.
+        // D-493 C12: fixed primitives (penalties, flat Skill Duration) keep their amount at every rank;
+        // stepped ones add their step per rank.
         if (primitive.fixed) { expect(primitive.amount).toBe(previous[index].amount); return; }
+        if (primitive.step !== undefined) { expect(primitive.amount).toBeCloseTo(previous[index].amount + primitive.step * rank); return; }
         expect(primitive.amount).toBeGreaterThan(0);
         expect(primitive.amount).toBeCloseTo(previous[index].amount * (1 + .1 * rank));
       });
@@ -140,19 +142,28 @@ describe('real four-stat and action modifiers', () => {
     const healing = (id?: ConduitId) => cast(id, 'sprout').events
       .filter(event => event.type === 'heal').reduce((sum, event) => sum + event.offered, 0);
     expect(healing('springwell-pump')).toBeGreaterThan(healing());
-    expect(cast('pale-bulwark-diadem', 'tide').state.bearers[0].shields[0].remaining)
-      .toBeGreaterThan(cast(undefined, 'tide').state.bearers[0].shields[0].remaining);
+    // Tizu's second Master carries `shielding`.
+    const shieldOf = (masterId: RadiantLoadout['masterId']) => {
+      const state = ready(createRadiantCombat([{ ...member('tide'), masterId }, member('rosetta')],
+        [{ elementId: null, id: 'enemy', stats: { hp: 100000, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 }], 0));
+      return act(state, { type: 'flare', bearerId: 'tide' }).state.bearers[0].shields[0].remaining;
+    };
+    expect(shieldOf('master-tide-2')).toBeGreaterThan(shieldOf(null));
   });
   it('guard (after a skill) improves a real hostile phase and does not cleanse statuses', () => {
-    const test = (id?: ConduitId) => {
-      let state = fixture(id ? [id] : []);
-      state.bearers[0].buffs.push({ category: 'weaken', source: { kind: 'enemy', enemyId: 'enemy' }, magnitude: .5, remaining: 2 });
-      const attack = effectiveRadiantStats(state, 'ember').attack;
-      state = skillUse(state, 'ember');
-      return { attack, result: act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 2 }) };
-    };
-    expect(test('stasis-reliquary').result.state.bearers[0].hp).toBeGreaterThan(test().result.state.bearers[0].hp);
-    expect(test('stasis-reliquary').result.state.bearers[0].buffs.filter(effect => effect.category === 'weaken')).toHaveLength(1);
+    // Solenne's first Master carries `guard`; the same post-skill state without the "used a skill" mark is the control.
+    let state = createRadiantCombat([{ ...member('solenne'), masterId: 'master-solenne-1' }],
+      [{ elementId: null, id: 'enemy', stats: { hp: 100000, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 }], 0);
+    state.bearers[0].hp = 100;
+    state.bearers[0].buffs.push({ category: 'weaken', source: { kind: 'enemy', enemyId: 'enemy' }, magnitude: .5, remaining: 2 });
+    state = skillUse(state, 'solenne');
+    const hit = (input: RadiantCombatState) => act(input, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['solenne'], coefficient: 2 });
+    const unmarked = structuredClone(state);
+    unmarked.skilled = [];
+    const offered = (result: ReturnType<typeof hit>) => result.events.find(event => event.type === 'damage')!;
+    const [guarded, plain] = [offered(hit(state)), offered(hit(unmarked))];
+    expect(guarded.type === 'damage' && plain.type === 'damage' && guarded.offered < plain.offered).toBe(true);
+    expect(hit(state).state.bearers[0].buffs.filter(effect => effect.category === 'weaken')).toHaveLength(1);
   });
   it('leader gear only applies while first and alive; cooperation requires a previous ally action', () => {
     let state = fixture(['calamitic-choir-array-of-branded-stars'], 'ember', ['rosetta']);
@@ -175,10 +186,10 @@ describe('real four-stat and action modifiers', () => {
 
 describe('bounded, sourced Conduit triggers', () => {
   it('rounds upgraded charge once, caps it, and does not change combat RNG', () => {
-    const state = fixture(['nullsong-transmission'], 'ember', [], 3);
+    const state = fixture(['twinpulse-bellows'], 'ember', [], 3);
     const result = normal(state);
-    // 15 Normal hit + round(4 x 1.3) = 20.
-    expect(result.state.gauge.members[0].charge).toBe(20);
+    // 15 Normal hit + round(7 x 1.3) = 24.
+    expect(result.state.gauge.members[0].charge).toBe(24);
     expect(result.state.chargeSeed).toBe(state.chargeSeed);
     state.gauge.members[0].charge = 199;
     expect(normal(state).state.gauge.members[0].charge).toBe(200);
@@ -299,25 +310,6 @@ describe('eligibility, frozen identity and read-only account boundary', () => {
       const before = structuredClone(invalid);
       expect(() => normal(invalid)).toThrow(); expect(invalid).toEqual(before);
     }
-  });
-});
-
-describe('Step 4 retune Conduit effects (D-480)', () => {
-  it('skill-leech heals the most-wounded ally once per own skill from its direct Health damage', () => {
-    const state = fixture(['starvein-conductor'], 'ember', ['tide']);
-    state.bearers[1].hp = 100;
-    state.gauge.members[0].charge = 40;
-    const result = act(state, { type: 'skill', bearerId: 'ember', slot: 2 });
-    const dealt = result.events.filter(event => event.type === 'damage' && event.source.kind === 'skill')
-      .reduce((sum, event) => sum + (event.type === 'damage' ? event.healthLoss : 0), 0);
-    const heals = result.events.filter(event => event.type === 'heal' && event.source.kind === 'gear');
-    expect(heals).toHaveLength(1);
-    expect(heals[0].type === 'heal' && heals[0].targetId).toBe('tide');
-    expect(heals[0].type === 'heal' && heals[0].offered).toBe(Math.round(.15 * dealt));
-    // A Normal Attack does not trigger it.
-    const plain = fixture(['starvein-conductor'], 'ember', ['tide']);
-    plain.bearers[1].hp = 100;
-    expect(normal(plain).events.some(event => event.type === 'heal' && event.source.kind === 'gear')).toBe(false);
   });
 });
 

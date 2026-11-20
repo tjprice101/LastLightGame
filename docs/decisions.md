@@ -29,6 +29,10 @@
   +200%), so it is not a fix.
 - **B1 implemented (unreleased):** the 25 Common/Rare rows as approved;
   the D-480 `shield-break` kind is removed (no remaining wearer).
+- **B2 implemented (unreleased):** the 15 Legendary rows; `skill-leech`
+  removed. Implementation choice: Horizon Heartcase keeps Health above the
+  normal maximum until damage (no event-less Health loss). B1+B2 study:
+  Calamity EX+1/2/3 94.9/73.6/62.5%, ordinary 98.1%.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 

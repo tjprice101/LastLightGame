@@ -3273,6 +3273,11 @@ function calamiticEffect(id, level = 0) {
 // src/content/conduit-effects.ts
 var effect = (kind, amount) => ({ kind, amount });
 var fixedEffect = (kind, amount) => ({ kind, amount, fixed: true });
+var steppedEffect = (kind, amount, step2) => ({ kind, amount, step: step2 });
+var radiantGambleRules = { chance: 0.5, loss: 0.75 };
+var radiantAllyGuardThreshold = 0.75;
+var radiantShieldGuardCap = 0.8;
+var radiantStasisVulnerability = 0.25;
 var radiantHealthSkillPowerStep = 450;
 var pair = (kind, amount, related, extra) => [effect(kind, amount), effect(related, extra)];
 var radiantConduits = {
@@ -3301,21 +3306,21 @@ var radiantConduits = {
   "coilfeed-ratchet": [effect("skill-efficiency", 0.08), effect("skill-power", 0.08), effect("direct", 0.04)],
   "opal-indexer": [effect("debuff-power", 0.75), fixedEffect("debuff-duration", 1)],
   "resonance-crucible": [effect("defense", 0.15), effect("hp", 0.1), fixedEffect("skill-duration", 1)],
-  "astral-prism": pair("first-action", 0.35, "normal-expose", 0.15),
-  "citadel-spine": pair("defense", 0.35, "guard-shield", 0.6),
-  "execution-orrery": [effect("execution", 0.6)],
-  "immortal-vessel": pair("hp", 0.4, "guard-heal", 0.25),
-  "judgment-lens": pair("flare", 0.35, "exposed", 0.25),
-  "worldbreaker-drive": pair("flare", 0.4, "wounded", 0.3),
-  "siege-cantilever": [effect("solo", 0.5)],
-  "nullsong-transmission": pair("normal", 0.35, "normal-charge", 4),
-  "horizon-heartcase": pair("guard-team-shield", 0.4, "hurt-charge", 5),
-  "stasis-reliquary": pair("brace", 0.25, "guard", 0.12),
-  "granite-hourglass": pair("hurt-shield", 0.06, "round-shield", 0.5),
-  "pale-bulwark-diadem": pair("shelter", 0.15, "shielding", 0.3),
-  "starvein-conductor": pair("skill-leech", 0.15, "burn-power", 0.2),
-  "meridian-inverter": pair("flare-heal", 0.4, "shielding", 0.25),
-  "verdict-caliper": pair("normal", 0.3, "solo", 0.25),
+  "astral-prism": pair("hp", 0.1, "direct", 0.2125),
+  "citadel-spine": [effect("attack", 0.15), effect("gauge-gain", 0.07), effect("ally-guard", 0.35)],
+  "execution-orrery": pair("skill2-power", 0.99, "skill2-efficiency", 0.1),
+  "immortal-vessel": pair("hp", 0.5, "defense", 0.15),
+  "judgment-lens": pair("skill-direct", 0.125, "support-power", 0.5),
+  "worldbreaker-drive": pair("flare-power", 0.99, "direct", 0.65),
+  "siege-cantilever": [effect("aoe-power", 1.5)],
+  "nullsong-transmission": [effect("gamble-power", 0.75)],
+  "horizon-heartcase": [effect("flare", 0.1375), effect("reserve-health", 0.2), effect("reserve-defense", 0.1)],
+  "stasis-reliquary": [steppedEffect("last-block", 0.1, 0.02)],
+  "granite-hourglass": [effect("phase-shield", 0.3)],
+  "pale-bulwark-diadem": [effect("shield-guard", 0.5)],
+  "starvein-conductor": pair("prism-efficiency", 0.35, "prism-gain", 0.1),
+  "meridian-inverter": [effect("restore-charge", 4)],
+  "verdict-caliper": [effect("exposed-heal", 0.25)],
   "infernic-phoenix-reactor": pair("break-heal", 0.4, "hurt-shield", 0.08),
   "aquatic-leviathan-pump": pair("absorbed-charge", 8, "hurt-heal", 0.35),
   "tectonic-atlas-bastion": pair("normal-reduction", 0.15, "guard-team-shield", 0.4),
@@ -3391,7 +3396,7 @@ function validateRadiantGear(value2, element) {
 function radiantConduitPrimitives(slot) {
   getConduit(slot.id);
   validateConduitUpgradeLevel(slot.rank);
-  return radiantConduits[slot.id].map((entry) => entry.fixed ? { kind: entry.kind, amount: entry.amount, fixed: true } : { kind: entry.kind, amount: entry.amount * (1 + 0.1 * slot.rank) });
+  return radiantConduits[slot.id].map((entry) => entry.fixed ? { kind: entry.kind, amount: entry.amount, fixed: true } : entry.step !== void 0 ? { kind: entry.kind, amount: entry.amount + entry.step * slot.rank, step: entry.step } : { kind: entry.kind, amount: entry.amount * (1 + 0.1 * slot.rank) });
 }
 function radiantGearAmount(gear2, kind) {
   return (gear2 ?? []).flatMap((slot) => slot === null ? [] : radiantConduitPrimitives(slot)).filter((entry) => entry.kind === kind).reduce((total, entry) => total + entry.amount, 0);
@@ -3466,7 +3471,6 @@ var conduitDescriptions = {
   "normal-reduction": (a) => `After a Normal Attack damages Health, this bearer takes ${percent(Math.min(0.8, a))} less direct enemy damage through the next enemy phase.`,
   "round-charge": (a) => `At each new round, this bearer gains ${number(a)} Luminosity, rounded once.`,
   "round-team-heal": (a) => `At each new round, heal every living ally for ${percent(a)} of this bearer's current Recovery.`,
-  "skill-leech": (a) => `Once per action, this bearer's skills and Convergent Light heal the most-wounded living ally for ${percent(a)} of the direct Health damage they deal.`,
   "skill-power": (a) => `Skill Power for Skill 1, Skill 2 and Convergent Light increases by ${percent(a)}.`,
   "skill1-power": (a) => `Skill 1 gains ${percent(a)} Skill Power.`,
   "debuff-power": (a) => `Skills and Convergent Light that apply Weaken, Exposure or Burn gain ${percent(a)} Skill Power.`,
@@ -3482,6 +3486,23 @@ var conduitDescriptions = {
   "enemy-defense": (a) => `All enemies have ${percent(a)} less Defense against every squad member for the encounter, up to 80% total with Defense ignore. Copies do not stack; the strongest applies.`,
   drain: (a) => `After each damaging action, this bearer heals ${percent(a)} of the direct damage it dealt to enemy Health and Shields.`,
   "ally-heal-self": (a) => `Once per skill or Convergent Light that restores another ally's Health, this bearer heals ${percent(a)} of their maximum Health.`,
+  "ally-guard": (a) => `While this bearer lives, other living allies below ${percent(radiantAllyGuardThreshold)} Health have Defense Up ${percent(a)} (strongest Defense Up applies). Copies do not stack.`,
+  "skill2-power": (a) => `Skill 2 gains ${percent(a)} Skill Power.`,
+  "skill2-efficiency": (a) => `Skill 2 gains ${percent(a)} Skill Efficiency (total discount up to 50%).`,
+  "phase-shield": (a) => `At the start of each turn, this bearer gains a Shield equal to ${percent(a)} of the Health they lost to direct enemy damage in the previous enemy phase.`,
+  "reserve-health": (a) => `While this bearer's Luminosity is below the Convergent Light cost, their maximum Health increases by ${percent(a)}. At or above the cost, healing cannot raise Health above the normal maximum; Health already above it stays until lost.`,
+  "reserve-defense": (a) => `While this bearer's Luminosity is below the Convergent Light cost, they have Defense Up ${percent(a)} (strongest Defense Up applies).`,
+  "skill-direct": (a) => `Damaging skills and Convergent Light deal ${percent(a)} more direct damage.`,
+  "support-power": (a) => `Skills and Convergent Light that heal, grant Shields or buff allies gain ${percent(a)} Skill Power.`,
+  "restore-charge": (a) => `Once per skill or Convergent Light, each ally whose Health it restores gains ${number(a)} Luminosity, rounded once.`,
+  "gamble-power": (a) => `Each skill and Convergent Light rolls once: ${percent(radiantGambleRules.chance)} chance of ${percent(a)} more Skill Power, otherwise ${percent(radiantGambleRules.loss)} less Skill Power.`,
+  "shield-guard": (a) => `Enemy hits remove ${percent(Math.min(radiantShieldGuardCap, a))} less Shield from this bearer (up to ${percent(radiantShieldGuardCap)} total). Damage left after a Shield breaks hits Health normally.`,
+  "aoe-power": (a) => `Skills and Convergent Light that damage all enemies gain ${percent(a)} Skill Power.`,
+  "prism-efficiency": (a) => `If every squad member has a different element (defeated members count), Skill Efficiency increases by ${percent(a)} (total discount up to 50%).`,
+  "prism-gain": (a) => `If every squad member has a different element (defeated members count), Gauge Gain increases by ${percent(a)}.`,
+  "last-block": (a) => `When an enemy hit breaks this bearer's Shield, ${percent(a)} chance to block the rest of that hit. After a block, this bearer takes ${percent(radiantStasisVulnerability)} more damage from enemy attacks in the next enemy phase, and this cannot trigger again until that phase ends.`,
+  "exposed-heal": (a) => `Once per action, a damaging Normal Attack, skill or Convergent Light on an enemy with Exposure heals this bearer ${percent(a)} of their maximum Health.`,
+  "flare-power": (a) => `Convergent Light gains ${percent(a)} Skill Power.`,
   "twin-charge": (a) => `Each Normal Attack that hits Health or a Shield grants this bearer and the other living ally with the lowest Luminosity percentage ${number(a)} Luminosity each, rounded once.`
 };
 function radiantConduitDescription(primitive) {
@@ -17723,35 +17744,91 @@ function effectiveRadiantStats(state, id) {
     stats[key] *= 1 + leaderEffects(state, member).filter((entry) => entry.kind === key).reduce((sum, entry) => sum + entry.amount, 0);
   stats.attack *= 1 - category(member.buffs, "weaken") * (1 - Math.min(0.8, combatAmount(state, member, "resilience")));
   stats.attack *= 1 + category(member.buffs, "attack-up");
-  stats.defense *= 1 + category(member.buffs, "defense-up");
+  stats.defense *= 1 + Math.min(
+    radiantCategoryCaps["defense-up"],
+    Math.max(category(member.buffs, "defense-up"), conduitDefenseUp(state, member))
+  );
   validateRadiantStats(stats);
   return stats;
 }
-function skillStatsFrom(loadout, slot, amount, maximumHealth) {
+function conduitDefenseUp(state, member) {
+  if (member.hp <= 0) return 0;
+  const reserve = belowFlareCost(state, member) ? combatAmount(state, member, "reserve-defense") : 0;
+  const wounded = member.hp < radiantAllyGuardThreshold * maximumHealth(state, member);
+  const aura = wounded ? Math.max(0, ...state.bearers.filter((other) => other !== member && other.hp > 0).map((other) => combatAmount(state, other, "ally-guard"))) : 0;
+  return Math.max(reserve, aura);
+}
+function belowFlareCost(state, member) {
+  const entry = state.gauge.members.find((m) => m.id === member.loadout.id);
+  return entry !== void 0 && entry.charge < radiantFlareCost(entry);
+}
+function maximumHealth(state, member) {
+  const bonus2 = member.hp > 0 && belowFlareCost(state, member) ? equipmentAmount(member, "reserve-health") : 0;
+  return rounded(member.stats.hp * (1 + bonus2));
+}
+function radiantHealthBound(member) {
+  return rounded(member.stats.hp * (1 + radiantEquipmentAmount(member.loadout, "reserve-health")));
+}
+function healthCap(state, target) {
+  return "loadout" in target ? maximumHealth(state, target) : rounded(target.stats.hp);
+}
+function distinctElements(loadouts) {
+  return new Set(loadouts.map((loadout) => radiantStarterKits[loadout.starter].elementId)).size === loadouts.length;
+}
+var randomConduitKinds = ["gamble-power", "last-block"];
+function usesConduitRng(loadouts) {
+  return loadouts.some((loadout) => randomConduitKinds.some((kind) => radiantEquipmentAmount(loadout, kind) > 0));
+}
+function initialConduitSeed(chargeSeed) {
+  return Math.imul(chargeSeed ^ 1540483477, 668265261) + 374761393 >>> 0;
+}
+function rollConduit(state) {
+  if (state.conduitSeed === void 0) throw new Error("Radiant Conduit RNG stream is missing.");
+  let x = state.conduitSeed || 2654435769;
+  x ^= x << 13;
+  x >>>= 0;
+  x ^= x >>> 17;
+  x ^= x << 5;
+  x >>>= 0;
+  state.conduitSeed = x;
+  return x / 4294967296;
+}
+function gambleShift(state, actor2, won) {
+  const amount = combatAmount(state, actor2, "gamble-power");
+  return won === void 0 || amount <= 0 ? 0 : won ? amount : -radiantGambleRules.loss;
+}
+function skillStatsFrom(loadout, slot, amount, maximumHealth2, distinct = false) {
   const ascended = slot === 1 ? loadout.ascension.skill1 === true : slot === 2 && loadout.ascension.skill2 === true;
   const kit = radiantStarterKits[loadout.starter].kit;
-  const kinds2 = new Set((slot === "flare" ? kit.flare : slot === 1 ? kit.skill1 : kit.skill2).effects.map((entry) => entry.kind));
+  const def = slot === "flare" ? kit.flare : slot === 1 ? kit.skill1 : kit.skill2;
+  const kinds2 = new Set(def.effects.map((entry) => entry.kind));
   const debuff2 = kinds2.has("burn") || kinds2.has("weaken") || kinds2.has("expose");
   const restore = kinds2.has("heal") || kinds2.has("shield");
+  const support = restore || ["attack-up", "defense-up", "reduction", "gain-up", "hot"].some((kind) => kinds2.has(kind));
+  const area = def.target === "all-enemies" && def.power > 0;
   return {
-    skillPower: 1 + radiantRoleSkillPower[radiantStarterKits[loadout.starter].role] + (ascended ? radiantSkillAscension.skillPower : 0) + amount("skill-power") + (slot === 1 ? amount("skill1-power") : 0) + (debuff2 ? amount("debuff-power") : 0) + (restore ? amount("restore-power") : 0) + Math.floor(maximumHealth / radiantHealthSkillPowerStep) * amount("health-skill-power"),
+    skillPower: 1 + radiantRoleSkillPower[radiantStarterKits[loadout.starter].role] + (ascended ? radiantSkillAscension.skillPower : 0) + amount("skill-power") + (slot === 1 ? amount("skill1-power") : 0) + (debuff2 ? amount("debuff-power") : 0) + (restore ? amount("restore-power") : 0) + Math.floor(maximumHealth2 / radiantHealthSkillPowerStep) * amount("health-skill-power") + (slot === 2 ? amount("skill2-power") : 0) + (support ? amount("support-power") : 0) + (area ? amount("aoe-power") : 0) + (slot === "flare" ? amount("flare-power") : 0),
     skillDuration: Math.round(amount("skill-duration") + (debuff2 ? amount("debuff-duration") : 0)),
-    skillEfficiency: (ascended ? radiantSkillAscension.efficiency : 0) + amount("skill-efficiency"),
-    gaugeGain: 1 + amount("gauge-gain")
+    skillEfficiency: (ascended ? radiantSkillAscension.efficiency : 0) + amount("skill-efficiency") + (slot === 2 ? amount("skill2-efficiency") : 0) + (distinct ? amount("prism-efficiency") : 0),
+    gaugeGain: 1 + amount("gauge-gain") + (distinct ? amount("prism-gain") : 0)
   };
 }
-function radiantLoadoutSkillStats(loadout, slot) {
-  return skillStatsFrom(loadout, slot, (kind) => radiantEquipmentAmount(loadout, kind), resolveRadiantStarterStats(loadout).hp);
+function radiantLoadoutSkillStats(loadout, slot, distinct = false) {
+  return skillStatsFrom(loadout, slot, (kind) => radiantEquipmentAmount(loadout, kind), resolveRadiantStarterStats(loadout).hp, distinct);
 }
 function radiantSkillStats(state, id, slot) {
   const member = bearer(state, id);
-  return {
-    ...skillStatsFrom(member.loadout, slot, (kind) => combatAmount(state, member, kind), member.stats.hp),
-    gaugeGain: gaugeGain(member)
-  };
+  return { ...skillStatsFrom(
+    member.loadout,
+    slot,
+    (kind) => combatAmount(state, member, kind),
+    member.stats.hp,
+    distinctElements(state.bearers.map((entry) => entry.loadout))
+  ), gaugeGain: gaugeGain(state, member) };
 }
-function gaugeGain(member) {
-  return 1 + equipmentAmount(member, "gauge-gain") + category(member.buffs, "gain-up");
+function gaugeGain(state, member) {
+  const distinct = distinctElements(state.bearers.map((entry) => entry.loadout));
+  return 1 + equipmentAmount(member, "gauge-gain") + (distinct ? equipmentAmount(member, "prism-gain") : 0) + category(member.buffs, "gain-up");
 }
 var excludedSources = null;
 function gearKey(source) {
@@ -17788,7 +17865,7 @@ function outgoingDamageMultiplier(state, actor2, target, periodic = false) {
     ["exposed", exposure(target) > 0],
     ["weakened", target.debuffs.some((effect2) => effect2.category === "weaken")],
     ["shielded", actor2.shields.length > 0],
-    ["wounded", actor2.hp <= actor2.stats.hp / 2],
+    ["wounded", actor2.hp <= maximumHealth(state, actor2) / 2],
     ["solo", state.enemies.filter((member) => member.hp > 0).length === 1],
     ["first-action", state.acted.length === 0]
   ];
@@ -18103,7 +18180,8 @@ function validateRadiantCombat(state) {
   for (const member of [...state.bearers, ...state.enemies]) {
     validateRadiantStats(member.stats);
     safe(member.hp, "current health");
-    if (member.hp > Math.round(member.stats.hp)) throw new Error("Radiant health exceeds maximum.");
+    if (member.hp > ("loadout" in member ? radiantHealthBound(member) : Math.round(member.stats.hp)))
+      throw new Error("Radiant health exceeds maximum.");
     if (!Array.isArray(member.shields)) throw new Error("Invalid radiant Shields.");
     let shieldTotal = 0;
     let previousShieldId = 0;
@@ -18119,6 +18197,9 @@ function validateRadiantCombat(state) {
       shieldIds.add(shield3.id);
     }
   }
+  const distinct = distinctElements(state.bearers.map((member) => member.loadout));
+  if (state.conduitSeed !== void 0 !== usesConduitRng(state.bearers.map((member) => member.loadout)) || state.conduitSeed !== void 0 && (!Number.isSafeInteger(state.conduitSeed) || state.conduitSeed < 0 || state.conduitSeed > 4294967295))
+    throw new Error("Invalid radiant Conduit RNG stream.");
   for (let index = 0; index < state.bearers.length; index++) {
     const member = state.bearers[index];
     validateRadiantLoadout(member.loadout);
@@ -18126,8 +18207,13 @@ function validateRadiantCombat(state) {
     if (Object.keys(expected).some((key) => expected[key] !== member.stats[key]))
       throw new Error("Radiant frozen stats do not match their loadout.");
     const gauge = state.gauge.members[index];
-    if (gauge.id !== member.loadout.id || gauge.form !== member.loadout.form || gauge.convergenceRank !== member.loadout.convergenceRank || gauge.baseCost !== radiantStarterKits[member.loadout.starter].baseCost || gauge.living !== member.hp > 0 || gauge.elementId !== radiantStarterKits[member.loadout.starter].elementId || gauge.capacity !== gaugeExtras(member.loadout).capacity || gauge.flareEfficiency !== gaugeExtras(member.loadout).flareEfficiency)
+    if (gauge.id !== member.loadout.id || gauge.form !== member.loadout.form || gauge.convergenceRank !== member.loadout.convergenceRank || gauge.baseCost !== radiantStarterKits[member.loadout.starter].baseCost || gauge.living !== member.hp > 0 || gauge.elementId !== radiantStarterKits[member.loadout.starter].elementId || gauge.capacity !== gaugeExtras(member.loadout, distinct).capacity || gauge.flareEfficiency !== gaugeExtras(member.loadout, distinct).flareEfficiency)
       throw new Error("Radiant Gauge member mismatch.");
+    if (member.phaseLoss !== void 0) {
+      safe(member.phaseLoss, "Granite Hourglass loss", 1);
+      if (!(radiantEquipmentAmount(member.loadout, "phase-shield") > 0)) throw new Error("Invalid radiant Granite Hourglass ledger.");
+    }
+    if (member.stasis !== void 0 && (!["current", "next"].includes(member.stasis) || !(radiantEquipmentAmount(member.loadout, "last-block") > 0))) throw new Error("Invalid radiant Stasis Reliquary state.");
     validateCategories(state, member.buffs, allyCategories);
     validateSignatures(state, member);
   }
@@ -18213,7 +18299,7 @@ function createRadiantCombat(loadouts, enemies2, chargeSeed) {
       baseCost: radiantStarterKits[loadout.starter].baseCost,
       charge: 0,
       living: true,
-      ...gaugeExtras(loadout)
+      ...gaugeExtras(loadout, distinctElements(loadouts))
     })) },
     phase: "player",
     round: 1,
@@ -18222,18 +18308,20 @@ function createRadiantCombat(loadouts, enemies2, chargeSeed) {
     enemyActed: [],
     gearTriggered: [],
     chargeSeed,
+    ...usesConduitRng(loadouts) ? { conduitSeed: initialConduitSeed(chargeSeed) } : {},
     nextShieldId: 1,
     currencyEarned: 0
   };
   for (const member of state.gauge.members) {
     addRadiantPersonalCharge(member, rounded(combatAmount(state, bearer(state, member.id), "start-charge")));
   }
+  for (const member of state.bearers) member.hp = maximumHealth(state, member);
   validateRadiantCombat(state);
   return state;
 }
-function gaugeExtras(loadout) {
+function gaugeExtras(loadout, distinct) {
   const capacity = Math.min(radiantCapacityCap, radiantEquipmentAmount(loadout, "capacity"));
-  const flareEfficiency = radiantLoadoutSkillStats(loadout, "flare").skillEfficiency;
+  const flareEfficiency = radiantLoadoutSkillStats(loadout, "flare", distinct).skillEfficiency;
   return { ...capacity > 0 ? { capacity } : {}, ...flareEfficiency > 0 ? { flareEfficiency } : {} };
 }
 function sync(state) {
@@ -18252,7 +18340,7 @@ function healthMote(state, events, target, source) {
   const owner = bearer(state, source.bearerId);
   if (owner.hp === 0) return;
   const offered = rounded(radiantHealthMote * owner.stats.hp);
-  const effective = Math.min(offered, rounded(owner.stats.hp) - owner.hp);
+  const effective = Math.max(0, Math.min(offered, maximumHealth(state, owner) - owner.hp));
   owner.hp += effective;
   events.push({ type: "health-mote", enemyId: target.id, bearerId: owner.loadout.id, offered, effective });
 }
@@ -18266,7 +18354,7 @@ function gearSources(state, holder) {
   if (leaderEffects(state, holder).length > 0) sources.push({ kind: "leader", bearerId: state.bearers[0].loadout.id });
   for (const member of state.bearers) if (member !== holder) {
     for (const slot of member.loadout.gear ?? [])
-      if (slot !== null && radiantConduitPrimitives(slot).some((entry) => entry.kind === "enemy-defense"))
+      if (slot !== null && radiantConduitPrimitives(slot).some((entry) => entry.kind === "enemy-defense" || entry.kind === "ally-guard"))
         sources.push({ kind: "gear", bearerId: member.loadout.id, conduitId: slot.id });
   }
   return sources;
@@ -18317,18 +18405,29 @@ function packet(state, events, target, source, origin, offered, hitCharge, redir
   living2(target.hp);
   let remaining = offered;
   const shields = [];
+  const enemyHit = "loadout" in target && source.kind === "enemy" && origin === "direct";
+  const keep = enemyHit ? 1 - Math.min(radiantShieldGuardCap, combatAmount(state, target, "shield-guard")) : 1;
+  const hadShield = target.shields.length > 0;
   for (const shield3 of target.shields) {
-    const amount = Math.min(shield3.remaining, remaining);
+    const amount = Math.min(shield3.remaining, Math.ceil(remaining * keep));
     if (amount > 0) shields.push({ source: { ...shield3.source }, amount });
     shield3.remaining -= amount;
-    remaining -= amount;
+    remaining -= Math.min(remaining, Math.ceil(amount / keep));
   }
   target.shields = target.shields.filter((shield3) => shield3.remaining > 0);
+  if (enemyHit && hadShield && target.shields.length === 0 && remaining > 0 && "loadout" in target && target.stasis === void 0 && combatAmount(state, target, "last-block") > 0 && rollConduit(state) < combatAmount(state, target, "last-block")) {
+    remaining = 0;
+    target.stasis = "current";
+  }
   let healthLoss = Math.min(target.hp, remaining);
   const absorbed = shields.reduce((sum, entry) => sum + entry.amount, 0);
   const refusal = "loadout" in target && source.kind === "enemy" && healthLoss > 0 && healthLoss === target.hp ? refuser(state, target) : void 0;
   if (refusal) healthLoss = target.hp - 1;
   target.hp -= healthLoss;
+  if (enemyHit && healthLoss > 0 && "loadout" in target && combatAmount(state, target, "phase-shield") > 0) {
+    target.phaseLoss = (target.phaseLoss ?? 0) + healthLoss;
+    safe(target.phaseLoss, "Granite Hourglass loss", 1);
+  }
   const targetId = "loadout" in target ? target.loadout.id : target.id;
   events.push({
     type: "damage",
@@ -18363,7 +18462,7 @@ function packet(state, events, target, source, origin, offered, hitCharge, redir
         source.kind,
         hitCharge.bonusRolls,
         () => rollCharge(state),
-        gaugeGain(bearer(state, source.bearerId))
+        gaugeGain(state, bearer(state, source.bearerId))
       );
       hitCharge.bonusRolls += drop.bonusRolls;
       hitCharge.bonusOffered += drop.bonusOffered;
@@ -18388,7 +18487,7 @@ function heal2(state, events, target, source, snapshot) {
   if (native(source)) snapshot *= 1 + combatAmount(state, bearer(state, source.bearerId), "healing");
   finite(snapshot, "healing snapshot");
   if (target.hp === 0) return 0;
-  const offered = rounded(snapshot), effective = Math.min(offered, rounded(target.stats.hp) - target.hp);
+  const offered = rounded(snapshot), effective = Math.max(0, Math.min(offered, healthCap(state, target) - target.hp));
   target.hp += effective;
   const boosts = native(source) && effective > 0 ? attribute(
     state,
@@ -18460,7 +18559,7 @@ function addPassiveCharge(state, events, id, amount) {
 function woundedAlly(state, exclude) {
   let selected, largest = 0;
   for (const ally of state.bearers.filter((member) => member.hp > 0 && member.loadout.id !== exclude)) {
-    const missing = (rounded(ally.stats.hp) - ally.hp) / rounded(ally.stats.hp);
+    const cap = maximumHealth(state, ally), missing = (cap - ally.hp) / cap;
     if (selected === void 0 || missing > largest) {
       selected = ally;
       largest = missing;
@@ -18534,7 +18633,7 @@ function refundFullBlock(state, events, holder, part, offered) {
   if (!tizu || tizu.kind === "enemy") return;
   const caster = bearer(state, tizu.bearerId);
   if (caster.hp === 0 || !signed(caster)) return;
-  const amount = rounded(radiantPassiveValues.tideRefund * gaugeGain(holder));
+  const amount = rounded(radiantPassiveValues.tideRefund * gaugeGain(state, holder));
   addPassiveCharge(state, events, holder.loadout.id, amount);
   events.push({ type: "signature", bearerId: caster.loadout.id, op: "refund", holderId: holder.loadout.id, amount });
 }
@@ -18715,7 +18814,7 @@ function normalPassives(state, events, actor2, targetId, hits) {
     gainCounter(events, seravelle);
   }
   if (own?.kind === "survey") {
-    addPassiveCharge(state, events, id, rounded(radiantPassiveValues.surveyFill * gaugeGain(actor2)));
+    addPassiveCharge(state, events, id, rounded(radiantPassiveValues.surveyFill * gaugeGain(state, actor2)));
     if (enemy(state, targetId).hp > 0) {
       own.count = own.targetId === targetId ? Math.min(radiantSignatureCaps.survey, own.count + 1) : 1;
       own.targetId = targetId;
@@ -19057,7 +19156,7 @@ function cast(state, events, actor2, input, hitCharge) {
     const offered = () => Math.max(input.hits, radiantDirectDamage(
       excludedSources ? effectiveRadiantStats(state, id).attack : stats.attack,
       gearDefense(state, actor2, target.stats.defense, ignore2, true),
-      power2 * input.damageScale * (excludedSources ? radiantSkillStats(state, id, input.slot).skillPower : skill2.skillPower) * (1 + (input.kind === "flare" ? combatAmount(state, actor2, "flare") : 0) + combatAmount(state, actor2, "direct") + cooperation(state, actor2) + bonus2),
+      power2 * input.damageScale * (excludedSources ? radiantSkillStats(state, id, input.slot).skillPower + gambleShift(state, actor2, input.won) : skill2.skillPower) * (1 + (input.kind === "flare" ? combatAmount(state, actor2, "flare") : 0) + combatAmount(state, actor2, "direct") + combatAmount(state, actor2, "skill-direct") + cooperation(state, actor2) + bonus2),
       (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor2, target)
     ));
     const total = offered();
@@ -19138,13 +19237,13 @@ function cast(state, events, actor2, input, hitCharge) {
         duration(effect2.turns)
       );
       if (effect2.kind === "attack-up" && actor2.loadout.starter === "disciple" && signed(actor2))
-        addPassiveCharge(state, events, ally.loadout.id, rounded(radiantPassiveValues.discipleFill * gaugeGain(ally)));
+        addPassiveCharge(state, events, ally.loadout.id, rounded(radiantPassiveValues.discipleFill * gaugeGain(state, ally)));
     }
   }
   for (const effect2 of effects) {
     if (effect2.kind !== "fill") continue;
     for (const ally of alliesFor(effect2.to))
-      addPassiveCharge(state, events, ally.loadout.id, Math.round(valueOf(effect2) * input.effectScale * gaugeGain(ally)));
+      addPassiveCharge(state, events, ally.loadout.id, Math.round(valueOf(effect2) * input.effectScale * gaugeGain(state, ally)));
   }
   if (radiantStarterKits[actor2.loadout.starter].role === "Support")
     for (const ally of state.bearers.filter((member) => member.hp > 0))
@@ -19155,6 +19254,9 @@ function cast(state, events, actor2, input, hitCharge) {
   }
   return hits;
 }
+function gambleRoll(state, actor2) {
+  return combatAmount(state, actor2, "gamble-power") > 0 ? rollConduit(state) < radiantGambleRules.chance : void 0;
+}
 function skillAction(state, events, actor2, action, hitCharge) {
   if (action.slot !== 1 && action.slot !== 2) throw new Error("Invalid radiant skill slot.");
   const id = actor2.loadout.id;
@@ -19162,13 +19264,16 @@ function skillAction(state, events, actor2, action, hitCharge) {
   if (!radiantSkillAcceptsTarget(def) && action.targetId !== void 0) throw new Error("This skill uses its authored target set.");
   if (def.target === "one-enemy" && (action.targetId === void 0 || enemy(state, action.targetId).hp <= 0))
     throw new Error("This skill requires a selected living enemy.");
-  const skill2 = radiantSkillStats(state, id, action.slot);
-  const spent = spendSkill(state.gauge, id, action.slot, skill2.skillEfficiency);
+  const stats = radiantSkillStats(state, id, action.slot);
+  const spent = spendSkill(state.gauge, id, action.slot, stats.skillEfficiency);
   state.gauge = spent.state;
   events.push({ type: "skill", bearerId: id, slot: action.slot, name: def.name, cost: spent.cost });
+  const won = gambleRoll(state, actor2);
+  const skill2 = { ...stats, skillPower: stats.skillPower + gambleShift(state, actor2, won) };
   const hits = cast(state, events, actor2, {
     kind: "skill",
     slot: action.slot,
+    won,
     def,
     targetId: action.targetId,
     damageScale: 1,
@@ -19193,15 +19298,17 @@ function flare(state, events, actor2, targetId, hitCharge) {
   state.gauge = spent.state;
   const tier = spent.tier, scale = radiantFlareTierScale[tier], power2 = radiantFlarePower(actor2.loadout);
   events.push({ type: "flare", bearerId: actor2.loadout.id, tier, name: def.name });
+  const won = gambleRoll(state, actor2), stats = radiantSkillStats(state, actor2.loadout.id, "flare");
   const hits = cast(state, events, actor2, {
     kind: "flare",
     slot: "flare",
+    won,
     def,
     targetId,
     damageScale: scale.damage * power2,
     effectScale: scale.effect * power2,
     hits: scale.hits,
-    skill: radiantSkillStats(state, actor2.loadout.id, "flare")
+    skill: { ...stats, skillPower: stats.skillPower + gambleShift(state, actor2, won) }
   }, hitCharge);
   return { tier, hits };
 }
@@ -19242,12 +19349,14 @@ function enemyAttack(state, events, action) {
       const guard = state.skilled.includes(target.loadout.id) ? Math.min(0.6, combatAmount(state, target, "guard")) : 0;
       const output = Math.max(0.2, (1 - guard) * (1 - reduction2));
       const beforeProtection = radiantDirectDamage(actor2.stats.attack * (1 - weakening), stats.defense, action.coefficient, output * element);
-      const protection = (target.hp > target.stats.hp * 0.75 ? combatAmount(state, target, "shelter") : 0) + (beforeProtection > target.stats.hp * 0.2 ? combatAmount(state, target, "brace") : 0);
+      const cap = maximumHealth(state, target);
+      const protection = (target.hp > cap * 0.75 ? combatAmount(state, target, "shelter") : 0) + (beforeProtection > cap * 0.2 ? combatAmount(state, target, "brace") : 0);
+      const exposed = target.stasis === "next" ? 1 + radiantStasisVulnerability : 1;
       return radiantDirectDamage(
         actor2.stats.attack * (1 - weakening),
         stats.defense,
         action.coefficient,
-        Math.max(0.2, output * (1 - Math.min(0.8, protection))) * element
+        Math.max(0.2, output * (1 - Math.min(0.8, protection))) * element * exposed
       );
     };
     const total = incoming();
@@ -19280,7 +19389,7 @@ function enemyAttack(state, events, action) {
       }
       if (target.hp > 0 && part.healthLoss + part.absorbed > 0) {
         hitGain(events, target);
-        state.gauge = grantRadiantIncomingAttack(state.gauge, target.loadout.id, gaugeGain(target));
+        state.gauge = grantRadiantIncomingAttack(state.gauge, target.loadout.id, gaugeGain(state, target));
         events.push({
           type: "charge",
           bearerId: target.loadout.id,
@@ -19343,6 +19452,10 @@ function finishRound(state, events) {
   for (const member of state.bearers) {
     const counter = counterOf(member.signature);
     if (counter) counter.latch = false;
+  }
+  for (const member of state.bearers) {
+    if (member.stasis === "next") delete member.stasis;
+    else if (member.stasis === "current") member.stasis = "next";
   }
   events.push({ type: "round", round: state.round });
   const vaelor = livingStarter(state, "vaelor");
@@ -19415,7 +19528,7 @@ function processRadiantGear(state, events, action) {
         const grant = (recipient, value2) => {
           if (recipient.hp > 0) {
             const before = state.gauge.members.find((m) => m.id === recipient.loadout.id).charge;
-            addPassiveCharge(state, events, recipient.loadout.id, rounded(value2 * gaugeGain(recipient)));
+            addPassiveCharge(state, events, recipient.loadout.id, rounded(value2 * gaugeGain(state, recipient)));
             const event2 = events[events.length - 1];
             if (event2.type === "charge") {
               event2.gearSource = source;
@@ -19450,11 +19563,6 @@ function processRadiantGear(state, events, action) {
           case "leech":
             if (direct.length) heal2(state, events, owner, source, amount * direct.reduce((sum, event2) => sum + event2.healthLoss, 0));
             break;
-          case "skill-leech": {
-            const dealt = direct.filter((event2) => event2.source.kind === "skill" || event2.source.kind === "flare").reduce((sum, event2) => sum + event2.healthLoss, 0);
-            if (ownAction && dealt > 0 && wounded) heal2(state, events, wounded, source, amount * dealt);
-            break;
-          }
           case "heal-charge":
             if (restored.length) grant(owner, amount);
             break;
@@ -19596,6 +19704,16 @@ function processRadiantGear(state, events, action) {
             if (ownAction && (action.type === "skill" || action.type === "flare") && restored.some((event2) => event2.targetId !== id && (event2.source.kind === "skill" || event2.source.kind === "flare")))
               heal2(state, events, owner, source, amount * owner.stats.hp);
             break;
+          case "phase-shield":
+            if (round && owner.phaseLoss) shield2(state, events, owner, source, amount * owner.phaseLoss);
+            break;
+          case "restore-charge":
+            if (ownAction && (action.type === "skill" || action.type === "flare"))
+              for (const targetId of new Set(restored.filter((event2) => event2.source.kind === "skill" || event2.source.kind === "flare").map((event2) => event2.targetId))) grant(bearer(state, targetId), amount);
+            break;
+          case "exposed-heal":
+            if (ownAction && direct.some((event2) => event2.healthLoss + event2.absorbed > 0 && exposure(enemy(state, event2.targetId)) > 0)) heal2(state, events, owner, source, amount * owner.stats.hp);
+            break;
           case "twin-charge":
             if (normalDirect) {
               grant(owner, amount);
@@ -19615,6 +19733,7 @@ function processRadiantGear(state, events, action) {
       if (triggered) state.gearTriggered.push(key);
     }
   }
+  if (action.type === "finish-enemy-phase") for (const member of state.bearers) delete member.phaseLoss;
 }
 function applyRadiantCombatAction(input, action) {
   validateRadiantCombat(input);

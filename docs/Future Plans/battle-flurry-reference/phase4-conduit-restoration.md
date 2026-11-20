@@ -3,8 +3,9 @@
 **Status (2026-11-19):**
 - **Owner-approved in full (D-493, 2026-11-19):** number sheet, O1-O14 as
   recommended, batches B1-B5.
-- **B1 implemented, unreleased** (spec: [combat.md](../../combat.md#conduit-restoration-b1-common--rare-d-493-battle-flurry-phase-4c)).
-- Next: B2-B5 on `battle-flurry-phase3`; then one enemy retune on the final
+- **B1 and B2 implemented, unreleased** (B2 spec: [combat.md](../../combat.md#conduit-restoration-b2-legendary-d-493-battle-flurry-phase-4c); Heartcase keeps Health above the normal maximum until damage instead of clamping it)
+- B1 (spec: [combat.md](../../combat.md#conduit-restoration-b1-common--rare-d-493-battle-flurry-phase-4c)).
+- Next: B3-B5 on `battle-flurry-phase3`; then one enemy retune on the final
   Conduit set and a single release with the matching server deploy (owner
   choice, D-493).
 

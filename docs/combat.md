@@ -2377,3 +2377,62 @@ direct damage, skill-only pierce, Breach non-stacking and attribution,
 Wardglass penalty, Lifeline and Duplex sustain); `conduit-effects.test.ts`
 and `combat-consolidation.test.ts` (O6: up to 6 primitives, unique kind and
 amount lists).
+
+## Conduit restoration B2: Legendary (D-493, Battle Flurry Phase 4c)
+
+The 15 Legendary Conduits carry their approved B2 restore text. Unreleased
+with B1 (single release after B5 and one enemy retune).
+
+- **Skill stats:** `skill2-power`, `skill2-efficiency` (Execution Orrery),
+  `flare-power` (Worldbreaker Drive), `aoe-power` (skills whose kit definition
+  hits all enemies with damage; Siege Cantilever), `support-power` (kit heals,
+  Shields or ally categories; Judgment Lens), `skill-direct` (damage from Skill
+  1, Skill 2 and Convergent Light only).
+- **Starvein Conductor:** `prism-efficiency` and `prism-gain` apply when every
+  squad member has a different element (defeated members count; a solo squad
+  qualifies). Menus outside a squad show stats without them.
+- **Conditional Defense Up (C2):** Citadel Spine's `ally-guard` (other living
+  allies below 75% of their current maximum Health while a wearer lives;
+  copies do not stack) and Horizon Heartcase's `reserve-defense` (Luminosity
+  below the Convergent Light cost) join the Defense Up category: the strongest
+  applies, cap 100%.
+- **Horizon Heartcase maximum Health:** `reserve-health` raises maximum Health
+  while Luminosity is below the Convergent Light cost (`radiantMaximumHealth`).
+  Bearers start at the raised maximum. At or above the cost, healing cannot
+  raise Health above the normal maximum; Health already above it stays until
+  lost to damage (no event-less Health loss, so the impact replay stays exact).
+  Validation and the battle readout use the raised bound
+  (`radiantHealthBound`). Heal caps, the most-wounded choice, `wounded`,
+  `shelter` and `brace` thresholds read the current maximum; percentage bases
+  for heals and Shields still use the frozen maximum Health.
+- **Granite Hourglass:** wearers record Health lost to direct enemy damage in
+  the enemy phase (`phaseLoss`, wearers only); the round start grants a Shield
+  of 30% of it, then the ledger clears.
+- **Pale Bulwark Diadem (C15):** enemy hits remove less of the wearer's Shield
+  per point of damage (`keep = 1 - min(80%, amount)`); damage left after a
+  Shield breaks hits Health. `absorbed` stays the Shield removed.
+- **Conduit RNG stream (O11).** `state.conduitSeed` (xorshift32, seeded from
+  the charge seed) exists only when a random Conduit is equipped; the charge
+  stream is untouched.
+  - **Nullsong Transmission:** one roll per Skill 1, Skill 2 or Convergent
+    Light: 50% for +75% Skill Power (scales with rank), otherwise −75%.
+  - **Stasis Reliquary:** when an enemy hit breaks the wearer's last Shield,
+    a roll at 10% + 2% per rank blocks the rest of that hit. Then `stasis` is
+    `current` (no further block that phase), `next` for the following enemy
+    phase (+25% damage taken from enemy attacks, no block), then clears.
+- **Meridian Inverter** (`restore-charge`) fills each ally a skill or
+  Convergent Light restored, once per cast; **Verdict Caliper**
+  (`exposed-heal`) heals 25% of maximum Health once per action when a
+  damaging action hits an enemy with Exposure (Exposure applied by the same
+  action counts).
+- **Removed:** the D-480 `skill-leech` kind (only Starvein Conductor and
+  Duplex Heart carried it).
+- **Attribution:** another member's Citadel Spine is credited on the hits it
+  reduced. Not itemized: Nullsong's swing, Stasis blocks, Pale Bulwark's
+  saved Shield.
+
+Validation: `src/game/conduit-restoration-b2.test.ts` (rows, Stasis rank step,
+tooltips, slot/area/support traits, Starvein condition, Citadel aura and
+non-stacking, Heartcase maximum Health and Defense, Granite ledger, Pale
+Bulwark, Stasis block and vulnerability, Nullsong stream isolation and both
+outcomes, Meridian, Verdict, direct damage).

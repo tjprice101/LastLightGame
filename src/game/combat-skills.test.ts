@@ -188,13 +188,16 @@ describe('Health motes (D-473 N5)', () => {
 
 describe('Defend-triggered and conditional Conduits under skills (D-473 O1, O2)', () => {
   it('applies `guard` reduction only while the bearer used a skill this turn', () => {
-    const incoming = (skill: boolean) => {
-      let state = charge(battle([loadout('ember', { gear: gear('stasis-reliquary') })], { attack: 200 }), 'ember', 40);
-      state = act(state, skill ? { type: 'skill', bearerId: 'ember', slot: 2 } : { type: 'end-turn' }).state;
-      const result = act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: .5 });
-      return of(result.events, 'damage')[0].offered;
-    };
-    expect(incoming(true)).toBeLessThan(incoming(false));
+    // Solenne's first Master carries `guard`; low Health keeps its `shelter` part inactive. The same post-skill state
+    // without the "used a skill" mark is the control.
+    let state = charge(battle([loadout('solenne', { masterId: 'master-solenne-1' })], { attack: 200 }), 'solenne', 40);
+    state.bearers[0].hp = 10;
+    state = act(state, { type: 'skill', bearerId: 'solenne', slot: 2 }).state;
+    const incoming = (input: RadiantCombatState) =>
+      of(act(input, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['solenne'], coefficient: .5 }).events, 'damage')[0].offered;
+    const unmarked = structuredClone(state);
+    unmarked.skilled = [];
+    expect(incoming(state)).toBeLessThan(incoming(unmarked));
   });
   it('boosts skill damage with conditional damage Conduits such as Execution', () => {
     const strike = (ids: ConduitId[]) => {
@@ -204,7 +207,7 @@ describe('Defend-triggered and conditional Conduits under skills (D-473 O1, O2)'
       const result = act(state, { type: 'skill', bearerId: 'ember', slot: 1, targetId: 'enemy' });
       return of(result.events, 'damage').filter(event => event.origin === 'direct').reduce((sum, event) => sum + event.offered, 0);
     };
-    expect(strike(['execution-orrery'])).toBeGreaterThan(strike([]));
+    expect(strike(['calamitic-worldbreaker-cannonade'])).toBeGreaterThan(strike([]));
   });
 });
 

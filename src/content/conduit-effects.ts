@@ -18,25 +18,37 @@ export type RadiantConduitEffect =
   | 'hurt-heal' | 'break-heal' | 'burn-heal' | 'kill-heal' | 'kill-charge' | 'normal-splash'
   | 'flare-team-charge' | 'hurt-charge' | 'heal-team-charge' | 'guard-team-shield'
   | 'flare-weaken' | 'normal-reduction' | 'round-charge' | 'round-team-heal'
-  | 'skill-leech'
   // D-493 restoration (Phase 4c): pre-Radiant Skill stats, Luminosity and damage layers.
   | 'skill-power' | 'skill1-power' | 'debuff-power' | 'restore-power' | 'health-skill-power'
   | 'skill-efficiency' | 'skill-duration' | 'debuff-duration' | 'gauge-gain' | 'capacity'
-  | 'direct' | 'skill-pierce' | 'enemy-defense' | 'drain' | 'ally-heal-self' | 'twin-charge';
-/** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration). */
-export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true }
+  | 'direct' | 'skill-pierce' | 'enemy-defense' | 'drain' | 'ally-heal-self' | 'twin-charge'
+  // D-493 B2 (Legendary).
+  | 'ally-guard' | 'skill2-power' | 'skill2-efficiency' | 'phase-shield' | 'reserve-health' | 'reserve-defense'
+  | 'skill-direct' | 'support-power' | 'restore-charge' | 'gamble-power' | 'shield-guard' | 'aoe-power'
+  | 'prism-efficiency' | 'prism-gain' | 'last-block' | 'exposed-heal' | 'flare-power';
+/** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration);
+ * `step` primitives add `step` per rank instead of scaling (C12 exceptions such as Stasis Reliquary's chance). */
+export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true; step?: number }
 export type RadiantConduitDesign = readonly RadiantConduitPrimitive[];
 export const effect = (kind: RadiantConduitEffect, amount: number): RadiantConduitPrimitive => ({ kind, amount });
 /** A primitive that keeps its amount at every upgrade rank (D-493 C12). */
 export const fixedEffect = (kind: RadiantConduitEffect, amount: number): RadiantConduitPrimitive => ({ kind, amount, fixed: true });
+/** A primitive whose amount rises by `step` per upgrade rank (D-493 C12 exceptions). */
+export const steppedEffect = (kind: RadiantConduitEffect, amount: number, step: number): RadiantConduitPrimitive => ({ kind, amount, step });
+/** D-493 B2 fixed rules: Nullsong's 50% roll and -75% loss, Citadel Spine's 75% Health line,
+ * Pale Bulwark's Shield cap, Stasis Reliquary's +25% damage taken. */
+export const radiantGambleRules = { chance: .5, loss: .75 } as const;
+export const radiantAllyGuardThreshold = .75;
+export const radiantShieldGuardCap = .8;
+export const radiantStasisVulnerability = .25;
 /** D-493 C12: Glassroot Gimbal's Health step (fixed at every rank). */
 export const radiantHealthSkillPowerStep = 450;
 export const pair = (kind: RadiantConduitEffect, amount: number, related: RadiantConduitEffect, extra: number): RadiantConduitDesign =>
   [effect(kind, amount), effect(related, extra)];
 
 // Stable-ID design decisions. D-493 restores the pre-Radiant (Phase Zero) effects batch by batch
-// (B1 Common + Rare shipped in 4c; C1 x0.2 rescale on always-on Health/Defense/Attack). Rows not yet
-// restored keep their Radiant-era designs (D-480 for Horizon Heartcase and Starvein Conductor).
+// (B1 Common + Rare and B2 Legendary in 4c; C1 x0.2 rescale on always-on Health/Defense/Attack). Rows not yet
+// restored keep their Radiant-era designs.
 // Fractions are ratios and charge values are whole personal charge.
 export const radiantConduits = {
   'vigil-core': [effect('hp', .2)],
@@ -64,21 +76,21 @@ export const radiantConduits = {
   'coilfeed-ratchet': [effect('skill-efficiency', .08), effect('skill-power', .08), effect('direct', .04)],
   'opal-indexer': [effect('debuff-power', .75), fixedEffect('debuff-duration', 1)],
   'resonance-crucible': [effect('defense', .15), effect('hp', .1), fixedEffect('skill-duration', 1)],
-  'astral-prism': pair('first-action', .35, 'normal-expose', .15),
-  'citadel-spine': pair('defense', .35, 'guard-shield', .6),
-  'execution-orrery': [effect('execution', .6)],
-  'immortal-vessel': pair('hp', .4, 'guard-heal', .25),
-  'judgment-lens': pair('flare', .35, 'exposed', .25),
-  'worldbreaker-drive': pair('flare', .4, 'wounded', .3),
-  'siege-cantilever': [effect('solo', .5)],
-  'nullsong-transmission': pair('normal', .35, 'normal-charge', 4),
-  'horizon-heartcase': pair('guard-team-shield', .4, 'hurt-charge', 5),
-  'stasis-reliquary': pair('brace', .25, 'guard', .12),
-  'granite-hourglass': pair('hurt-shield', .06, 'round-shield', .5),
-  'pale-bulwark-diadem': pair('shelter', .15, 'shielding', .3),
-  'starvein-conductor': pair('skill-leech', .15, 'burn-power', .2),
-  'meridian-inverter': pair('flare-heal', .4, 'shielding', .25),
-  'verdict-caliper': pair('normal', .3, 'solo', .25),
+  'astral-prism': pair('hp', .1, 'direct', .2125),
+  'citadel-spine': [effect('attack', .15), effect('gauge-gain', .07), effect('ally-guard', .35)],
+  'execution-orrery': pair('skill2-power', .99, 'skill2-efficiency', .1),
+  'immortal-vessel': pair('hp', .5, 'defense', .15),
+  'judgment-lens': pair('skill-direct', .125, 'support-power', .5),
+  'worldbreaker-drive': pair('flare-power', .99, 'direct', .65),
+  'siege-cantilever': [effect('aoe-power', 1.5)],
+  'nullsong-transmission': [effect('gamble-power', .75)],
+  'horizon-heartcase': [effect('flare', .1375), effect('reserve-health', .2), effect('reserve-defense', .1)],
+  'stasis-reliquary': [steppedEffect('last-block', .1, .02)],
+  'granite-hourglass': [effect('phase-shield', .3)],
+  'pale-bulwark-diadem': [effect('shield-guard', .5)],
+  'starvein-conductor': pair('prism-efficiency', .35, 'prism-gain', .1),
+  'meridian-inverter': [effect('restore-charge', 4)],
+  'verdict-caliper': [effect('exposed-heal', .25)],
   'infernic-phoenix-reactor': pair('break-heal', .4, 'hurt-shield', .08),
   'aquatic-leviathan-pump': pair('absorbed-charge', 8, 'hurt-heal', .35),
   'tectonic-atlas-bastion': pair('normal-reduction', .15, 'guard-team-shield', .4),
@@ -160,7 +172,8 @@ export function radiantConduitPrimitives(slot: RadiantGearSlot): RadiantConduitP
   validateConduitUpgradeLevel(slot.rank);
   return (radiantConduits[slot.id] as RadiantConduitDesign).map(entry => entry.fixed
     ? { kind: entry.kind, amount: entry.amount, fixed: true as const }
-    : { kind: entry.kind, amount: entry.amount * (1 + .1 * slot.rank) });
+    : entry.step !== undefined ? { kind: entry.kind, amount: entry.amount + entry.step * slot.rank, step: entry.step }
+      : { kind: entry.kind, amount: entry.amount * (1 + .1 * slot.rank) });
 }
 export function radiantGearAmount(gear: RadiantGear | undefined, kind: RadiantConduitEffect): number {
   return (gear ?? []).flatMap(slot => slot === null ? [] : radiantConduitPrimitives(slot))

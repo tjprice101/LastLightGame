@@ -1,5 +1,38 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B2: Legendary Conduit restoration (D-493, 2026-11-19)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b2-legendary-d-493-battle-flurry-phase-4c).
+- All 15 Legendaries restored: Skill 2 Power/Efficiency, Convergent Light
+  Power, area and support Skill Power, skill-only direct damage, Starvein's
+  distinct-element condition, Citadel's Defense Up aura, Heartcase's raised
+  maximum Health and Defense below the Convergent Light cost, Granite's
+  enemy-phase Shield, Pale Bulwark's Shield guard, Meridian, Verdict.
+- New Conduit RNG stream (`conduitSeed`, only when Nullsong or Stasis is
+  equipped) for Nullsong's ±Skill Power roll and Stasis's block.
+- Implementation choice (owner may reverse): Heartcase never removes Health
+  without an event; above the cost, healing stops at the normal maximum and
+  extra Health stays until damaged.
+- `skill-leech` removed (no remaining wearer).
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded.
+- Full `npx vitest run`: 10,794 of 10,794 (new
+  `conduit-restoration-b2.test.ts`: 28).
+- `--retune` study (radiant-trio-v1, balanced; B1+B2): ordinary 98.1%;
+  Calamity EX+1/2/3 94.9/73.6/62.5% (D-481: 85.2/52.8/33.3%); Oblivion
+  141-160 91.7%, 161-180 61.9%; Training 101-120 72.2%; Dungeon 101-120
+  95.3%. Flare-saving player: Calamity 100/93.5/80.6%. The final enemy
+  retune must bring Calamity back toward its targets.
+- `node toolsundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** a look in game (unreleased).
+
+**Next:** B3 Omnic (45 rows; large engine gaps G7 tokens, G10 revive, G12
+extra skill, G13 taunt) in a fresh Opus session, planned in Plan mode.
+
 ## Battle Flurry Phase 4c B1: Common + Rare Conduit restoration (D-493, 2026-11-19)
 
 **Implemented on `battle-flurry-phase3`, not released** (owner choice: release
@@ -23,7 +56,8 @@ once after B5 with one enemy retune). Owner approved the full 4b proposal
   `battle-local.test.ts` fixture expecting Reserve Torque Crank's D-480
   effect) was updated and passes (14 of 14). New
   `src/game/conduit-restoration-b1.test.ts`: 40 of 40.
-- `node toolsun_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+- `node tools
+un_pressure_study.mjs <out> --retune` (radiant-trio-v1,
   balanced): ordinary 98.0% (was 96.9%); Calamity EX+1/2/3 91.7/60.6/45.8%
   (was 85.2/52.8/33.3%); Sunshade 101-140 100% (was 92-94%); Dungeon 101-120
   95.8%, War 121-140 97.7%, Oblivion 141-160 81.3%, 161-180 59.5%, Training
