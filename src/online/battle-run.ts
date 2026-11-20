@@ -19,7 +19,7 @@ import { adaptRadiantPressureEncounter, assertRadiantPressureAccess, isRadiantAc
   type RadiantPressureAnchor, type RadiantPressureEnemy } from '../game/enemy-pressure-encounters';
 import { radiantPressureEnemyAction } from '../game/enemy-pressure';
 import { applyRadiantCombatAction, createRadiantCombat, validateRadiantCombat, validateRadiantDropEvents,
-  type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState } from '../game/combat-engine';
+  radiantSignatureOpList, type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState } from '../game/combat-engine';
 
 /** v4: Phase 3 kits and rules (D-473); v3 introduced device-run encounters with one settle replay (D-471). */
 export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v4+json';
@@ -509,6 +509,7 @@ export function validateRadiantRunSnapshot(value: unknown): RadiantRunSnapshot {
     throw new RadiantRunError('unavailable', 'Invalid saved Radiant account; nothing was saved.');
   }
 }
+const radiantSignatureOps: ReadonlySet<string> = new Set(radiantSignatureOpList);
 const eventFields = {
   damage: { text: ['targetId', 'origin'], number: ['offered', 'absorbed', 'healthLoss'] },
   heal: { text: ['targetId'], number: ['snapshot', 'offered', 'effective'] },
@@ -522,6 +523,8 @@ const eventFields = {
   skill: { text: ['bearerId', 'name'], number: ['slot', 'cost'] },
   'health-mote': { text: ['enemyId', 'bearerId'], number: ['offered', 'effective'] },
   status: { text: ['targetId', 'status'], number: ['magnitude', 'remaining'] },
+  // Signature bookkeeping (Step 2b, D-475 to D-478): journals of settled encounters carry it.
+  signature: { text: ['bearerId', 'op'], number: ['amount'] },
 };
 function validSource(value: unknown): boolean {
   return record(value) && (value.kind === 'enemy' ? validId(value.enemyId) :
@@ -546,6 +549,8 @@ function validEvent(value: unknown): boolean {
     'weaken-removed'].includes(String(value.status))) return false;
   if (value.type === 'status' && value.clockOnly !== undefined && value.clockOnly !== true) return false;
   if (value.type === 'skill' && value.slot !== 1 && value.slot !== 2) return false;
+  if (value.type === 'signature' && (!radiantSignatureOps.has(String(value.op)) ||
+    (value.holderId !== undefined && !validId(value.holderId)))) return false;
   // D-492: optional Conduit attribution; older journals have none.
   if (value.boosts !== undefined && (!['damage', 'heal', 'shield'].includes(value.type) || !Array.isArray(value.boosts) ||
     !value.boosts.every(boost => record(boost) && validSource(boost.source) && record(boost.source) &&

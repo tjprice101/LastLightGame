@@ -156,11 +156,13 @@ export interface RadiantCombatState {
   currencyEarned: number;
 }
 export type RadiantTimedStatus = RadiantCategory | 'weaken-removed';
-export type RadiantSignatureOp = 'seed' | 'seed-wither' | 'cover' | 'cyclone' | 'gust' | 'cyclone-release' |
-  'lodge' | 'recall' | 'return' | 'wounds' | 'detonate' | 'refund' |
-  'quarry' | 'contributor' | 'trap' | 'trap-strike' | 'combo' | 'refusal' | 'mark' | 'incision' |
-  'survey' | 'foundation' | 'foundation-absorb' | 'beat' | 'heat' | 'burn-up' | 'stillness' | 'season' | 'current' |
-  'tension' | 'cadence' | 'crosscut' | 'unreturned' | 'load' | 'signal' | 'severance' | 'path' | 'promise' | 'interval';
+/** Every signature bookkeeping op (runtime list so saved journals can be validated). */
+export const radiantSignatureOpList = ['seed', 'seed-wither', 'cover', 'cyclone', 'gust', 'cyclone-release',
+  'lodge', 'recall', 'return', 'wounds', 'detonate', 'refund',
+  'quarry', 'contributor', 'trap', 'trap-strike', 'combo', 'refusal', 'mark', 'incision',
+  'survey', 'foundation', 'foundation-absorb', 'beat', 'heat', 'burn-up', 'stillness', 'season', 'current',
+  'tension', 'cadence', 'crosscut', 'unreturned', 'load', 'signal', 'severance', 'path', 'promise', 'interval'] as const;
+export type RadiantSignatureOp = typeof radiantSignatureOpList[number];
 export type RadiantCombatAction =
   | { type: 'normal'; bearerId: string; targetId: string }
   | { type: 'skill'; bearerId: string; slot: RadiantSkillSlot; targetId?: string }

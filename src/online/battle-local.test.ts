@@ -45,6 +45,31 @@ async function send(transport: LocalRadiantTransport, operation: RadiantRunOpera
 }
 
 describe('local Radiant authority', () => {
+  it('reloads a settled encounter whose journal carries signature events (saves stay playable)', async () => {
+    const storage = new MemoryStorage(), account: Account = emptyAccount();
+    account.squad = ['vaelor', 'ember'];
+    account.squad.forEach(member => { account.characters[member as keyof Account['characters']] = {
+      level: 0, evolution: 1, weaponRank: 0 }; });
+    saveAccount(storage, account);
+    const transport = new LocalRadiantTransport(storage, () => 'ember');
+    const started = await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
+    const local = play(started.run);
+    const settled = await send(transport, { kind: 'settle', actions: local.actions });
+    // Vaelor's Beat is signature bookkeeping recorded every new round.
+    expect(settled.run.journal.events.some(event => event.type === 'signature')).toBe(true);
+    const checkpoint = await transport.read();
+    expect(checkpoint.run?.id).toBe(settled.run.id);
+    expect(checkpoint.revision).toBe(settled.revision);
+    const snapshot = { revision: 9, state: { profile: {}, starterId: 'ember', run: null,
+      account: settled.account, radiantStudy: settled.run } };
+    expect(validateRadiantRunSnapshot(snapshot).state.radiantStudy).toEqual(settled.run);
+    const journal = structuredClone(settled.run);
+    const signature = journal.journal.events.find(event => event.type === 'signature')!;
+    Object.assign(signature, { op: 'not-an-op' });
+    expect(() => validateRadiantRunSnapshot({ ...snapshot, state: { ...snapshot.state, radiantStudy: journal } }))
+      .toThrow('Invalid saved Radiant account');
+  });
+
   it.each([3, 4, 5, 6, 7])('retires rules %s without changing storage, revision, holdings or saved rewards on read', async version => {
     const storage = seeded();
     const transport = new LocalRadiantTransport(storage, () => 'ember');
