@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { ConduitId } from '../content/conduits';
 import type { RadiantGear } from '../content/conduit-effects';
-import { radiantConduitEffectText } from '../content/conduit-effect-text';
+import { radiantConduitDescription, radiantConduitEffectText } from '../content/conduit-effect-text';
 import {
   radiantCriticalStats, radiantElementalCritFactor, radiantEnemyCritical, releasedRadiantIds,
   type RadiantBearerId, type RadiantLoadout,
@@ -139,7 +139,11 @@ describe('critical hits: damage', () => {
     expect(tick.critical).toBeDefined();
     expect(tick.offered).toBeGreaterThanOrEqual(Math.round(burn.magnitude * 1.5) - 1);
     // Conduit-generated packets (here Worldbreaker Cannonade's splash) carry no critical flag even when the hit crits.
-    const splash = certain(fixture([['atmoso', ['calamitic-worldbreaker-cannonade']]]), 'atmoso', .8);
+    // D-493 B4: Atmoso's Sky Without End Turbine Master carries the splash (Worldbreaker Cannonade no longer does).
+    const splashState = createRadiantCombat([{ ...member('atmoso'), masterId: 'master-atmoso-1' }],
+      ['enemy', 'enemy2'].map(id => ({ id, elementId: null, stats: { hp: 1000000, attack: 400, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
+    for (const enemy of splashState.enemies) { enemy.hp -= 1; enemy.currency.lowestHP = enemy.hp; }
+    const splash = certain(splashState, 'atmoso', .8);
     const events = damage(act(splash, { type: 'normal', bearerId: 'atmoso', targetId: 'enemy' }).events);
     expect(events.find(event => event.origin === 'direct')?.critical).toBeDefined();
     expect(events.filter(event => event.origin === 'generated').length).toBeGreaterThan(0);
@@ -173,7 +177,7 @@ describe('Critical Up (replaces Exposure)', () => {
     expect(hit.offered).toBe(radiantDirectDamage(effectiveRadiantStats(legacy, 'ember').attack, 50, 1, 1.2));
   });
   it('describes Critical Up and the crit Conduits with exact numbers', () => {
-    expect(radiantConduitEffectText('calamitic-ruinmark-censer')).toContain('+60 percentage points Critical Rate');
+    expect(radiantConduitDescription({ kind: 'normal-expose', amount: .3 })).toContain('+60 percentage points Critical Rate');
     expect(radiantConduitEffectText('astral-prism')).toBe(
       'Maximum Health increases by 10%. Critical Rate +30 percentage points on Normal Attacks, skills, Convergent Light, ' +
       "signature strikes and Burn. Critical Damage +25% (multiplies this bearer's base Critical Damage).");

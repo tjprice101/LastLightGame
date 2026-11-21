@@ -1,6 +1,6 @@
 import {
   radiantAllyGuardThreshold, radiantConduitPrimitives, radiantCriticalUpRate, radiantGambleRules, radiantHealthSkillPowerStep, radiantShieldGuardCap,
-  radiantOmnicRules, radiantStasisVulnerability, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
+  radiantCalamiticRules, radiantOmnicRules, radiantStasisVulnerability, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
 import type { ConduitId } from './conduits';
 
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
@@ -183,6 +183,15 @@ const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => stri
   'accord-efficiency': a => `Each other living ally this bearer's heal or Shield reaches gains Accord (once per encounter): while this bearer lives, it keeps them at 1 Health against a fatal direct enemy hit and gives them ${percent(a)} Skill Efficiency on their next skill or Convergent Light (next-action bonus). Uses that ally's rescue.`,
   taunt: () => `Each Normal Attack taunts every enemy for 1 enemy phase (the next one): their attacks aim at this bearer while they live. The latest taunt in the squad applies.`,
   'taunt-charge': a => `Each enemy attack aimed at this bearer while it taunts grants each other living ally ${number(a)} Luminosity, rounded once.`,
+  // D-493 B4 (Calamitic).
+  'restore-efficiency': a => `Skills and Convergent Light that heal or grant Shields gain ${percent(a)} Skill Efficiency (total discount up to 50%).`,
+  'weaken-vulnerability': a => `While this bearer lives, enemies carrying this bearer's Weaken take ${percent(a)} more damage from every ally source, including Burn and Conduit-generated strikes.`,
+  'mark-team-power': a => `Up to ${radiantCalamiticRules.markTriggers} times per encounter, after an action in which this bearer places a mark (Quarry, Survey, Fate-seared Mark, Incision, Thorn Trap or Nightglass mark), each living squad member gains ${percent(a)} Skill Power until the end of the turn (adds up per trigger).`,
+  'mark-team-charge': a => `Each such trigger also grants each living squad member ${number(a)} Luminosity, rounded once.`,
+  'lone-hp': a => `If this bearer is the only squad member, maximum Health increases by ${percent(a)}.`,
+  'lone-defense': a => `If this bearer is the only squad member, Defense increases by ${percent(a)}.`,
+  'lone-power': a => `If this bearer is the only squad member, Skill Power increases by ${percent(a)}.`,
+  'flare-extra-skill': () => `After this bearer uses Convergent Light, each other living ally who already acted this turn may use one extra Skill 1 or Skill 2 this turn at its normal cost (borrowed skill; once per ally per turn). The turn waits while an ally can pay for it; End Turn gives up unused ones.`,
 };
 
 /** Radiant effects that combat sums across every equipped Conduit before applying them once. */
@@ -196,6 +205,7 @@ export const radiantSummedConduitEffects = [
   'oceanic-power', 'census-power', 'ruin-power', 'ruin-defense', 'weakened-pierce', 'weakened-ally-power', 'low-heal-power',
   'burn-skill-power', 'shielded-restore-power', 'weaken-ally-efficiency',
   'crit-rate', 'crit-damage', 'skill-crit-damage', 'flare-crit-rate', 'flare-crit-damage',
+  'restore-efficiency', 'lone-hp', 'lone-defense', 'lone-power',
 ] as const satisfies readonly RadiantConduitEffect[];
 
 /** Exact player-facing text for one Radiant primitive, shared by menus and the battle reference. */

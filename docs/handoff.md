@@ -1,5 +1,58 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B4: Calamitic Conduits and the borrowed skill (D-493, 2026-11-21)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b4-calamitic-and-the-borrowed-skill-d-493-battle-flurry-phase-4c).
+All 14 Calamitic Conduits now carry their restored effects.
+- Owner answers (Plan mode): Throne of Borrowed Tomorrows keeps the player
+  turn open while an ally can pay for its borrowed Skill 1 or 2 (End Turn
+  gives it up); allies who used Convergent Light that turn are eligible.
+- New engine pieces: borrowed skills (G12: `borrowed?` / `borrowedSpent?`,
+  `radiantPendingActors`, turn hold, op `borrowed`), Choir-Array mark trigger
+  (`choirPower?` / `choirUsed?`, op `choir`, 4 per encounter), Ruinmark Censer
+  damage-taken bonus on every ally source (direct, Burn, generated), Lone
+  Apostate solo-squad stats, heal/Shield Skill Efficiency. Cathedral uses real
+  crits; Causality's Skill Efficiency steps +2% per rank.
+- UI: gold "borrowed skill" tag and card frame, a tap opens the fan
+  (Convergent Light reads "Skill 1 or 2 only"), "Borrowed skill ready",
+  "End Turn · forfeit borrowed skills", rising gold threads on a grant (none
+  under Reduce motion), Choir and Throne callouts, Ruinmark enemy tag; glossary
+  entries "Borrowed skill" and "Mark". The pressure AI and the two study tools
+  use borrowed skills.
+- Implementation choices (owner may reverse): Ruinmark and Choir need their
+  wearer alive; one Choir trigger per action; Choir Skill Power ends with the
+  player turn; the turn hold ignores target-bound discounts.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b4.test.ts`: 49 of 49, including the
+  save-compatibility checks: a pre-B4 journal and a mid-run save load and
+  settle; the new ops pass the allowlist; forged borrowed and Choir state is
+  rejected; a settled replay containing borrowed skills matches.
+- It caught one bug, now fixed: a Convergent Light that won the encounter left
+  `borrowed` set, so the final state failed validation.
+- Updated fixtures (old Calamitic designs): `combat-skills`, `conduit-effects`
+  (Leader amplifier test reduced: no Conduit keeps `leader` any more;
+  `break-heal` and `normal-splash` now tested through Masters),
+  `critical-hits`.
+- Full `npx vitest run`: 11,015 of 11,015 (320 files).
+- `node tools\run_pressure_study.mjs <out> --retune`: identical to B3c on
+  every band. **The study cannot see B4:** `tools/retune-study.ts` refuses
+  Calamitic Conduits (`assertNonCalamitic`, D-404 preparation). The retune
+  should decide whether Calamity builds get Calamitic Conduits.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+- `capture_frames.mjs --battle flare --stream`: the battle renders and
+  Convergent Light fires (the preview squad has no Conduits).
+
+**Not verified:** borrowed-skill, Choir and Ruinmark visuals seen in game
+(covered by tests only).
+
+**Next:** B5 (Masters, 96 rows, includes the `master-sprout-3` revive on the
+B3c ledger). Fresh Opus session, Plan mode; it is large, so consider
+splitting it like B3.
+
 ## Battle Flurry Phase 4c B3c: rescue limit, revive, Accord, taunt (D-493, 2026-11-21)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release after

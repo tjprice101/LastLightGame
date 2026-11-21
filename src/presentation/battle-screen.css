@@ -288,6 +288,8 @@ html[data-motion="reduced"] .radiant-fx-layer > :not(.radiant-static-ring):not(.
 .radiant-gpu-layer canvas { display: block; pointer-events: none; }
 .radiant-battle .radiant-field .radiant-enemy:disabled, .radiant-battle .radiant-face:disabled { opacity: 1; }
 .radiant-battle .radiant-member.has-acted .radiant-face, .radiant-battle .radiant-member.is-defeated .radiant-face { opacity: .55; }
+/* D-493 B4 (G12): a member holding a borrowed skill keeps a gold frame until it is used or the turn ends. */
+.radiant-battle .radiant-member.has-borrowed { box-shadow: 0 0 0 1px var(--gild-light), 0 0 16px -6px var(--gild-light); }
 .radiant-field .is-defeated .radiant-unit-motion { opacity: .18; filter: grayscale(1) brightness(.6); transform: translateY(14px) scale(.96); transition: opacity .4s ease, transform .4s ease; }
 .radiant-field .radiant-enemy.is-defeated .radiant-unit-motion::after { display: none; }
 
@@ -849,6 +851,12 @@ html[data-motion="reduced"] .radiant-bonus-tag.is-fresh::after { animation: none
   background: linear-gradient(180deg, #fff3d6, #ff9a5c); animation: radiant-revive-ember 900ms ease-out var(--d) 1 both; }
 @keyframes radiant-revive-ember { from { transform: translateY(0) scale(1); opacity: 1; } to { transform: translateY(-46px) scale(.4); opacity: 0; } }
 .radiant-rescue-burst.is-accord { background: radial-gradient(circle, #ffffffcc 0, color-mix(in srgb, var(--gild-light) 60%, transparent) 35%, transparent 70%); }
+/* D-493 B4: Throne of Borrowed Tomorrows: gold threads of light rise through an ally granted a borrowed skill. */
+.radiant-rescue-burst.is-borrowed { background: radial-gradient(circle at 50% 80%, color-mix(in srgb, var(--gild-light) 70%, transparent) 0, transparent 62%); }
+.radiant-rescue-burst.is-borrowed i { position: absolute; left: calc(50% + var(--x)); bottom: 10%; width: 2px; height: 46px; border-radius: 2px;
+  background: linear-gradient(0deg, transparent, var(--gild-light), #fff); animation: radiant-borrowed-thread 820ms ease-out var(--d) 1 both; }
+@keyframes radiant-borrowed-thread { from { transform: translateY(14px) scaleY(.2); opacity: 0; } 40% { opacity: 1; }
+  to { transform: translateY(-34px) scaleY(1); opacity: 0; } }
 html[data-motion="reduced"] .radiant-rescue-burst { display: none; }
 
 .radiant-skill-callout { position: absolute; z-index: 7; left: 50%; bottom: calc(100% + 4px); padding: 3px 12px; border-radius: 999px; pointer-events: none; white-space: nowrap;

@@ -1,7 +1,7 @@
 import { radiantBearerKits, radiantTankTargetWeight, type RadiantLoadout } from '../content/combat-kits';
 import { radiantSkillAcceptsTarget, type RadiantSkillDef, type RadiantSkillSlot } from '../content/radiant-kits';
 import { scheduledEnemySkill } from '../content/enemy-skills';
-import { applyRadiantCombatAction, createRadiantCombat, radiantActionEfficiency, radiantFlareReady, type RadiantBearer, type RadiantCombatState,
+import { applyRadiantCombatAction, createRadiantCombat, radiantActionEfficiency, radiantFlareReady, radiantPendingActors, type RadiantBearer, type RadiantCombatState,
   type RadiantCombatEvent, type RadiantCombatAction } from './combat-engine';
 import { personalChargeMaximum, personalChargeUnit, readySkill } from './combat-gauge';
 import type { RadiantPressureEnemy } from './enemy-pressure-encounters';
@@ -29,8 +29,14 @@ export function chooseRadiantPressureAction(
   const actor = state.bearers.find(member => member.loadout.id === id)!;
   const target = state.enemies.filter(member => member.hp > 0).sort((a, b) => a.hp - b.hp || a.id.localeCompare(b.id))[0];
   const normal: RadiantCombatAction = { type: 'normal', bearerId: id, targetId: target.id };
-  if (policy === 'normal-only') return normal;
   const kit = radiantBearerKits[actor.loadout.starter].kit;
+  // D-493 B4 (G12): a bearer who already acted can only use its borrowed Skill 1 or Skill 2 (Skill 2 first when affordable).
+  if (state.acted.includes(id)) {
+    const slot = ([2, 1] as const).find(choice => readySkill(state.gauge, id, choice, radiantActionEfficiency(state, id, choice)));
+    if (slot === undefined) return { type: 'end-turn' };
+    return { type: 'skill', bearerId: id, slot, ...(radiantSkillAcceptsTarget(slotDef(kit, slot)) ? { targetId: target.id } : {}) };
+  }
+  if (policy === 'normal-only') return normal;
   const wounded = state.bearers.some(member => member.hp > 0 && member.hp < member.stats.hp * .8);
   const unshielded = state.bearers.some(member => member.hp > 0 && !member.shields.length);
   const endangered = actor.hp < actor.stats.hp * .25 && actor.shields.length === 0;
@@ -161,6 +167,9 @@ export function runRadiantPressure(
       if (member.hp > 0 && !state.acted.includes(member.loadout.id))
         apply(chooseRadiantPressureAction(state, member.loadout.id, policy));
     }
+    // D-493 B4 (G12): borrowed skills granted by Throne of Borrowed Tomorrows, then the enemy phase.
+    for (let pending = radiantPendingActors(state); state.phase === 'player' && pending.length; pending = radiantPendingActors(state))
+      apply(chooseRadiantPressureAction(state, pending[0], policy));
     if (state.phase === 'enemy') {
       for (const enemy of enemies) {
         if (state.phase !== 'enemy') break;

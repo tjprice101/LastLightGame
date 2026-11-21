@@ -167,14 +167,10 @@ describe('real four-stat and action modifiers', () => {
     expect(guarded.type === 'damage' && plain.type === 'damage' && guarded.offered < plain.offered).toBe(true);
     expect(hit(state).state.bearers[0].buffs.filter(effect => effect.category === 'weaken')).toHaveLength(1);
   });
-  it('leader gear only applies while first and alive; cooperation requires a previous ally action', () => {
-    let state = fixture(['calamitic-choir-array-of-branded-stars'], 'ember', ['rosetta']);
-    const controlLeader = fixture([], 'ember', ['rosetta']);
-    expect(radiantLeaderBonus(state.bearers[0].loadout))
-      .toBeCloseTo(radiantLeaderBonus(controlLeader.bearers[0].loadout) * 1.3);
-    expect(effectiveRadiantStats(state, 'rosetta').attack)
-      .toBe(effectiveRadiantStats(controlLeader, 'rosetta').attack);
-    expect(normal(state).state.enemies[0].hp).toBeLessThan(normal(controlLeader).state.enemies[0].hp);
+  it('the Leader effect only applies while first and alive; cooperation requires a previous ally action', () => {
+    // D-493 B4: Choir-Array was the last Conduit with a Leader amplifier, so this checks the Leader rule alone.
+    const state = fixture([], 'ember', ['rosetta']);
+    expect(radiantLeaderBonus(state.bearers[0].loadout)).toBeGreaterThan(0);
     state.bearers[0].hp = 0; state.gauge.members[0].living = false;
     expect(effectiveRadiantStats(state, 'rosetta').attack)
       .toBeCloseTo(state.bearers[1].stats.attack);
@@ -196,27 +192,31 @@ describe('bounded, sourced Conduit triggers', () => {
     state.gauge.members[0].charge = 199;
     expect(normal(state).state.gauge.members[0].charge).toBe(200);
   });
-  it('resolves native Shield breaks before generated replacement Shields, independent of slot order', () => {
-    for (const ids of [['calamitic-bulwark-of-the-last-horizon', 'calamitic-aegis-engine-of-severed-fate'], ['calamitic-aegis-engine-of-severed-fate', 'calamitic-bulwark-of-the-last-horizon']] as ConduitId[][]) {
-      let state = fixture(ids);
-      state.bearers[0].hp = 500;
-      sourceShield(state, 0, { kind: 'flare', bearerId: 'ember' }, 1);
-      state = defend(state);
-      const first = act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 2, hits: 3 });
-      expect(first.events.filter(event => event.type === 'heal' && event.source.kind === 'gear')).toHaveLength(1);
-      expect(first.state.bearers[0].shields.length).toBeGreaterThan(0);
-      const second = act(first.state, { type: 'enemy-attack', enemyId: 'enemy2', targetIds: ['ember'], coefficient: 2 });
-      expect(second.events.filter(event => event.type === 'heal' && event.source.kind === 'gear')).toHaveLength(0);
-    }
+  it('heals once per enemy phase when a native Shield breaks (bounded break trigger)', () => {
+    // D-493 B4: no Conduit keeps `break-heal`; Tide's Abyssal Shelter Observatory Master still carries it.
+    let state = createRadiantCombat([{ ...member('tide'), masterId: 'master-tide-1' }],
+      ['enemy', 'enemy2'].map(id => ({ id, elementId: null, stats: { hp: 100000, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
+    state.bearers[0].hp = 500;
+    sourceShield(state, 0, { kind: 'flare', bearerId: 'tide' }, 1);
+    state = defend(state);
+    const first = act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['tide'], coefficient: 2, hits: 3 });
+    expect(first.events.filter(event => event.type === 'heal' && event.source.kind === 'master')).toHaveLength(1);
+    sourceShield(first.state, 0, { kind: 'flare', bearerId: 'tide' }, 1);
+    const second = act(first.state, { type: 'enemy-attack', enemyId: 'enemy2', targetIds: ['tide'], coefficient: 2 });
+    expect(second.events.filter(event => event.type === 'heal' && event.source.kind === 'master')).toHaveLength(0);
   });
   it('splash cannot generate another splash, charge drop or direct-kill reward', () => {
-    const state = createRadiantCombat([member('ember', gear('calamitic-worldbreaker-cannonade', 'calamitic-causality-funeral-engine'))],
+    // D-493 B4: no Conduit keeps `normal-splash`; Atmoso's Sky Without End Turbine Master still carries it.
+    const state = createRadiantCombat([{ ...member('atmoso'), masterId: 'master-atmoso-1' }],
       ['enemy', 'other'].map((id, index) => ({ id, elementId: null,
         stats: { hp: index === 0 ? 100000 : 1, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
     const result = normal(state);
     expect(result.events.filter(event => event.type === 'damage').map(event => event.origin)).toEqual(['direct', 'generated']);
     expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
-    expect(result.state.gauge.members[0].charge).toBe(15);
+    // Only the one Normal hit's Luminosity and the Master's own Normal Attack Luminosity: the splash adds none.
+    const control = createRadiantCombat([member('atmoso')], state.enemies.map(enemy => ({ id: enemy.id, elementId: null,
+      stats: enemy.stats, currencyBudget: 1000 })), 0);
+    expect(result.state.gauge.members[0].charge).toBe(normal(control).state.gauge.members[0].charge + 4);
     expect(result.state.chargeSeed).toBe(state.chargeSeed);
   });
   it('native healing grants heal-triggered bonuses, but generated healing and overhealing cannot', () => {
@@ -320,16 +320,16 @@ describe('Conduit contribution attribution (D-492)', () => {
     events.filter((event): event is Extract<typeof event, { type: 'damage' }> => event.type === 'damage');
   it('splits a Normal hit between damage and Attack Conduits without changing the hit', () => {
     const bare = normal(fixture());
-    const boosted = normal(fixture(['calamitic-horizon-cleaving-godpress', 'siegebound-drive']));
+    const boosted = normal(fixture(['worldbreaker-drive', 'siegebound-drive']));
     const [plain] = damage(bare.events), [hit] = damage(boosted.events);
     const total = (boosts: typeof hit.boosts) => (boosts ?? []).reduce((sum, entry) => sum + entry.amount, 0);
     // Ember's own Leader effect is attributed in both; the Conduits add their own shares on top.
     expect(plain.boosts!.map(entry => entry.source.kind)).toEqual(['leader']);
     const shares = new Map(hit.boosts!.map(entry => [entry.source.kind === 'gear' ? entry.source.conduitId : entry.source.kind, entry.amount]));
-    expect([...shares.keys()].sort()).toEqual(['calamitic-horizon-cleaving-godpress', 'leader', 'siegebound-drive']);
+    expect([...shares.keys()].sort()).toEqual(['leader', 'siegebound-drive', 'worldbreaker-drive']);
     expect(total(hit.boosts) - total(plain.boosts)).toBeGreaterThan(0);
     expect(total(hit.boosts)).toBeLessThan(hit.offered);
-    expect(shares.get('calamitic-horizon-cleaving-godpress')!).toBeGreaterThan(shares.get('siegebound-drive')!);
+    expect(shares.get('worldbreaker-drive')!).toBeGreaterThan(shares.get('siegebound-drive')!);
   });
   it('records damage prevented by a Defense Conduit on enemy hits', () => {
     const attack = (ids: ConduitId[]) => {

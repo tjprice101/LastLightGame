@@ -1,5 +1,6 @@
 import { radiantBeat, radiantShurikenCount, radiantSignatureCaps, radiantTokenRules, type RadiantCombatState, type RadiantToken } from '../game/combat-engine';
 import { getConduit } from '../content/conduits';
+import { radiantEquipmentAmount } from '../content/combat-kits';
 import { characterName } from '../content/character-art';
 import { escapeDialogText as escape } from './game-dialog';
 
@@ -65,6 +66,10 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
     if (member.accord) bonuses[id].push(`${getConduit('tranquilitic-accord-bastion').name} · survives one fatal hit (${nameOf(member.accord)})`);
     if (state.rescued?.includes(id)) tag(id, 'Conduit rescue used');
     if (state.taunt === id) chips.push(`${getConduit('tectonic-atlas-bastion').name} · taunting all enemies`);
+    // D-493 B4: a borrowed skill (Throne of Borrowed Tomorrows) and Choir-Array Skill Power held this turn.
+    if (state.phase === 'player' && state.borrowed?.includes(id))
+      bonuses[id].push(`${getConduit('calamitic-throne-borrowed-tomorrows').name} · one extra Skill 1 or Skill 2 this turn`);
+    if (member.choirPower) bonuses[id].push(`${getConduit('calamitic-choir-array-of-branded-stars').name} · +${pct(member.choirPower)} Skill Power this turn`);
     const starter = member.loadout.starter;
     if (starter === 'vaelor') chips.push(`Beat · ${beats[radiantBeat(state.round)]}`);
     if (starter === 'bliss' && state.phase === 'player' && !state.acted.includes(id)) {
@@ -135,6 +140,12 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
     const amp = target.debuffs.find(effect => effect.category === 'burn')?.amp;
     if (amp) tag(target.id, `Cinder Testament · Burn +${pct(amp)}`);
     if (state.taunt && living(state.taunt)) tag(target.id, `Taunted · attacks ${nameOf(state.taunt)}`);
+    // D-493 B4 Ruinmark Censer: this enemy carries a living wearer's Weaken.
+    const weaken = target.debuffs.find(effect => effect.category === 'weaken');
+    const wearer = weaken && weaken.source.kind !== 'enemy' ? state.bearers.find(unit => unit.hp > 0 &&
+      unit.loadout.id === (weaken.source as { bearerId: string }).bearerId) : undefined;
+    const ruin = wearer ? radiantEquipmentAmount(wearer.loadout, 'weaken-vulnerability') : 0;
+    if (ruin > 0) tag(target.id, `${getConduit('calamitic-ruinmark-censer').name} · +${pct(ruin)} damage taken`);
   }
   return { owners, holders, bonuses };
 }

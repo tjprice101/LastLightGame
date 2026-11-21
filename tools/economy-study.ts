@@ -1,5 +1,6 @@
 import { freshGame } from '../supabase/functions/game-operation/engine';
 import { chooseRadiantPressureAction, type RadiantPressurePolicy } from '../src/game/enemy-pressure';
+import { radiantPendingActors } from '../src/game/combat-engine';
 import { applyRadiantTurn, resolveRadiantRun, type RadiantTurnAction, type RadiantRunAuthority,
   type RadiantRunOperation, type RadiantRunSnapshot } from '../src/online/battle-run';
 import { pressureStudyLoadouts, pressureStudyNow, pressureStudySeeds } from './pressure-study';
@@ -86,9 +87,9 @@ export function measureRadiantEconomyCycle(account: Account, anchor: RadiantPres
     if (actions >= maximumActions) { halted = 'timeout'; break; }
     if (stagnation >= stagnationActions) { halted = 'stalemate'; break; }
     const state = snapshot.state.radiantStudy!.state;
-    const actor = state.bearers.find(unit => unit.hp > 0 && !state.acted.includes(unit.loadout.id));
-    if (!actor) throw new Error('Economy player phase lacks an actionable bearer.');
-    const action = chooseRadiantPressureAction(state, actor.loadout.id, policy);
+    const actorId = radiantPendingActors(state)[0];
+    if (!actorId) throw new Error('Economy player phase lacks an actionable bearer.');
+    const action = chooseRadiantPressureAction(state, actorId, policy);
     if (action.type !== 'normal' && action.type !== 'skill' && action.type !== 'flare' && action.type !== 'end-turn')
       throw new Error('Economy selected a nonplayer action.');
     const choice = action;

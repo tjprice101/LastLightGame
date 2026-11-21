@@ -199,7 +199,7 @@ describe('Defend-triggered and conditional Conduits under skills (D-473 O1, O2)'
     unmarked.skilled = [];
     expect(incoming(state)).toBeLessThan(incoming(unmarked));
   });
-  it('boosts skill damage with conditional damage Conduits such as Execution', () => {
+  it('boosts skill damage with direct-damage Conduits such as Worldbreaker Drive', () => {
     const strike = (ids: ConduitId[]) => {
       const state = charge(battle([loadout('ember', { gear: gear(...ids) })], { budget: 0 }), 'ember', 25);
       state.enemies[0].hp = 20000;
@@ -207,7 +207,8 @@ describe('Defend-triggered and conditional Conduits under skills (D-473 O1, O2)'
       const result = act(state, { type: 'skill', bearerId: 'ember', slot: 1, targetId: 'enemy' });
       return of(result.events, 'damage').filter(event => event.origin === 'direct').reduce((sum, event) => sum + event.offered, 0);
     };
-    expect(strike(['calamitic-worldbreaker-cannonade'])).toBeGreaterThan(strike([]));
+    // D-493 B4: Worldbreaker Cannonade now boosts only all-enemy skills; Worldbreaker Drive adds direct damage to every action.
+    expect(strike(['worldbreaker-drive'])).toBeGreaterThan(strike([]));
   });
 });
 

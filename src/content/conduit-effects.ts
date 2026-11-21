@@ -47,7 +47,11 @@ export type RadiantConduitEffect =
   | 'followup-power' | 'followup-charge' | 'burn-ally-power' | 'third-crit-flare-efficiency' | 'relay-power'
   | 'relay-efficiency' | 'turn-restore-efficiency' | 'turn-restore-power'
   // D-493 B3c: shared rescue limit (C18), Phoenix Reactor revive, Accord, Atlas Bastion taunt.
-  | 'revive' | 'revive-shield' | 'accord-efficiency' | 'taunt' | 'taunt-charge';
+  | 'revive' | 'revive-shield' | 'accord-efficiency' | 'taunt' | 'taunt-charge'
+  // D-493 B4 (Calamitic): heal/Shield Skill Efficiency, Ruinmark's Weaken amplifier, Choir-Array's mark trigger,
+  // Lone Apostate's solo-squad stats and Throne of Borrowed Tomorrows' extra skill (G12).
+  | 'restore-efficiency' | 'weaken-vulnerability' | 'mark-team-power' | 'mark-team-charge'
+  | 'lone-hp' | 'lone-defense' | 'lone-power' | 'flare-extra-skill';
 /** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration);
  * `step` primitives add `step` per rank instead of scaling (C12 exceptions such as Stasis Reliquary's chance). */
 export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true; step?: number }
@@ -89,11 +93,13 @@ export const radiantOmnicRules = {
   /** D-493 B3b Tempest Return Chronarch: every this-many critical damaging actions grant its Convergent Light bonus. */
   critCycle: 3,
 } as const;
+/** D-493 B4 fixed rules (C12): Choir-Array of Branded Stars triggers at most this many times per encounter. */
+export const radiantCalamiticRules = { markTriggers: 4 } as const;
 export const pair = (kind: RadiantConduitEffect, amount: number, related: RadiantConduitEffect, extra: number): RadiantConduitDesign =>
   [effect(kind, amount), effect(related, extra)];
 
 // Stable-ID design decisions. D-493 restores the pre-Radiant (Phase Zero) effects batch by batch
-// (B1 Common + Rare, B2 Legendary, B3a, B3b and B3c Omnic in 4c; C1 x0.2 rescale on always-on Health/Defense/Attack). Rows not yet
+// (B1 Common + Rare, B2 Legendary, B3a, B3b and B3c Omnic, B4 Calamitic in 4c; C1 x0.2 rescale on always-on Health/Defense/Attack). Rows not yet
 // restored keep their Radiant-era designs.
 // Fractions are ratios and charge values are whole personal charge.
 export const radiantConduits = {
@@ -182,20 +188,21 @@ export const radiantConduits = {
   'botanic-graft-covenant': [effect('hp', .22), effect('skill-efficiency', .2), effect('low-heal-power', .5), effect('lift-guard', .3)],
   'mending-valve': [effect('attack', .17), effect('skill-power', .4), effect('skill-drain-ally', .15)],
   'rootbound-triage-vault': [effect('hp', .14), effect('defense', .12), effect('turn-restore-efficiency', .25), effect('turn-restore-power', .35)],
-  'calamitic-world-eater-orrery': pair('solo', .65, 'flare', .5),
-  'calamitic-causality-funeral-engine': pair('kill-charge', 20, 'execution', .6),
-  'calamitic-horizon-cleaving-godpress': pair('opening', .6, 'normal', .5),
-  'calamitic-throne-borrowed-tomorrows': pair('first-action', .6, 'round-charge', 6),
-  'calamitic-cathedral-final-equation': pair('exposed', .6, 'flare-weaken', .25),
-  'calamitic-bulwark-of-the-last-horizon': pair('hurt-shield', .12, 'guard-team-shield', .9),
-  'calamitic-reliquary-of-unending-mercy': pair('round-team-heal', .2, 'heal-buff', .3),
-  'calamitic-aegis-engine-of-severed-fate': pair('break-heal', .5, 'flare-shield', .1),
-  'calamitic-monolith-of-the-unmoved-star': pair('shelter', .25, 'guard-shield', 1.2),
-  'calamitic-heartforge-of-the-sunless-dawn': pair('hurt-heal', .6, 'hp', .5),
-  'calamitic-ruinmark-censer': pair('normal-expose', .3, 'burn-power', .5),
-  'calamitic-choir-array-of-branded-stars': pair('leader', .3, 'team-charge', 5),
-  'calamitic-throne-of-the-lone-apostate': pair('wounded', .6, 'normal-reduction', .25),
-  'calamitic-worldbreaker-cannonade': pair('normal-splash', .6, 'execution', .5),
+  // D-493 B4 (Calamitic): pre-Radiant effects, C1 x0.2 on always-on Health/Defense, real crits on Cathedral.
+  'calamitic-world-eater-orrery': [fixedEffect('skill-duration', 3), effect('debuff-power', 1.25)],
+  'calamitic-causality-funeral-engine': [steppedEffect('skill-efficiency', .5, .02), effect('flare', 1.25)],
+  'calamitic-horizon-cleaving-godpress': pair('defense', .15, 'skill-pierce', .55),
+  'calamitic-throne-borrowed-tomorrows': [effect('hp', .09), effect('defense', .09), fixedEffect('flare-extra-skill', 1)],
+  'calamitic-cathedral-final-equation': [effect('skill-efficiency', .65), effect('crit-rate', 2.5), effect('crit-damage', 1.2)],
+  'calamitic-bulwark-of-the-last-horizon': [effect('hp', .4), effect('defense', .4), effect('shield-guard', .167)],
+  'calamitic-reliquary-of-unending-mercy': pair('restore-power', .833, 'restore-efficiency', .233),
+  'calamitic-aegis-engine-of-severed-fate': pair('skill-power', .5, 'shield-guard', .367),
+  'calamitic-monolith-of-the-unmoved-star': pair('defense', .667, 'skill-efficiency', .1),
+  'calamitic-heartforge-of-the-sunless-dawn': pair('hp', .667, 'skill-power', .167),
+  'calamitic-ruinmark-censer': [effect('defense', .1), effect('skill-power', .4), effect('weaken-vulnerability', .1)],
+  'calamitic-choir-array-of-branded-stars': [effect('hp', .093), effect('defense', .093), effect('mark-team-power', .333), effect('mark-team-charge', 6.7)],
+  'calamitic-throne-of-the-lone-apostate': [effect('lone-defense', .333), effect('lone-hp', .333), effect('lone-power', .833)],
+  'calamitic-worldbreaker-cannonade': [effect('aoe-power', 1.667)],
 } as const satisfies Record<ConduitId, RadiantConduitDesign>;
 
 export interface RadiantGearSlot { id: ConduitId; rank: number }

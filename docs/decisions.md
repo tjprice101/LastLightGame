@@ -104,6 +104,18 @@
   giver alive at the save; a revival clears timed effects and held bonuses,
   uses the frozen maximum Health and ends that attack's remaining hits on the
   bearer; no Atlas Luminosity from an attack that defeats the taunter.
+- **B4 plan answers (owner, 2026-11-21, Plan mode):** Throne of Borrowed
+  Tomorrows holds the player turn open while any living ally can still pay for
+  its borrowed Skill 1 or Skill 2 (End Turn forfeits unused ones; if no holder
+  can pay, the turn ends as before). An ally who used Convergent Light earlier
+  that turn is eligible (O10 text as approved).
+- **B4 implemented (unreleased, 2026-11-21).** The 14 Calamitic rows and G12
+  ([combat spec](combat.md#conduit-restoration-b4-calamitic-and-the-borrowed-skill-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): Ruinmark Censer and Choir-Array
+  need their wearer alive (B3a rule); one Choir-Array trigger per action
+  however many marks land; Choir-Array Skill Power ends with the player turn;
+  the turn hold and readiness ignore target-bound discounts; a borrowed skill
+  is not a "first action" and Bliss reads it as Closing.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 

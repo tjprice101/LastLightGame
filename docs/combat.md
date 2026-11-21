@@ -2785,3 +2785,100 @@ callouts, glossary, validation, impact replay, pre-B3c journal and mid-run
 save load/settle, revive event allowlist, forged rescue ledger and taunt);
 `conduit-effects.test.ts` Shield-order fixture now uses Calamitic Conduits
 (Phoenix Reactor no longer carries `break-heal`).
+
+## Conduit restoration B4: Calamitic and the borrowed skill (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5 with one enemy retune). Plan rows:
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+(B4, G12; C1 ×0.2 on always-on Health and Defense; real crits on Cathedral).
+
+Owner answers (Plan mode, 2026-11-21): while any living ally holds an unused
+borrowed skill it can pay for, the player turn stays open (End Turn gives it
+up; when no holder can pay, the turn ends as before); an ally who used
+Convergent Light earlier in the same turn is still eligible (O10 text).
+
+| Conduit | Primitives at +0 | Effect |
+|---|---|---|
+| Aegis-Engine of Severed Fate | `skill-power` .5, `shield-guard` .367 | Skill Power +50%; enemy hits remove 36.7% less Shield (C15 cap 80%). |
+| Bulwark of the Last Horizon | `hp` .4, `defense` .4, `shield-guard` .167 | Maximum Health +40%, Defense +40%, 16.7% less Shield lost. |
+| Cathedral of the Final Equation | `skill-efficiency` .65, `crit-rate` 2.5, `crit-damage` 1.2 | Skill Efficiency +65% (discount cap 50%); +250 points Critical Rate and +120% Critical Damage (crit-step scope). |
+| Causality Funeral Engine | `skill-efficiency` .5 (+.02 per rank, stepped), `flare` 1.25 | Skill Efficiency 50% + 2% per rank (cap 50%, Convergent Light floor 70); Convergent Light deals 125% more damage. |
+| Choir-Array of Branded Stars | `hp` .093, `defense` .093, `mark-team-power` .333, `mark-team-charge` 6.7 | See below. |
+| Heartforge of the Sunless Dawn | `hp` .667, `skill-power` .167 | Maximum Health +66.7%, Skill Power +16.7%. |
+| Horizon-Cleaving Godpress | `defense` .15, `skill-pierce` .55 | Defense +15%; skills (C13: Skill 1, Skill 2, Convergent Light) ignore 55% of Defense (C14 cap 80%). |
+| Monolith of the Unmoved Star | `defense` .667, `skill-efficiency` .1 | Defense +66.7%, Skill Efficiency +10%. |
+| Reliquary of Unending Mercy | `restore-power` .833, `restore-efficiency` .233 | Heal/Shield skills +83.3% Skill Power and +23.3% Skill Efficiency. |
+| Ruinmark Censer | `defense` .1, `skill-power` .4, `weaken-vulnerability` .1 | See below. |
+| Throne of Borrowed Tomorrows | `hp` .09, `defense` .09, `flare-extra-skill` (fixed) | See below. |
+| Throne of the Lone Apostate | `lone-defense` .333, `lone-hp` .333, `lone-power` .833 | Only squad member: Defense +33.3%, maximum Health +33.3%, Skill Power +83.3% (combat only; menus show the tooltip). |
+| World-Eater's Orrery | `skill-duration` 3 (fixed), `debuff-power` 1.25 | Skill Duration +3 turns (max 6); Weaken, Critical Up and Burn skills +125% Skill Power. |
+| Worldbreaker Cannonade | `aoe-power` 1.667 | Skills that damage all enemies +166.7% Skill Power. |
+
+Rank scaling (C12): every beneficial value ×(1 + 0.1·rank) except Causality's
+stepped Skill Efficiency, World-Eater's Skill Duration and the Throne's extra
+skill. Fixed rule: `radiantCalamiticRules.markTriggers` = 4.
+
+- **Throne of Borrowed Tomorrows (G12):** after the wearer's Convergent
+  Light, each other living ally already in `acted` that has not held or used a
+  borrowed skill this turn joins `RadiantCombatState.borrowed?` (signature op
+  `borrowed`, holder = ally). A holder may use one Skill 1 or Skill 2 at its
+  normal cost; Normal Attack and Convergent Light stay rejected. Using it moves
+  the ally to `borrowedSpent?` (once per ally per turn) and does not add a
+  second `acted` entry, so it is never a "first action" and Bliss reads it as
+  Closing. The enemy phase starts when every living bearer has acted **and**
+  no living holder can pay for Skill 1 or 2 (`radiantPendingActors`, using
+  held discounts but not target discounts, as the fan does). End Turn, a
+  holder's defeat, the start of the enemy phase and a finished encounter clear
+  `borrowed`; `finishRound` clears `borrowedSpent`. Every ordinary trigger
+  (Luminosity, Conduits, next-action bonuses) applies to the borrowed skill.
+- **Choir-Array of Branded Stars:** after an action in which the living wearer
+  placed a mark (Quarry; Survey added or moved, not spent; Fate-seared Mark;
+  Incision added; Thorn Trap; Nightglass mark), each living squad member gains
+  +33.3% Skill Power until the end of the player turn
+  (`RadiantBearer.choirPower?`, summed per trigger, read with squad Skill
+  Power) and 6.7 Luminosity (Gauge Gain, rounded once). One trigger per action;
+  at most 4 per encounter per wearer (`RadiantBearer.choirUsed?`). Signature op
+  `choir` (amount = triggers used). `choirPower` ends when the enemy phase
+  starts or the encounter ends.
+- **Ruinmark Censer:** an enemy whose Weaken came from a living wearer takes
+  ×1.1 damage from every ally source: direct hits through `vulnerability()`,
+  Burn ticks, Burn detonation and Conduit-generated strikes in `packet()` (non-
+  direct packets from allies, rounded once, at least 1). One Weaken has one
+  source, so copies never stack. D-492 credits the share to Ruinmark on direct
+  hits.
+- **Presentation:** a gold "Throne of Borrowed Tomorrows · one extra Skill 1 or
+  Skill 2 this turn" bonus tag and a gold card frame on each holder; a tap on
+  that card opens the fan, where Convergent Light reads "Skill 1 or 2 only";
+  readiness "Borrowed skill ready" (or "· needs Luminosity"); End Turn reads
+  "End Turn · forfeit borrowed skills" while any remain. Grants play three gold
+  threads of light rising through each holder (finite, pointer-transparent;
+  none under Reduce motion, where the tag and callout stay). Callouts:
+  "Borrowed Tomorrows · <ally> may use one more skill" and "Squad +33.3% Skill
+  Power this turn (n/4)"; a Choir bonus tag on each squad member; enemies show
+  "Ruinmark Censer · +10% damage taken". Glossary entries "Borrowed skill" and
+  "Mark".
+- **AI and tools:** `chooseRadiantPressureAction` gives a holder Skill 2, else
+  Skill 1; `runRadiantPressure`, `tools/pressure-study.ts` and
+  `tools/economy-study.ts` iterate `radiantPendingActors`. Study builds do not
+  equip the Throne (as with Atlas Bastion; the retune decides).
+- **Saves:** every new field and op is optional; no version bump. Validation
+  rejects a borrowed ledger without a Throne wearer in the squad, an empty,
+  duplicate or overlapping list, holders outside `acted`, defeated holders or
+  holders outside the player phase; Choir Skill Power outside the player phase
+  or without a Choir-Array wearer; a trigger count above 4 or on a non-wearer.
+- **Implementation choices (owner may reverse):** Ruinmark and Choir need
+  their wearer alive (B3a rule); one Choir trigger per action however many
+  marks land; Choir Skill Power ends with the player turn, not the round;
+  readiness and the turn hold ignore target-bound discounts.
+
+Validation: `src/game/conduit-restoration-b4.test.ts` (rows, tooltips, rank
+rules, Causality cost, Lone Apostate on/off, Reliquary slots, Ruinmark direct
+and Burn and fallen wearer, Choir stacking/Luminosity/turn end/4 cap/Survey
+spend/other allies' marks, Throne grant/turn hold/Skill-only/normal cost/once
+per turn/auto end/End Turn/Convergent Light users/policy, forged ledgers,
+glossary, pre-B4 journal and mid-run save load/settle, a settled replay that
+includes borrowed skills). Fixtures moved off replaced Calamitic designs in
+`combat-skills.test.ts`, `conduit-effects.test.ts` and `critical-hits.test.ts`
+(`break-heal`, `normal-splash` and `leader` remain only on Masters or not at
+all).

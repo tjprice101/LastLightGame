@@ -1,6 +1,6 @@
 import { characterName } from '../content/character-art';
 import { resolveRadiantStarterStats, radiantMasters } from '../content/combat-kits';
-import { radiantConduitPrimitives } from '../content/conduit-effects';
+import { radiantCalamiticRules, radiantConduitPrimitives } from '../content/conduit-effects';
 import { getConduit } from '../content/conduits';
 import { getMasterConduit } from '../content/master-conduits';
 import type { RadiantCombatEvent, RadiantGearSource } from '../game/combat-engine';
@@ -207,6 +207,17 @@ export function radiantConduitCallouts(events: readonly RadiantCombatEvent[], ru
       const conduitId = event.op === 'taunt' ? 'tectonic-atlas-bastion' : 'tranquilitic-accord-bastion';
       at({ kind: 'gear', bearerId: event.bearerId, conduitId }).notes.push(event.op === 'taunt' ? 'Taunt · all enemies'
         : `${characterLabel(run, event.holderId)} kept at 1 Health`);
+    } else if (event.type === 'signature' && event.op === 'borrowed') {
+      // D-493 B4: Throne of Borrowed Tomorrows names each ally granted a borrowed skill.
+      at({ kind: 'gear', bearerId: event.bearerId, conduitId: 'calamitic-throne-borrowed-tomorrows' })
+        .notes.push(`Borrowed Tomorrows · ${characterLabel(run, event.holderId)} may use one more skill`);
+    } else if (event.type === 'signature' && event.op === 'choir') {
+      // D-493 B4: Choir-Array of Branded Stars (its Luminosity follows from the charge events).
+      const wearer = run.state.bearers.find(unit => unit.loadout.id === event.bearerId);
+      const slot = wearer?.loadout.gear?.find(entry => entry?.id === 'calamitic-choir-array-of-branded-stars');
+      const power = slot ? radiantConduitPrimitives(slot).find(entry => entry.kind === 'mark-team-power')?.amount ?? 0 : 0;
+      at({ kind: 'gear', bearerId: event.bearerId, conduitId: 'calamitic-choir-array-of-branded-stars' })
+        .notes.push(`Squad +${number(Math.round(power * 1000) / 10)}% Skill Power this turn (${event.amount}/${radiantCalamiticRules.markTriggers})`);
     } else if (event.type === 'status' && !event.clockOnly && isGear(event.source)) {
       const label = radiantStatusLabel(event.status);
       const entry = at(event.source);

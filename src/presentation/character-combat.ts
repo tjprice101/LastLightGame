@@ -268,6 +268,8 @@ export function radiantKitGlossary(): string {
     <div><dt>Targets</dt><dd>One-enemy skills hit the current target. Ally skills reach all allies, the other allies, the caster, or the ally with the lowest Health.</dd></div>
     <div><dt>Taunt</dt><dd>While an ally taunts, every enemy attack aims at that ally, including Calamity attacks that pick by Health. A taunt ends with the enemy phase it covers or when its holder is defeated; the latest taunt in the squad applies.</dd></div>
     <div><dt>Rescue limit</dt><dd>Each ally can be rescued by a Conduit once per encounter: Phoenix Reactor's revival and Accord's save share that one rescue. Ozriel's Refusal is separate and can still save an ally afterwards.</dd></div>
+    <div><dt>Borrowed skill</dt><dd>An extra Skill 1 or Skill 2 for an ally who already acted this turn, at its normal Luminosity cost (Throne of Borrowed Tomorrows; once per ally per turn). The turn waits while an ally can pay for it; End Turn gives up unused ones.</dd></div>
+    <div><dt>Mark</dt><dd>For Conduits that count marks: Quarry, Survey, Fate-seared Mark, Incision, Thorn Trap or Nightglass mark, placed by the Conduit's bearer.</dd></div>
     <div><dt>Luminosity</dt><dd>Normal Attack hits fill ${radiantChargeRules.normal}; each enemy hit taken fills ${radiantChargeRules.incomingAttack}. Skill 1 costs 25, Skill 2 costs 40, a Convergent Light costs 100 (Sparkling) or 200 (Glimmering and Ultimate). Skills and Convergent Light fill none.</dd></div>
     <div><dt>Health mote</dt><dd>Each defeated enemy heals the Element-Bearer who defeated it (${percent(radiantHealthMote)} of max Health; the Burn's caster for a Burn defeat). Motes never revive.</dd></div>
   </dl>`;
