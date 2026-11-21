@@ -1,5 +1,66 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B3b: next-action bonuses (D-493, 2026-11-20)
+
+**Implemented on `battle-flurry-phase3` (`7e1a4640`), not released** (single
+release after B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b3b-next-action-bonuses-d-493-battle-flurry-phase-4c).
+- Owner answers (Plan mode): Shared Tide is adapted for Tide (the
+  most-wounded recipient of the wearer's skill Shield gains an extra 50%
+  Shield; closes the B3a open item); Tempest Return's bonus is kept until
+  used.
+- New engine piece: next-action bonuses (C17), held per ally in
+  `RadiantBearer.tokens?`, with scope, lifetime, shared and target-bound
+  variants. The 13 rows are restored with real crits. Undertide discounts
+  Convergent Light, and the flare event carries an optional `cost`.
+- UI: the fan, readiness and the pressure policy include held bonuses;
+  gold-framed bonus tags, with a one-time sheen when a bonus is granted
+  (static under Reduce motion); glossary entry "Next-action bonus".
+- Implementation choices (owner may reverse): readiness ignores target
+  discounts; Dawn Witness is inert without crit rolls; Thunderbird's "critical
+  skill" includes Convergent Light; a newer Secondbeat or Sootwake target
+  replaces the earlier one; Triage's discount applies to a skill that heals or
+  Shields; Rosefault's once-per-turn trigger is used by the first critical
+  action even without a Shield.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk
+  advisory).
+- Full `npx vitest run`: 10,940 of 10,941. The one failure
+  (`acquisition-surfaces.test.ts`, a 20 s timeout while the study ran)
+  passes on its own.
+- New `src/game/conduit-restoration-b3b.test.ts`: 45 of 45, including the
+  save-compatibility checks:
+  - a settled journal written before B3b (flare events without `cost`) and a
+    mid-run save load, settle and reload;
+  - a tampered cost and a forged bonus are rejected.
+- Updated fixtures: B3a Shared Tide, the Verdant heal-trigger test, the crit
+  splash test.
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced; B3b vs crit step):
+  - ordinary 99.8% (99.8%);
+  - Calamity EX+1/2/3 99.1/94.0/88.4% (97.2/86.6/80.1%);
+  - Oblivion 141-160 100%, 161-180 90.5% (unchanged);
+  - Training 101-120 100% (100%); Dungeon 101-120 99.5% (100%);
+  - flare-saving Calamity 100/99.5/98.1% (100/99.5/94.9%).
+  - Calamity EX+2/EX+3 moved more than 5 points (O4). The release is already
+    held for one enemy retune on the final Conduit set.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+- `capture_frames.mjs --battle flare|attack --stream`: the battle renders and
+  Convergent Light fires. The preview squad has no Conduits, so bonus tags
+  are covered by tests only.
+
+**Not verified:** bonus tags and the sheen seen in game (unreleased).
+
+**Filed (not approved):** the
+[UI and VFX visual overhaul](Future%20Plans/ui-vfx-polish-toolkit.md) (Calamity
+mod visuals with Brave Frontier's game style, original shaders, tools and
+costs). It resumes after the D-493 release.
+
+**Next:** B3c (rescue ledger shared by Phoenix Reactor, Accord and
+`master-sprout-3`; Phoenix Reactor revive; Atlas Bastion taunt). Fresh Opus
+session, Plan mode. Start the study early.
+
 ## Battle Flurry Phase 4c crit step: critical hits and Critical Up (D-493, 2026-11-20)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release after
