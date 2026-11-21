@@ -8,8 +8,7 @@
 import type { RadiantBattleEffects, RadiantScreenCue } from '../presentation/battle-screen';
 import type { RadiantImpactFrame } from '../presentation/battle-impact-frames';
 import type { RadiantPlayerAction } from '../online/battle-run';
-import type { RadiantCombatEvent, RadiantCombatState } from '../game/combat-engine';
-import { readyFlare } from '../game/combat-gauge';
+import { radiantFlareReady, type RadiantCombatEvent, type RadiantCombatState } from '../game/combat-engine';
 import { radiantBearerKits } from '../content/combat-kits';
 import { radiantKits, type RadiantKitId, type KitSkillTarget } from '../content/radiant-kits';
 import { characterChoreography } from '../presentation/battle-effects';
@@ -172,7 +171,7 @@ export class GpuBattleEffects implements RadiantBattleEffects {
   }
   private defaultBeats(action: RadiantPlayerAction, state: RadiantCombatState): SpectacleBeats {
     const tier = spectacleTier(action);
-    return beatPlan(tier, tier === 'flare' ? readyFlare(state.gauge, action.bearerId) : null, 1);
+    return beatPlan(tier, tier === 'flare' ? radiantFlareReady(state, action.bearerId) : null, 1);
   }
   async windup(action: RadiantPlayerAction, state: RadiantCombatState, beats?: SpectacleBeats): Promise<void> {
     if (this.disposed) return;

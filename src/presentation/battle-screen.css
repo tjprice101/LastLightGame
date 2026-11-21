@@ -834,6 +834,13 @@ html[data-motion="reduced"] .radiant-skill-choice[data-ready-tier] { animation: 
   background: color-mix(in srgb, var(--accent, #c9ccd4) 18%, #12131a); }
 .radiant-signature-tag { color: var(--text-secondary, #c9ccd4); border: 1px dashed #ffffff40; background: #0d0f18d9; }
 .radiant-battle .radiant-status-list .radiant-signature-tag { display: inline-flex; margin: 2px 3px 2px 0; border-left: 1px dashed #ffffff40; }
+/* D-493 B3b next-action bonuses: gold-framed tags; a newly granted one plays one luster sweep. */
+.radiant-bonus-tag { position: relative; overflow: hidden; color: #f4f4f7; border: 1px solid var(--gild-line); box-shadow: var(--gild-inner); }
+.radiant-bonus-tag.is-fresh::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--gild-light) 55%, transparent) 50%, transparent 70%);
+  transform: translateX(-120%); animation: radiant-bonus-sheen 720ms ease-out 1 forwards; }
+@keyframes radiant-bonus-sheen { to { transform: translateX(120%); } }
+html[data-motion="reduced"] .radiant-bonus-tag.is-fresh::after { animation: none; display: none; }
 
 .radiant-skill-callout { position: absolute; z-index: 7; left: 50%; bottom: calc(100% + 4px); padding: 3px 12px; border-radius: 999px; pointer-events: none; white-space: nowrap;
   font-family: var(--display-font); font-weight: 700; font-size: 13px; letter-spacing: .04em; color: #fff; transform: translate(-50%, 0);

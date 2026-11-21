@@ -105,19 +105,24 @@ export function radiantSkillCost(slot: RadiantSkillSlot, efficiency = 0): number
   if (slot !== 1 && slot !== 2) throw new Error('Invalid radiant skill slot.');
   return discounted(radiantSkillCosts[slot], efficiency, radiantCostRules.skillFloor);
 }
-export function readyFlare(state: RadiantGaugeState, id: string): FlareTier | null {
+/** `extra` adds per-cast Skill Efficiency (D-493 B3b: Undertide Chronometer on the target, next-action bonuses) on top of
+ * the stored loadout value; the stored value never changes. */
+export function readyFlare(state: RadiantGaugeState, id: string, extra = 0): FlareTier | null {
   validateRadiantGauge(state);
   const member = actor(state, id);
-  return member.charge >= radiantFlareCost(member) ? convergentLightTier(member.convergenceRank) : null;
+  return member.charge >= radiantFlareCost(member, (member.flareEfficiency ?? 0) + extra)
+    ? convergentLightTier(member.convergenceRank) : null;
 }
-export function spendReadyFlare(state: RadiantGaugeState, id: string): { state: RadiantGaugeState; tier: FlareTier } {
-  const tier = readyFlare(state, id);
+export function spendReadyFlare(
+  state: RadiantGaugeState, id: string, extra = 0,
+): { state: RadiantGaugeState; tier: FlareTier; cost: number } {
+  const tier = readyFlare(state, id, extra);
   if (!tier) throw new Error('This bearer has no ready Convergent Light.');
   const next = structuredClone(state);
-  const member = actor(next, id);
-  member.charge = (personalUnits(member.charge) - radiantFlareCost(member) * personalChargeUnit) / personalChargeUnit;
+  const member = actor(next, id), cost = radiantFlareCost(member, (member.flareEfficiency ?? 0) + extra);
+  member.charge = (personalUnits(member.charge) - cost * personalChargeUnit) / personalChargeUnit;
   validateRadiantGauge(next);
-  return { state: next, tier };
+  return { state: next, tier, cost };
 }
 export function readySkill(state: RadiantGaugeState, id: string, slot: RadiantSkillSlot, efficiency = 0): boolean {
   validateRadiantGauge(state);

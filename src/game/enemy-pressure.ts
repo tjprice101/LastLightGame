@@ -1,9 +1,9 @@
 import { radiantBearerKits, radiantTankTargetWeight, type RadiantLoadout } from '../content/combat-kits';
 import { radiantSkillAcceptsTarget, type RadiantSkillDef, type RadiantSkillSlot } from '../content/radiant-kits';
 import { scheduledEnemySkill } from '../content/enemy-skills';
-import { applyRadiantCombatAction, createRadiantCombat, radiantSkillStats, type RadiantBearer, type RadiantCombatState,
+import { applyRadiantCombatAction, createRadiantCombat, radiantActionEfficiency, radiantFlareReady, type RadiantBearer, type RadiantCombatState,
   type RadiantCombatEvent, type RadiantCombatAction } from './combat-engine';
-import { personalChargeMaximum, personalChargeUnit, radiantFlareCost, readyFlare, readySkill } from './combat-gauge';
+import { personalChargeMaximum, personalChargeUnit, readySkill } from './combat-gauge';
 import type { RadiantPressureEnemy } from './enemy-pressure-encounters';
 
 /** `flare-saving` (Step 4 retune study): holds Luminosity for the Flare, still protects, spends only at capacity. */
@@ -42,9 +42,9 @@ export function chooseRadiantPressureAction(
       ['attack-up', 'defense-up', 'reduction', 'gain-up', 'fill', 'signature'].includes(effect.kind));
   const allowed = (def: RadiantSkillDef) => (policy !== 'support-only' || supportive(def)) && useful(def);
   const targeted = (def: RadiantSkillDef) => radiantSkillAcceptsTarget(def) ? { targetId: target.id } : {};
-  if (readyFlare(state.gauge, id) && allowed(kit.flare)) return { type: 'flare', bearerId: id, ...targeted(kit.flare) };
+  if (radiantFlareReady(state, id) && allowed(kit.flare)) return { type: 'flare', bearerId: id, ...targeted(kit.flare) };
   const options = ([2, 1] as const).filter(slot => readySkill(state.gauge, id, slot,
-    radiantSkillStats(state, id, slot).skillEfficiency) && allowed(slotDef(kit, slot)));
+    radiantActionEfficiency(state, id, slot)) && allowed(slotDef(kit, slot)));
   if (policy === 'flare-saving') {
     const member = state.gauge.members.find(entry => entry.id === id)!;
     const capped = member.charge >= personalChargeMaximum(member) - radiantChargeHeadroom;
@@ -138,15 +138,11 @@ export function runRadiantPressure(
   const apply = (action: RadiantCombatAction) => {
     const beforePersonal = personal();
     let spent = 0;
-    if (action.type === 'flare') {
-      const member = state.gauge.members.find(member => member.id === action.bearerId)!;
-
-      if (!readyFlare(state.gauge, member.id)) throw new Error('Pressure Convergent Light is not ready.');
-      spent = radiantFlareCost(member);
-    }
+    if (action.type === 'flare' && !radiantFlareReady(state, action.bearerId))
+      throw new Error('Pressure Convergent Light is not ready.');
     const result = applyRadiantCombatAction(state, action);
     state = result.state; result.events.forEach(record);
-    for (const event of result.events) if (event.type === 'skill') spent += event.cost;
+    for (const event of result.events) if (event.type === 'skill' || event.type === 'flare') spent += event.cost ?? 0;
     metrics.personalSpent += spent;
     metrics.personalGranted = Math.round((metrics.personalGranted + personal() - beforePersonal + spent) *
       personalChargeUnit) / personalChargeUnit;

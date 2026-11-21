@@ -1,6 +1,7 @@
 import { radiantHealthBound, validateRadiantCombat, validateRadiantDropEvents, type RadiantCombatEvent, type RadiantCombatState,
   type RadiantShield, type RadiantSource } from '../game/combat-engine';
 import { grantRadiantDrop, personalChargeUnit, spendReadyFlare, type RadiantGaugeState } from '../game/combat-gauge';
+import { convergentLightTier } from '../content/progression';
 import { applyRadiantStatusEvent, radiantStatusSnapshot, type RadiantStatusSnapshot } from './battle-timed-status';
 
 export interface RadiantReadout {
@@ -67,9 +68,18 @@ function apply(readout: RadiantReadout, event: RadiantCombatEvent): void {
     if (unit.hp > unit.maximum) throw new Error('Saved healing exceeds displayed maximum HP.');
   }
   if (event.type === 'flare') {
-    const spent = spendReadyFlare(readout.gauge, event.bearerId);
-    if (spent.tier !== event.tier) throw new Error('Saved Convergent Light rank does not match displayed charge.');
-    readout.gauge = spent.state;
+    // D-493 B3b: the event carries the Luminosity actually spent (per-cast discounts); journals saved before B3b have
+    // none and replay at the stored loadout cost.
+    const member = readout.gauge.members.find(entry => entry.id === event.bearerId);
+    if (event.cost !== undefined && member) {
+      if (member.charge < event.cost || convergentLightTier(member.convergenceRank) !== event.tier)
+        throw new Error('Saved Convergent Light rank does not match displayed charge.');
+      member.charge = (Math.round(member.charge * personalChargeUnit) - event.cost * personalChargeUnit) / personalChargeUnit;
+    } else {
+      const spent = spendReadyFlare(readout.gauge, event.bearerId);
+      if (spent.tier !== event.tier) throw new Error('Saved Convergent Light rank does not match displayed charge.');
+      readout.gauge = spent.state;
+    }
   } else if (event.type === 'skill') {
     const member = readout.gauge.members.find(member => member.id === event.bearerId);
     if (!member || member.charge < event.cost) throw new Error('Saved skill cost exceeds displayed charge.');

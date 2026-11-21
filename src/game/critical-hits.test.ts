@@ -138,8 +138,8 @@ describe('critical hits: damage', () => {
     const tick = damage(enemyPhase(lit, ['ember']).round.events).find(event => event.origin === 'periodic' && event.targetId === 'enemy')!;
     expect(tick.critical).toBeDefined();
     expect(tick.offered).toBeGreaterThanOrEqual(Math.round(burn.magnitude * 1.5) - 1);
-    // Conduit-generated packets (here Thunderbird Coil's splash) carry no critical flag even when the hit crits.
-    const splash = certain(fixture([['atmoso', ['voltaic-thunderbird-coil']]]), 'atmoso', .8);
+    // Conduit-generated packets (here Worldbreaker Cannonade's splash) carry no critical flag even when the hit crits.
+    const splash = certain(fixture([['atmoso', ['calamitic-worldbreaker-cannonade']]]), 'atmoso', .8);
     const events = damage(act(splash, { type: 'normal', bearerId: 'atmoso', targetId: 'enemy' }).events);
     expect(events.find(event => event.origin === 'direct')?.critical).toBeDefined();
     expect(events.filter(event => event.origin === 'generated').length).toBeGreaterThan(0);

@@ -219,19 +219,19 @@ describe('bounded, sourced Conduit triggers', () => {
     expect(result.state.gauge.members[0].charge).toBe(15);
     expect(result.state.chargeSeed).toBe(state.chargeSeed);
   });
-  it('native healing grants charge once per action, but generated healing and overhealing cannot', () => {
-    const state = ready(fixture(['rootbound-triage-vault'], 'sprout', ['ember', 'tide']));
+  it('native healing grants heal-triggered bonuses, but generated healing and overhealing cannot', () => {
+    // D-493 B3b Verdant Covenant: each ally Worldseed actually heals gains one next-action bonus.
+    const state = ready(fixture(['efflorescent-verdant-covenant'], 'sprout', ['ember', 'tide']));
     state.bearers.forEach(owner => { owner.hp = 1; });
     const result = act(state, { type: 'flare', bearerId: 'sprout' });
-    // Worldseed's Luminosity Gain Up (+30%) multiplies the heal-charge grant: round(6 x 1.3) = 8.
-    expect(result.state.gauge.members[0].charge).toBe(8);
-    expect(result.events.filter(event => event.type === 'shield' && event.source.kind === 'gear')).toHaveLength(3);
-    const full = ready(fixture(['rootbound-triage-vault'], 'sprout'));
-    expect(act(full, { type: 'flare', bearerId: 'sprout' }).state.gauge.members[0].charge).toBe(0);
-    let generated = fixture(['lifeline-flywheel', 'rootbound-triage-vault'], 'sprout');
+    expect(result.state.bearers.map(owner => owner.tokens?.map(token => token.kind))).toEqual([
+      ['heal-ally-power'], ['heal-ally-power'], ['heal-ally-power']]);
+    const full = ready(fixture(['efflorescent-verdant-covenant'], 'sprout'));
+    expect(act(full, { type: 'flare', bearerId: 'sprout' }).state.bearers[0].tokens).toBeUndefined();
+    let generated = fixture(['lifeline-flywheel', 'efflorescent-verdant-covenant'], 'sprout');
     generated.bearers[0].hp = 1;
     generated = normal(generated).state;
-    expect(generated.gauge.members[0].charge).toBe(15);
+    expect(generated.bearers[0].tokens).toBeUndefined();
   });
   it('does not revive a lethal recipient through former sustain Conduits', () => {
     let state = fixture(['horizon-heartcase', 'immortal-vessel']);

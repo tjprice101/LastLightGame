@@ -2498,7 +2498,7 @@ with B1 and B2. The other 16 Omnics keep their Radiant-era designs until B3b
   ledger), Stillhour Carillon (`state.flared` holds wearers who used
   Convergent Light this turn; the next turn start heals and fills, then it
   clears), Fractured Mercy (once per Weaken-applying cast), Shared Tide
-  (single-holder skill Shields echo at 50%), Sap Cathedral (15% of enemy
+  (adapted in B3b, see that section), Sap Cathedral (15% of enemy
   Health removed, cap 10% per cast), Phoenix Lifeforge (squad Attack Up +100%
   joins the category while any enemy burns; each ability Burn tick that
   damages Health heals the squad 8%), Mercy Reflector (`reflected` ledger per
@@ -2506,10 +2506,9 @@ with B1 and B2. The other 16 Omnics keep their Radiant-era designs until B3b
   Skill 1/2 aimed at an enemy carrying the wearer's Weaken: +15% Skill
   Efficiency, applied in `skillAction`), Solace Monolith (acting first gives
   other living allies Attack Up +20% for the turn).
-- **Not yet:** Undertide's discount on Convergent Light (B3b, when the flare
-  event carries its cost for the impact replay). The battle fan shows the cost
-  before a target is chosen, so a skill affordable only with Undertide's
-  discount appears unaffordable there.
+- **Undertide on Convergent Light:** added in B3b (see that section). The
+  battle fan shows the cost before a target is chosen, so a skill affordable
+  only with Undertide's discount appears unaffordable there.
 - **Bases:** "% of maximum Health" heal and Shield bases use the frozen maximum
   Health, as kit heals do; caps and thresholds read the current maximum.
 - **Attribution:** other members' aura, Burn, mark, Shield-holder, Lifeforge
@@ -2596,3 +2595,114 @@ generated packets, enemy crits, Critical Up, crit Conduits and attribution,
 pre-crit save load/settle/reload, tampered flag and stripped stream); updated
 B1/B2/B3a restoration tests, kit text (drafts updated to Critical Up), hub and
 information layout stat rows.
+
+## Conduit restoration B3b: next-action bonuses (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5 with one enemy retune). Plan rows:
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md).
+
+Owner answers (2026-11-20): Shared Tide is adapted for Tide; Tempest Return's
+bonus is kept until used.
+
+- **Next-action bonuses (C17):** `RadiantBearer.tokens?` holds
+  `{ kind, giverId, conduitId, value, until, targetId?, relayId? }`; the
+  primitive kind is the bonus kind (`radiantTokenRules`: stat, scope, life).
+  One per Conduit effect per holder: a new one replaces the old (no
+  stacking). The holder's next action whose scope matches spends it: any
+  damaging action, a skill or Convergent Light, Skill 1/2 only, a damaging
+  skill or Convergent Light, Convergent Light only, or a skill or Convergent
+  Light that heals or Shields. Unspent bonuses end with the turn after the one
+  that granted them (`until` = that round; bonuses granted as a turn begins
+  last that turn). Lives: `timed` (Paradox Spindle: not spent, lasts through
+  the next turn), `action` (Triage, Sootwake: also lost after the holder's
+  next action), `spent` (Tempest Return: `until: null`). Shared bonuses
+  (Stormstep, Covercharge) go to every other living ally; the first to spend
+  one removes every copy. Target-bound bonuses (Secondbeat, Sootwake) apply
+  only to that enemy's hit and end when it is defeated.
+- **How bonuses apply:** Skill Power joins the cast's Skill Power (a
+  target-bound one only that target's damage); Attack multiplies the
+  attacker's Attack for direct damage; direct damage joins the
+  `(1 + flare + direct + ...)` layer; Critical Rate and Critical Damage join
+  the hit's crit stats (not signature strikes or Burn ticks); Skill Efficiency
+  adds to the cast's discount (50% cap and floors unchanged); restore Skill
+  Power raises the cast's heals and Shields. Spent bonuses sit in a
+  module-level `casting` context while the action resolves so D-492 credit
+  recomputes read them; the giver's Conduit is credited.
+- **Rows** (+0; every percentage scales with rank; counts and lifetimes are
+  fixed):
+  - Dawn Witness Array: a damaging action with no critical hit gives others
+    +15 Critical Rate and itself +30% Critical Damage and +200% direct damage
+    on the next damaging action; inert on encounters without crit rolls.
+  - Paradox Spindle: Defense +7%, Skill Efficiency +20%; after its Convergent
+    Light, others +40% Skill Power and +20% Skill Efficiency through the next
+    turn.
+  - Skythread Rudder: capacity +60%, Gauge Gain +35%; each Normal Attack gives
+    the other ally with the lowest Luminosity percentage +25% Skill Efficiency
+    on Skill 1/2.
+  - Stormstep Dynamo: Attack +14%, Skill Efficiency +25%; alternating Skill 1/2
+    +30% Skill Power (`stormstep?` keeps the last slot); then the next other
+    ally's skill +15% Skill Efficiency.
+  - Thunderbird Coil: Attack +19%, Critical Damage +45%; a critical skill or
+    Convergent Light strikes the other enemy with the highest Health
+    percentage for 40% of the first target's Health damage (Conduit-generated);
+    with none left, others +20 Critical Rate.
+  - Verdant Covenant: Health +19%, Gauge Gain +25%; allies its skills heal gain
+    +30% Skill Power on their next damaging skill.
+  - Phoenix Temper Dominion: Attack +20%, Critical Rate +10; healed by another
+    ally's skill: +40% Attack on its next damaging action, then that healer
+    +20% Skill Efficiency.
+  - Rosefault Precision Sovereign: Health +11%, Convergent Light +70%; while
+    Shielded +50% Critical Damage; the first critical action each turn gives
+    the provider of its oldest Shield +20% Skill Power on their next skill.
+  - Secondbeat Rupture Throne: Health +7%, Critical Rate +15; after another ally
+    damages an enemy, its next damaging skill on that enemy gains +35% Skill
+    Power and grants that ally 8 Luminosity.
+  - Sootwake Phoenix Mirror: Skill Power +75%, Critical Damage +25%; its Burn
+    tick on an enemy gives others +30% Skill Power on that enemy until their
+    next action.
+  - Tempest Return Chronarch: Critical Rate +35, capacity +75%; every third
+    critical action (`critCount?`) gives every living ally +25% Skill
+    Efficiency on their next Convergent Light, kept until used.
+  - Worldgrove Covercharge Heart: Skill Power +60%, capacity +50%; after its
+    skill, the next other ally's skill gains +20% Skill Power if it damaged and
+    +15% Skill Efficiency if it healed or Shielded.
+  - Worldroot Triage Sanctuary: Health +14%, Defense +12%; at turn start the
+    ally with the lowest Health percentage gains +25% Skill Efficiency and +35%
+    Skill Power on heals and Shields until its next action ends.
+- **Shared Tide Lifesea Engine (owner adaptation):** when the wearer's skill or
+  Convergent Light Shields one or more allies, the most-wounded recipient gains
+  an extra Conduit-generated Shield worth 50% of the Shield it received. It now
+  fires for Tide's Tidal Shelter and Ocean Memory.
+- **Undertide Chronometer on Convergent Light:** its +15% Skill Efficiency
+  applies to another ally's damaging Convergent Light aimed at an enemy
+  carrying the wearer's Weaken. The flare event now carries `cost`
+  (`spendReadyFlare(gauge, id, extra)` adds the per-cast discount on top of the
+  stored `flareEfficiency`, which stays fixed so saves validate). Impact replay
+  spends the carried cost; journals without it spend the stored cost.
+- **Readiness and the fan:** costs and readiness include held bonuses
+  (`radiantActionEfficiency`, `radiantFlareReady`), not target discounts
+  (Undertide lowers the amount spent once a target is chosen). The pressure
+  policy uses the same readiness and reads spent Luminosity from events.
+- **Presentation:** each held bonus shows as a gold-framed tag on the holder's
+  card ("Conduit · Next skill +30% Skill Power"); a target-bound one also tags
+  its enemy. A newly granted tag plays one luster sweep (static under Reduce
+  motion). The glossary defines "Next-action bonus" once.
+- **Saves:** new fields are optional and absent on older saves; flare `cost`
+  is optional in the saved-event allowlist (a safe integer of at least 1).
+  Training continuation clears bonuses, Stormstep's slot and Tempest's count.
+  Validation rejects bonuses from Conduits the giver does not wear,
+  out-of-range clocks or values, duplicates, and leftover Stormstep or Tempest
+  state.
+- **Implementation choices (owner may reverse):** readiness ignores target
+  discounts; Dawn Witness is inert without crit rolls; Thunderbird's "critical
+  skill" includes Convergent Light (Tempest Shelter precedent); a newer
+  Secondbeat or Sootwake target replaces the earlier one; Triage's discount
+  applies to a skill that heals or Shields; Rosefault's once-per-turn trigger is
+  used by the first critical action even without a Shield.
+
+Validation: `src/game/conduit-restoration-b3b.test.ts` (rows, tooltips, rank
+scaling, every trigger, refresh and expiry, shared and target-bound bonuses,
+Tempest persistence, Undertide flare cost and impact replay, validation,
+pre-B3b journal and mid-run save load/settle/reload, tampered cost and forged
+bonus); updated Shared Tide, Verdant fixture and crit splash fixture tests.

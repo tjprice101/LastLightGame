@@ -2,12 +2,12 @@ import { characterName } from '../content/character-art';
 import { getStarter } from '../content/starters';
 import { radiantAttunement } from '../content/combat-kits';
 import { grantRadiantDrop, personalChargeMaximum, personalChargeUnit, radiantChargeRules, radiantFlareCost, radiantSkillCost,
-  readyFlare, readySkill } from '../game/combat-gauge';
-import { radiantSkillStats, type RadiantCombatState, type RadiantCritical } from '../game/combat-engine';
+  readySkill } from '../game/combat-gauge';
+import { radiantActionEfficiency, radiantFlareReady, type RadiantCombatState, type RadiantCritical } from '../game/combat-engine';
 import { radiantKits, radiantSkillAcceptsTarget, radiantSkillCosts, type RadiantKitId, type RadiantSkillSlot } from '../content/radiant-kits';
 import { abilityIcon } from './ability-icon';
 import { radiantSkillName, radiantSkillText, radiantFlareText } from './kit-text';
-import { radiantSignatureChips, radiantSignatureTags, radiantSignatureView, type RadiantSignatureView } from './battle-signatures';
+import { radiantBonusTags, radiantSignatureChips, radiantSignatureTags, radiantSignatureView, type RadiantSignatureView } from './battle-signatures';
 import { RadiantSession } from '../online/battle-session';
 import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun, type RadiantTurnAction } from '../online/battle-run';
 import { lusterSheen } from './luster';
@@ -176,6 +176,8 @@ export class RadiantBattleView {
   private gestures: ReturnType<typeof bindRadiantPortraitGestures>;
   /** Signature counters shown so far (synced with the status snapshot at presentation boundaries). */
   private signatures: RadiantSignatureView;
+  /** D-493 B3b: bonus tags already shown per bearer, so only newly granted ones play their sheen. */
+  private bonusesShown = new Map<string, Set<string>>();
   private signatureMarkup = new Map<string, string>();
   /** The card whose Skill 1 / Skill 2 / Flare fan is open (D-479). */
   private openFan: string | null = null;
@@ -204,7 +206,8 @@ export class RadiantBattleView {
         const gauge = this.session.view().run?.state.gauge;
         const member = gauge?.members.find(member => member.id === id);
         const button = this.host.querySelector<HTMLButtonElement>(`[data-radiant-actor="${id}"]`);
-        const tier = member?.living && button && !button.disabled && gauge ? readyFlare(gauge, id) : null;
+        const state = this.session.view().run?.state;
+        const tier = member?.living && button && !button.disabled && state ? radiantFlareReady(state, id) : null;
         return tier ? tierNames[tier] : null;
       },
       cast: (id, slot) => { this.castFanSlot(id, slot); },
@@ -455,17 +458,17 @@ export class RadiantBattleView {
       const slot = choice.dataset.radiantSkill;
       let ready: boolean, cost: string;
       if (slot === 'flare') {
-        const tier = readyFlare(run.state.gauge, id);
+        const tier = radiantFlareReady(run.state, id);
         ready = tier !== null;
-        cost = tier ? tierNames[tier] : `${radiantFlareCost(member)}`;
+        cost = tier ? tierNames[tier] : `${radiantFlareCost(member, (member.flareEfficiency ?? 0) + radiantActionEfficiency(run.state, id, 'flare'))}`;
       } else {
-        const skillSlot = slot === '2' ? 2 : 1, efficiency = radiantSkillStats(run.state, id, skillSlot).skillEfficiency;
+        const skillSlot = slot === '2' ? 2 : 1, efficiency = radiantActionEfficiency(run.state, id, skillSlot);
         ready = readySkill(run.state.gauge, id, skillSlot, efficiency);
         cost = `${radiantSkillCost(skillSlot, efficiency)}`;
       }
       choice.setAttribute('aria-disabled', String(!ready));
       choice.classList.toggle('is-ready', ready);
-      if (slot === 'flare') { const tier = readyFlare(run.state.gauge, id); if (tier) choice.dataset.readyTier = tier; else delete choice.dataset.readyTier; }
+      if (slot === 'flare') { const tier = radiantFlareReady(run.state, id); if (tier) choice.dataset.readyTier = tier; else delete choice.dataset.readyTier; }
       choice.querySelector<HTMLElement>('[data-radiant-skill-cost]')!.textContent = cost;
     }
   }
@@ -475,11 +478,11 @@ export class RadiantBattleView {
     const status = this.element<HTMLElement>('[data-radiant-gesture-status]');
     if (!run) return;
     if (slot === 'flare') {
-      if (!readyFlare(run.state.gauge, id)) { status.textContent = 'Convergent Light is not ready; no action spent.'; return; }
+      if (!radiantFlareReady(run.state, id)) { status.textContent = 'Convergent Light is not ready; no action spent.'; return; }
       this.closeFan(false);
       this.enqueueAction('flare', id); return;
     }
-    const efficiency = radiantSkillStats(run.state, id, slot).skillEfficiency;
+    const efficiency = radiantActionEfficiency(run.state, id, slot);
     if (!readySkill(run.state.gauge, id, slot, efficiency)) {
       status.textContent = `Skill ${slot} needs ${radiantSkillCost(slot, efficiency)} Luminosity; no action spent.`; return;
     }
@@ -598,10 +601,14 @@ export class RadiantBattleView {
         savedMember.hp === 0 || run.state.acted.includes(id);
       button.closest('.radiant-member')!.classList.toggle('is-defeated', !savedMember || savedMember.hp === 0);
       button.closest('.radiant-member')!.classList.toggle('has-acted', run.state.acted.includes(id));
-      const tier = savedMember && savedMember.hp > 0 ? readyFlare(run.state.gauge, id) : null;
+      const tier = savedMember && savedMember.hp > 0 ? radiantFlareReady(run.state, id) : null;
       if (this.openFan === id) { if (button.disabled) this.closeFan(false); else this.renderFan(run, id); }
+      const bonuses = this.signatures.bonuses[id] ?? [], seen = this.bonusesShown.get(id) ?? new Set<string>();
+      const fresh = new Set(bonuses.filter(text => !seen.has(text)));
+      this.bonusesShown.set(id, new Set(bonuses));
       const chips = this.displayed.units[id]?.hp > 0
-        ? radiantSignatureChips(this.signatures.owners[id] ?? []) + radiantSignatureTags(this.signatures.holders[id] ?? []) : '';
+        ? radiantSignatureChips(this.signatures.owners[id] ?? []) + radiantSignatureTags(this.signatures.holders[id] ?? []) +
+          radiantBonusTags(bonuses, fresh) : '';
       if (this.signatureMarkup.get(id) !== chips) {
         const host = this.element<HTMLElement>(`[data-radiant-signatures="${id}"]`);
         host.innerHTML = chips; host.hidden = !chips; this.signatureMarkup.set(id, chips);
@@ -751,7 +758,7 @@ export class RadiantBattleView {
     const actor = bearerId ?? (before.state.bearers.find(unit => unit.hp > 0 && !before.state.acted.includes(unit.loadout.id))
       ?? before.state.bearers[0]).loadout.id;
     const member = before.state.bearers.find(unit => unit.loadout.id === actor)!;
-    const tier = member.hp > 0 ? readyFlare(before.state.gauge, actor) : null;
+    const tier = member.hp > 0 ? radiantFlareReady(before.state, actor) : null;
     const focusedTarget = this.target;
     const skill = radiantKits[member.loadout.starter as RadiantKitId]?.[slot === 1 ? 'skill1' : 'skill2'];
     const action: RadiantPlayerAction =
@@ -796,11 +803,11 @@ export class RadiantBattleView {
       !this.actionQueueRunning && (view.busy || view.pending || view.presentation)) return;
     const member = run.state.bearers.find(unit => unit.loadout.id === bearerId);
     if (!member || member.hp <= 0 || run.state.acted.includes(bearerId)) return;
-    if (kind === 'flare' && !readyFlare(run.state.gauge, bearerId)) {
+    if (kind === 'flare' && !radiantFlareReady(run.state, bearerId)) {
       this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = 'Convergent Light is not ready.';
       return;
     }
-    if (kind === 'skill' && (!slot || !readySkill(run.state.gauge, bearerId, slot, radiantSkillStats(run.state, bearerId, slot).skillEfficiency))) {
+    if (kind === 'skill' && (!slot || !readySkill(run.state.gauge, bearerId, slot, radiantActionEfficiency(run.state, bearerId, slot)))) {
       this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = 'Not enough Luminosity for that skill; no action spent.';
       return;
     }
@@ -981,7 +988,7 @@ export class RadiantBattleView {
         event.type === 'damage' && event.healthLoss + event.absorbed > 0));
       const finisherFrame = strikeFrames.at(-1) ?? hitFrames.at(-1);
       const tier = player ? spectacleTier(player) : null;
-      const flareTier = player?.type === 'flare' ? readyFlare(before.gauge, player.bearerId) : null;
+      const flareTier = player?.type === 'flare' ? radiantFlareReady(before, player.bearerId) : null;
       const finisherAt = finisherFrame === undefined ? undefined : hitFrames.indexOf(finisherFrame);
       const beats = tier ? beatPlan(tier, flareTier, hitFrames.length, finisherAt) : null;
       const tools = tier ? screenTools(tier, flareTier) : null;
@@ -1751,7 +1758,7 @@ export class RadiantBattleView {
   /** Flare cut-in during the windup: the bearer's portrait, tier and Flare name. */
   private async flareCutin(action: RadiantPlayerAction, before: RadiantCombatState, duration: number): Promise<void> {
     if (action.type !== 'flare' || reducedMotion() || this.disposed) return;
-    const tier = readyFlare(before.gauge, action.bearerId);
+    const tier = radiantFlareReady(before, action.bearerId);
     const member = before.bearers.find(unit => unit.loadout.id === action.bearerId);
     if (!tier || !member) return;
     const card = this.host.querySelector<HTMLElement>(`[data-radiant-unit="${action.bearerId}"]`);

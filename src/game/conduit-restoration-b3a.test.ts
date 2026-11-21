@@ -367,9 +367,16 @@ describe('D-493 B3a: triggers', () => {
     const removed = of(result.events, 'damage').filter(e => e.source.kind === 'skill').reduce((sum, e) => sum + e.healthLoss, 0);
     expect(heal.offered).toBe(Math.round(Math.min(.15 * removed, radiantOmnicRules.drainAllyCap * unit(state, 'tide').stats.hp)));
   });
-  it('Shared Tide: a skill that Shields every ally does not echo', () => {
-    const result = skill(fixture([['tide', ['oceanic-shared-tide-pump']], ['maerion']]), 'tide', 2);
-    expect(gearEvents(result.events, 'oceanic-shared-tide-pump')).toHaveLength(0);
+  it('Shared Tide (B3b adaptation): a skill that Shields every ally echoes onto the most-wounded recipient', () => {
+    const state = fixture([['tide', ['oceanic-shared-tide-pump']], ['maerion']]);
+    unit(state, 'maerion').hp = Math.round(unit(state, 'maerion').hp / 2);
+    const result = skill(state, 'tide', 2);
+    const echo = gearEvents(result.events, 'oceanic-shared-tide-pump');
+    expect(echo).toHaveLength(1);
+    expect(echo[0]).toMatchObject({ type: 'shield', targetId: 'maerion' });
+    const received = result.events.filter(event => event.type === 'shield' && event.source.kind === 'skill' && event.targetId === 'maerion')
+      .reduce((sum, event) => sum + (event.type === 'shield' ? event.amount : 0), 0);
+    expect(echo[0].type === 'shield' && echo[0].amount).toBe(Math.round(.5 * received));
   });
 });
 

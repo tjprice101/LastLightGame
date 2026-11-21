@@ -76,6 +76,21 @@
   Every batch proves that saves and saved encounters written before it still
   load and can start a battle (new event types and state fields must pass the
   saved-event allowlist).
+- **B3b plan answers (owner, 2026-11-20, Plan mode):** Shared Tide Lifesea
+  Engine is adapted for Tide: when the wearer's skill or Convergent Light
+  Shields one or more allies, the most-wounded recipient gains an extra Shield
+  worth 50% of the Shield it received (closes the B3a open item). Tempest
+  Return Chronarch's Convergent Light bonus is kept until used instead of
+  expiring under C17.
+- **B3b implemented (unreleased, 2026-11-20).** The 13 next-action rows with
+  real crits, Undertide's Convergent Light discount and the flare event `cost`
+  ([combat spec](combat.md#conduit-restoration-b3b-next-action-bonuses-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): readiness and the fan ignore
+  target discounts; Dawn Witness is inert without crit rolls; Thunderbird's
+  "critical skill" includes Convergent Light; a newer Secondbeat or Sootwake
+  target replaces the earlier one; Triage's discount applies to a skill that
+  heals or Shields; Rosefault's once-per-turn trigger is used by the first
+  critical action even without a Shield.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 
