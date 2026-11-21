@@ -82,7 +82,10 @@ export function radiantPressureEnemyAction(
     (a.hp / a.stats.hp - b.hp / b.stats.hp) || a.loadout.id.localeCompare(b.loadout.id));
   const random = targetRandom();
   if (!Number.isFinite(random) || random < 0 || random >= 1) throw new Error('Invalid target seed output.');
-  const target = targeting ? targets[0] : weightedTarget(targets, random);
+  // D-493 B3c Atlas Bastion: a living taunter draws every enemy attack, Calamity targeting included (the roll is still drawn
+  // above so the target stream stays aligned).
+  const taunter = state.taunt === undefined ? undefined : targets.find(member => member.loadout.id === state.taunt);
+  const target = taunter ?? (targeting ? targets[0] : weightedTarget(targets, random));
   const pattern = enemy.pattern;
   const actor = state.enemies.find(member => member.id === enemy.id)!;
   return { type: 'enemy-attack', enemyId: enemy.id, targetIds: [target.loadout.id],

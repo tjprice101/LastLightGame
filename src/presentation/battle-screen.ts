@@ -1080,6 +1080,7 @@ export class RadiantBattleView {
         track(this.haulMotes(frame, random));
         track(this.damageNumbers(frame, before, random, tier === 'flare' && playerHit));
         track(this.conduitCallouts(frame));
+        track(this.rescueBursts(frame));
         for (const event of frame.events) if (event.type === 'defeated')
           track(this.lootDrops(response, played, event.targetId, random));
         if (playerHit && beats) {
@@ -1546,6 +1547,31 @@ export class RadiantBattleView {
         for (const entry of previous) entry.element.scrollTop = entry.scrollTop;
     };
   }
+  /** D-493 B3c: a finite, pointer-transparent burst on a rescued bearer: rising embers for Phoenix Reactor's revival, a soft
+   * light bloom for an Accord save. Skipped under Reduce motion (the number and callout still show, static). */
+  private async rescueBursts(frame: RadiantImpactFrame): Promise<void> {
+    if (reducedMotion() || this.disposed) return;
+    const rescues = frame.events.flatMap(event => event.type === 'revive' ? [{ id: event.targetId, kind: 'revive' }]
+      : event.type === 'signature' && event.op === 'accord-save' && event.holderId ? [{ id: event.holderId, kind: 'accord' }] : []);
+    await Promise.all(rescues.map(async ({ id, kind }) => {
+      const target = this.host.querySelector<HTMLElement>(`[data-radiant-target="${id}"] .radiant-unit-motion`);
+      if (!target) return;
+      const burst = document.createElement('span');
+      burst.className = `radiant-rescue-burst is-${kind}`; burst.setAttribute('aria-hidden', 'true');
+      for (let index = 0; index < (kind === 'revive' ? 7 : 0); index++) {
+        const ember = document.createElement('i');
+        ember.style.setProperty('--x', `${(index - 3) * 9}px`); ember.style.setProperty('--d', `${index * 45}ms`);
+        burst.append(ember);
+      }
+      target.append(burst);
+      const cleanup = () => burst.remove(); this.effectsCleanup.add(cleanup);
+      try {
+        await this.animate(burst, [{ opacity: 0, transform: 'translateY(10px) scale(.6)' },
+          { opacity: 1, transform: 'translateY(0) scale(1)', offset: .25 },
+          { opacity: 0, transform: `translateY(${kind === 'revive' ? -28 : -8}px) scale(1.25)` }], kind === 'revive' ? 1000 : 760);
+      } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
+    }));
+  }
   private async impact(frame: RadiantImpactFrame): Promise<void> {
     const targets = new Set(frame.events.filter(event => event.type === 'damage' || event.type === 'heal' || event.type === 'shield')
       .map(event => event.targetId));
@@ -1752,6 +1778,7 @@ export class RadiantBattleView {
         if (event.absorbed > 0 && !(event.critical && event.healthLoss === 0)) show(event.targetId, `Shield −${amountText(event.absorbed)}`, 'absorb');
       } else if (event.type === 'heal' && event.effective > 0) show(event.targetId, `+${amountText(event.effective)}`, 'heal');
       else if (event.type === 'shield' && event.amount > 0) show(event.targetId, `Shield +${amountText(event.amount)}`, 'shield');
+      else if (event.type === 'revive') show(event.targetId, `Revived +${amountText(event.amount)}`, 'heal');
     }
     return Promise.all(floats).then(() => {});
   }

@@ -69,7 +69,9 @@ export type RadiantTokenKind =
   | 'miss-ally-crit' | 'miss-self-crit-damage' | 'miss-self-direct' | 'flare-team-power' | 'flare-team-efficiency'
   | 'normal-ally-efficiency' | 'alternate-ally-efficiency' | 'crit-skill-ally-crit' | 'heal-ally-power' | 'healed-attack'
   | 'healer-efficiency' | 'first-crit-provider-power' | 'followup-power' | 'burn-ally-power' | 'third-crit-flare-efficiency'
-  | 'relay-power' | 'relay-efficiency' | 'turn-restore-efficiency' | 'turn-restore-power';
+  | 'relay-power' | 'relay-efficiency' | 'turn-restore-efficiency' | 'turn-restore-power'
+  /** D-493 B3c Accord Seraph Sanctuary: given to the ally Accord just saved. */
+  | 'accord-efficiency';
 export type RadiantTokenStat = 'power' | 'efficiency' | 'attack' | 'crit-rate' | 'crit-damage' | 'direct' | 'restore-power';
 /** Which of the holder's actions spends a bonus: any damaging action; a skill or Convergent Light; Skill 1 or 2 only; a
  * damaging skill or Convergent Light; Convergent Light only; a skill or Convergent Light that heals or grants Shields. */
@@ -102,6 +104,7 @@ export const radiantTokenRules: Record<RadiantTokenKind, RadiantTokenRule> = {
   'relay-efficiency': { stat: 'efficiency', scope: 'skill', life: 'turn', shared: true },
   'turn-restore-efficiency': { stat: 'efficiency', scope: 'restore-skill', life: 'action' },
   'turn-restore-power': { stat: 'restore-power', scope: 'restore-skill', life: 'action' },
+  'accord-efficiency': { stat: 'efficiency', scope: 'skill', life: 'turn' },
 };
 /** One held next-action bonus: granted by `giverId`'s Conduit `conduitId`; `until` is the last round it lasts (null: until used). */
 export interface RadiantToken {
@@ -167,6 +170,8 @@ export interface RadiantBearer {
   stormstep?: RadiantSkillSlot;
   /** D-493 Tempest Return Chronarch: critical damaging actions toward the next bonus (1-2; omitted when 0). */
   critCount?: number;
+  /** D-493 B3c Accord Seraph Sanctuary: the giver whose Accord this bearer holds (omitted when none). */
+  accord?: string;
 }
 export interface RadiantCurrencyLedger {
   budget: number;
@@ -206,6 +211,10 @@ export interface RadiantCombatState {
   critSeed?: number;
   /** D-493 Stillhour Carillon: wearers who used Convergent Light this turn (omitted when none). */
   flared?: string[];
+  /** D-493 B3c (C18): bearers whose one Conduit rescue (Phoenix Reactor, Accord) is used this encounter (omitted when none). */
+  rescued?: string[];
+  /** D-493 B3c Atlas Bastion: the wearer whose Normal Attack taunts every enemy through this enemy phase (omitted when none). */
+  taunt?: string;
   nextShieldId: number;
   currencyEarned: number;
 }
@@ -216,7 +225,9 @@ export const radiantSignatureOpList = ['seed', 'seed-wither', 'cover', 'cyclone'
   'lodge', 'recall', 'return', 'wounds', 'detonate', 'refund',
   'quarry', 'contributor', 'trap', 'trap-strike', 'combo', 'refusal', 'mark', 'incision',
   'survey', 'foundation', 'foundation-absorb', 'beat', 'heat', 'burn-up', 'stillness', 'season', 'current',
-  'tension', 'cadence', 'crosscut', 'unreturned', 'load', 'signal', 'severance', 'path', 'promise', 'interval'] as const;
+  'tension', 'cadence', 'crosscut', 'unreturned', 'load', 'signal', 'severance', 'path', 'promise', 'interval',
+  // D-493 B3c: Accord granted to `holderId` (amount 1) or spent saving it (amount = its Health after the hit); Atlas taunt.
+  'accord', 'accord-save', 'taunt'] as const;
 export type RadiantSignatureOp = typeof radiantSignatureOpList[number];
 export type RadiantCombatAction =
   | { type: 'normal'; bearerId: string; targetId: string }
@@ -244,6 +255,8 @@ export type RadiantCombatEvent =
       boosts?: RadiantBoost[] }
   | { type: 'currency'; enemyId: string; amount: number; totalPaid: number }
   | { type: 'defeated'; targetId: string }
+  /** D-493 B3c Phoenix Reactor: a defeated bearer returns with `amount` Health (its Luminosity follows as a charge event). */
+  | { type: 'revive'; targetId: string; source: Extract<RadiantSource, { kind: 'gear' }>; amount: number }
   | { type: 'health-mote'; enemyId: string; bearerId: string; offered: number; effective: number }
   | { type: 'gauge-drop'; enemyId: string; bearerId: string; trigger: 'hit' | 'defeat'; amount: number }
   | { type: 'skill'; bearerId: string; slot: RadiantSkillSlot; name: string; cost: number }
@@ -1095,6 +1108,11 @@ export function validateRadiantCombat(state: RadiantCombatState): void {
       if (!(radiantEquipmentAmount(member.loadout, 'shield-reflect') > 0)) throw new Error('Invalid radiant Mercy Reflector ledger.');
     }
     validateTokens(state, member);
+    if (member.accord !== undefined) {
+      const giver = state.bearers.find(entry => entry.loadout.id === member.accord);
+      if (!giver || giver === member || !(radiantEquipmentAmount(giver.loadout, 'accord-efficiency') > 0) ||
+        state.rescued?.includes(member.loadout.id)) throw new Error('Invalid radiant Accord.');
+    }
     validateCategories(state, member.buffs, allyCategories);
     validateSignatures(state, member);
   }
@@ -1103,6 +1121,16 @@ export function validateRadiantCombat(state: RadiantCombatState): void {
       const owner = state.bearers.find(member => member.loadout.id === id);
       return !owner || !(radiantEquipmentAmount(owner.loadout, 'flare-round-heal') + radiantEquipmentAmount(owner.loadout, 'flare-round-charge') > 0);
     }))) throw new Error('Invalid radiant Stillhour Carillon ledger.');
+  // D-493 B3c: the shared rescue ledger needs a rescue Conduit in the squad; a taunt needs a living Atlas Bastion wearer.
+  if (state.rescued !== undefined && (!Array.isArray(state.rescued) || !state.rescued.length ||
+    new Set(state.rescued).size !== state.rescued.length ||
+    state.rescued.some(id => !state.bearers.some(member => member.loadout.id === id)) ||
+    !state.bearers.some(member => radiantEquipmentAmount(member.loadout, 'revive') + radiantEquipmentAmount(member.loadout, 'accord-efficiency') > 0)))
+    throw new Error('Invalid radiant rescue ledger.');
+  if (state.taunt !== undefined) {
+    const taunter = state.bearers.find(member => member.loadout.id === state.taunt);
+    if (!taunter || taunter.hp === 0 || !(radiantEquipmentAmount(taunter.loadout, 'taunt') > 0)) throw new Error('Invalid radiant taunt.');
+  }
   let paid = 0, budget = 0;
   for (const member of state.enemies) {
     if (member.elementId !== null && !isCombatElement(member.elementId)) throw new Error('Invalid enemy combat element.');
@@ -1293,7 +1321,7 @@ function packet(
   state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer | RadiantEnemy,
   source: RadiantSource, origin: 'direct' | 'periodic' | 'generated', offered: number, hitCharge?: RadiantHitCharge,
   redirected = false, boosts?: RadiantBoost[], critical?: RadiantCritical,
-): { healthLoss: number; absorbed: number; shields: { source: RadiantSource; amount: number }[] } {
+): { healthLoss: number; absorbed: number; shields: { source: RadiantSource; amount: number }[]; revived?: true } {
   safe(offered, 'damage packet', 1);
   living(target.hp);
   let remaining = offered;
@@ -1322,6 +1350,12 @@ function packet(
   const refusal = 'loadout' in target && source.kind === 'enemy' && healthLoss > 0 && healthLoss === target.hp
     ? refuser(state, target) : undefined;
   if (refusal) healthLoss = target.hp - 1;
+  // D-493 B3c Accord Seraph Sanctuary: after Refusal, a held Accord keeps its holder at 1 Health against a fatal direct enemy
+  // hit while its giver lives, using the holder's one Conduit rescue (C18).
+  const accord = !refusal && enemyHit && healthLoss > 0 && healthLoss === target.hp && 'loadout' in target &&
+    target.accord !== undefined && rescueAvailable(state, target)
+    ? state.bearers.find(member => member.loadout.id === (target as RadiantBearer).accord && member.hp > 0) : undefined;
+  if (accord) healthLoss = target.hp - 1;
   target.hp -= healthLoss;
   // D-493 Granite Hourglass: remember Health lost to direct enemy damage this enemy phase.
   if (enemyHit && healthLoss > 0 && 'loadout' in target && combatAmount(state, target, 'phase-shield') > 0) {
@@ -1335,6 +1369,7 @@ function packet(
     refusal.signature.spent.push(targetId);
     events.push({ type: 'signature', bearerId: refusal.loadout.id, op: 'refusal', holderId: targetId, amount: target.hp });
   }
+  if (accord && 'loadout' in target) accordSave(state, events, target, accord);
   if ('currency' in target) {
     const payout = depleteRadiantCurrency(target.currency, target.hp);
     target.currency = payout.ledger;
@@ -1355,9 +1390,52 @@ function packet(
     events.push({ type: 'defeated', targetId });
     if ('currency' in target) { healthMote(state, events, target, source); releaseEnemySignatures(state, events, targetId); }
     else if (target.signature?.kind === 'foundation') target.signature.foundation = null;
+    // D-493 B3c Phoenix Reactor: revive before the defeat can end the encounter.
+    if ('loadout' in target && phoenixRevive(state, events, target)) { sync(state); return { healthLoss, absorbed, shields, revived: true }; }
+    // D-493 B3c Atlas Bastion: a defeated taunter's taunt ends (enemies pick targets normally again).
+    if (state.taunt === targetId) delete state.taunt;
   }
   sync(state);
   return { healthLoss, absorbed, shields };
+}
+// ---------------------------------------------------------------------------------------------
+// D-493 B3c (C18) shared rescue limit: one Conduit rescue per ally per encounter, shared by Phoenix Reactor, Accord and (B5)
+// `master-sprout-3`. Ozriel's Refusal is a kit passive with its own ledger and never uses this one.
+// ---------------------------------------------------------------------------------------------
+function rescueAvailable(state: RadiantCombatState, member: RadiantBearer): boolean {
+  return !state.rescued?.includes(member.loadout.id);
+}
+function markRescued(state: RadiantCombatState, member: RadiantBearer): void {
+  state.rescued = [...(state.rescued ?? []), member.loadout.id];
+}
+/** Accord spent: the holder stayed at 1 Health; it gains the giver's next-skill Skill Efficiency bonus. */
+function accordSave(state: RadiantCombatState, events: RadiantCombatEvent[], holder: RadiantBearer, giver: RadiantBearer): void {
+  delete holder.accord;
+  markRescued(state, holder);
+  const source = gearSourceOf(giver, 'accord-efficiency');
+  if (source?.kind === 'gear') grantToken(holder, { kind: 'accord-efficiency', giverId: giver.loadout.id, conduitId: source.conduitId,
+    value: slotAmount(giver, source.conduitId, 'accord-efficiency'), until: state.round + 1 });
+  events.push({ type: 'signature', bearerId: giver.loadout.id, op: 'accord-save', holderId: holder.loadout.id, amount: holder.hp });
+}
+/** Phoenix Reactor: a defeated wearer whose rescue is unused returns with a share of its maximum Health and 0 Luminosity,
+ * cleared of timed effects, Cover, Seed and held bonuses; each other living ally gains a Conduit-generated Shield. */
+function phoenixRevive(state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer): boolean {
+  const source = gearSourceOf(target, 'revive');
+  if (source?.kind !== 'gear' || !rescueAvailable(state, target)) return false;
+  const id = target.loadout.id;
+  markRescued(state, target);
+  delete target.accord;
+  target.buffs = []; target.seed = null; target.cover = null;
+  delete target.tokens; delete target.stormstep; delete target.critCount;
+  target.hp = Math.min(maximumHealth(state, target), Math.max(1, rounded(slotAmount(target, source.conduitId, 'revive') * target.stats.hp)));
+  events.push({ type: 'revive', targetId: id, source, amount: target.hp });
+  sync(state);
+  const member = state.gauge.members.find(entry => entry.id === id)!;
+  member.charge = 0;
+  events.push({ type: 'charge', bearerId: id, personal: 0, bonusRolls: 0, bonusOffered: 0 });
+  const share = slotAmount(target, source.conduitId, 'revive-shield');
+  for (const ally of state.bearers) if (ally !== target && ally.hp > 0) shield(state, events, ally, source, share * ally.stats.hp);
+  return true;
 }
 /** Sources whose heals and Shields take the Conduit `healing`/`shielding` bonuses. */
 function native(source: RadiantSource): source is Extract<RadiantSource, { kind: 'normal' | 'skill' | 'flare' | 'passive' | 'role' }> {
@@ -2330,7 +2408,7 @@ function enemyAttack(
           const redirected = packet(state, events, coverer, source, 'direct', taken, undefined, true, undefined, critical);
           refundFullBlock(state, events, coverer, redirected, taken);
           // Weight of the Watch counts redirected hits; Names Still Carried does not.
-          if (coverer.hp > 0 && redirected.healthLoss + redirected.absorbed > 0) hitGain(events, coverer);
+          if (coverer.hp > 0 && !redirected.revived && redirected.healthLoss + redirected.absorbed > 0) hitGain(events, coverer);
           damaged = true;
         }
       }
@@ -2339,6 +2417,8 @@ function enemyAttack(
       const part = packet(state, events, target, source, 'direct', taken, undefined, false, hitBoosts(prevented, hit, hits), critical);
       // Every landed hit counts as damage for Thorn Traps, including a lethal hit Ozriel's Refusal turned to 0 loss.
       damaged = true;
+      // D-493 B3c Phoenix Reactor: a revived bearer leaves the rest of this attack (it returns with 0 Luminosity).
+      if (part.revived) { carryUnreturned(state, events, part.healthLoss); break; }
       refundFullBlock(state, events, target, part, taken);
       carryUnreturned(state, events, part.healthLoss);
       if (target.signature?.kind === 'wounds' && part.healthLoss > 0 && target.hp > 0) {
@@ -2398,6 +2478,8 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
     if (hot) heal(state, events, target, hot.source, hot.magnitude * target.stats.hp);
     target.buffs = tick(events, target.loadout.id, target.hp > 0, target.buffs, allyCategories);
   }
+  // D-493 B3c Atlas Bastion: a taunt lasts through the enemy phase after the Normal Attack that made it.
+  delete state.taunt;
   state.gauge = grantRadiantRound(state.gauge);
   state.round++;
   safe(state.round, 'round', 1);
@@ -2936,6 +3018,30 @@ function processRadiantGear(
           case 'turn-restore-power':
             // Worldroot Triage Sanctuary: at the start of each turn, the living ally with the lowest Health percentage.
             if (round && wounded) give(wounded);
+            break;
+          case 'accord-efficiency':
+            // D-493 B3c Accord Seraph Sanctuary: another living ally this bearer's own heal or Shield reached gains Accord,
+            // once per encounter (never again after its rescue is used), one Accord at a time.
+            if (source.kind === 'gear')
+              for (const event of owned) {
+                if (!(event.type === 'shield' || (event.type === 'heal' && event.effective > 0))) continue;
+                const ally = state.bearers.find(member => member.loadout.id === event.targetId);
+                if (!ally || ally === owner || ally.hp === 0 || ally.accord !== undefined || !rescueAvailable(state, ally)) continue;
+                ally.accord = id;
+                events.push({ type: 'signature', bearerId: id, op: 'accord', holderId: ally.loadout.id, amount: 1 });
+              }
+            break;
+          case 'taunt':
+            // D-493 B3c Atlas Bastion: each Normal Attack taunts every enemy through the next enemy phase (latest wins).
+            if (ownAction && action.type === 'normal') {
+              state.taunt = id;
+              events.push({ type: 'signature', bearerId: id, op: 'taunt', amount: 1 });
+            }
+            break;
+          case 'taunt-charge':
+            // Each enemy attack aimed at this taunting bearer grants each other living ally Luminosity.
+            if (action.type === 'enemy-attack' && state.taunt === id && action.targetIds.includes(id))
+              for (const ally of state.bearers) if (ally !== owner) grant(ally, amount);
             break;
         }
       }

@@ -197,7 +197,7 @@ describe('bounded, sourced Conduit triggers', () => {
     expect(normal(state).state.gauge.members[0].charge).toBe(200);
   });
   it('resolves native Shield breaks before generated replacement Shields, independent of slot order', () => {
-    for (const ids of [['granite-hourglass', 'infernic-phoenix-reactor'], ['infernic-phoenix-reactor', 'granite-hourglass']] as ConduitId[][]) {
+    for (const ids of [['calamitic-bulwark-of-the-last-horizon', 'calamitic-aegis-engine-of-severed-fate'], ['calamitic-aegis-engine-of-severed-fate', 'calamitic-bulwark-of-the-last-horizon']] as ConduitId[][]) {
       let state = fixture(ids);
       state.bearers[0].hp = 500;
       sourceShield(state, 0, { kind: 'flare', bearerId: 'ember' }, 1);

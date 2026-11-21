@@ -3343,9 +3343,9 @@ var radiantConduits = {
   "starvein-conductor": pair("prism-efficiency", 0.35, "prism-gain", 0.1),
   "meridian-inverter": [effect("restore-charge", 4)],
   "verdict-caliper": [effect("crit-heal", 0.25)],
-  "infernic-phoenix-reactor": pair("break-heal", 0.4, "hurt-shield", 0.08),
+  "infernic-phoenix-reactor": [effect("squad-hp", 0.11), effect("revive", 0.35), effect("revive-shield", 0.15)],
   "aquatic-leviathan-pump": [effect("defense", 0.09), effect("crit-rate", 0.25), effect("shield-charge", 5)],
-  "tectonic-atlas-bastion": pair("normal-reduction", 0.15, "guard-team-shield", 0.4),
+  "tectonic-atlas-bastion": [fixedEffect("taunt", 1), effect("taunt-charge", 4)],
   "efflorescent-worldtree-heart": [effect("hp", 0.28), effect("skill-power", 0.35), effect("overheal-shield", 0.6)],
   "voltaic-thunderbird-coil": [effect("attack", 0.19), effect("crit-damage", 0.45), effect("crit-skill-strike", 0.4), effect("crit-skill-ally-crit", 0.2)],
   "atmospheric-griffin-turbine": pair("attack", 0.198, "team-charge", 10),
@@ -3364,7 +3364,7 @@ var radiantConduits = {
   "tranquilitic-stillhour-carillon": [effect("hp", 0.24), effect("gauge-gain", 0.3), effect("flare-round-heal", 0.08), effect("flare-round-charge", 10)],
   "chaotic-paradox-spindle": [effect("defense", 0.07), effect("skill-efficiency", 0.2), effect("flare-team-power", 0.4), effect("flare-team-efficiency", 0.2)],
   "clearwater-manifold": [effect("oceanic-power", 0.35)],
-  "tranquilitic-accord-bastion": pair("heal-shield", 0.6, "hurt-heal", 0.3),
+  "tranquilitic-accord-bastion": [effect("hp", 0.17), effect("skill-efficiency", 0.2), effect("accord-efficiency", 0.25)],
   "aegis-return-spring": [effect("defense", 0.18), effect("crit-damage", 0.4), effect("skill-shield-crit", 0.2), effect("skill-shield-brace", 0.3)],
   "flare-focusing-iris": [effect("attack", 0.11), fixedEffect("burn-duration", 1), effect("burn-skill-power", 0.8), effect("burn-ally-crit", 0.2)],
   "cinder-metering-nozzle": [effect("attack", 0.45), fixedEffect("burn-transfer", 1)],
@@ -3594,7 +3594,13 @@ var conduitDescriptions = {
   "relay-power": (a) => `After this bearer's skill or Convergent Light deals damage, the next other ally to use a skill or Convergent Light gains ${percent(a)} Skill Power on it (next-action bonus).`,
   "relay-efficiency": (a) => `After this bearer's skill or Convergent Light heals or grants a Shield, the next other ally to use a skill or Convergent Light gains ${percent(a)} Skill Efficiency on it (next-action bonus).`,
   "turn-restore-efficiency": (a) => `At the start of each turn, the living ally with the lowest Health percentage gains ${percent(a)} Skill Efficiency on a skill or Convergent Light that heals or grants Shields, until they finish their next action.`,
-  "turn-restore-power": (a) => `At the start of each turn, the living ally with the lowest Health percentage gains ${percent(a)} Skill Power on the heals and Shields of their next action.`
+  "turn-restore-power": (a) => `At the start of each turn, the living ally with the lowest Health percentage gains ${percent(a)} Skill Power on the heals and Shields of their next action.`,
+  // D-493 B3c: rescue limit (glossary: one Conduit rescue per ally per encounter; Refusal is separate) and taunt.
+  revive: (a) => `Once per encounter, when this bearer is defeated, they revive with ${percent(a)} of their maximum Health and 0 Luminosity, cleared of timed effects and next-action bonuses, and leave the rest of that attack. Uses this bearer's rescue.`,
+  "revive-shield": (a) => `On that revival, each other living ally gains a Conduit-generated Shield equal to ${percent(a)} of their own maximum Health.`,
+  "accord-efficiency": (a) => `Each other living ally this bearer's heal or Shield reaches gains Accord (once per encounter): while this bearer lives, it keeps them at 1 Health against a fatal direct enemy hit and gives them ${percent(a)} Skill Efficiency on their next skill or Convergent Light (next-action bonus). Uses that ally's rescue.`,
+  taunt: () => `Each Normal Attack taunts every enemy for 1 enemy phase (the next one): their attacks aim at this bearer while they live. The latest taunt in the squad applies.`,
+  "taunt-charge": (a) => `Each enemy attack aimed at this bearer while it taunts grants each other living ally ${number(a)} Luminosity, rounded once.`
 };
 function radiantConduitDescription(primitive) {
   return conduitDescriptions[primitive.kind](primitive.amount);
@@ -17802,7 +17808,8 @@ var radiantTokenRules = {
   "relay-power": { stat: "power", scope: "skill", life: "turn", shared: true },
   "relay-efficiency": { stat: "efficiency", scope: "skill", life: "turn", shared: true },
   "turn-restore-efficiency": { stat: "efficiency", scope: "restore-skill", life: "action" },
-  "turn-restore-power": { stat: "restore-power", scope: "restore-skill", life: "action" }
+  "turn-restore-power": { stat: "restore-power", scope: "restore-skill", life: "action" },
+  "accord-efficiency": { stat: "efficiency", scope: "skill", life: "turn" }
 };
 var radiantSignatureOpList = [
   "seed",
@@ -17843,7 +17850,11 @@ var radiantSignatureOpList = [
   "severance",
   "path",
   "promise",
-  "interval"
+  "interval",
+  // D-493 B3c: Accord granted to `holderId` (amount 1) or spent saving it (amount = its Health after the hit); Atlas taunt.
+  "accord",
+  "accord-save",
+  "taunt"
 ];
 function validateRadiantDropEvents(events, enemyIds2, bearerIds) {
   for (const [index, event2] of events.entries()) {
@@ -18609,6 +18620,10 @@ function validateRadiantCombat(state) {
       if (!(radiantEquipmentAmount(member.loadout, "shield-reflect") > 0)) throw new Error("Invalid radiant Mercy Reflector ledger.");
     }
     validateTokens(state, member);
+    if (member.accord !== void 0) {
+      const giver = state.bearers.find((entry) => entry.loadout.id === member.accord);
+      if (!giver || giver === member || !(radiantEquipmentAmount(giver.loadout, "accord-efficiency") > 0) || state.rescued?.includes(member.loadout.id)) throw new Error("Invalid radiant Accord.");
+    }
     validateCategories(state, member.buffs, allyCategories);
     validateSignatures(state, member);
   }
@@ -18616,6 +18631,12 @@ function validateRadiantCombat(state) {
     const owner = state.bearers.find((member) => member.loadout.id === id);
     return !owner || !(radiantEquipmentAmount(owner.loadout, "flare-round-heal") + radiantEquipmentAmount(owner.loadout, "flare-round-charge") > 0);
   }))) throw new Error("Invalid radiant Stillhour Carillon ledger.");
+  if (state.rescued !== void 0 && (!Array.isArray(state.rescued) || !state.rescued.length || new Set(state.rescued).size !== state.rescued.length || state.rescued.some((id) => !state.bearers.some((member) => member.loadout.id === id)) || !state.bearers.some((member) => radiantEquipmentAmount(member.loadout, "revive") + radiantEquipmentAmount(member.loadout, "accord-efficiency") > 0)))
+    throw new Error("Invalid radiant rescue ledger.");
+  if (state.taunt !== void 0) {
+    const taunter = state.bearers.find((member) => member.loadout.id === state.taunt);
+    if (!taunter || taunter.hp === 0 || !(radiantEquipmentAmount(taunter.loadout, "taunt") > 0)) throw new Error("Invalid radiant taunt.");
+  }
   let paid = 0, budget = 0;
   for (const member of state.enemies) {
     if (member.elementId !== null && !isCombatElement(member.elementId)) throw new Error("Invalid enemy combat element.");
@@ -18852,6 +18873,8 @@ function packet(state, events, target, source, origin, offered, hitCharge, redir
   const absorbed = shields.reduce((sum, entry) => sum + entry.amount, 0);
   const refusal = "loadout" in target && source.kind === "enemy" && healthLoss > 0 && healthLoss === target.hp ? refuser(state, target) : void 0;
   if (refusal) healthLoss = target.hp - 1;
+  const accord = !refusal && enemyHit && healthLoss > 0 && healthLoss === target.hp && "loadout" in target && target.accord !== void 0 && rescueAvailable(state, target) ? state.bearers.find((member) => member.loadout.id === target.accord && member.hp > 0) : void 0;
+  if (accord) healthLoss = target.hp - 1;
   target.hp -= healthLoss;
   if (enemyHit && healthLoss > 0 && "loadout" in target && combatAmount(state, target, "phase-shield") > 0) {
     target.phaseLoss = (target.phaseLoss ?? 0) + healthLoss;
@@ -18875,6 +18898,7 @@ function packet(state, events, target, source, origin, offered, hitCharge, redir
     refusal.signature.spent.push(targetId);
     events.push({ type: "signature", bearerId: refusal.loadout.id, op: "refusal", holderId: targetId, amount: target.hp });
   }
+  if (accord && "loadout" in target) accordSave(state, events, target, accord);
   if ("currency" in target) {
     const payout = depleteRadiantCurrency(target.currency, target.hp);
     target.currency = payout.ledger;
@@ -18905,9 +18929,55 @@ function packet(state, events, target, source, origin, offered, hitCharge, redir
       healthMote(state, events, target, source);
       releaseEnemySignatures(state, events, targetId);
     } else if (target.signature?.kind === "foundation") target.signature.foundation = null;
+    if ("loadout" in target && phoenixRevive(state, events, target)) {
+      sync(state);
+      return { healthLoss, absorbed, shields, revived: true };
+    }
+    if (state.taunt === targetId) delete state.taunt;
   }
   sync(state);
   return { healthLoss, absorbed, shields };
+}
+function rescueAvailable(state, member) {
+  return !state.rescued?.includes(member.loadout.id);
+}
+function markRescued(state, member) {
+  state.rescued = [...state.rescued ?? [], member.loadout.id];
+}
+function accordSave(state, events, holder, giver) {
+  delete holder.accord;
+  markRescued(state, holder);
+  const source = gearSourceOf(giver, "accord-efficiency");
+  if (source?.kind === "gear") grantToken2(holder, {
+    kind: "accord-efficiency",
+    giverId: giver.loadout.id,
+    conduitId: source.conduitId,
+    value: slotAmount(giver, source.conduitId, "accord-efficiency"),
+    until: state.round + 1
+  });
+  events.push({ type: "signature", bearerId: giver.loadout.id, op: "accord-save", holderId: holder.loadout.id, amount: holder.hp });
+}
+function phoenixRevive(state, events, target) {
+  const source = gearSourceOf(target, "revive");
+  if (source?.kind !== "gear" || !rescueAvailable(state, target)) return false;
+  const id = target.loadout.id;
+  markRescued(state, target);
+  delete target.accord;
+  target.buffs = [];
+  target.seed = null;
+  target.cover = null;
+  delete target.tokens;
+  delete target.stormstep;
+  delete target.critCount;
+  target.hp = Math.min(maximumHealth(state, target), Math.max(1, rounded(slotAmount(target, source.conduitId, "revive") * target.stats.hp)));
+  events.push({ type: "revive", targetId: id, source, amount: target.hp });
+  sync(state);
+  const member = state.gauge.members.find((entry) => entry.id === id);
+  member.charge = 0;
+  events.push({ type: "charge", bearerId: id, personal: 0, bonusRolls: 0, bonusOffered: 0 });
+  const share = slotAmount(target, source.conduitId, "revive-shield");
+  for (const ally of state.bearers) if (ally !== target && ally.hp > 0) shield2(state, events, ally, source, share * ally.stats.hp);
+  return true;
 }
 function native(source) {
   return source.kind === "normal" || source.kind === "skill" || source.kind === "flare" || source.kind === "passive";
@@ -19874,7 +19944,7 @@ function enemyAttack(state, events, action) {
         if (taken2 > 0) {
           const redirected = packet(state, events, coverer, source, "direct", taken2, void 0, true, void 0, critical);
           refundFullBlock(state, events, coverer, redirected, taken2);
-          if (coverer.hp > 0 && redirected.healthLoss + redirected.absorbed > 0) hitGain(events, coverer);
+          if (coverer.hp > 0 && !redirected.revived && redirected.healthLoss + redirected.absorbed > 0) hitGain(events, coverer);
           damaged = true;
         }
       }
@@ -19882,6 +19952,10 @@ function enemyAttack(state, events, action) {
       const taken = holdStillness(events, target, amount - moved);
       const part = packet(state, events, target, source, "direct", taken, void 0, false, hitBoosts(prevented, hit, hits), critical);
       damaged = true;
+      if (part.revived) {
+        carryUnreturned(state, events, part.healthLoss);
+        break;
+      }
       refundFullBlock(state, events, target, part, taken);
       carryUnreturned(state, events, part.healthLoss);
       if (target.signature?.kind === "wounds" && part.healthLoss > 0 && target.hp > 0) {
@@ -19946,6 +20020,7 @@ function finishRound(state, events) {
     if (hot) heal2(state, events, target, hot.source, hot.magnitude * target.stats.hp);
     target.buffs = tick(events, target.loadout.id, target.hp > 0, target.buffs, allyCategories);
   }
+  delete state.taunt;
   state.gauge = grantRadiantRound(state.gauge);
   state.round++;
   safe(state.round, "round", 1);
@@ -20468,6 +20543,27 @@ function processRadiantGear(state, events, action) {
           case "turn-restore-power":
             if (round && wounded) give(wounded);
             break;
+          case "accord-efficiency":
+            if (source.kind === "gear")
+              for (const event2 of owned) {
+                if (!(event2.type === "shield" || event2.type === "heal" && event2.effective > 0)) continue;
+                const ally = state.bearers.find((member) => member.loadout.id === event2.targetId);
+                if (!ally || ally === owner || ally.hp === 0 || ally.accord !== void 0 || !rescueAvailable(state, ally)) continue;
+                ally.accord = id;
+                events.push({ type: "signature", bearerId: id, op: "accord", holderId: ally.loadout.id, amount: 1 });
+              }
+            break;
+          case "taunt":
+            if (ownAction && action.type === "normal") {
+              state.taunt = id;
+              events.push({ type: "signature", bearerId: id, op: "taunt", amount: 1 });
+            }
+            break;
+          case "taunt-charge":
+            if (action.type === "enemy-attack" && state.taunt === id && action.targetIds.includes(id)) {
+              for (const ally of state.bearers) if (ally !== owner) grant(ally, amount);
+            }
+            break;
         }
       }
       if (triggered) state.gearTriggered.push(key);
@@ -20667,7 +20763,8 @@ function radiantPressureEnemyAction(state, enemy2, targetRandom) {
   if (targeting) targets.sort((a, b) => (targeting === "lowest" ? 1 : -1) * (a.hp / a.stats.hp - b.hp / b.stats.hp) || a.loadout.id.localeCompare(b.loadout.id));
   const random = targetRandom();
   if (!Number.isFinite(random) || random < 0 || random >= 1) throw new Error("Invalid target seed output.");
-  const target = targeting ? targets[0] : weightedTarget(targets, random);
+  const taunter = state.taunt === void 0 ? void 0 : targets.find((member) => member.loadout.id === state.taunt);
+  const target = taunter ?? (targeting ? targets[0] : weightedTarget(targets, random));
   const pattern = enemy2.pattern;
   const actor2 = state.enemies.find((member) => member.id === enemy2.id);
   return {
@@ -20771,6 +20868,7 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1, cont
         delete member.tokens;
         delete member.stormstep;
         delete member.critCount;
+        delete member.accord;
       }
       initial.nextShieldId = previous.nextShieldId;
       initial.round = previous.round + 1;
@@ -21149,6 +21247,8 @@ var eventFields = {
   shield: { text: ["targetId"], number: ["amount", "shieldId"] },
   currency: { text: ["enemyId"], number: ["amount", "totalPaid"] },
   defeated: { text: ["targetId"], number: [] },
+  // D-493 B3c Phoenix Reactor revival; journals saved before B3c have none.
+  revive: { text: ["targetId"], number: ["amount"] },
   "gauge-drop": { text: ["enemyId", "bearerId", "trigger"], number: ["amount"] },
   flare: { text: ["bearerId", "tier", "name"], number: [] },
   charge: { text: ["bearerId"], number: ["personal", "bonusRolls", "bonusOffered"] },
@@ -21185,6 +21285,7 @@ function validEvent(value2) {
   if (value2.critical !== void 0 && (value2.type !== "damage" || !["critical", "elemental"].includes(String(value2.critical)))) return false;
   if (value2.type === "skill" && value2.slot !== 1 && value2.slot !== 2) return false;
   if (value2.type === "flare" && value2.cost !== void 0 && (!Number.isSafeInteger(value2.cost) || Number(value2.cost) < 1)) return false;
+  if (value2.type === "revive" && (!record4(value2.source) || value2.source.kind !== "gear" || !validSource(value2.source) || !Number.isSafeInteger(value2.amount) || Number(value2.amount) < 1)) return false;
   if (value2.type === "signature" && (!radiantSignatureOps.has(String(value2.op)) || value2.holderId !== void 0 && !validId(value2.holderId))) return false;
   if (value2.boosts !== void 0 && (!["damage", "heal", "shield"].includes(value2.type) || !Array.isArray(value2.boosts) || !value2.boosts.every((boost) => record4(boost) && validSource(boost.source) && record4(boost.source) && ["gear", "master", "leader"].includes(String(boost.source.kind)) && Number.isSafeInteger(boost.amount) && Number(boost.amount) > 0))) return false;
   if (value2.gained !== void 0 && (value2.type !== "charge" || value2.gearSource === void 0 || !Number.isSafeInteger(value2.gained) || Number(value2.gained) < 1)) return false;

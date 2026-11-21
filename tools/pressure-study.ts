@@ -101,7 +101,7 @@ export function executeRadiantPressureStudy(emit: (row: unknown) => void, tunedO
       'Budgets use fixed minimum ordinary Prismatica; Calamity budget zero, no chest/recruitment simulation.',
       'Three seeds are a small reproducible sample, not population clear rates or confidence intervals.',
       'Inactive/locked studies retained with explicit access errors, never certified playable.',
-      'Single-target authored enemy schedule, deterministic noncritical damage; legacy critical/taunt omitted in new model.',
+      'Single-target authored enemy schedule; critical hits roll on their own stream; an Atlas Bastion taunt overrides enemy targeting.',
       'All authored species/forms are exercised; anchors do not cover every floor or every acquired roster/gear permutation.',
       'Species-completion anchors use one seed; early/mid/final/boss and controls use three.',
       'Calamitic trio uses bounded greedy personal-Master screening against Machines EX+3, seed1; not a global optimum.'] } });

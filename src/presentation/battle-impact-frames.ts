@@ -65,6 +65,13 @@ function apply(readout: RadiantReadout, event: RadiantCombatEvent): void {
       else unit.layers.push({ id: event.shieldId, source: structuredClone(event.source), remaining: event.amount });
     }
     else if (event.type === 'defeated' && unit.hp !== 0) throw new Error('Saved defeat precedes its impact.');
+    else if (event.type === 'revive') {
+      // D-493 B3c Phoenix Reactor: only a defeated bearer returns.
+      const member = readout.gauge.members.find(entry => entry.id === event.targetId);
+      if (unit.hp !== 0 || !member || member.living || !Number.isSafeInteger(event.amount) || event.amount < 1)
+        throw new Error('Saved revival does not follow a defeat.');
+      unit.hp = event.amount; member.living = true;
+    }
     if (unit.hp > unit.maximum) throw new Error('Saved healing exceeds displayed maximum HP.');
   }
   if (event.type === 'flare') {
@@ -116,7 +123,7 @@ export function radiantImpactFrames(before: RadiantCombatState, after: RadiantCo
       const event = events[index++];
       batch.push(structuredClone(event)); apply(displayed, event);
       if (event.type === 'status') applyRadiantStatusEvent(statuses, event);
-      else if (event.type === 'defeated') statuses[event.targetId] = [];
+      else if (event.type === 'defeated' || event.type === 'revive') statuses[event.targetId] = [];
       if ('targetId' in event && sourceKey(event) !== null) targets.add(event.targetId);
       const next = events[index];
       if (!next || key === null) break;

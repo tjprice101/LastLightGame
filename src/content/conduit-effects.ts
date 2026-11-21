@@ -45,7 +45,9 @@ export type RadiantConduitEffect =
   | 'normal-ally-efficiency' | 'alternate-power' | 'alternate-ally-efficiency' | 'crit-skill-strike' | 'crit-skill-ally-crit'
   | 'heal-ally-power' | 'healed-attack' | 'healer-efficiency' | 'shielded-crit-damage' | 'first-crit-provider-power'
   | 'followup-power' | 'followup-charge' | 'burn-ally-power' | 'third-crit-flare-efficiency' | 'relay-power'
-  | 'relay-efficiency' | 'turn-restore-efficiency' | 'turn-restore-power';
+  | 'relay-efficiency' | 'turn-restore-efficiency' | 'turn-restore-power'
+  // D-493 B3c: shared rescue limit (C18), Phoenix Reactor revive, Accord, Atlas Bastion taunt.
+  | 'revive' | 'revive-shield' | 'accord-efficiency' | 'taunt' | 'taunt-charge';
 /** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration);
  * `step` primitives add `step` per rank instead of scaling (C12 exceptions such as Stasis Reliquary's chance). */
 export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true; step?: number }
@@ -91,7 +93,7 @@ export const pair = (kind: RadiantConduitEffect, amount: number, related: Radian
   [effect(kind, amount), effect(related, extra)];
 
 // Stable-ID design decisions. D-493 restores the pre-Radiant (Phase Zero) effects batch by batch
-// (B1 Common + Rare, B2 Legendary, B3a and B3b Omnic in 4c; C1 x0.2 rescale on always-on Health/Defense/Attack). Rows not yet
+// (B1 Common + Rare, B2 Legendary, B3a, B3b and B3c Omnic in 4c; C1 x0.2 rescale on always-on Health/Defense/Attack). Rows not yet
 // restored keep their Radiant-era designs.
 // Fractions are ratios and charge values are whole personal charge.
 export const radiantConduits = {
@@ -135,9 +137,9 @@ export const radiantConduits = {
   'starvein-conductor': pair('prism-efficiency', .35, 'prism-gain', .1),
   'meridian-inverter': [effect('restore-charge', 4)],
   'verdict-caliper': [effect('crit-heal', .25)],
-  'infernic-phoenix-reactor': pair('break-heal', .4, 'hurt-shield', .08),
+  'infernic-phoenix-reactor': [effect('squad-hp', .11), effect('revive', .35), effect('revive-shield', .15)],
   'aquatic-leviathan-pump': [effect('defense', .09), effect('crit-rate', .25), effect('shield-charge', 5)],
-  'tectonic-atlas-bastion': pair('normal-reduction', .15, 'guard-team-shield', .4),
+  'tectonic-atlas-bastion': [fixedEffect('taunt', 1), effect('taunt-charge', 4)],
   'efflorescent-worldtree-heart': [effect('hp', .28), effect('skill-power', .35), effect('overheal-shield', .6)],
   'voltaic-thunderbird-coil': [effect('attack', .19), effect('crit-damage', .45), effect('crit-skill-strike', .4), effect('crit-skill-ally-crit', .2)],
   'atmospheric-griffin-turbine': pair('attack', .198, 'team-charge', 10),
@@ -156,7 +158,7 @@ export const radiantConduits = {
   'tranquilitic-stillhour-carillon': [effect('hp', .24), effect('gauge-gain', .3), effect('flare-round-heal', .08), effect('flare-round-charge', 10)],
   'chaotic-paradox-spindle': [effect('defense', .07), effect('skill-efficiency', .2), effect('flare-team-power', .4), effect('flare-team-efficiency', .2)],
   'clearwater-manifold': [effect('oceanic-power', .35)],
-  'tranquilitic-accord-bastion': pair('heal-shield', .6, 'hurt-heal', .3),
+  'tranquilitic-accord-bastion': [effect('hp', .17), effect('skill-efficiency', .2), effect('accord-efficiency', .25)],
   'aegis-return-spring': [effect('defense', .18), effect('crit-damage', .4), effect('skill-shield-crit', .2), effect('skill-shield-brace', .3)],
   'flare-focusing-iris': [effect('attack', .11), fixedEffect('burn-duration', 1), effect('burn-skill-power', .8), effect('burn-ally-crit', .2)],
   'cinder-metering-nozzle': [effect('attack', .45), fixedEffect('burn-transfer', 1)],

@@ -177,6 +177,12 @@ const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => stri
   'relay-efficiency': a => `After this bearer's skill or Convergent Light heals or grants a Shield, the next other ally to use a skill or Convergent Light gains ${percent(a)} Skill Efficiency on it (next-action bonus).`,
   'turn-restore-efficiency': a => `At the start of each turn, the living ally with the lowest Health percentage gains ${percent(a)} Skill Efficiency on a skill or Convergent Light that heals or grants Shields, until they finish their next action.`,
   'turn-restore-power': a => `At the start of each turn, the living ally with the lowest Health percentage gains ${percent(a)} Skill Power on the heals and Shields of their next action.`,
+  // D-493 B3c: rescue limit (glossary: one Conduit rescue per ally per encounter; Refusal is separate) and taunt.
+  revive: a => `Once per encounter, when this bearer is defeated, they revive with ${percent(a)} of their maximum Health and 0 Luminosity, cleared of timed effects and next-action bonuses, and leave the rest of that attack. Uses this bearer's rescue.`,
+  'revive-shield': a => `On that revival, each other living ally gains a Conduit-generated Shield equal to ${percent(a)} of their own maximum Health.`,
+  'accord-efficiency': a => `Each other living ally this bearer's heal or Shield reaches gains Accord (once per encounter): while this bearer lives, it keeps them at 1 Health against a fatal direct enemy hit and gives them ${percent(a)} Skill Efficiency on their next skill or Convergent Light (next-action bonus). Uses that ally's rescue.`,
+  taunt: () => `Each Normal Attack taunts every enemy for 1 enemy phase (the next one): their attacks aim at this bearer while they live. The latest taunt in the squad applies.`,
+  'taunt-charge': a => `Each enemy attack aimed at this bearer while it taunts grants each other living ally ${number(a)} Luminosity, rounded once.`,
 };
 
 /** Radiant effects that combat sums across every equipped Conduit before applying them once. */

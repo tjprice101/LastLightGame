@@ -2706,3 +2706,82 @@ scaling, every trigger, refresh and expiry, shared and target-bound bonuses,
 Tempest persistence, Undertide flare cost and impact replay, validation,
 pre-B3b journal and mid-run save load/settle/reload, tampered cost and forged
 bonus); updated Shared Tide, Verdant fixture and crit splash fixture tests.
+
+## Conduit restoration B3c: rescue limit, revive, Accord, taunt (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5 with one enemy retune). Plan rows:
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+(C18, G10, G11, G13). The last three Omnic rows: all 45 Omnics now carry their
+restored effects.
+
+Owner answers (2026-11-20): Atlas Bastion's taunt overrides Calamity boss
+targeting too (the boss text already says "unless taunted"); the
+`master-sprout-3` Worldseed revive waits for B5 and will use the same ledger.
+
+- **Shared rescue limit (C18):** `RadiantCombatState.rescued?` lists the
+  bearers whose one Conduit rescue is used this encounter (omitted when none).
+  Phoenix Reactor and Accord use it; Ozriel's Refusal keeps its own ledger,
+  runs first and never uses this one (O12). Order on a lethal enemy hit:
+  Refusal, then Accord, then (on an actual defeat) Phoenix Reactor.
+- **Phoenix Reactor** (`squad-hp` .11, `revive` .35, `revive-shield` .15):
+  in `packet()`, after the `defeated` event and before `sync()`, a defeated
+  wearer whose rescue is unused returns with 35% of its frozen maximum Health
+  (rounded, at least 1). It loses timed effects, Cover, Seed, held bonuses,
+  Stormstep's slot and Tempest's count. Its Luminosity becomes 0 (a `charge`
+  event), it leaves the rest of that enemy attack (no further hits and no
+  hit Luminosity), and each other living ally gains a Conduit-generated Shield
+  worth 15% of their own maximum Health. A last-bearer revival never ends the
+  encounter. New event `{ type: 'revive', targetId, source, amount }` (gear
+  source); impact replay accepts it only for a defeated bearer and clears that
+  bearer's status rows.
+- **Accord Seraph Sanctuary** (`hp` .17, `skill-efficiency` .2,
+  `accord-efficiency` .25): when the wearer's own heal or Shield (kit skills,
+  Convergent Light, passives; not Conduit-generated) reaches another living
+  ally, that ally gains Accord (`RadiantBearer.accord?` = giver id), one at a
+  time and never after its rescue is used. A fatal direct enemy hit on the
+  holder while the giver lives leaves it at 1 Health, spends Accord, uses the
+  rescue and grants the next-action bonus `accord-efficiency` (+25% Skill
+  Efficiency on the next skill or Convergent Light, through the next turn).
+  Signature ops `accord` (granted) and `accord-save` record it.
+- **Atlas Bastion** (`taunt` fixed, `taunt-charge` 4): each Normal Attack by
+  the wearer sets `RadiantCombatState.taunt?` (latest wins; signature op
+  `taunt`). `radiantPressureEnemyAction` still draws the target roll, then aims
+  at a living taunter, overriding the weighted roll and Calamity `targeting`
+  (device, server replay and the pressure study share it). Each enemy attack
+  aimed at the taunting wearer grants each other living ally 4 Luminosity
+  (Gauge Gain, rounded once, capacity), counted even when Cover redirects or a
+  Shield absorbs it. The taunt ends in `finishRound` or when the taunter is
+  defeated without a revival.
+- **Presentation:** Accord shows as a gold bonus tag on its holder; "Conduit
+  rescue used" tags a rescued ally; the taunter's card shows "Atlas Bastion ·
+  taunting all enemies" and every enemy "Taunted · attacks …". Callouts lead
+  with "Revived · N Health", "… kept at 1 Health" and "Taunt · all enemies";
+  the number "Revived +N" floats on the bearer. A revival plays rising embers
+  and an Accord save a soft light bloom (finite, pointer-transparent; none
+  under Reduce motion, where the number and callout show statically). Glossary
+  entries "Taunt" and "Rescue limit".
+- **Saves:** every new field and event is optional; there is no version bump.
+  Training continuation clears Accord; the rescue ledger and taunt start fresh
+  with each encounter. Validation rejects Accord from a non-wearer, on the
+  giver itself or on an already-rescued ally; an empty, duplicate or unknown
+  rescue ledger, or one in a squad with no rescue Conduit; a taunt by a
+  non-wearer or a defeated bearer; a revive event without a gear source or with
+  an amount below 1.
+- **Implementation choices (owner may reverse):** an Accord save uses a
+  Phoenix Reactor wearer's rescue, so its revival no longer fires (legacy
+  order); Accord goes only to other allies, only from the wearer's own heals
+  and Shields, and needs the giver alive at the save; a revival clears timed
+  effects and held bonuses, uses the frozen maximum Health and ends that
+  attack's remaining hits on the bearer; no Atlas Luminosity from an attack
+  that defeats the taunter.
+
+Validation: `src/game/conduit-restoration-b3c.test.ts` (rows, tooltips, rank
+scaling, revive amount/Luminosity/Shields, last-bearer revival, multi-hit
+exit, Accord grant and save, Refusal independence, giver alive, shared limit
+with Phoenix, taunt overriding the roll and Calamity targeting with the roll
+still drawn, aimed-attack Luminosity, latest taunt and defeated taunter, tags,
+callouts, glossary, validation, impact replay, pre-B3c journal and mid-run
+save load/settle, revive event allowlist, forged rescue ledger and taunt);
+`conduit-effects.test.ts` Shield-order fixture now uses Calamitic Conduits
+(Phoenix Reactor no longer carries `break-heal`).

@@ -180,8 +180,8 @@ function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun
     initial.gauge = structuredClone(previous.gauge);
     if (anchor.activity.kind === 'training') {
       initial.bearers = structuredClone(previous.bearers);
-      // D-493 B3b: next-action bonuses, Stormstep's slot and Tempest's count belong to one encounter.
-      for (const member of initial.bearers) { delete member.tokens; delete member.stormstep; delete member.critCount; }
+      // D-493 B3b/B3c: next-action bonuses, Stormstep's slot, Tempest's count and Accord belong to one encounter.
+      for (const member of initial.bearers) { delete member.tokens; delete member.stormstep; delete member.critCount; delete member.accord; }
       initial.nextShieldId = previous.nextShieldId;
       initial.round = previous.round + 1;
     } else {
@@ -520,6 +520,8 @@ const eventFields = {
   shield: { text: ['targetId'], number: ['amount', 'shieldId'] },
   currency: { text: ['enemyId'], number: ['amount', 'totalPaid'] },
   defeated: { text: ['targetId'], number: [] },
+  // D-493 B3c Phoenix Reactor revival; journals saved before B3c have none.
+  revive: { text: ['targetId'], number: ['amount'] },
   'gauge-drop': { text: ['enemyId', 'bearerId', 'trigger'], number: ['amount'] },
   flare: { text: ['bearerId', 'tier', 'name'], number: [] },
   charge: { text: ['bearerId'], number: ['personal', 'bonusRolls', 'bonusOffered'] },
@@ -557,6 +559,8 @@ function validEvent(value: unknown): boolean {
   if (value.type === 'skill' && value.slot !== 1 && value.slot !== 2) return false;
   // D-493 B3b: optional Luminosity spent by Convergent Light; journals saved before B3b have none.
   if (value.type === 'flare' && value.cost !== undefined && (!Number.isSafeInteger(value.cost) || Number(value.cost) < 1)) return false;
+  if (value.type === 'revive' && (!record(value.source) || value.source.kind !== 'gear' || !validSource(value.source) ||
+    !Number.isSafeInteger(value.amount) || Number(value.amount) < 1)) return false;
   if (value.type === 'signature' && (!radiantSignatureOps.has(String(value.op)) ||
     (value.holderId !== undefined && !validId(value.holderId)))) return false;
   // D-492: optional Conduit attribution; older journals have none.

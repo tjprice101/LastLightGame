@@ -1,5 +1,62 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B3c: rescue limit, revive, Accord, taunt (D-493, 2026-11-21)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b3c-rescue-limit-revive-accord-taunt-d-493-battle-flurry-phase-4c).
+All 45 Omnic Conduits now carry their restored effects.
+- Owner answers (Plan mode): Atlas Bastion's taunt overrides Calamity boss
+  targeting too; the `master-sprout-3` Worldseed revive waits for B5 (same
+  ledger).
+- New engine pieces: shared rescue ledger (`rescued?`, C18; Refusal stays
+  separate and runs first), Phoenix Reactor revive inside the damage packet (a
+  last-bearer revival never ends the encounter; the revived bearer leaves the
+  rest of that attack), Accord (`accord?` on the holder; 1 Health save plus a
+  next-skill +25% Skill Efficiency bonus), Atlas Bastion taunt (`taunt?`;
+  enemy targeting still draws its roll, so the target stream stays aligned).
+  New `revive` event; signature ops `accord`, `accord-save`, `taunt`.
+- UI: Accord gold bonus tag, "Conduit rescue used", taunter chip and
+  "Taunted · attacks …" enemy tags, callouts leading with the revival, save or
+  taunt, "Revived +N" number, rising embers on a revival and a light bloom on
+  an Accord save (none under Reduce motion; number and callout stay static);
+  glossary entries "Taunt" and "Rescue limit".
+- Implementation choices (owner may reverse): an Accord save uses a Phoenix
+  wearer's rescue (legacy order Refusal, Accord, Phoenix); Accord only goes to
+  other allies, from the wearer's own heals and Shields, and needs the giver
+  alive; a revival clears timed effects and held bonuses and uses the frozen
+  maximum Health; no Atlas Luminosity from an attack that defeats the taunter.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- Full `npx vitest run`: 10,966 of 10,966 (319 files).
+- New `src/game/conduit-restoration-b3c.test.ts`: 25 of 25, including the
+  save-compatibility checks:
+  - a settled journal written before B3c loads; an added `revive` event passes
+    the allowlist; a bad source or amount, a forged rescue ledger and a forged
+    taunt are rejected;
+  - a mid-run save from before B3c loads and settles.
+- Updated fixture: `conduit-effects.test.ts` Shield-order test now uses
+  Calamitic Conduits (Phoenix Reactor no longer carries `break-heal`).
+- `node toolsun_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced): identical to B3b on every band (ordinary 99.8%; Calamity
+  EX+1/2/3 99.1/94.0/88.4%; Oblivion 141-160 100%, 161-180 90.5%; Training
+  101-120 100%; Dungeon 101-120 99.5%; flare-saving Calamity
+  100/99.5/98.1%). **The study cannot see B3c:** every loss comes from squads
+  without a B3c Conduit, the squads that wear Phoenix Reactor (Ember) or
+  Accord (Bliss, Aurora) already win 100%, and no study build equips Atlas
+  Bastion (the Botanic Omnic set in `tools/battle-survey.ts` omits it). The
+  retune should decide whether its builds include Atlas.
+- `node toolsundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** the revive, Accord and taunt visuals seen in game (the
+preview squad has no Conduits; covered by tests only). The Conduit behavior
+matrix (`docs/conduit-behavior-matrix.md`) is a frozen Phase 0 report that no
+D-493 batch updates; left unchanged.
+
+**Next:** B4 (includes G12, the extra skill after Convergent Light for Throne
+of Borrowed Tomorrows). Fresh Opus session, Plan mode. Start the study early.
+
 ## Battle Flurry Phase 4c B3b: next-action bonuses (D-493, 2026-11-20)
 
 **Implemented on `battle-flurry-phase3` (`7e1a4640`), not released** (single

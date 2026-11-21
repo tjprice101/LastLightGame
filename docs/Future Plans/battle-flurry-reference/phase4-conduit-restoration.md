@@ -9,7 +9,8 @@
 - **Crits return (owner, 2026-11-20, D-493 note):** O1 and C9/C10 are replaced by real critical hits (old base values, enemy crits, Critical Up instead of Exposure). A planned crit step runs before B3b and converts the built O1 rows.
 - **Crit step implemented, unreleased (2026-11-20):** real critical hits ([combat.md](../../combat.md#critical-hits-and-critical-up-d-493-crit-step-battle-flurry-phase-4c)). The 18 built O1 rows now carry their pre-Radiant crit stats and triggers verbatim; the "Restore as" cells below that mention "more direct damage" or "enemy with Exposure" for O1 rows are superseded by the pre-Radiant column. C9, C10 and M3 are retired. Remaining O1 rows (B3b, B4, B5) are built with real crits.
 - **B3b implemented, unreleased (2026-11-20):** the 13 next-action rows with real crits, Undertide's Convergent Light discount, flare event `cost` ([combat.md](../../combat.md#conduit-restoration-b3b-next-action-bonuses-d-493-battle-flurry-phase-4c)). Owner answers: Shared Tide adapted for Tide (the most-wounded recipient of a skill Shield gains an extra 50% Shield); Tempest Return's bonus kept until used. The combat spec supersedes the "Restore as" cells of the 13 B3b rows and of Shared Tide below.
-- Next: B3c, B4, B5 on `battle-flurry-phase3`; then one enemy retune on the final
+- **B3c implemented, unreleased (2026-11-20):** shared rescue ledger (C18), Phoenix Reactor revive, Accord, Atlas Bastion taunt ([combat.md](../../combat.md#conduit-restoration-b3c-rescue-limit-revive-accord-taunt-d-493-battle-flurry-phase-4c)). Owner answers: the taunt overrides Calamity boss targeting; the `master-sprout-3` revive waits for B5 (same ledger). All 45 Omnic rows are restored. The G11 pointer below is out of date: the Refusal hook is in `packet()` in `combat-engine.ts`.
+- Next: B4, B5 on `battle-flurry-phase3`; then one enemy retune on the final
   Conduit set and a single release with the matching server deploy (owner
   choice, D-493).
 
@@ -431,7 +432,7 @@ stays in catalog §2.6b for a later batch.
 | G8 | Enemy "less Defense" and holder-conditional Defense ignore, shared 80% cap (C14) | `combat-engine.ts:1830` (`gearDefense`) | Medium |
 | G9 | Shield damage reduction, combined 80% cap (C15) | `combat-engine.ts:804-861` (`packet`) | Small |
 | G10 | Revive once per encounter (Phoenix Reactor, `master-sprout-3`), shared rescue ledger; defeated member returns to gauge | defeat handling; `combat-gauge.ts` `actor()` living flag | Large |
-| G11 | Accord fatal-hit save (reuse the Refusal path) | `combat-engine.ts:828-837` | Medium |
+| G11 | Accord fatal-hit save (reuse the Refusal path; built in B3c) | `combat-engine.ts` `packet()` (was 828-837) | Medium |
 | G12 | Extra Skill 1/2 after Convergent Light (Throne of Borrowed Tomorrows); action UI | `combat-engine.ts:2089` (`state.acted`) | Large |
 | G13 | Taunt-all override of enemy targeting (Atlas Bastion) | `enemy-pressure.ts:68` | Medium |
 | G14 | Burn bonus stacking per source and Burn transfer on defeat | `combat-engine.ts:898-913` (`applyCategory` keeps one Burn entry) | Medium |

@@ -91,6 +91,19 @@
   target replaces the earlier one; Triage's discount applies to a skill that
   heals or Shields; Rosefault's once-per-turn trigger is used by the first
   critical action even without a Shield.
+- **B3c plan answers (owner, 2026-11-20, Plan mode):** Atlas Bastion's taunt
+  overrides Calamity boss targeting too (matches the existing "unless taunted"
+  boss text). The `master-sprout-3` Worldseed revive waits for B5 and plugs
+  into the B3c rescue ledger.
+- **B3c implemented (unreleased, 2026-11-20).** Shared rescue ledger (C18),
+  Phoenix Reactor revive, Accord, Atlas Bastion taunt
+  ([combat spec](combat.md#conduit-restoration-b3c-rescue-limit-revive-accord-taunt-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): an Accord save uses a Phoenix
+  Reactor wearer's rescue (legacy order: Refusal, Accord, Phoenix); Accord goes
+  only to other allies, from the wearer's own heals and Shields, and needs the
+  giver alive at the save; a revival clears timed effects and held bonuses,
+  uses the frozen maximum Health and ends that attack's remaining hits on the
+  bearer; no Atlas Luminosity from an attack that defeats the taunter.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 

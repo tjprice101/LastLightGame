@@ -61,6 +61,10 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
       bonuses[id].push(radiantTokenLabel(token));
       if (token.targetId) tag(token.targetId, `${getConduit(token.conduitId).name} target (${nameOf(id)})`);
     }
+    // D-493 B3c: Accord held (gold bonus tag), a used Conduit rescue, and Atlas Bastion's taunt.
+    if (member.accord) bonuses[id].push(`${getConduit('tranquilitic-accord-bastion').name} · survives one fatal hit (${nameOf(member.accord)})`);
+    if (state.rescued?.includes(id)) tag(id, 'Conduit rescue used');
+    if (state.taunt === id) chips.push(`${getConduit('tectonic-atlas-bastion').name} · taunting all enemies`);
     const starter = member.loadout.starter;
     if (starter === 'vaelor') chips.push(`Beat · ${beats[radiantBeat(state.round)]}`);
     if (starter === 'bliss' && state.phase === 'player' && !state.acted.includes(id)) {
@@ -130,6 +134,7 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
     for (const mark of target.marks ?? []) tag(target.id, `Nightglass Mark (${nameOf(mark.casterId)}) · ${turns(mark.remaining)}`);
     const amp = target.debuffs.find(effect => effect.category === 'burn')?.amp;
     if (amp) tag(target.id, `Cinder Testament · Burn +${pct(amp)}`);
+    if (state.taunt && living(state.taunt)) tag(target.id, `Taunted · attacks ${nameOf(state.taunt)}`);
   }
   return { owners, holders, bonuses };
 }
