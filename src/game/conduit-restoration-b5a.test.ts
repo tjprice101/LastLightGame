@@ -6,6 +6,7 @@ import {
   applyRadiantCombatAction, createRadiantCombat, radiantActionEfficiency, radiantCriticalRate, radiantMaximumHealth,
   radiantPendingActors, radiantSkillStats, validateRadiantCombat, type RadiantCombatState,
 } from './combat-engine';
+import { radiantMasterClauseKinds } from '../content/conduit-effects';
 import { chooseRadiantPressureAction } from './enemy-pressure';
 import { emptyAccount, saveAccount, type Account } from './account';
 import { LocalRadiantTransport } from '../online/battle-local';
@@ -112,7 +113,7 @@ const approved: Record<string, string> = {
   'master-kaelith-2': 'skill-efficiency .4, crit-rate .3',
   'master-kaelith-3': 'skill-power .45, gauge-gain .45',
 };
-/** Restored effect is only a kit clause: these keep their Radiant-era design until their part ships. */
+/** Restored effect is only a kit clause (sprout-2 shipped in B5b; disciple-2 and nerithe-3 keep their Radiant-era design until B5c). */
 const pending = ['master-sprout-2', 'master-disciple-2', 'master-nerithe-3'];
 const parse = (text: string) => text.split(', ').map(part => { const [kind, amount] = part.split(' '); return [kind, Number(amount)]; });
 
@@ -136,7 +137,11 @@ describe('D-493 B5a Master stat packages', () => {
     expect(Object.keys(approved)).toHaveLength(93);
     for (const id of ids) {
       if (pending.includes(id)) { expect(approved[id]).toBeUndefined(); continue; }
-      expect(radiantMasters[id as RadiantMasterId].effects.map(entry => [entry.kind, entry.amount]), id).toEqual(parse(approved[id]));
+      // D-493 B5b clause primitives sit beside the package (Mirror-Pennant's Burn bonus is its clause).
+      const clause = (kind: string) => (radiantMasterClauseKinds as readonly string[]).includes(kind) ||
+        (id === 'master-vespera-2' && kind === 'burn-power');
+      expect(radiantMasters[id as RadiantMasterId].effects.filter(entry => !clause(entry.kind))
+        .map(entry => [entry.kind, entry.amount]), id).toEqual(parse(approved[id]));
     }
   });
   it('writes a tooltip with exact numbers for every Master', () => {

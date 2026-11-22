@@ -132,6 +132,26 @@
   Open release item: frozen encounters saved mid-run with a Conduit or Master
   whose stats changed in B1-B5 fail validation after release; bump the run
   version (retire with the existing notice, rewards kept) or not (owner).
+- **B5b owner answers (Plan mode, 2026-11-21):** Quarry Planet Gravitas
+  (`master-bruno-2`) uses the largest of Worldwall Ascendant's kit 40% of
+  maximum Health, 375% of current Defense and 37.5% of maximum Health (the
+  literal restore was usually lower than today). Cinderstar Genesis Engine
+  (`master-ember-2`) puts Dawnfire's Burn on the single target only (its
+  Attack Up still reaches all allies). Throne Beneath the World's next-skill
+  Skill Efficiency (`master-orvella-1`) moves to B5c with the Master-token
+  shape change; B5b builds its Foundation carry. Defaults accepted: Seismic
+  Hammerfall's sunder lasts through the end of the next enemy phase;
+  Elise-1, Nerithe-1 and Tide-3 need their bearer alive; Vaelor-2's Gain Up
+  and Ozriel-2's Weaken are fixed (not Skill Power scaled); Serapha-1 adds
+  +5% of maximum Health per Interval spent.
+- **B5b implemented (unreleased, 2026-11-22).** 37 Master kit modifiers
+  ([combat spec](combat.md#conduit-restoration-b5b-master-kit-modifiers-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): kit value replacements (Move as
+  One, Carry Them Back, Return the Strain's and Turn the Other Edge's
+  ignore, Covenant, Beacon, Mark counts, Disciple's duration) change the
+  skill as cast and are not credited separately in the D-492 summary; other
+  allies' Defense clauses and Cover/Foundation auras are credited to the
+  Master; Glass Meridian's ignore reads Incisions before the cast.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 

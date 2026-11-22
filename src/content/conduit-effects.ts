@@ -53,7 +53,15 @@ export type RadiantConduitEffect =
   | 'restore-efficiency' | 'weaken-vulnerability' | 'mark-team-power' | 'mark-team-charge'
   | 'lone-hp' | 'lone-defense' | 'lone-power' | 'flare-extra-skill'
   // D-493 B5a (Masters): squad Skill Power and Skill Efficiency auras (Deep Foundation Planetpress, Eclipse Planet Watchtower).
-  | 'squad-skill-power' | 'squad-skill-efficiency';
+  | 'squad-skill-power' | 'squad-skill-efficiency'
+  // D-493 B5b (Masters): kit modifiers. Bearer-locked clause kinds (Masters only; tooltips name the bearer's skills).
+  | 'signature-cap' | 'counter-defense' | 'dawnfire-focus' | 'tide-shield-pierce' | 'briar-seeds' | 'flourish-both'
+  | 'worldwall-shield' | 'cover-gain' | 'hammerfall-sunder' | 'cover-attack' | 'attack-up-duration' | 'shuriken-sunder'
+  | 'survey-pierce' | 'citadel-carry' | 'foundation-guard' | 'keystone-power' | 'rise-cascade' | 'stillness-reduction'
+  | 'harvest-bloom' | 'carry-current' | 'strain-pierce' | 'strain-charge' | 'move-as-one' | 'first-skill-crosscut'
+  | 'seam-weakened' | 'edge-pierce' | 'pane-weaken' | 'refusal-restore' | 'verse-marks' | 'hymn-charge' | 'tomorrow-marks'
+  | 'meridian-pierce' | 'shatterfall-incision' | 'denial-incisions' | 'unreturned-cap' | 'covenant' | 'beacon-signal'
+  | 'signal-pierce' | 'resurrection-heal' | 'promise-power' | 'interval-heal';
 /** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration);
  * `step` primitives add `step` per rank instead of scaling (C12 exceptions such as Stasis Reliquary's chance). */
 export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true; step?: number }
@@ -97,6 +105,19 @@ export const radiantOmnicRules = {
 } as const;
 /** D-493 B4 fixed rules (C12): Choir-Array of Branded Stars triggers at most this many times per encounter. */
 export const radiantCalamiticRules = { markTriggers: 4 } as const;
+/** D-493 B5b: the Master clause kinds (kit modifiers); `burn-power` also serves Mirror-Pennant Ignition Crown's clause. */
+export const radiantMasterClauseKinds = [
+  'signature-cap', 'counter-defense', 'dawnfire-focus', 'tide-shield-pierce', 'briar-seeds', 'flourish-both',
+  'worldwall-shield', 'cover-gain', 'hammerfall-sunder', 'cover-attack', 'attack-up-duration', 'shuriken-sunder',
+  'survey-pierce', 'citadel-carry', 'foundation-guard', 'keystone-power', 'rise-cascade', 'stillness-reduction',
+  'harvest-bloom', 'carry-current', 'strain-pierce', 'strain-charge', 'move-as-one', 'first-skill-crosscut',
+  'seam-weakened', 'edge-pierce', 'pane-weaken', 'refusal-restore', 'verse-marks', 'hymn-charge', 'tomorrow-marks',
+  'meridian-pierce', 'shatterfall-incision', 'denial-incisions', 'unreturned-cap', 'covenant', 'beacon-signal',
+  'signal-pierce', 'resurrection-heal', 'promise-power', 'interval-heal',
+] as const satisfies readonly RadiantConduitEffect[];
+/** D-493 B5b Master clause rules (fixed): Worldwall Ascendant's Health basis, the Tension spent for Return the Strain's
+ * Luminosity, the turns of Pane of Absolution's extra Weaken and of Seismic Hammerfall's Defense reduction. */
+export const radiantMasterRules = { worldwallHealth: .375, strainThreshold: 3, paneTurns: 1, sunderTurns: 2 } as const;
 export const pair = (kind: RadiantConduitEffect, amount: number, related: RadiantConduitEffect, extra: number): RadiantConduitDesign =>
   [effect(kind, amount), effect(related, extra)];
 

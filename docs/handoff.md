@@ -1,5 +1,75 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B5b: Master kit modifiers (D-493, 2026-11-22)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5d with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5b-master-kit-modifiers-d-493-battle-flurry-phase-4c).
+- Owner answers (Plan mode):
+  - Quarry Planet Gravitas: Worldwall Ascendant's Shield is the largest of
+    the kit 40% Health, 375% Defense or 37.5% Health.
+  - Cinderstar Genesis Engine: Dawnfire is single-target and Burns only that
+    target.
+  - Throne Beneath the World: the next-skill Skill Efficiency moves to B5c.
+  - Defaults accepted (sunder through the next enemy phase; bearer alive for
+    Elise-1, Nerithe-1, Tide-3; fixed Vaelor-2 and Ozriel-2 values; Serapha-1
+    additive).
+- What changed:
+  - 37 Masters carry their kit clause as bearer-locked primitives with exact
+    tooltips; `master-sprout-2` lost its Radiant-era placeholder.
+  - `radiantKitSkill` applies structural clauses everywhere a skill's shape
+    is read (engine, pressure policy, battle screen, VFX, Flare offer).
+  - Per-bearer signature caps (`radiantSignatureCap`) in play, validation and
+    chips.
+  - C14: Seismic Hammerfall's sunder and Elise's lodged Shuriken reduce enemy
+    Defense for every ally; Tizu's and Nerithe's clauses add holder ignore.
+  - Cover Gauge Gain/Attack Up, Foundation Defense Up, Defense Up per stored
+    count, Promise Skill Power, Stillness, Harvest, Unreturned, Varkhel's and
+    Ilvaris's Luminosity, Velmira's Crosscut, Kaelith's Incisions, Ozriel's
+    Weaken and Refusal restore.
+  - Save state: optional `RadiantEnemy.sunder` and `RadiantBearer.masterUsed`;
+    ops `sunder`, `refusal-restore`; no version bump.
+- Implementation choices (owner may reverse): kit value replacements are part
+  of the skill and not credited separately in the D-492 summary; Glass
+  Meridian reads Incisions before the cast.
+
+**Rows still to build:**
+- **B5c (40 with the Orvella part):** ember-3, tide-2, sprout-1, atmoso-1..3,
+  bliss-2, bliss-3, disciple-2, disciple-3, elise-2, elise-3, razor-1..3,
+  rosetta-1..3, crinso-1..3, nerithe-2, nerithe-3, vaelor-1, vaelor-3,
+  solenne-2, myrthen-3, neralis-2, neralis-3, varkhel-2, seravelle-3,
+  velmira-3, maerion-2, maerion-3, vespera-3, ilyss-2, ilyss-3, asteriel-2,
+  asteriel-3, plus orvella-1's "+20% Skill Efficiency on each other ally's
+  next skill". Tokens store a gear `conduitId`; Master-given tokens need a
+  token-shape change (save allowlist, `validateTokens`, `gearSources`).
+- **B5d (19):** unchanged from the B5a entry below.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5b.test.ts`: 14 of 14 (rows, tooltips,
+  structural kit changes, each clause family, caps and forged-state
+  rejection, settled journal reload, unknown op rejected, mid-run load and
+  settle).
+- Full `npx vitest run`: 11,036 of 11,037. The one failure was
+  `acquisition-surfaces`, a 20-second timeout under load; it passes alone.
+- Fixtures adjusted: B5a package table ignores clause kinds;
+  `combat-engine.test.ts` compares Flare offers only when the Master leaves
+  the Flare unchanged.
+- `node toolsun_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced): Calamity EX+1/2/3 100/95.8/92.1% (B5a 100/95.8/91.7%);
+  Oblivion 161-180 95.2% (same); Dungeon overall 99.9%; every other
+  ordinary group 100%; flare-saving Calamity 100/100/99.5%. No band moved
+  more than 5 points.
+- `node toolsundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel and tooltips (tests only), especially
+Dawnfire's targeting with Cinderstar Genesis Engine and the "Sundered" tag.
+
+**Open release item (unchanged):** frozen-run version bump (8 → 9) or not;
+see the B5a entry.
+
+**Next:** B5c in a fresh Opus session, Plan mode.
+
 ## Battle Flurry Phase 4c B5a: Master stat packages (D-493, 2026-11-21)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release after
@@ -173,7 +243,8 @@ All 45 Omnic Conduits now carry their restored effects.
   - a mid-run save from before B3c loads and settles.
 - Updated fixture: `conduit-effects.test.ts` Shield-order test now uses
   Calamitic Conduits (Phoenix Reactor no longer carries `break-heal`).
-- `node toolsun_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+- `node tools
+un_pressure_study.mjs <out> --retune` (radiant-trio-v1,
   balanced): identical to B3b on every band (ordinary 99.8%; Calamity
   EX+1/2/3 99.1/94.0/88.4%; Oblivion 141-160 100%, 161-180 90.5%; Training
   101-120 100%; Dungeon 101-120 99.5%; flare-saving Calamity

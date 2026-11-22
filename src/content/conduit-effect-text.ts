@@ -1,6 +1,6 @@
 import {
   radiantAllyGuardThreshold, radiantConduitPrimitives, radiantCriticalUpRate, radiantGambleRules, radiantHealthSkillPowerStep, radiantShieldGuardCap,
-  radiantCalamiticRules, radiantOmnicRules, radiantStasisVulnerability, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
+  radiantCalamiticRules, radiantMasterRules, radiantOmnicRules, radiantStasisVulnerability, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
 import type { ConduitId } from './conduits';
 
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
@@ -193,6 +193,49 @@ const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => stri
   'lone-hp': a => `If this bearer is the only squad member, maximum Health increases by ${percent(a)}.`,
   'lone-defense': a => `If this bearer is the only squad member, Defense increases by ${percent(a)}.`,
   'lone-power': a => `If this bearer is the only squad member, Skill Power increases by ${percent(a)}.`,
+  // D-493 B5b (Masters): kit modifiers. Each kind exists on one bearer's Master; the text names that bearer's skills.
+  // `signature-cap` and `counter-defense` are written with the bearer's counter by `radiantMasterEffectText`.
+  'signature-cap': a => `This bearer's signature counter holds ${number(a)} more.`,
+  'counter-defense': a => `This bearer has Defense Up +${percent(a)} per stored signature count (strongest Defense Up applies, up to 100%).`,
+  'dawnfire-focus': a => `Dawnfire hits only the current target, and its Burn lands only on that target. It deals ${percent(a)} more damage. Its Attack Up still reaches every ally.`,
+  'tide-shield-pierce': a => `While Tizu lives, allies holding a Shield from Tizu ignore ${percent(a)} of the Defense of enemies carrying Tizu's Weaken (up to 80% total Defense ignore and reduction).`,
+  'briar-seeds': a => `Briar Shot plants a Seed on every living ally instead of the most-wounded one; those Seeds gain ${percent(a)} Skill Power.`,
+  'flourish-both': () => `Quietstorm Flourish always grants both its Opening Attack Up and its Closing Shield.`,
+  'worldwall-shield': a => `Worldwall Ascendant's Shield on Bruno uses the largest of 40% of his maximum Health, ${percent(a)} of his current Defense, or ${percent(radiantMasterRules.worldwallHealth)} of his maximum Health, before Skill Power.`,
+  'cover-gain': a => `While Bruno lives, allies under Bruno's Cover have Gauge Gain +${percent(a)}.`,
+  'hammerfall-sunder': a => `Seismic Hammerfall gives its target ${percent(a)} less Defense against every ally through the end of the next enemy phase, while Bruno lives (up to 80% total Defense ignore and reduction).`,
+  'cover-attack': a => `While Bruno lives, allies under Bruno's Cover have Attack Up +${percent(a)} (strongest Attack Up applies, up to 100%).`,
+  'attack-up-duration': a => `Attack Up from Disciple's skills and Convergent Light lasts ${number(a)} more turns, up to 6 turns.`,
+  'shuriken-sunder': a => `While Elise lives, an enemy holding her Shuriken has ${percent(a)} less Defense against every ally per lodged Shuriken (up to 80% total Defense ignore and reduction).`,
+  'survey-pierce': a => `While Nerithe lives, other allies' damaging skills and Convergent Light ignore ${percent(a)} of the Surveyed enemy's Defense per Survey, without spending it (up to 80% total Defense ignore and reduction).`,
+  'citadel-carry': a => `Worldweight Citadel's new Foundation also keeps ${percent(a)} of the durability the Citadel spent (added to its durability and its maximum).`,
+  'foundation-guard': a => `While Orvella's Foundation has durability, every living ally has Defense Up +${percent(a)} (strongest Defense Up applies, up to 100%).`,
+  'keystone-power': a => `Keystone Reversal's Foundation repair gains ${percent(a)} Skill Power.`,
+  'rise-cascade': a => `On Rise, Resonance Cascade's Attack Up reaches every living ally, who also gain Luminosity Gain Up +${percent(a)} for the same duration (not scaled by Skill Power).`,
+  'stillness-reduction': a => `Each Stillness reduces a hit on Solenne by ${percent(a)} instead of 20%.`,
+  'harvest-bloom': a => `Harvest's bonus damage becomes ${percent(a)} instead of 35%. After Harvest is spent, the Season returns to Bloom instead of Sprout.`,
+  'carry-current': a => `Carry Them Back heals ${percent(a)} of maximum Health per Current spent instead of 6%.`,
+  'strain-pierce': a => `Return the Strain ignores ${percent(a)} of Defense instead of 20%.`,
+  'strain-charge': a => `When Return the Strain spends at least ${radiantMasterRules.strainThreshold} Tension, Varkhel gains ${number(a)} Luminosity after its cost, rounded once.`,
+  'move-as-one': a => `Move as One grants Attack Up +${percent(a)} instead of +30% before Cadence.`,
+  'first-skill-crosscut': a => `Velmira's first Skill 1 or Skill 2 each encounter adds ${number(a)} Crosscut after it resolves.`,
+  'seam-weakened': a => `Open the Seam deals ${percent(a)} more damage to an enemy already Weakened before the hit.`,
+  'edge-pierce': a => `Turn the Other Edge ignores ${percent(a)} of Defense instead of 20% at 2 or more Crosscut.`,
+  'pane-weaken': a => `Pane of Absolution also Weakens every other living enemy by ${percent(a)} through the next enemy phase (not scaled by Skill Power).`,
+  'refusal-restore': () => `The World Refuses restores Refusal for every living ally who already used it this encounter.`,
+  'verse-marks': a => `Unwritten Verse adds ${number(a)} Fate-seared Marks instead of 1.`,
+  'hymn-charge': a => `Glasschoir Hymn also grants each living squad member ${number(a)} Luminosity, rounded once.`,
+  'tomorrow-marks': a => `Tomorrow, Unwritten adds ${number(a)} Fate-seared Marks to every living enemy instead of 2.`,
+  'meridian-pierce': a => `Glass Meridian ignores ${percent(a)} of its target's Defense when it consumes 3 Incisions.`,
+  'shatterfall-incision': a => `Shatterfall adds ${number(a)} extra Incision to every enemy it damages (up to 3).`,
+  'denial-incisions': a => `Denial of Fate sets every enemy it damages to ${number(a)} Incisions.`,
+  'unreturned-cap': a => `Unreturned can store up to ${percent(a)} of Maerion's maximum Health instead of 45%. Damage Shields absorb from direct enemy hits on allies also counts.`,
+  'covenant': a => `Counterweight Covenant's Shield becomes ${percent(a)} of maximum Health, and its Cover redirects ${percent(a)} instead of 30%.`,
+  'beacon-signal': a => `Signal from Keep the Last Beacon grants +${percent(a)} instead of +35%.`,
+  'signal-pierce': a => `When another ally spends Vespera's Signal, that attack ignores ${percent(a)} of the Defense of enemies carrying Vespera's Burn (up to 80% total Defense ignore and reduction).`,
+  'resurrection-heal': a => `No Promise of Resurrection heals ${percent(a)} of maximum Health per Severance spent instead of 10%.`,
+  'promise-power': a => `In combat, Skill Power increases by ${percent(a)} per stored Promise.`,
+  'interval-heal': a => `Let Them Leave Alive also heals ${percent(a)} more of maximum Health per Interval spent.`,
   'flare-extra-skill': () => `After this bearer uses Convergent Light, each other living ally who already acted this turn may use one extra Skill 1 or Skill 2 this turn at its normal cost (borrowed skill; once per ally per turn). The turn waits while an ally can pay for it; End Turn gives up unused ones.`,
 };
 

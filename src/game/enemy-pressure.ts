@@ -1,4 +1,4 @@
-import { radiantBearerKits, radiantTankTargetWeight, type RadiantLoadout } from '../content/combat-kits';
+import { radiantBearerKits, radiantKitSkill, radiantTankTargetWeight, type RadiantLoadout } from '../content/combat-kits';
 import { radiantSkillAcceptsTarget, type RadiantSkillDef, type RadiantSkillSlot } from '../content/radiant-kits';
 import { scheduledEnemySkill } from '../content/enemy-skills';
 import { applyRadiantCombatAction, createRadiantCombat, radiantActionEfficiency, radiantFlareReady, radiantPendingActors, type RadiantBearer, type RadiantCombatState,
@@ -29,7 +29,8 @@ export function chooseRadiantPressureAction(
   const actor = state.bearers.find(member => member.loadout.id === id)!;
   const target = state.enemies.filter(member => member.hp > 0).sort((a, b) => a.hp - b.hp || a.id.localeCompare(b.id))[0];
   const normal: RadiantCombatAction = { type: 'normal', bearerId: id, targetId: target.id };
-  const kit = radiantBearerKits[actor.loadout.starter].kit;
+  // D-493 B5b: skills as this loadout casts them (Master clauses can change a target set).
+  const kit = { skill1: radiantKitSkill(actor.loadout, 1), skill2: radiantKitSkill(actor.loadout, 2), flare: radiantKitSkill(actor.loadout, 'flare') };
   // D-493 B4 (G12): a bearer who already acted can only use its borrowed Skill 1 or Skill 2 (Skill 2 first when affordable).
   if (state.acted.includes(id)) {
     const slot = ([2, 1] as const).find(choice => readySkill(state.gauge, id, choice, radiantActionEfficiency(state, id, choice)));

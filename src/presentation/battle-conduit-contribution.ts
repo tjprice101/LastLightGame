@@ -207,6 +207,10 @@ export function radiantConduitCallouts(events: readonly RadiantCombatEvent[], ru
       const conduitId = event.op === 'taunt' ? 'tectonic-atlas-bastion' : 'tranquilitic-accord-bastion';
       at({ kind: 'gear', bearerId: event.bearerId, conduitId }).notes.push(event.op === 'taunt' ? 'Taunt · all enemies'
         : `${characterLabel(run, event.holderId)} kept at 1 Health`);
+    } else if (event.type === 'signature' && (event.op === 'sunder' || event.op === 'refusal-restore')) {
+      // D-493 B5b Master moments: Seismic Hammerfall's sunder and The World Refuses restoring Refusal.
+      at({ kind: 'master', bearerId: event.bearerId }).notes.push(event.op === 'sunder'
+        ? "Seismic Hammerfall · target sundered" : `Refusal restored · ${characterLabel(run, event.holderId)}`);
     } else if (event.type === 'signature' && event.op === 'borrowed') {
       // D-493 B4: Throne of Borrowed Tomorrows names each ally granted a borrowed skill.
       at({ kind: 'gear', bearerId: event.bearerId, conduitId: 'calamitic-throne-borrowed-tomorrows' })

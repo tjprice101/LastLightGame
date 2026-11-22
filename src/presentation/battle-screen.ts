@@ -31,7 +31,7 @@ import { lootArt, lootItems } from './battle-loot';
 import { radiantFormation, radiantFormationStyle } from './battle-formation';
 import { radiantEnemyCutin, radiantFlareCutin } from './battle-cutin';
 import './battle-cutin.css';
-import { radiantBearerKits, radiantFlareName } from '../content/combat-kits';
+import { radiantBearerKits, radiantFlareName, radiantKitSkill } from '../content/combat-kits';
 import { elementDamageMultiplier } from '../content/element-matchups';
 import { beatPlan, elementTint, enemyBeatPlan, enemyScreenTools, hitProgress, screenTools, spectacleTier, staticImpactMs, tintCss,
   type FlashKind, type ScreenTools, type SpectacleBeats } from '../vfx/spectacle-timing';
@@ -774,7 +774,7 @@ export class RadiantBattleView {
     const member = before.state.bearers.find(unit => unit.loadout.id === actor)!;
     const tier = member.hp > 0 ? radiantFlareReady(before.state, actor) : null;
     const focusedTarget = this.target;
-    const skill = radiantKits[member.loadout.starter as RadiantKitId]?.[slot === 1 ? 'skill1' : 'skill2'];
+    const skill = radiantKitSkill(member.loadout, slot === 2 ? 2 : 1);
     const action: RadiantPlayerAction =
       kind === 'normal' ? { type: kind, bearerId: actor, targetId: focusedTarget ?? '' } :
       kind === 'skill' ? { type: kind, bearerId: actor, slot,
@@ -1956,9 +1956,8 @@ export class RadiantBattleView {
     const member = before.bearers.find(unit => unit.loadout.id === action.bearerId);
     if (!art || !member) return Promise.resolve();
     const motion = characterChoreography[member.loadout.starter].motion;
-    const kit = radiantKits[member.loadout.starter as RadiantKitId];
-    const reach = action.type === 'normal' ? 'one-enemy' : action.type === 'skill'
-      ? kit?.[action.slot === 2 ? 'skill2' : 'skill1'].target ?? 'one-enemy' : kit?.flare.target ?? 'all-enemies';
+    const reach = action.type === 'normal' ? 'one-enemy'
+      : radiantKitSkill(member.loadout, action.type === 'skill' ? (action.slot === 2 ? 2 : 1) : 'flare').target;
     const poised = motion === 'cast' ? 'translateY(-4px)' : motion === 'bow' ? 'translateX(5px)' :
       motion === 'hammer' ? 'translate(-5px, -4px) rotate(3deg)' : motion === 'guard' ? 'translateX(-3px)' :
         motion === 'twin' ? 'translateX(-8px) rotate(-2deg)' : 'translateX(-12px)';

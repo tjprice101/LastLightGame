@@ -2971,3 +2971,119 @@ longer validate. Options: bump the frozen-run version (8 → 9) so older
 encounters end with the existing "Combat rules changed" notice (saved rewards
 kept), or keep the version (such encounters fail to load). Owner decision
 needed before the release.
+
+## Conduit restoration B5b: Master kit modifiers (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5d with one enemy retune). Rows: the B5 table in the
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md);
+row list in the B5a handoff entry. Masters have no ranks.
+
+**Owner answers (Plan mode, 2026-11-21):**
+- `master-bruno-2` Quarry Planet Gravitas: Worldwall Ascendant's Shield on
+  Bruno uses the largest of the kit 40% of maximum Health, 375% of his current
+  Defense (read before the cast's own Defense Up) or 37.5% of maximum Health;
+  Flare tier and Skill Power then apply.
+- `master-ember-2` Cinderstar Genesis Engine: Dawnfire becomes single-target
+  (it needs a selected enemy) and deals 125% more damage (additive damage
+  layer, C11). Its Burn lands only on that target; its Attack Up still reaches
+  every ally. It no longer counts as an all-enemies skill.
+- `master-orvella-1` Throne Beneath the World: only the Foundation carry
+  ships (Worldweight Citadel's new Foundation adds 40% of the durability it
+  spent, to durability and maximum). Its next-skill Skill Efficiency moves to
+  B5c with the Master-token shape change.
+- Defaults: Seismic Hammerfall's sunder (`master-bruno-3`) lasts through the
+  end of the next enemy phase; the Elise-1, Nerithe-1 and Tide-3 Defense
+  clauses need that bearer alive; Vaelor-2's Luminosity Gain Up +20% and
+  Ozriel-2's 25% Weaken (1 turn, Aurora's +1 applies) are fixed Master-sourced
+  values; Serapha-1 adds +5% of maximum Health per Interval spent.
+
+**Representation:**
+- Each clause is a bearer-locked primitive on the Master design
+  (`radiantMasterClauseKinds` in `src/content/conduit-effects.ts`). Tooltips
+  (`conduit-effect-text.ts`) name the bearer's skills with exact values.
+- Two generic kinds: `signature-cap` (+N to the bearer's own counter or
+  Promise) and `counter-defense` (Defense Up per stored count, category rules,
+  cap 100%). `radiantMasterEffectText` writes them with the counter name
+  ("Maximum Heat becomes 5.").
+- Structural clauses change the skill as the loadout casts it:
+  `radiantKitSkill(loadout, slot)` in `combat-kits.ts` (Dawnfire target and
+  Burn, Briar Shot's Seeds on every living ally, Quietstorm Flourish without
+  Tempo conditions, Resonance Cascade's Attack Up to all allies, Disciple's
+  Attack Up +2 turns, Move as One +40%, Carry Them Back 9%, No Promise of
+  Resurrection 13%, Let Them Leave Alive +5% per Interval, Return the Strain
+  and Turn the Other Edge 35% ignore, Counterweight Covenant 55%, Keep the
+  Last Beacon +50%, Unwritten Verse 2 Marks, Tomorrow, Unwritten 3 Marks). The
+  engine, the pressure policy, the battle screen, VFX and the Flare offer all
+  read it. These changes are part of the skill and are not credited
+  separately in the D-492 summary.
+- Amount clauses are read inside the damage, Defense, Gauge Gain and stat
+  recomputes, so D-492 attribution credits the Master: Dawnfire's bonus, Open
+  the Seam (+35% against an enemy Weakened before the hit), Glass Meridian
+  (40% ignore when it consumes 3 Incisions, read before the cast),
+  Mirror-Pennant's 15% ignore when another ally spends Vespera's Signal on an
+  enemy carrying her Burn, Cover Gauge Gain and Attack Up (living Bruno),
+  Foundation Defense Up (living Orvella with a Foundation), and the C14
+  clauses below. Kinds that change another member's numbers join
+  `squadSourceKinds`.
+- Signature caps and passive values moved to `src/content/radiant-kits.ts`
+  (re-exported by the engine). `radiantSignatureCap(loadout, key)` is used in
+  play, in save validation and in the battle chips. Raised caps: Heat 5,
+  Current 4, Tension 5, Cadence 4, Crosscut 4, Load 5, Severance 4, Promise 4,
+  Interval 4.
+
+**C14 additions (`gearDefense` → `masterDefenseCut`):** enemy "less Defense"
+for every ally: Seismic Hammerfall's sunder (25%, while Bruno lives) and
+Elise's lodged Shuriken (15% each, while Elise lives). Holder-conditional
+ignore: allies holding a Shield from Tizu's skill or Convergent Light ignore
+25% against enemies carrying Tizu's Weaken (Tizu alive); other allies'
+damaging skills and Convergent Light ignore 10% per Survey on the Surveyed
+enemy (Nerithe alive, Survey not spent). All share the 80% total cap.
+
+**Other clauses:** Stillness reduces a hit by 35%; Harvest's bonus becomes
+75% and a spent Harvest returns to Bloom; Unreturned stores up to 85% of
+Maerion's maximum Health and also counts Shield-absorbed direct enemy damage;
+Return the Strain grants Varkhel 15 Luminosity (× Gauge Gain, after its cost)
+when it spends at least 3 Tension; Velmira's first Skill 1 or Skill 2 each
+encounter adds 1 Crosscut after it resolves; Glasschoir Hymn grants each living
+squad member 8 Luminosity (× Gauge Gain); Shatterfall adds 1 extra Incision;
+Denial of Fate sets damaged enemies to 3 Incisions; The World Refuses restores
+Refusal for living allies who used it; Briar Shot's Seeds gain +45% Skill
+Power; Keystone Reversal's repair gains +50% Skill Power; Asteriel gains +5%
+Skill Power per stored Promise (combat only); Mirror-Pennant's +30% Burn is the
+existing `burn-power` kind. Master Luminosity grants carry a Master
+`gearSource`.
+
+**Saves (no version bump; loading never writes; no new RNG draws):**
+- New optional state: `RadiantEnemy.sunder` (`{ casterId, remaining }`, valid
+  only for a squad Bruno with `hammerfall-sunder`, remaining 1-2, ticked with
+  the enemy phase, cleared on defeat) and `RadiantBearer.masterUsed` (valid
+  only with `first-skill-crosscut`; a revive does not clear it).
+- Counter, Promise and Unreturned caps validate per member; saves without
+  these Masters validate exactly as before.
+- New signature ops `sunder` and `refusal-restore` (saved-journal allowlist).
+- Presentation: a "Sundered" enemy tag and Master callout notes.
+
+**Validation:** `src/game/conduit-restoration-b5b.test.ts`:
+- the 37 approved clause rows (sprout-2 lost its placeholder);
+- tooltips;
+- the structural kit changes;
+- Dawnfire's target and Burn, and the pressure policy aiming it;
+- raised caps (Heat 5 passes, 6 and plain Heat 4 fail; Promise 4/5);
+- Defense Up per Heat and Skill Power per Promise;
+- sunder (applied, boosts an ally's hit, forged and long clocks rejected);
+- Tizu, Elise and Nerithe clauses (alive and fallen; Normal Attacks excluded
+  for Nerithe; Master credit);
+- Cover Gauge Gain and Attack Up, Foundation Defense Up;
+- the Worldwall Shield formula;
+- the Flora, Disciple, Vaelor, Ilvaris, Kaelith, Myrthen and Ozriel clauses;
+- Velmira's once-per-encounter Crosscut (forged flag rejected);
+- Varkhel's Luminosity;
+- the Citadel carry;
+- Maerion's Shield-absorbed Unreturned and the 85% cap;
+- a settled journal with B5b Masters reloads; an unknown op is rejected;
+- a mid-run encounter with B5b Masters loads and settles.
+
+Fixtures adjusted: the B5a package table ignores clause kinds;
+`combat-engine.test.ts` compares the Flare offer with and without a Master
+only when the Master leaves the Flare unchanged.

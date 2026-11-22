@@ -1,12 +1,13 @@
 import {
-  radiantFlarePower, radiantLeaderEffects, radiantEquipmentAmount, radiantMasters, radiantRoleSkillPower, radiantSkillAscension,
+  radiantFlarePower, radiantKitSkill, radiantLeaderEffects, radiantEquipmentAmount, radiantMasters, radiantSignatureCap, radiantRoleSkillPower, radiantSkillAscension,
   radiantStarterKits, radiantSupportSquadHeal, resolveRadiantStarterStats,
   radiantCriticalStats, radiantElementalCritFactor, radiantEnemyCritical,
   validateRadiantLoadout, validateRadiantStats,
   type RadiantLoadout, type RadiantStats,
 } from '../content/combat-kits';
 import {
-  radiantFlareTierScale, radiantSkillAcceptsTarget, type RadiantKitEffect, type RadiantSkillDef, type RadiantSkillSlot,
+  radiantFlareTierScale, radiantPassiveValues, radiantSignatureCaps, radiantSkillAcceptsTarget,
+  type RadiantKitEffect, type RadiantSkillDef, type RadiantSkillSlot,
 } from '../content/radiant-kits';
 import type { RadiantBearerId } from '../content/combat-kits';
 import {
@@ -17,7 +18,8 @@ import { squadMemberLimit } from '../content/squad-rules';
 import { type ConduitId } from '../content/conduits';
 import {
   radiantAllyGuardThreshold, radiantConduitPrimitives, radiantCriticalUpRate, radiantGambleRules, radiantHealthSkillPowerStep, radiantOmnicRules,
-  radiantCalamiticRules, radiantShieldGuardCap, radiantStasisVulnerability, type RadiantConduitEffect, type RadiantConduitDesign,
+  radiantCalamiticRules, radiantMasterRules, radiantShieldGuardCap, radiantStasisVulnerability, type RadiantConduitEffect,
+  type RadiantConduitDesign,
 } from '../content/conduit-effects';
 import type { ElementId } from '../content/activities';
 import { elementDamageMultiplier, isCombatElement } from '../content/element-matchups';
@@ -176,6 +178,8 @@ export interface RadiantBearer {
   choirPower?: number;
   /** D-493 B4 Choir-Array of Branded Stars: this wearer's triggers used this encounter (1-4; omitted when 0). */
   choirUsed?: number;
+  /** D-493 B5b Twin-Edge Sequence Orrery: the once-per-encounter first-skill Crosscut was taken (omitted until then). */
+  masterUsed?: true;
 }
 export interface RadiantCurrencyLedger {
   budget: number;
@@ -193,6 +197,8 @@ export interface RadiantEnemy {
   currency: RadiantCurrencyLedger;
   /** D-493 Nightglass Archive marks on this enemy, one per wearer (omitted when none). */
   marks?: RadiantEnemyMark[];
+  /** D-493 B5b Worldforge Hammer Dominion: Seismic Hammerfall's Defense reduction from `casterId` (omitted when none). */
+  sunder?: RadiantEnemyMark;
 }
 export interface RadiantEnemyMark { casterId: string; remaining: number }
 export interface RadiantCombatState {
@@ -237,7 +243,9 @@ export const radiantSignatureOpList = ['seed', 'seed-wither', 'cover', 'cyclone'
   // D-493 B3c: Accord granted to `holderId` (amount 1) or spent saving it (amount = its Health after the hit); Atlas taunt.
   'accord', 'accord-save', 'taunt',
   // D-493 B4: Throne of Borrowed Tomorrows grants `holderId` an extra skill (amount 1); Choir-Array trigger (amount = triggers used).
-  'borrowed', 'choir'] as const;
+  'borrowed', 'choir',
+  // D-493 B5b: Seismic Hammerfall's sunder on `holderId` (amount = turns left); Refusal restored for `holderId` (amount = spent left).
+  'sunder', 'refusal-restore'] as const;
 export type RadiantSignatureOp = typeof radiantSignatureOpList[number];
 export type RadiantCombatAction =
   | { type: 'normal'; bearerId: string; targetId: string }
@@ -386,7 +394,7 @@ function effectiveStats(state: RadiantCombatState, member: RadiantBearer, share:
   stats.attack *= 1 - category(member.buffs, 'weaken') * (1 - Math.min(.8, combatAmount(state, member, 'resilience')));
   // D-493 C2: conditional Attack Up / Defense Up from Conduits join their category (strongest applies, cap 100%).
   stats.attack *= 1 + Math.min(radiantCategoryCaps['attack-up'],
-    Math.max(category(member.buffs, 'attack-up'), conduitAttackUp(state)));
+    Math.max(category(member.buffs, 'attack-up'), conduitAttackUp(state, member)));
   stats.attack *= 1 + squadAura(state, 'squad-attack');
   stats.defense *= 1 + Math.min(radiantCategoryCaps['defense-up'],
     Math.max(category(member.buffs, 'defense-up'), conduitDefenseUp(state, member)));
@@ -412,10 +420,19 @@ function loneAmount(state: RadiantCombatState, member: RadiantBearer, kind: Radi
 function defeatedCount(state: RadiantCombatState): number {
   return state.bearers.filter(member => member.hp === 0).length;
 }
-/** D-493 Phoenix Lifeforge: while a wearer lives and any enemy carries Burn, the squad has Attack Up. */
-function conduitAttackUp(state: RadiantCombatState): number {
-  if (!state.enemies.some(target => target.hp > 0 && target.debuffs.some(effect => effect.category === 'burn'))) return 0;
-  return Math.max(0, ...state.bearers.filter(wearer => wearer.hp > 0).map(wearer => combatAmount(state, wearer, 'burning-attack')));
+/** D-493 Phoenix Lifeforge: while a wearer lives and any enemy carries Burn, the squad has Attack Up. B5b Worldforge Hammer
+ * Dominion: allies under a living Bruno's Cover have Attack Up. */
+function conduitAttackUp(state: RadiantCombatState, member: RadiantBearer): number {
+  const burning = state.enemies.some(target => target.hp > 0 && target.debuffs.some(effect => effect.category === 'burn'))
+    ? Math.max(0, ...state.bearers.filter(wearer => wearer.hp > 0).map(wearer => combatAmount(state, wearer, 'burning-attack'))) : 0;
+  const coverer = coveringMaster(state, member);
+  return Math.max(burning, coverer ? combatAmount(state, coverer, 'cover-attack') : 0);
+}
+/** D-493 B5b: the living Bruno whose Cover this bearer holds (his Master's Cover clauses apply), if any. */
+function coveringMaster(state: RadiantCombatState, member: RadiantBearer): RadiantBearer | undefined {
+  if (member.hp <= 0 || !member.cover) return undefined;
+  const caster = state.bearers.find(entry => entry.loadout.id === member.cover!.casterId);
+  return caster && caster.hp > 0 && caster.loadout.starter === 'bruno' ? caster : undefined;
 }
 /** D-493 Citadel Spine (another living wearer, holder below 75% Health) and Horizon Heartcase (below the Convergent Light cost). */
 function conduitDefenseUp(state: RadiantCombatState, member: RadiantBearer): number {
@@ -424,7 +441,12 @@ function conduitDefenseUp(state: RadiantCombatState, member: RadiantBearer): num
   const wounded = member.hp < radiantAllyGuardThreshold * maximumHealth(state, member);
   const aura = wounded ? Math.max(0, ...state.bearers.filter(other => other !== member && other.hp > 0)
     .map(other => combatAmount(state, other, 'ally-guard'))) : 0;
-  return Math.max(reserve, aura);
+  // D-493 B5b: Defense Up per stored count (Banked-Sun Pressure Accumulator, Faultstar Chain Accumulator, Meridian Counterweight
+  // Atlas) and, while Orvella's Foundation has durability, Keystone Sovereign Counterweight's squad Defense Up.
+  const counted = (counterOf(member.signature)?.count ?? 0) * combatAmount(state, member, 'counter-defense');
+  const foundation = Math.max(0, ...state.bearers.filter(wearer => wearer.hp > 0 && wearer.signature?.kind === 'foundation' &&
+    wearer.signature.foundation !== null).map(wearer => combatAmount(state, wearer, 'foundation-guard')));
+  return Math.max(reserve, aura, counted, foundation);
 }
 function belowFlareCost(state: RadiantCombatState, member: RadiantBearer): boolean {
   const entry = state.gauge.members.find(m => m.id === member.loadout.id);
@@ -566,8 +588,7 @@ function skillStatsFrom(
 }
 /** D-493 C13 traits of one slot, from the kit definition. */
 function skillTraits(loadout: RadiantLoadout, slot: RadiantSkillSlot | 'flare') {
-  const kit = radiantStarterKits[loadout.starter].kit;
-  const def = slot === 'flare' ? kit.flare : slot === 1 ? kit.skill1 : kit.skill2;
+  const def = radiantKitSkill(loadout, slot);
   const kinds = new Set<string>(def.effects.map(entry => entry.kind));
   const restore = kinds.has('heal') || kinds.has('shield');
   return {
@@ -601,13 +622,16 @@ function squadSkillPower(state: RadiantCombatState, member: RadiantBearer, slot:
     ? combatAmount(state, member, 'alternate-power') : 0;
   return oceanic * combatAmount(state, member, 'oceanic-power') + living * combatAmount(state, member, 'census-power') +
     defeatedCount(state) * combatAmount(state, member, 'ruin-power') + shielded + alternate +
-    loneAmount(state, member, 'lone-power') + (member.choirPower ?? 0) + squadAura(state, 'squad-skill-power');
+    loneAmount(state, member, 'lone-power') + (member.choirPower ?? 0) + squadAura(state, 'squad-skill-power') +
+    // D-493 B5b Moonflower Seedworld Orrery: Skill Power per stored Promise.
+    (member.signature?.kind === 'path' ? member.signature.count * combatAmount(state, member, 'promise-power') : 0);
 }
 /** D-493 C6: Gauge Gain = 1 + Conduit/Master Gauge Gain + Luminosity Gain Up. */
 function gaugeGain(state: RadiantCombatState, member: RadiantBearer): number {
   const distinct = distinctElements(state.bearers.map(entry => entry.loadout));
+  const coverer = coveringMaster(state, member);
   return 1 + equipmentAmount(member, 'gauge-gain') + (distinct ? equipmentAmount(member, 'prism-gain') : 0) +
-    category(member.buffs, 'gain-up') + squadAura(state, 'squad-gain');
+    category(member.buffs, 'gain-up') + squadAura(state, 'squad-gain') + (coverer ? combatAmount(state, coverer, 'cover-gain') : 0);
 }
 /** D-492 attribution: while set, Conduit amounts from these source keys are treated as unequipped (pure recomputes only). */
 let excludedSources: ReadonlySet<string> | null = null;
@@ -726,8 +750,7 @@ export function radiantHeldTokens(state: RadiantCombatState, id: string): readon
 /** Skill Efficiency for a slot before a target is chosen: Skill stats plus held bonuses (Convergent Light: bonuses only,
  * added on top of the stored loadout value). Target-bound discounts (Undertide Chronometer) apply when spent. */
 export function radiantActionEfficiency(state: RadiantCombatState, id: string, slot: RadiantSkillSlot | 'flare'): number {
-  const member = bearer(state, id), kit = radiantStarterKits[member.loadout.starter].kit;
-  const def = slot === 'flare' ? kit.flare : slot === 1 ? kit.skill1 : kit.skill2;
+  const member = bearer(state, id), def = radiantKitSkill(member.loadout, slot);
   const tokens = heldEfficiency((member.tokens ?? []).filter(token => tokenMatches(token, { kind: slot === 'flare' ? 'flare' : 'skill', def })));
   // D-493 B5a: the squad Skill Efficiency aura is dynamic, so it joins Convergent Light on top of the stored loadout value.
   return slot === 'flare' ? tokens + squadAura(state, 'squad-skill-efficiency') : radiantSkillStats(state, id, slot).skillEfficiency + tokens;
@@ -830,19 +853,7 @@ const burnBoostCasters: readonly RadiantBearerId[] = ['caldrex', 'vespera'];
 export const radiantShurikenCount = 2;
 /** Atmoso's Cyclone holds at most this many Gusts (Gale Cadence). */
 export const radiantGustCap = 5;
-/** Signature caps for batches 2-4 (D-473). */
-export const radiantSignatureCaps = {
-  combo: 5, marks: 5, incisions: 3,
-  survey: 3, heat: 3, stillness: 4, season: 2, current: 3, tension: 4, cadence: 3, crosscut: 3,
-  load: 3, severance: 3, interval: 3, promise: 3,
-} as const;
-/** Passive values for batches 1-4 (D-473). */
-export const radiantPassiveValues = {
-  emberBurn: .3, tideRefund: 8, brunoRedirect: .25, discipleFill: 5, auroraWeakenTurns: 1,
-  markTaken: .1, markTurns: 2, incisionTaken: .1,
-  surveyFill: 5, foundationShare: .2, stillnessReduction: .2, harvestBonus: .35, harvestIgnore: .2,
-  unreturnedCap: .45, signalTurns: 2,
-} as const;
+export { radiantSignatureCaps, radiantPassiveValues };
 /** Vaelor's Beat for a round: 0 Tune, 1 Rise, 2 Crescendo; one step per player turn, starting on Tune. */
 export function radiantBeat(round: number): 0 | 1 | 2 {
   return ((round - 1) % 3) as 0 | 1 | 2;
@@ -954,7 +965,7 @@ function validateCounters(state: RadiantCombatState, member: RadiantBearer, own:
   }
   if (own.kind === 'unreturned') {
     if (Object.keys(own).length !== 2) throw new Error('Invalid radiant Unreturned.');
-    capped(own.stored, rounded(radiantPassiveValues.unreturnedCap * member.stats.hp), 'Unreturned');
+    capped(own.stored, unreturnedCap(member), 'Unreturned');
     return true;
   }
   if (own.kind === 'signal') {
@@ -973,14 +984,14 @@ function validateCounters(state: RadiantCombatState, member: RadiantBearer, own:
   if (own.kind === 'path') {
     if (Object.keys(own).length !== 3 || (own.path !== null && own.path !== 'shelter' && own.path !== 'flourish') ||
       (own.path === null && own.count !== 0)) throw new Error('Invalid radiant Path.');
-    capped(own.count, radiantSignatureCaps.promise, 'Promise');
+    capped(own.count, radiantSignatureCap(member.loadout, 'promise'), 'Promise');
     return true;
   }
   if (counterKinds.includes(own.kind as RadiantCounterKind)) {
     const counter = own as Extract<RadiantOwnSignature, { latch: boolean }>;
     if (Object.keys(counter).length !== 3 || typeof counter.latch !== 'boolean')
       throw new Error(`Invalid radiant ${counter.kind}.`);
-    capped(counter.count, radiantSignatureCaps[counter.kind], counter.kind);
+    capped(counter.count, radiantSignatureCap(member.loadout, counter.kind), counter.kind);
     return true;
   }
   return false;
@@ -1150,6 +1161,8 @@ export function validateRadiantCombat(state: RadiantCombatState): void {
       if (member.choirUsed > radiantCalamiticRules.markTriggers || !(radiantEquipmentAmount(member.loadout, 'mark-team-power') > 0))
         throw new Error('Invalid radiant Choir-Array triggers.');
     }
+    if (member.masterUsed !== undefined && (member.masterUsed !== true ||
+      !(radiantEquipmentAmount(member.loadout, 'first-skill-crosscut') > 0))) throw new Error('Invalid radiant Master ledger.');
     validateCategories(state, member.buffs, allyCategories);
     validateSignatures(state, member);
   }
@@ -1191,6 +1204,14 @@ export function validateRadiantCombat(state: RadiantCombatState): void {
         safe(mark.remaining, 'mark clock', 1);
         if (mark.remaining > radiantOmnicRules.markTurns) throw new Error('Invalid radiant enemy mark clock.');
       }
+    }
+    if (member.sunder !== undefined) {
+      const sunder = member.sunder;
+      const caster = sunder && typeof sunder === 'object' && Object.keys(sunder).length === 2
+        ? state.bearers.find(entry => entry.loadout.id === sunder.casterId) : undefined;
+      if (!caster || !(radiantEquipmentAmount(caster.loadout, 'hammerfall-sunder') > 0) || member.hp === 0) throw new Error('Invalid radiant sunder.');
+      safe(sunder.remaining, 'sunder clock', 1);
+      if (sunder.remaining > radiantMasterRules.sunderTurns) throw new Error('Invalid radiant sunder clock.');
     }
     validateCategories(state, member.debuffs, enemyCategories);
     validateRadiantCurrencyLedger(member.currency);
@@ -1307,6 +1328,9 @@ const squadSourceKinds: readonly RadiantConduitEffect[] = [
   'enemy-defense', 'ally-guard', 'squad-hp', 'squad-attack', 'squad-gain', 'squad-defense', 'ally-defense-share',
   'burn-ally-crit', 'skill-shield-crit', 'skill-shield-brace', 'shielded-restore-power', 'skill-mark', 'burning-attack',
   'weaken-ally-efficiency', 'weaken-vulnerability', 'squad-skill-power', 'squad-skill-efficiency',
+  // D-493 B5b Master clauses that change another member's numbers.
+  'cover-gain', 'cover-attack', 'foundation-guard', 'tide-shield-pierce', 'survey-pierce', 'hammerfall-sunder', 'shuriken-sunder',
+  'signal-pierce',
 ];
 /** D-492: Conduit sources that can change amounts for this bearer (its gear, its Master, the living same-element Leader). */
 function gearSources(state: RadiantCombatState, holder: RadiantBearer): RadiantGearSource[] {
@@ -1446,7 +1470,7 @@ function packet(
   }
   if (target.hp === 0) {
     events.push({ type: 'defeated', targetId });
-    if ('currency' in target) { healthMote(state, events, target, source); releaseEnemySignatures(state, events, targetId); }
+    if ('currency' in target) { delete target.sunder; healthMote(state, events, target, source); releaseEnemySignatures(state, events, targetId); }
     else if (target.signature?.kind === 'foundation') target.signature.foundation = null;
     // D-493 B3c Phoenix Reactor: revive before the defeat can end the encounter.
     if ('loadout' in target && phoenixRevive(state, events, target)) { sync(state); return { healthLoss, absorbed, shields, revived: true }; }
@@ -1726,7 +1750,7 @@ function strike(
   if (target.hp === 0 || coefficient <= 0) return;
   const critical = rollBearerCritical(state, actor, target, 'other');
   const offered = () => radiantDirectDamage(effectiveRadiantStats(state, actor.loadout.id).attack,
-    gearDefense(state, actor, target.stats.defense),
+    gearDefense(state, actor, target),
     coefficient, (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target) *
       bearerCritMultiplier(state, actor, target, 'other', critical));
   const amount = offered();
@@ -1763,7 +1787,7 @@ function signatureSurge(
       else if (clause.op === 'spend-all-survey') ignore += (clause.value ?? 0) * own.count;
     }
   if (own?.kind === 'season' && own.count === 2)
-    return { ignore: ignore + radiantPassiveValues.harvestIgnore, bonus: radiantPassiveValues.harvestBonus };
+    return { ignore: ignore + radiantPassiveValues.harvestIgnore, bonus: equipmentAmount(actor, 'harvest-bloom') || radiantPassiveValues.harvestBonus };
   return { ignore, bonus: 0 };
 }
 /** Load-Bearing Will: a living Orvella's Foundation absorbs 20% of each direct enemy hit on an ally (Orvella included),
@@ -1783,12 +1807,17 @@ function foundationAbsorb(state: RadiantCombatState, events: RadiantCombatEvent[
   return absorbed;
 }
 /** Held Stillness: each enemy hit on Solenne spends 1 Stillness to reduce that hit by 20% before Shields. */
-function holdStillness(events: RadiantCombatEvent[], target: RadiantBearer, amount: number): number {
+function holdStillness(state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer, amount: number): number {
   const own = target.signature;
   if (own?.kind !== 'stillness' || own.count === 0) return amount;
   own.count--;
   events.push({ type: 'signature', bearerId: target.loadout.id, op: 'stillness', amount: own.count });
-  return amount - Math.round(amount * radiantPassiveValues.stillnessReduction);
+  // D-493 B5b Stillpoint Inertial Governor replaces the reduction.
+  return amount - Math.round(amount * (combatAmount(state, target, 'stillness-reduction') || radiantPassiveValues.stillnessReduction));
+}
+/** Maerion's Unreturned cap: 45% of maximum Health (D-493 B5b: Unreturned Voyage Worldpump raises it). Read from the loadout. */
+function unreturnedCap(member: RadiantBearer): number {
+  return rounded((radiantEquipmentAmount(member.loadout, 'unreturned-cap') || radiantPassiveValues.unreturnedCap) * member.stats.hp);
 }
 /** Banked Heat / Tension Held / Weight of the Watch: +1 the first time each enemy phase an enemy hit damages the
  * holder's Health or Shield. */
@@ -1796,7 +1825,7 @@ function hitGain(events: RadiantCombatEvent[], holder: RadiantBearer): void {
   const own = holder.signature;
   if ((own?.kind !== 'heat' && own?.kind !== 'tension' && own?.kind !== 'load') || own.latch) return;
   own.latch = true;
-  own.count = Math.min(radiantSignatureCaps[own.kind], own.count + 1);
+  own.count = Math.min(radiantSignatureCap(holder.loadout, own.kind), own.count + 1);
   events.push({ type: 'signature', bearerId: holder.loadout.id, op: own.kind, amount: own.count });
 }
 /** Nothing Beyond These Gates / None Left in the Dark: active Burn boosts (one per caster) add to Burn ticks from allies. */
@@ -1805,10 +1834,13 @@ function burnBoost(state: RadiantCombatState, source: RadiantSource): number {
   return state.bearers.reduce((sum, member) => sum + (member.burnUp?.value ?? 0), 0);
 }
 /** Names Still Carried: while Maerion lives, Health an ally loses to a direct enemy hit is stored as Unreturned. */
-function carryUnreturned(state: RadiantCombatState, events: RadiantCombatEvent[], healthLoss: number): void {
+function carryUnreturned(state: RadiantCombatState, events: RadiantCombatEvent[], healthLoss: number, absorbed: number): void {
   const maerion = livingStarter(state, 'maerion'), own = maerion?.signature;
-  if (!maerion || own?.kind !== 'unreturned' || healthLoss <= 0) return;
-  const stored = Math.min(rounded(radiantPassiveValues.unreturnedCap * maerion.stats.hp), own.stored + healthLoss);
+  if (!maerion || own?.kind !== 'unreturned') return;
+  // D-493 B5b Unreturned Voyage Worldpump: Shield-absorbed damage from direct enemy hits also counts.
+  const carried = healthLoss + (equipmentAmount(maerion, 'unreturned-cap') > 0 ? absorbed : 0);
+  if (carried <= 0) return;
+  const stored = Math.min(unreturnedCap(maerion), own.stored + carried);
   if (stored === own.stored) return;
   own.stored = stored;
   events.push({ type: 'signature', bearerId: maerion.loadout.id, op: 'unreturned', amount: stored });
@@ -1823,8 +1855,9 @@ function intervalGain(state: RadiantCombatState, events: RadiantCombatEvent[], a
   own.latch = true;
   gainCounter(events, serapha);
 }
-/** Someone Still Beyond the Walls: the holder's damaging skill or Flare spends its Signal for +value damage. */
-function spendSignal(state: RadiantCombatState, events: RadiantCombatEvent[], holder: RadiantBearer): number {
+/** Someone Still Beyond the Walls: the holder's damaging skill or Flare spends its Signal for +value damage (B5b: also
+ * returns the Vespera who gave it, for Mirror-Pennant Ignition Crown). */
+function spendSignal(state: RadiantCombatState, events: RadiantCombatEvent[], holder: RadiantBearer): { value: number; giver?: RadiantBearer } {
   for (const member of state.bearers) {
     const own = member.signature;
     if (own?.kind !== 'signal') continue;
@@ -1832,15 +1865,26 @@ function spendSignal(state: RadiantCombatState, events: RadiantCombatEvent[], ho
     if (!signal) continue;
     own.signals = own.signals.filter(entry => entry !== signal);
     events.push({ type: 'signature', bearerId: member.loadout.id, op: 'signal', holderId: holder.loadout.id, amount: 0 });
-    return signal.value;
+    return { value: signal.value, giver: member };
   }
-  return 0;
+  return { value: 0 };
+}
+/** D-493 B5b: Luminosity a Master clause grants (credited to that Master, rounded once after Gauge Gain). */
+function masterCharge(state: RadiantCombatState, events: RadiantCombatEvent[], owner: RadiantBearer, recipient: RadiantBearer, value: number): void {
+  if (recipient.hp === 0 || value <= 0) return;
+  const before = state.gauge.members.find(m => m.id === recipient.loadout.id)!.charge;
+  addPassiveCharge(state, events, recipient.loadout.id, rounded(value * gaugeGain(state, recipient)));
+  const event = events[events.length - 1];
+  if (event.type === 'charge') {
+    event.gearSource = { kind: 'master', bearerId: owner.loadout.id };
+    if (event.personal > before) event.gained = event.personal - before;
+  }
 }
 /** +1 to a bearer's counter, within its cap. */
 function gainCounter(events: RadiantCombatEvent[], holder: RadiantBearer): void {
   const counter = counterOf(holder.signature);
   if (!counter) return;
-  counter.count = Math.min(radiantSignatureCaps[counter.kind], counter.count + 1);
+  counter.count = Math.min(radiantSignatureCap(holder.loadout, counter.kind), counter.count + 1);
   events.push({ type: 'signature', bearerId: holder.loadout.id, op: counter.kind, amount: counter.count });
 }
 /** Normal Attack Passives that need a landed hit: Nerithe's Uncharted Current, Neralis's Returning Current,
@@ -1874,6 +1918,7 @@ function signatureClauses(
 ): void {
   const id = actor.loadout.id, source: RadiantSource = { kind: input.kind, bearerId: id }, own = actor.signature;
   const lowest = woundedAlly(state);
+  let spentDurability = 0;
   const allies = (to: string | undefined): RadiantBearer[] => (to === 'lowest' ? (lowest ? [lowest] : []) :
     to === 'other-allies' ? state.bearers.filter(member => member !== actor) : to === 'self' ? [actor] : state.bearers)
     .filter(member => member.hp > 0);
@@ -1901,7 +1946,8 @@ function signatureClauses(
       case 'seed':
         // Root of Hope: one Seed per ally; a stronger Seed replaces a weaker one.
         for (const ally of allies(clause.to)) {
-          const strength = value * input.effectScale * input.skill.skillPower;
+          // D-493 B5b Briar Constellation Loom: Briar Shot's Seeds gain Skill Power.
+          const strength = value * input.effectScale * (input.skill.skillPower + (input.slot === 1 ? combatAmount(state, actor, 'briar-seeds') : 0));
           if (ally.seed && ally.seed.value >= strength) continue;
           ally.seed = { casterId: id, value: strength };
           events.push({ type: 'signature', bearerId: id, op: 'seed', holderId: ally.loadout.id, amount: strength });
@@ -2006,7 +2052,7 @@ function signatureClauses(
         // Circle of Repose: Solenne gains Stillness.
         const counter = counterOf(own);
         if (!counter) break;
-        counter.count = Math.min(radiantSignatureCaps[counter.kind], counter.count + value);
+        counter.count = Math.min(radiantSignatureCap(actor.loadout, counter.kind), counter.count + value);
         events.push({ type: 'signature', bearerId: id, op: counter.kind, amount: counter.count });
         break;
       }
@@ -2028,7 +2074,9 @@ function signatureClauses(
       case 'foundation': {
         // Raise the Faultline / Worldweight Citadel: a new Foundation replaces the old one at full durability.
         if (own?.kind !== 'foundation') break;
-        const durability = rounded(value * input.effectScale * input.skill.skillPower * actor.stats.hp);
+        // D-493 B5b Throne Beneath the World: Worldweight Citadel's new Foundation keeps part of the durability it spent.
+        const carry = input.kind === 'flare' ? rounded(spentDurability * combatAmount(state, actor, 'citadel-carry')) : 0;
+        const durability = rounded(value * input.effectScale * input.skill.skillPower * actor.stats.hp) + carry;
         if (durability < 1) break;
         own.foundation = { durability, max: durability,
           remaining: Math.min(radiantMaximumDuration, (clause.turns ?? 1) + input.skill.skillDuration) };
@@ -2039,8 +2087,9 @@ function signatureClauses(
         // Keystone Reversal repairs the Foundation, up to the durability it was created with.
         if (own?.kind !== 'foundation' || !own.foundation) break;
         const foundation = own.foundation;
-        foundation.durability = Math.min(foundation.max,
-          foundation.durability + rounded(value * input.effectScale * input.skill.skillPower * actor.stats.hp));
+        // D-493 B5b Keystone Sovereign Counterweight: the repair gains Skill Power.
+        foundation.durability = Math.min(foundation.max, foundation.durability +
+          rounded(value * input.effectScale * (input.skill.skillPower + combatAmount(state, actor, 'keystone-power')) * actor.stats.hp));
         events.push({ type: 'signature', bearerId: id, op: 'foundation', amount: foundation.durability });
         break;
       }
@@ -2048,6 +2097,7 @@ function signatureClauses(
         // Worldweight Citadel spends the Foundation: an exact strike on each enemy of `value` x its remaining durability.
         if (own?.kind !== 'foundation' || !own.foundation) break;
         const amount = rounded(own.foundation.durability * value * input.damageScale);
+        spentDurability = own.foundation.durability;
         own.foundation = null;
         events.push({ type: 'signature', bearerId: id, op: 'foundation', amount: 0 });
         if (amount > 0) for (const target of enemyTargets.filter(entry => entry.hp > 0)) {
@@ -2091,7 +2141,7 @@ function signatureClauses(
         if (own?.kind !== 'path') break;
         const next = value === 1 ? 'shelter' : 'flourish';
         if (own.path !== null && own.path !== next) {
-          own.count = Math.min(radiantSignatureCaps.promise, own.count + 1);
+          own.count = Math.min(radiantSignatureCap(actor.loadout, 'promise'), own.count + 1);
           events.push({ type: 'signature', bearerId: id, op: 'promise', amount: own.count });
         }
         own.path = next;
@@ -2171,7 +2221,7 @@ function normal(
   takeTokens(state, actor, { kind: 'normal', targets: [targetId] });
   const critical = rollBearerCritical(state, actor, target, 'normal');
   const offered = () => radiantDirectDamage(effectiveRadiantStats(state, actor.loadout.id).attack * (1 + tokenSum(actor, 'attack')),
-    gearDefense(state, actor, target.stats.defense),
+    gearDefense(state, actor, target),
     1 + combatAmount(state, actor, 'normal') + combatAmount(state, actor, 'direct') + cooperation(state, actor) +
       tokenSum(actor, 'direct'),
     (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target) *
@@ -2227,12 +2277,12 @@ function cast(
   const power = (def.alt && holds(def.alt.when) ? def.alt.power : def.power) + (def.perStack ?? 0) * stacks;
   const surge = signed(actor) ? signatureSurge(actor, clauses, primary) : { ignore: 0, bonus: 0 };
   // Vespera's Signal: the holder's next damaging skill or Flare spends it for its bonus.
-  const signal = def.target !== 'none' ? spendSignal(state, events, actor) : 0;
+  const signal = def.target !== 'none' ? spendSignal(state, events, actor) : { value: 0 };
   // Names Still Carried: Unreturned spent by this cast joins its matching heal, split evenly among the recipients.
   const ferry = clauses.find(clause => clause.op === 'spend-unreturned');
   const unreturned = ferry && own?.kind === 'unreturned' ? own.stored : 0;
   const ignore = surge.ignore + effects.reduce((sum, effect) => sum + (effect.kind === 'ignore-defense' ? effect.value : 0), 0);
-  const bonus = surge.bonus + signal + effects.reduce((sum, effect) => sum + (effect.kind === 'damage-bonus' ? effect.value : 0), 0);
+  const bonus = surge.bonus + signal.value + effects.reduce((sum, effect) => sum + (effect.kind === 'damage-bonus' ? effect.value : 0), 0);
   const enemyTargets = def.target === 'all-enemies' ? state.enemies.filter(member => member.hp > 0) : primary ? [primary] : [];
   const struck = new Set<RadiantEnemy>();
   // Alternating Edge reads Weaken before the hit, so a skill's own Weaken never counts for that cast.
@@ -2243,6 +2293,18 @@ function cast(
     const by = weakened.has(target) ? weakenedBy(target) : undefined;
     return by && by.kind !== 'enemy' && by.bearerId !== id ? combatAmount(state, actor, 'weakened-ally-power') : 0;
   };
+  // D-493 B5b Master clauses read per target: Glass Meridian's ignore at 3 Incisions, Mirror-Pennant's ignore on a Signal spent
+  // against Vespera's Burn, Dawnfire's focus bonus and Open the Seam's bonus against an enemy Weakened before the hit.
+  const meridian = own?.kind === 'incisions' && clauses.some(clause => clause.op === 'consume-incisions') && stacks === 3
+    ? combatAmount(state, actor, 'meridian-pierce') : 0;
+  const targetIgnore = (target: RadiantEnemy): number => {
+    const burn = target.debuffs.find(effect => effect.category === 'burn'), giver = signal.giver;
+    const beacon = giver && giver.hp > 0 && burn && burn.source.kind !== 'enemy' && burn.source.bearerId === giver.loadout.id
+      ? combatAmount(state, giver, 'signal-pierce') : 0;
+    return (target === primary ? meridian : 0) + beacon;
+  };
+  const targetBonus = (target: RadiantEnemy): number => (input.kind === 'flare' ? combatAmount(state, actor, 'dawnfire-focus') : 0) +
+    (input.slot === 1 && weakened.has(target) ? combatAmount(state, actor, 'seam-weakened') : 0);
   let hits = 0;
   if (def.target !== 'none') for (const target of enemyTargets) {
     if (target.hp === 0) continue;
@@ -2251,13 +2313,13 @@ function cast(
     const critical = rollBearerCritical(state, actor, target, slot);
     const offered = () => Math.max(input.hits, radiantDirectDamage(
       (excludedSources ? effectiveRadiantStats(state, id).attack : stats.attack) * (1 + tokenSum(actor, 'attack')),
-      gearDefense(state, actor, target.stats.defense,
-        ignore + (weakened.has(target) ? combatAmount(state, actor, 'weakened-pierce') : 0), true),
+      gearDefense(state, actor, target,
+        ignore + targetIgnore(target) + (weakened.has(target) ? combatAmount(state, actor, 'weakened-pierce') : 0), true),
       power * input.damageScale * ((excludedSources
         ? radiantSkillStats(state, id, input.slot).skillPower + gambleShift(state, actor, input.won) + tokenSum(actor, 'power')
         : skill.skillPower) + targetPower(target) + tokenSum(actor, 'power', target.id)) *
         (1 + (input.kind === 'flare' ? combatAmount(state, actor, 'flare') : 0) + combatAmount(state, actor, 'direct') +
-          cooperation(state, actor) + bonus + tokenSum(actor, 'direct')),
+          cooperation(state, actor) + bonus + targetBonus(target) + tokenSum(actor, 'direct')),
       (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target) *
         bearerCritMultiplier(state, actor, target, slot, critical)));
     const total = offered();
@@ -2270,12 +2332,15 @@ function cast(
       if (impact.healthLoss + impact.absorbed > 0) { hits++; struck.add(target); }
     }
   }
-  // Reality Fault: each skill or Flare from Kaelith adds 1 Incision to every enemy it hit (max 3).
+  // Reality Fault: each skill or Flare from Kaelith adds 1 Incision to every enemy it hit (max 3). B5b: Shatterfall adds more
+  // (Thousand-Fault Rupture Accelerator); Denial of Fate sets them to a count (Denied Fate Eclipse Annihilator).
+  const extraIncisions = input.slot === 1 ? Math.round(combatAmount(state, actor, 'shatterfall-incision')) : 0;
+  const deniedTo = input.kind === 'flare' ? Math.round(combatAmount(state, actor, 'denial-incisions')) : 0;
   if (own?.kind === 'incisions') for (const target of struck) {
     if (target.hp === 0) continue;
     let entry = own.incisions.find(item => item.enemyId === target.id);
     if (!entry) own.incisions.push(entry = { enemyId: target.id, stacks: 0 });
-    entry.stacks = Math.min(radiantSignatureCaps.incisions, entry.stacks + 1);
+    entry.stacks = Math.min(radiantSignatureCaps.incisions, Math.max(deniedTo, entry.stacks + 1 + extraIncisions));
     events.push({ type: 'signature', bearerId: id, op: 'incision', holderId: target.id, amount: entry.stacks });
     placedMarks.add(id);
   }
@@ -2305,6 +2370,14 @@ function cast(
   // Heals and Shields resolve before ally buffs (no rule depends on the order), so each recipient's
   // heal and its attached statuses present as one impact.
   let restored = false;
+  // D-493 B5b Quarry Planet Gravitas: Worldwall Ascendant's Shield on Bruno takes the largest of its kit value, a share of his
+  // current Defense (read before this cast's buffs) and a share of his maximum Health.
+  const worldwall = input.kind === 'flare' ? combatAmount(state, actor, 'worldwall-shield') : 0;
+  // D-493 B5b Worldforge Hammer Dominion: Seismic Hammerfall gives its surviving target less Defense through the next enemy phase.
+  if (input.slot === 1 && primary && primary.hp > 0 && struck.has(primary) && combatAmount(state, actor, 'hammerfall-sunder') > 0) {
+    primary.sunder = { casterId: id, remaining: radiantMasterRules.sunderTurns };
+    events.push({ type: 'signature', bearerId: id, op: 'sunder', holderId: primary.id, amount: radiantMasterRules.sunderTurns });
+  }
   for (const effect of effects) {
     if (effect.kind !== 'heal' && effect.kind !== 'shield') continue;
     // N7: kit heals and Shields are a % of the recipient's max Health x the caster's Skill Power.
@@ -2315,7 +2388,10 @@ function cast(
       const line = radiantOmnicRules.lowHealthLine;
       const low = effect.kind === 'heal' && ally.hp < line * maximumHealth(state, ally);
       const powered = skill.skillPower + (low ? combatAmount(state, actor, 'low-heal-power') : 0) + tokenSum(actor, 'restore-power');
-      const magnitude = valueOf(effect) * input.effectScale * powered * ally.stats.hp + carried;
+      const magnitude = (effect.kind === 'shield' && worldwall > 0 && ally === actor
+        ? Math.max(valueOf(effect) * ally.stats.hp, worldwall * stats.defense, radiantMasterRules.worldwallHealth * ally.stats.hp) *
+          input.effectScale * powered
+        : valueOf(effect) * input.effectScale * powered * ally.stats.hp) + carried;
       if (effect.kind === 'heal') {
         const gained = heal(state, events, ally, source, magnitude);
         restored = gained > 0 || restored;
@@ -2344,6 +2420,10 @@ function cast(
       // Shared Mindflame: Attack Up from Disciple also fills each ally it reaches.
       if (effect.kind === 'attack-up' && actor.loadout.starter === 'disciple' && signed(actor))
         addPassiveCharge(state, events, ally.loadout.id, rounded(radiantPassiveValues.discipleFill * gaugeGain(state, ally)));
+      // D-493 B5b Thunder Choir Planetary Fugue: Resonance Cascade's Attack Up also brings a fixed Luminosity Gain Up.
+      const cascade = effect.kind === 'attack-up' && input.slot === 2 ? combatAmount(state, actor, 'rise-cascade') : 0;
+      const cascadeSource = cascade > 0 ? gearSourceOf(actor, 'rise-cascade') : undefined;
+      if (cascadeSource) applyCategory(events, ally.loadout.id, ally.buffs, 'gain-up', cascadeSource, cascade, duration(effect.turns));
     }
   }
   for (const effect of effects) {
@@ -2356,10 +2436,48 @@ function cast(
       heal(state, events, ally, { kind: 'role', bearerId: id }, radiantSupportSquadHeal * ally.stats.hp);
   // Turning Season: a skill advances Sprout -> Bloom -> Harvest; a skill or Flare cast in Harvest returns it to Sprout.
   if (own?.kind === 'season' && (own.count === 2 || input.kind === 'skill')) {
-    own.count = own.count === 2 ? 0 : own.count + 1;
+    // D-493 B5b Seasonwheel Harvest Transmission: a spent Harvest returns to Bloom.
+    own.count = own.count === 2 ? (combatAmount(state, actor, 'harvest-bloom') > 0 ? 1 : 0) : own.count + 1;
     events.push({ type: 'signature', bearerId: id, op: 'season', amount: own.count });
   }
+  masterAfterCast(state, events, actor, input, stacks, primary);
   return hits;
+}
+/** D-493 B5b Master clauses that act after a cast resolves: Recoil-Star's Luminosity, Twin-Edge's first-skill Crosscut,
+ * Hymnwind's squad Luminosity, Absolution's extra Weaken and Unfallen Continuum's Refusal restore. */
+function masterAfterCast(
+  state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, input: RadiantCast, stacks: number,
+  primary: RadiantEnemy | undefined,
+): void {
+  if (actor.loadout.masterId === null || actor.hp === 0) return;
+  const own = actor.signature, id = actor.loadout.id;
+  if (own?.kind === 'tension' && input.slot === 2 && stacks >= radiantMasterRules.strainThreshold)
+    masterCharge(state, events, actor, actor, combatAmount(state, actor, 'strain-charge'));
+  if (own?.kind === 'crosscut' && input.kind === 'skill' && actor.masterUsed === undefined) {
+    const add = Math.round(combatAmount(state, actor, 'first-skill-crosscut'));
+    if (add > 0) {
+      actor.masterUsed = true;
+      own.count = Math.min(radiantSignatureCap(actor.loadout, 'crosscut'), own.count + add);
+      events.push({ type: 'signature', bearerId: id, op: 'crosscut', amount: own.count });
+    }
+  }
+  if (actor.loadout.starter === 'ilvaris' && input.slot === 2) {
+    const fill = combatAmount(state, actor, 'hymn-charge');
+    if (fill > 0) for (const ally of state.bearers) masterCharge(state, events, actor, ally, fill);
+  }
+  if (actor.loadout.starter === 'ozriel' && input.slot === 1) {
+    const weaken = combatAmount(state, actor, 'pane-weaken'), from = gearSourceOf(actor, 'pane-weaken');
+    if (weaken > 0 && from) for (const target of state.enemies.filter(member => member.hp > 0 && member !== primary))
+      debuff(state, events, target, 'weaken', from, weaken, radiantMasterRules.paneTurns);
+  }
+  if (own?.kind === 'refusal' && input.kind === 'flare' && combatAmount(state, actor, 'refusal-restore') > 0) {
+    const restored = own.spent.filter(entry => bearer(state, entry).hp > 0);
+    if (restored.length) {
+      own.spent = own.spent.filter(entry => !restored.includes(entry));
+      for (const holderId of restored)
+        events.push({ type: 'signature', bearerId: id, op: 'refusal-restore', holderId, amount: own.spent.length });
+    }
+  }
 }
 /** D-493 Nullsong Transmission: one Conduit roll per skill or Convergent Light while equipped. */
 function gambleRoll(state: RadiantCombatState, actor: RadiantBearer): boolean | undefined {
@@ -2371,7 +2489,7 @@ function skillAction(
 ): number {
   if (action.slot !== 1 && action.slot !== 2) throw new Error('Invalid radiant skill slot.');
   const id = actor.loadout.id;
-  const def = radiantStarterKits[actor.loadout.starter].kit[action.slot === 1 ? 'skill1' : 'skill2'];
+  const def = radiantKitSkill(actor.loadout, action.slot);
   if (!radiantSkillAcceptsTarget(def) && action.targetId !== undefined) throw new Error('This skill uses its authored target set.');
   if (def.target === 'one-enemy' && (action.targetId === undefined || enemy(state, action.targetId).hp <= 0))
     throw new Error('This skill requires a selected living enemy.');
@@ -2398,7 +2516,7 @@ function flare(
   state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, targetId: string | undefined,
   hitCharge: RadiantHitCharge,
 ): { tier: FlareTier; hits: number } {
-  const def = radiantStarterKits[actor.loadout.starter].kit.flare;
+  const def = radiantKitSkill(actor.loadout, 'flare');
   if (!radiantSkillAcceptsTarget(def) && targetId !== undefined) throw new Error('This signature uses its authored target set.');
   if (def.target === 'one-enemy' && (targetId === undefined || enemy(state, targetId).hp <= 0))
     throw new Error('This signature requires a selected living enemy.');
@@ -2486,14 +2604,14 @@ function enemyAttack(
         }
       }
       if (amount - moved <= 0) continue;
-      const taken = holdStillness(events, target, amount - moved);
+      const taken = holdStillness(state, events, target, amount - moved);
       const part = packet(state, events, target, source, 'direct', taken, undefined, false, hitBoosts(prevented, hit, hits), critical);
       // Every landed hit counts as damage for Thorn Traps, including a lethal hit Ozriel's Refusal turned to 0 loss.
       damaged = true;
       // D-493 B3c Phoenix Reactor: a revived bearer leaves the rest of this attack (it returns with 0 Luminosity).
-      if (part.revived) { carryUnreturned(state, events, part.healthLoss); break; }
+      if (part.revived) { carryUnreturned(state, events, part.healthLoss, part.absorbed); break; }
       refundFullBlock(state, events, target, part, taken);
-      carryUnreturned(state, events, part.healthLoss);
+      carryUnreturned(state, events, part.healthLoss, part.absorbed);
       if (target.signature?.kind === 'wounds' && part.healthLoss > 0 && target.hp > 0) {
         target.signature.wounds += part.healthLoss;
         safe(target.signature.wounds, 'Wounds');
@@ -2542,6 +2660,8 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
     target.marks = target.marks.filter(mark => --mark.remaining > 0);
     if (!target.marks.length) delete target.marks;
   }
+  // D-493 B5b: Seismic Hammerfall's sunder lasts through the end of the next enemy phase.
+  for (const target of state.enemies) if (target.sunder && --target.sunder.remaining <= 0) delete target.sunder;
   if (state.phase !== 'victory') tickSignatures(state, events);
   for (const target of state.enemies)
     target.debuffs = tick(events, target.id, target.hp > 0, target.debuffs, enemyCategories);
@@ -2586,11 +2706,33 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
       bonusRolls: 0, bonusOffered: 0 });
 }
 /** D-493 C14: Defense ignore and enemy Defense reduction share one 80% cap; `skill` adds skill-only ignore. */
-function gearDefense(state: RadiantCombatState, actor: RadiantBearer, defense: number, ignore = 0, skill = false): number {
+function gearDefense(state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy, ignore = 0, skill = false): number {
   // Copies of the enemy-Defense aura do not stack: the strongest squad member's amount applies for the encounter.
   const reduction = Math.max(0, ...state.bearers.map(member => combatAmount(state, member, 'enemy-defense')));
-  return defense * (1 - Math.min(.8, combatAmount(state, actor, 'pierce') + ignore + reduction +
-    (skill ? combatAmount(state, actor, 'skill-pierce') : 0)));
+  return target.stats.defense * (1 - Math.min(.8, combatAmount(state, actor, 'pierce') + ignore + reduction +
+    (skill ? combatAmount(state, actor, 'skill-pierce') : 0) + masterDefenseCut(state, actor, target, skill)));
+}
+/** D-493 B5b (C14) Master clauses on one hit: enemy "less Defense" (Seismic Hammerfall's sunder, Elise's lodged Shuriken) for
+ * every ally, and holder-conditional ignore (Undertow Sovereign Harpoon, Shoreless Meridian Worldchart). Each needs its
+ * bearer alive; each named aura counts once. */
+function masterDefenseCut(state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy, skill: boolean): number {
+  let cut = 0;
+  if (target.sunder) {
+    const caster = state.bearers.find(member => member.loadout.id === target.sunder!.casterId);
+    if (caster && caster.hp > 0) cut += combatAmount(state, caster, 'hammerfall-sunder');
+  }
+  const weaken = target.debuffs.find(effect => effect.category === 'weaken');
+  for (const wearer of state.bearers) {
+    if (wearer.hp === 0) continue;
+    const own = wearer.signature, id = wearer.loadout.id;
+    if (own?.kind === 'shuriken') cut += own.lodged.filter(entry => entry === target.id).length * combatAmount(state, wearer, 'shuriken-sunder');
+    if (wearer.loadout.starter === 'tide' && weaken && weaken.source.kind !== 'enemy' && weaken.source.bearerId === id &&
+      actor.shields.some(layer => (layer.source.kind === 'skill' || layer.source.kind === 'flare') && layer.source.bearerId === id))
+      cut += combatAmount(state, wearer, 'tide-shield-pierce');
+    if (skill && wearer !== actor && own?.kind === 'survey' && own.targetId === target.id)
+      cut += own.count * combatAmount(state, wearer, 'survey-pierce');
+  }
+  return cut;
 }
 function cooperation(state: RadiantCombatState, actor: RadiantBearer): number {
   return state.acted.some(id => id !== actor.loadout.id)

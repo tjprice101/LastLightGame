@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   radiantAttunement, radiantAttunements, radiantBearerKits, radiantFlares, radiantMasters,
-  radiantStarterKits, radiantFinalFlare, radiantLeaderBonus, radiantLeaderEffects, radiantEquipmentAmount,
+  radiantStarterKits, radiantFinalFlare, radiantKitSkill, radiantLeaderBonus, radiantLeaderEffects, radiantEquipmentAmount,
   releasedRadiantIds, resolveRadiantStarterStats, validateRadiantLoadout,
   type RadiantBearerId, type RadiantLoadout, type RadiantMasterId, type RadiantStarter,
 } from '../content/combat-kits';
@@ -693,7 +693,8 @@ describe('authored Master equipment', () => {
         expect(damage).toHaveLength(offer.comboHits);
         expect(damage.every(event => event.type === 'damage' && event.offered > 0)).toBe(true);
       }
-      expect(offer).toEqual(plainOffer);
+      // D-493 B5b: Masters whose clause reshapes the Flare (Dawnfire's target, Disciple's Attack Up duration) change the offer.
+      if (radiantKitSkill(readyOwner, 'flare') === radiantKitSkill({ ...readyOwner, masterId: null }, 'flare')) expect(offer).toEqual(plainOffer);
       // D-493 B5a: Master Skill Efficiency lowers the Convergent Light cost; the cast still spends Luminosity.
       const spent = result.events.find(event => event.type === 'flare');
       expect(spent?.type === 'flare' && spent.cost).toBeGreaterThan(0);

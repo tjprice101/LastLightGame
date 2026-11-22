@@ -1,6 +1,6 @@
 import { radiantBeat, radiantShurikenCount, radiantSignatureCaps, radiantTokenRules, type RadiantCombatState, type RadiantToken } from '../game/combat-engine';
 import { getConduit } from '../content/conduits';
-import { radiantEquipmentAmount } from '../content/combat-kits';
+import { radiantEquipmentAmount, radiantSignatureCap } from '../content/combat-kits';
 import { characterName } from '../content/character-art';
 import { escapeDialogText as escape } from './game-dialog';
 
@@ -127,10 +127,10 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
         chips.push(`Signals ${own.signals.length}`);
         break;
       case 'path':
-        chips.push(`Promise ${own.count}/${radiantSignatureCaps.promise} · ${own.path === 'shelter' ? 'Shelter' : own.path === 'flourish' ? 'Flourish' : 'No path'}`);
+        chips.push(`Promise ${own.count}/${radiantSignatureCap(member.loadout, 'promise')} · ${own.path === 'shelter' ? 'Shelter' : own.path === 'flourish' ? 'Flourish' : 'No path'}`);
         break;
       default:
-        chips.push(`${counterLabels[own.kind]} ${own.count}/${radiantSignatureCaps[own.kind]}`);
+        chips.push(`${counterLabels[own.kind]} ${own.count}/${radiantSignatureCap(member.loadout, own.kind)}`);
     }
   }
   // D-493 B3a: Conduit marks and Burn bonuses carried by enemies.
@@ -140,6 +140,12 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
     const amp = target.debuffs.find(effect => effect.category === 'burn')?.amp;
     if (amp) tag(target.id, `Cinder Testament · Burn +${pct(amp)}`);
     if (state.taunt && living(state.taunt)) tag(target.id, `Taunted · attacks ${nameOf(state.taunt)}`);
+    // D-493 B5b Worldforge Hammer Dominion: Seismic Hammerfall's Defense reduction.
+    if (target.sunder) {
+      const caster = state.bearers.find(unit => unit.loadout.id === target.sunder!.casterId);
+      const cut = caster && caster.hp > 0 ? radiantEquipmentAmount(caster.loadout, 'hammerfall-sunder') : 0;
+      if (cut > 0) tag(target.id, `Sundered · ${pct(cut)} less Defense · ${turns(target.sunder.remaining)}`);
+    }
     // D-493 B4 Ruinmark Censer: this enemy carries a living wearer's Weaken.
     const weaken = target.debuffs.find(effect => effect.category === 'weaken');
     const wearer = weaken && weaken.source.kind !== 'enemy' ? state.bearers.find(unit => unit.hp > 0 &&

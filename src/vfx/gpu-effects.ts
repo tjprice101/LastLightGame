@@ -9,7 +9,7 @@ import type { RadiantBattleEffects, RadiantScreenCue } from '../presentation/bat
 import type { RadiantImpactFrame } from '../presentation/battle-impact-frames';
 import type { RadiantPlayerAction } from '../online/battle-run';
 import { radiantFlareReady, type RadiantCombatEvent, type RadiantCombatState } from '../game/combat-engine';
-import { radiantBearerKits } from '../content/combat-kits';
+import { radiantBearerKits, radiantKitSkill } from '../content/combat-kits';
 import { radiantKits, type RadiantKitId, type KitSkillTarget } from '../content/radiant-kits';
 import { characterChoreography } from '../presentation/battle-effects';
 import { battleSpeed } from '../presentation/battle-speed';
@@ -161,9 +161,10 @@ export class GpuBattleEffects implements RadiantBattleEffects {
   private shape(action: RadiantPlayerAction, state: RadiantCombatState): { target: KitSkillTarget; melee: boolean; power: number } {
     const unit = state.bearers.find(member => member.loadout.id === action.bearerId);
     const starter = unit?.loadout.starter;
-    const kit = starter ? radiantKits[starter as RadiantKitId] : undefined;
-    const target: KitSkillTarget = action.type === 'normal' ? 'one-enemy' : action.type === 'skill'
-      ? kit?.[action.slot === 2 ? 'skill2' : 'skill1'].target ?? 'one-enemy' : kit?.flare.target ?? 'all-enemies';
+    // D-493 B5b: Master clauses can change a skill's target set (Cinderstar Genesis Engine's single-target Dawnfire).
+    const target: KitSkillTarget = action.type === 'normal' ? 'one-enemy' : !unit
+      ? (action.type === 'skill' ? 'one-enemy' : 'all-enemies')
+      : radiantKitSkill(unit.loadout, action.type === 'skill' ? (action.slot === 2 ? 2 : 1) : 'flare').target;
     const motion = starter ? characterChoreography[starter as keyof typeof characterChoreography]?.motion : undefined;
     const tier = spectacleTier(action);
     const power = tier === 'normal' ? 0 : tier === 'skill1' ? .35 : tier === 'skill2' ? .65 : 1;
