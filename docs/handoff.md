@@ -1,5 +1,87 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B5a: Master stat packages (D-493, 2026-11-21)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5a-master-stat-packages-d-493-battle-flurry-phase-4c).
+- Owner answer (Plan mode): B5 splits into four sessions by engine seam.
+- What changed:
+  - 93 Masters carry their restored always-on stat package; the Radiant-era
+    pairs are gone. Values follow the C1 rescale (×0.2 on always-on Health,
+    Defense and Attack); Skill stats, capacity and crit stats are verbatim.
+  - New squad auras: `squad-skill-power` (Deep Foundation Planetpress) and
+    `squad-skill-efficiency` (Eclipse Planet Watchtower; also applies to
+    Convergent Light).
+  - Another bearer's Master aura is now credited in D-492 attribution.
+  - Revive amounts and the `revive` event accept a Master source, ready for
+    B5d.
+- Implementation choices (owner may reverse):
+  - `master-sprout-2`, `master-disciple-2` and `master-nerithe-3` (clause-only)
+    keep their Radiant-era pair until their part ships.
+  - The O6 test lets Masters of different bearers share a stat package.
+  - Per-Master signature-cap and clause hooks are left to B5b, which designs
+    them against its own rows (the plan had listed them for B5a).
+
+**Rows still to build:**
+- **B5b kit modifiers (37):** ember-2, tide-3, sprout-2, bliss-1, bruno-2,
+  bruno-3, disciple-1, elise-1, nerithe-1, orvella-1, orvella-3, vaelor-2,
+  caldrex-1, solenne-1, myrthen-1, neralis-1, varkhel-1, varkhel-3,
+  seravelle-1, velmira-1, velmira-2, ozriel-2, ozriel-3, ilvaris-1..3,
+  kaelith-1..3, maerion-1, caevren-1, caevren-2, vespera-1, vespera-2, ilyss-1,
+  asteriel-1, serapha-1.
+- **B5c player-turn triggers and next-action bonuses (39):** ember-3, tide-2,
+  sprout-1, atmoso-1..3, bliss-2, bliss-3, disciple-2, disciple-3, elise-2,
+  elise-3, razor-1..3, rosetta-1..3, crinso-1..3, nerithe-2, nerithe-3,
+  vaelor-1, vaelor-3, solenne-2, myrthen-3, neralis-2, neralis-3, varkhel-2,
+  seravelle-3, velmira-3, maerion-2, maerion-3, vespera-3, ilyss-2, ilyss-3,
+  asteriel-2, asteriel-3. Note: tokens store a gear `conduitId`; Master-given
+  tokens need a token-shape change (save allowlist).
+- **B5d enemy-phase and special (19):** ember-1, sprout-3 (revive on the C18
+  ledger + Empowered Seed Defense Up), aurora-1..3, bruno-1, thornia-1..3,
+  orvella-2, caldrex-2, caldrex-3, solenne-3, myrthen-2 (`conduit` stream),
+  seravelle-2, ozriel-1, caevren-3, serapha-2, serapha-3.
+- Adapt (O1) Master rows take real crit triggers from the pre-Radiant column,
+  not the "more direct damage" text.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5a.test.ts`: 8 of 8, including the
+  save-compatibility checks:
+  - a settled journal with Masters reloads;
+  - a Master revive source passes the allowlist and a leader source is
+    rejected;
+  - a mid-run encounter with Masters loads and settles.
+- Updated fixtures:
+  - `combat-consolidation` (O6 test scoped; Flare charge reads the event
+    cost; splash now from the Vaelor Leader);
+  - `combat-engine` (Flare spends Luminosity);
+  - `conduit-effects` (`break-heal` from the Solenne Leader, splash from the
+    Vaelor Leader);
+  - `critical-hits` (splash from the Vaelor Leader).
+- Full `npx vitest run`: 11,021 of 11,023. The 2 failures were
+  `critical-hits` (fixed above; the file then passed) and
+  `acquisition-surfaces`, a 21-second timeout under load (passes alone).
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced; the study builds equip Masters, so it sees B5a):
+  - ordinary 99.9% (B4 99.8%);
+  - Calamity EX+1/2/3 100/95.8/91.7% (B4 99.1/94.0/88.4%);
+  - Oblivion 161-180 95.2% (B4 90.5%); Dungeon 101-120 99.5% (same);
+  - flare-saving Calamity 100/100/99.5%.
+  No band moved more than 5 points.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** Master tooltips and the squad-aura numbers seen in game
+(tests only).
+
+**Open release item (owner decision before the D-493 release):** encounters
+saved mid-run with a Conduit or Master whose stats changed in B1-B5 fail
+frozen-stat validation after release. Options: bump the frozen-run version
+(8 → 9) so they end with the existing "Combat rules changed" notice (rewards
+kept), or keep version 8 (those saves fail to load).
+
+**Next:** B5b (37 kit modifiers). Fresh Opus session, Plan mode.
+
 ## Battle Flurry Phase 4c B4: Calamitic Conduits and the borrowed skill (D-493, 2026-11-21)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release after

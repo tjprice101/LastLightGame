@@ -51,7 +51,9 @@ export type RadiantConduitEffect =
   // D-493 B4 (Calamitic): heal/Shield Skill Efficiency, Ruinmark's Weaken amplifier, Choir-Array's mark trigger,
   // Lone Apostate's solo-squad stats and Throne of Borrowed Tomorrows' extra skill (G12).
   | 'restore-efficiency' | 'weaken-vulnerability' | 'mark-team-power' | 'mark-team-charge'
-  | 'lone-hp' | 'lone-defense' | 'lone-power' | 'flare-extra-skill';
+  | 'lone-hp' | 'lone-defense' | 'lone-power' | 'flare-extra-skill'
+  // D-493 B5a (Masters): squad Skill Power and Skill Efficiency auras (Deep Foundation Planetpress, Eclipse Planet Watchtower).
+  | 'squad-skill-power' | 'squad-skill-efficiency';
 /** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration);
  * `step` primitives add `step` per rank instead of scaling (C12 exceptions such as Stasis Reliquary's chance). */
 export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true; step?: number }

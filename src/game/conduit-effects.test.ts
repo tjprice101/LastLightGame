@@ -193,30 +193,30 @@ describe('bounded, sourced Conduit triggers', () => {
     expect(normal(state).state.gauge.members[0].charge).toBe(200);
   });
   it('heals once per enemy phase when a native Shield breaks (bounded break trigger)', () => {
-    // D-493 B4: no Conduit keeps `break-heal`; Tide's Abyssal Shelter Observatory Master still carries it.
-    let state = createRadiantCombat([{ ...member('tide'), masterId: 'master-tide-1' }],
+    // D-493 B5a: no Conduit or Master keeps `break-heal`; Solenne's Leader still carries it.
+    let state = createRadiantCombat([member('solenne')],
       ['enemy', 'enemy2'].map(id => ({ id, elementId: null, stats: { hp: 100000, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
     state.bearers[0].hp = 500;
-    sourceShield(state, 0, { kind: 'flare', bearerId: 'tide' }, 1);
+    sourceShield(state, 0, { kind: 'flare', bearerId: 'solenne' }, 1);
     state = defend(state);
-    const first = act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['tide'], coefficient: 2, hits: 3 });
-    expect(first.events.filter(event => event.type === 'heal' && event.source.kind === 'master')).toHaveLength(1);
-    sourceShield(first.state, 0, { kind: 'flare', bearerId: 'tide' }, 1);
-    const second = act(first.state, { type: 'enemy-attack', enemyId: 'enemy2', targetIds: ['tide'], coefficient: 2 });
-    expect(second.events.filter(event => event.type === 'heal' && event.source.kind === 'master')).toHaveLength(0);
+    const first = act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['solenne'], coefficient: 2, hits: 3 });
+    expect(first.events.filter(event => event.type === 'heal' && event.source.kind === 'leader')).toHaveLength(1);
+    sourceShield(first.state, 0, { kind: 'flare', bearerId: 'solenne' }, 1);
+    const second = act(first.state, { type: 'enemy-attack', enemyId: 'enemy2', targetIds: ['solenne'], coefficient: 2 });
+    expect(second.events.filter(event => event.type === 'heal' && event.source.kind === 'leader')).toHaveLength(0);
   });
   it('splash cannot generate another splash, charge drop or direct-kill reward', () => {
-    // D-493 B4: no Conduit keeps `normal-splash`; Atmoso's Sky Without End Turbine Master still carries it.
-    const state = createRadiantCombat([{ ...member('atmoso'), masterId: 'master-atmoso-1' }],
+    // D-493 B5a: no Conduit or Master keeps `normal-splash`; Vaelor's Leader still carries it.
+    const state = createRadiantCombat([member('vaelor')],
       ['enemy', 'other'].map((id, index) => ({ id, elementId: null,
         stats: { hp: index === 0 ? 100000 : 1, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
     const result = normal(state);
     expect(result.events.filter(event => event.type === 'damage').map(event => event.origin)).toEqual(['direct', 'generated']);
     expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
-    // Only the one Normal hit's Luminosity and the Master's own Normal Attack Luminosity: the splash adds none.
-    const control = createRadiantCombat([member('atmoso')], state.enemies.map(enemy => ({ id: enemy.id, elementId: null,
+    // Only the one Normal hit's Luminosity: against a lone enemy (no splash target) the charge is the same.
+    const control = createRadiantCombat([member('vaelor')], state.enemies.slice(0, 1).map(enemy => ({ id: enemy.id, elementId: null,
       stats: enemy.stats, currencyBudget: 1000 })), 0);
-    expect(result.state.gauge.members[0].charge).toBe(normal(control).state.gauge.members[0].charge + 4);
+    expect(result.state.gauge.members[0].charge).toBe(normal(control).state.gauge.members[0].charge);
     expect(result.state.chargeSeed).toBe(state.chargeSeed);
   });
   it('native healing grants heal-triggered bonuses, but generated healing and overhealing cannot', () => {

@@ -143,13 +143,14 @@ describe('consolidated live combat contract', () => {
     const inactive = applyRadiantCombatAction(state, { type: 'skill', bearerId: 'nerithe', slot: 2 });
     expect(inactive.events.filter(event => event.type === 'shield')).toHaveLength(0);
   });
-  it('an equipped Elise Master creates its authored splash without another Luminosity drop', () => {
-    const state = createRadiantCombat([{ ...loadout('elise'), masterId: 'master-elise-2' }],
+  it('a Leader splash (Vaelor) creates its authored splash without another Luminosity drop', () => {
+    // D-493 B5a: no Conduit or Master keeps `normal-splash`; Vaelor's Leader still carries it.
+    const state = createRadiantCombat([loadout('vaelor')],
       ['enemy', 'other'].map(id => ({ id, elementId: null,
         stats: { hp: 100000, attack: 100, defense: 0, recovery: 0 }, currencyBudget: 10 })), 1);
-    const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'elise', targetId: 'enemy' });
+    const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'vaelor', targetId: 'enemy' });
     expect(result.events).toContainEqual(expect.objectContaining({
-      type: 'damage', origin: 'generated', targetId: 'other', source: { kind: 'master', bearerId: 'elise' },
+      type: 'damage', origin: 'generated', targetId: 'other', source: { kind: 'leader', bearerId: 'vaelor' },
     }));
     expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
     expect(result.state.gauge.members[0].charge).toBe(15);
@@ -236,8 +237,11 @@ describe('consolidated live combat contract', () => {
         // A Flare that fills "all allies" refills its own caster (as does Disciple's Shared Mindflame); every other Flare spends to zero.
         const selfFill = id === 'disciple' ||
           radiantBearerKits[id].kit.flare.effects.some(effect => effect.kind === 'fill' && effect.to === 'all-allies');
+        // D-493 B5a: Master Skill Efficiency lowers the cost, so a non-filling Flare leaves charge minus the spent cost.
+        const spent = result.events.find(event => event.type === 'flare');
+        const left = state.gauge.members[0].charge - (spent?.type === 'flare' ? spent.cost ?? 0 : 0);
         if (selfFill) expect(result.state.gauge.members[0].charge).toBeGreaterThan(0);
-        else expect(result.state.gauge.members[0].charge).toBe(0);
+        else expect(result.state.gauge.members[0].charge).toBe(left);
         // State validation enforces the N6 category caps on every applied effect.
         validateRadiantCombat(result.state);
       }
@@ -245,13 +249,23 @@ describe('consolidated live combat contract', () => {
   });
 
   it('gives every Conduit and Master a distinct design of one to six effects (D-493 O6: unique kind and amount lists)', () => {
-    const designs = [...Object.values(radiantConduits), ...Object.values(radiantMasters).map(master => master.effects)];
-    for (const design of designs) {
+    const signature = (design: readonly { kind: string; amount: number }[]) =>
+      design.map(effect => `${effect.kind}:${effect.amount}`).sort().join('|');
+    const conduits = Object.values(radiantConduits) as readonly (readonly { kind: string; amount: number }[])[];
+    const masters = Object.values(radiantMasters);
+    for (const design of [...conduits, ...masters.map(master => master.effects)]) {
       expect(design.length).toBeLessThanOrEqual(6);
       expect(design.length).toBeGreaterThan(0);
     }
-    expect(new Set(designs.map(design => design.map(effect => `${effect.kind}:${effect.amount}`).sort().join('|'))).size)
-      .toBe(designs.length);
+    const conduitSignatures = new Set(conduits.map(signature));
+    expect(conduitSignatures.size).toBe(conduits.length);
+    // D-493 B5a: Masters are locked to their bearer, so a Master must differ from its bearer's other Masters and from every
+    // Conduit; Masters of different bearers may share a restored stat package (their kit clauses differ).
+    for (const master of masters) expect(conduitSignatures.has(signature(master.effects))).toBe(false);
+    for (const id of releasedRadiantIds) {
+      const own = masters.filter(master => master.starter === id).map(master => signature(master.effects));
+      expect(new Set(own).size).toBe(own.length);
+    }
     const leaders = releasedRadiantIds.map(id => radiantLeaderEffects(loadout(id)).map(effect => effect.kind).sort().join('|'));
     expect(new Set(leaders).size).toBe(leaders.length);
   });

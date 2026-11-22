@@ -116,6 +116,22 @@
   however many marks land; Choir-Array Skill Power ends with the player turn;
   the turn hold and readiness ignore target-bound discounts; a borrowed skill
   is not a "first action" and Bliss reads it as Closing.
+- **B5 split (owner, 2026-11-21, Plan mode):** four parts by engine seam:
+  B5a (stat packages, plumbing), B5b (37 kit-modifier rows), B5c (39
+  player-turn trigger and next-action rows), B5d (19 enemy-phase and special
+  rows, including the `master-sprout-3` revive and `master-myrthen-2` rolls).
+- **B5a implemented (unreleased, 2026-11-21).** 93 Master stat packages
+  ([combat spec](combat.md#conduit-restoration-b5a-master-stat-packages-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): the three clause-only Masters
+  (`master-sprout-2`, `master-disciple-2`, `master-nerithe-3`) keep their
+  Radiant-era pair until their clause ships; the O6 distinct-design test lets
+  Masters of different bearers share a stat package (each still differs from
+  its bearer's other Masters and from every Conduit); squad Skill Efficiency
+  joins Convergent Light on top of the stored value; per-Master signature-cap
+  and clause hooks are left to B5b, which designs them against its rows.
+  Open release item: frozen encounters saved mid-run with a Conduit or Master
+  whose stats changed in B1-B5 fail validation after release; bump the run
+  version (retire with the existing notice, rewards kept) or not (owner).
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 

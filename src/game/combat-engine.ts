@@ -266,7 +266,8 @@ export type RadiantCombatEvent =
   | { type: 'currency'; enemyId: string; amount: number; totalPaid: number }
   | { type: 'defeated'; targetId: string }
   /** D-493 B3c Phoenix Reactor: a defeated bearer returns with `amount` Health (its Luminosity follows as a charge event). */
-  | { type: 'revive'; targetId: string; source: Extract<RadiantSource, { kind: 'gear' }>; amount: number }
+  /** D-493 B5a: the source may also be a Master (the B5d Worldseed revive uses the same ledger). */
+  | { type: 'revive'; targetId: string; source: Extract<RadiantSource, { kind: 'gear' | 'master' }>; amount: number }
   | { type: 'health-mote'; enemyId: string; bearerId: string; offered: number; effective: number }
   | { type: 'gauge-drop'; enemyId: string; bearerId: string; trigger: 'hit' | 'defeat'; amount: number }
   | { type: 'skill'; bearerId: string; slot: RadiantSkillSlot; name: string; cost: number }
@@ -585,7 +586,8 @@ export function radiantSkillStats(state: RadiantCombatState, id: string, slot: R
   const member = bearer(state, id);
   const stats = skillStatsFrom(member.loadout, slot, kind => combatAmount(state, member, kind), member.stats.hp,
     distinctElements(state.bearers.map(entry => entry.loadout)));
-  return { ...stats, skillPower: stats.skillPower + squadSkillPower(state, member, slot), gaugeGain: gaugeGain(state, member) };
+  return { ...stats, skillPower: stats.skillPower + squadSkillPower(state, member, slot),
+    skillEfficiency: stats.skillEfficiency + squadAura(state, 'squad-skill-efficiency'), gaugeGain: gaugeGain(state, member) };
 }
 /** D-493 B3a squad-conditional Skill Power (combat only; menus show the loadout value without it). */
 function squadSkillPower(state: RadiantCombatState, member: RadiantBearer, slot: RadiantSkillSlot | 'flare'): number {
@@ -599,7 +601,7 @@ function squadSkillPower(state: RadiantCombatState, member: RadiantBearer, slot:
     ? combatAmount(state, member, 'alternate-power') : 0;
   return oceanic * combatAmount(state, member, 'oceanic-power') + living * combatAmount(state, member, 'census-power') +
     defeatedCount(state) * combatAmount(state, member, 'ruin-power') + shielded + alternate +
-    loneAmount(state, member, 'lone-power') + (member.choirPower ?? 0);
+    loneAmount(state, member, 'lone-power') + (member.choirPower ?? 0) + squadAura(state, 'squad-skill-power');
 }
 /** D-493 C6: Gauge Gain = 1 + Conduit/Master Gauge Gain + Luminosity Gain Up. */
 function gaugeGain(state: RadiantCombatState, member: RadiantBearer): number {
@@ -702,6 +704,12 @@ function slotAmount(member: RadiantBearer, conduitId: ConduitId, kind: RadiantCo
   const slot = member.loadout.gear?.find(entry => entry?.id === conduitId);
   return slot ? radiantConduitPrimitives(slot).filter(entry => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0) : 0;
 }
+/** D-493 B5a: the amount of one primitive on a gear or Master source (rescue effects read their own source). */
+function sourceAmount(member: RadiantBearer, source: Extract<RadiantGearSource, { kind: 'gear' | 'master' }>, kind: RadiantConduitEffect): number {
+  if (source.kind === 'gear') return slotAmount(member, source.conduitId, kind);
+  return member.loadout.masterId === null ? 0 : radiantMasters[member.loadout.masterId].effects
+    .filter(entry => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0);
+}
 /** The other living ally with the lowest Luminosity percentage (first in squad order on ties). */
 function lowestChargeAlly(state: RadiantCombatState, owner: RadiantBearer): RadiantBearer | undefined {
   const share = (member: RadiantBearer): number => {
@@ -721,7 +729,8 @@ export function radiantActionEfficiency(state: RadiantCombatState, id: string, s
   const member = bearer(state, id), kit = radiantStarterKits[member.loadout.starter].kit;
   const def = slot === 'flare' ? kit.flare : slot === 1 ? kit.skill1 : kit.skill2;
   const tokens = heldEfficiency((member.tokens ?? []).filter(token => tokenMatches(token, { kind: slot === 'flare' ? 'flare' : 'skill', def })));
-  return slot === 'flare' ? tokens : radiantSkillStats(state, id, slot).skillEfficiency + tokens;
+  // D-493 B5a: the squad Skill Efficiency aura is dynamic, so it joins Convergent Light on top of the stored loadout value.
+  return slot === 'flare' ? tokens + squadAura(state, 'squad-skill-efficiency') : radiantSkillStats(state, id, slot).skillEfficiency + tokens;
 }
 /** Convergent Light readiness with held bonuses (UI and pressure policy). */
 export function radiantFlareReady(state: RadiantCombatState, id: string): FlareTier | null {
@@ -1297,7 +1306,7 @@ function healthMote(state: RadiantCombatState, events: RadiantCombatEvent[], tar
 const squadSourceKinds: readonly RadiantConduitEffect[] = [
   'enemy-defense', 'ally-guard', 'squad-hp', 'squad-attack', 'squad-gain', 'squad-defense', 'ally-defense-share',
   'burn-ally-crit', 'skill-shield-crit', 'skill-shield-brace', 'shielded-restore-power', 'skill-mark', 'burning-attack',
-  'weaken-ally-efficiency', 'weaken-vulnerability',
+  'weaken-ally-efficiency', 'weaken-vulnerability', 'squad-skill-power', 'squad-skill-efficiency',
 ];
 /** D-492: Conduit sources that can change amounts for this bearer (its gear, its Master, the living same-element Leader). */
 function gearSources(state: RadiantCombatState, holder: RadiantBearer): RadiantGearSource[] {
@@ -1309,9 +1318,15 @@ function gearSources(state: RadiantCombatState, holder: RadiantBearer): RadiantG
   if (holder.loadout.masterId !== null) sources.push({ kind: 'master', bearerId: id });
   if (leaderEffects(state, holder).length > 0) sources.push({ kind: 'leader', bearerId: state.bearers[0].loadout.id });
   // D-493 C14: another squad member's enemy-Defense aura also changes this bearer's damage.
-  for (const member of state.bearers) if (member !== holder) for (const slot of member.loadout.gear ?? [])
-    if (slot !== null && radiantConduitPrimitives(slot).some(entry => squadSourceKinds.includes(entry.kind)))
-      sources.push({ kind: 'gear', bearerId: member.loadout.id, conduitId: slot.id });
+  for (const member of state.bearers) if (member !== holder) {
+    for (const slot of member.loadout.gear ?? [])
+      if (slot !== null && radiantConduitPrimitives(slot).some(entry => squadSourceKinds.includes(entry.kind)))
+        sources.push({ kind: 'gear', bearerId: member.loadout.id, conduitId: slot.id });
+    // D-493 B5a: another member's Master squad aura also changes this bearer's amounts.
+    if (member.loadout.masterId !== null &&
+        radiantMasters[member.loadout.masterId].effects.some(entry => squadSourceKinds.includes(entry.kind)))
+      sources.push({ kind: 'master', bearerId: member.loadout.id });
+  }
   // D-493 B3b: next-action bonuses the resolving action spends credit their giver's Conduit.
   if (casting?.holderId === id) for (const token of casting.tokens) {
     const source: RadiantGearSource = { kind: 'gear', bearerId: token.giverId, conduitId: token.conduitId };
@@ -1464,19 +1479,19 @@ function accordSave(state: RadiantCombatState, events: RadiantCombatEvent[], hol
  * cleared of timed effects, Cover, Seed and held bonuses; each other living ally gains a Conduit-generated Shield. */
 function phoenixRevive(state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer): boolean {
   const source = gearSourceOf(target, 'revive');
-  if (source?.kind !== 'gear' || !rescueAvailable(state, target)) return false;
+  if (source === undefined || source.kind === 'leader' || !rescueAvailable(state, target)) return false;
   const id = target.loadout.id;
   markRescued(state, target);
   delete target.accord;
   target.buffs = []; target.seed = null; target.cover = null;
   delete target.tokens; delete target.stormstep; delete target.critCount;
-  target.hp = Math.min(maximumHealth(state, target), Math.max(1, rounded(slotAmount(target, source.conduitId, 'revive') * target.stats.hp)));
+  target.hp = Math.min(maximumHealth(state, target), Math.max(1, rounded(sourceAmount(target, source, 'revive') * target.stats.hp)));
   events.push({ type: 'revive', targetId: id, source, amount: target.hp });
   sync(state);
   const member = state.gauge.members.find(entry => entry.id === id)!;
   member.charge = 0;
   events.push({ type: 'charge', bearerId: id, personal: 0, bonusRolls: 0, bonusOffered: 0 });
-  const share = slotAmount(target, source.conduitId, 'revive-shield');
+  const share = sourceAmount(target, source, 'revive-shield');
   for (const ally of state.bearers) if (ally !== target && ally.hp > 0) shield(state, events, ally, source, share * ally.stats.hp);
   return true;
 }
@@ -2389,7 +2404,8 @@ function flare(
     throw new Error('This signature requires a selected living enemy.');
   const held = takeTokens(state, actor, { kind: 'flare', def, targets: castTargets(state, def, targetId) });
   // D-493 B3b: Undertide Chronometer and held bonuses discount this cast on top of the stored loadout value.
-  const spent = spendReadyFlare(state.gauge, actor.loadout.id, targetEfficiency(state, actor, def, targetId) + heldEfficiency(held));
+  const spent = spendReadyFlare(state.gauge, actor.loadout.id, targetEfficiency(state, actor, def, targetId) + heldEfficiency(held) +
+    squadAura(state, 'squad-skill-efficiency'));
   state.gauge = spent.state;
   const tier = spent.tier, scale = radiantFlareTierScale[tier], power = radiantFlarePower(actor.loadout);
   events.push({ type: 'flare', bearerId: actor.loadout.id, tier, name: def.name, cost: spent.cost });

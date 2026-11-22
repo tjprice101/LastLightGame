@@ -559,7 +559,7 @@ function validEvent(value: unknown): boolean {
   if (value.type === 'skill' && value.slot !== 1 && value.slot !== 2) return false;
   // D-493 B3b: optional Luminosity spent by Convergent Light; journals saved before B3b have none.
   if (value.type === 'flare' && value.cost !== undefined && (!Number.isSafeInteger(value.cost) || Number(value.cost) < 1)) return false;
-  if (value.type === 'revive' && (!record(value.source) || value.source.kind !== 'gear' || !validSource(value.source) ||
+  if (value.type === 'revive' && (!record(value.source) || !['gear', 'master'].includes(String(value.source.kind)) || !validSource(value.source) ||
     !Number.isSafeInteger(value.amount) || Number(value.amount) < 1)) return false;
   if (value.type === 'signature' && (!radiantSignatureOps.has(String(value.op)) ||
     (value.holderId !== undefined && !validId(value.holderId)))) return false;

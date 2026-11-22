@@ -2882,3 +2882,92 @@ includes borrowed skills). Fixtures moved off replaced Calamitic designs in
 `combat-skills.test.ts`, `conduit-effects.test.ts` and `critical-hits.test.ts`
 (`break-heal`, `normal-splash` and `leader` remain only on Masters or not at
 all).
+
+## Conduit restoration B5a: Master stat packages (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5 with one enemy retune). Plan rows:
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+(B5; C1 ×0.2 on always-on Health, Defense and Attack; real crits on the Adapt
+(O1) rows).
+
+Owner answer (Plan mode, 2026-11-21): B5 is split into four parts by engine
+seam. **B5a** (this section): the always-on stat package of every live Master
+and the shared plumbing. **B5b**: 37 kit-modifier rows (signature caps,
+coefficients, skill target or value changes, signature-driven Defense
+reduction). **B5c**: 39 player-turn trigger and next-action rows. **B5d**: 19
+enemy-phase and special rows, including the `master-sprout-3` revive on the
+C18 ledger and the `master-myrthen-2` chance rolls on the `conduit` stream.
+The row lists are in the B5a handoff entry.
+
+**What B5a changes:**
+- `masterDesigns` (`src/content/combat-kits.ts`) now holds primitive lists.
+  93 Masters carry their restored stat package; the Radiant-era pairs are
+  gone (O14). Masters have no ranks (C12) and keep their attunement (O13).
+- `master-sprout-2`, `master-disciple-2` and `master-nerithe-3` have no stat
+  package (their restored effect is only a kit clause), so they keep their
+  Radiant-era pair until B5b/B5c replaces it.
+- Kit clauses (named skills, signatures, triggers) are not active yet. A Master
+  whose clause belongs to B5b-d is only its stat package until that part ships.
+- Package rules:
+  - Always-on Health, Defense and Attack use `hp`, `defense`, `attack` at
+    ×0.2 of the old value.
+  - Skill Power, Skill Efficiency, Gauge Gain and capacity (`capacity`, C8)
+    are verbatim.
+  - Crit stats are verbatim (`crit-rate` / `crit-damage`): Stillplume
+    Planetary Ballet +25 points, Sovereign Will Amplifier +45%, Storm Empress
+    Execution Clock +65%, Twin-Rose Singularity Drive +75%, Broken Sky
+    Imperial Metronome +30 points, Seedtrace Pursuit Distributor +25 points,
+    Goldseam Precision Fracturer +25 points, Thousand-Fault Rupture
+    Accelerator +30 points.
+  - "While <bearer> lives, every squad member" packages are squad auras
+    (`squad-hp`, `squad-defense`; each living wearer adds its own; they multiply
+    separately, B3a rule).
+- New aura kinds:
+  - `squad-skill-power` (Deep Foundation Planetpress +35%) adds to every
+    living squad member's Skill Power in combat.
+  - `squad-skill-efficiency` (Eclipse Planet Watchtower +35%) adds to skill
+    Skill Efficiency and joins Convergent Light on top of the stored loadout
+    value (readiness and spend). Existing caps apply: 50% discount, floors 1
+    and 70.
+  - Both need the wearer alive. Menus show loadout values without them
+    (combat only, like the other squad conditionals).
+- **D-492 attribution:** another squad member's Master with a squad-aura kind
+  is now a boost source for this bearer (previously only gear was scanned).
+- **Plumbing for B5d:**
+  - Phoenix-style revive amounts read their own gear or Master source
+    (`sourceAmount`).
+  - The `revive` event source may be `gear` or `master` (saved-event
+    allowlist updated; `leader` stays rejected).
+
+**Distinct-design test (O6, adjusted):** Conduits stay globally unique by
+(kind, amount) list. A Master must differ from every Conduit and from its own
+bearer's other two Masters; Masters of different bearers may share a stat
+package because Masters are locked to their bearer and their kit clauses differ.
+
+**Fixtures moved to Leaders:**
+- No Conduit or Master keeps `break-heal` or `normal-splash` any more. Tests of
+  those primitives now use the Solenne Leader (`break-heal`) and the Vaelor
+  Leader (`normal-splash`).
+- Flare-cost fixtures read the flare event `cost`, because Master Skill
+  Efficiency now lowers the Convergent Light cost.
+
+**Validation:** `src/game/conduit-restoration-b5a.test.ts` checks:
+- the approved package table;
+- tooltips;
+- the squad Skill Power, Health and Skill Efficiency auras (alive and fallen);
+- that Master crit stats reach the roll;
+- that Master capacity is stored;
+- Master aura attribution;
+- save compatibility: a settled journal with Masters reloads, a Master
+  revive source passes the allowlist, a leader source is rejected, and a
+  mid-run encounter with Masters loads and settles.
+
+**Release open item (all of D-493):** frozen encounters revalidate
+bearer stats, capacity and Convergent Light efficiency against the current
+designs. At release, an encounter saved mid-run with a Conduit or Master whose
+Health, Attack, Defense, capacity or Skill Efficiency changed in B1-B5 will no
+longer validate. Options: bump the frozen-run version (8 → 9) so older
+encounters end with the existing "Combat rules changed" notice (saved rewards
+kept), or keep the version (such encounters fail to load). Owner decision
+needed before the release.

@@ -694,7 +694,10 @@ describe('authored Master equipment', () => {
         expect(damage.every(event => event.type === 'damage' && event.offered > 0)).toBe(true);
       }
       expect(offer).toEqual(plainOffer);
-      expect(result.state.gauge.members[0].charge).toBeLessThan(100);
+      // D-493 B5a: Master Skill Efficiency lowers the Convergent Light cost; the cast still spends Luminosity.
+      const spent = result.events.find(event => event.type === 'flare');
+      expect(spent?.type === 'flare' && spent.cost).toBeGreaterThan(0);
+      expect(result.state.gauge.members[0].charge).toBeLessThan(readyState.gauge.members[0].charge);
       validateRadiantCombat(result.state);
     }
   });

@@ -3531,6 +3531,8 @@ var conduitDescriptions = {
   "squad-attack": (a) => `While this bearer lives, every squad member has ${percent(a)} more Attack (each living wearer adds its own).`,
   "squad-gain": (a) => `While this bearer lives, every squad member has Gauge Gain +${percent(a)} (each living wearer adds its own).`,
   "squad-defense": (a) => `While this bearer lives, every squad member has ${percent(a)} more Defense (each living wearer adds its own).`,
+  "squad-skill-power": (a) => `While this bearer lives, every squad member has Skill Power +${percent(a)} (each living wearer adds its own).`,
+  "squad-skill-efficiency": (a) => `While this bearer lives, every squad member has Skill Efficiency +${percent(a)} on skills and Convergent Light (each living wearer adds its own).`,
   "ally-defense-share": (a) => `While this bearer lives, other living allies gain Defense equal to ${percent(a)} of this bearer's current Defense.`,
   "oceanic-power": (a) => `Skill Power increases by ${percent(a)} for each other Oceanic squad member, including defeated ones.`,
   "census-power": (a) => `Skill Power increases by ${percent(a)} for each different element among living squad members.`,
@@ -17482,39 +17484,40 @@ var leaderDesigns = {
   ilvaris: pair("heal-buff", 0.1, "round-charge", 2),
   kaelith: pair("opening", 0.25, "exposed", 0.2)
 };
+var e = effect;
 var masterDesigns = {
-  ember: [pair("burn-power", 0.4, "leech", 0.08), pair("flare", 0.3, "normal-burn", 0.15), pair("burning", 0.35, "flare-heal", 0.3)],
-  tide: [pair("break-heal", 0.4, "defense", 0.25), pair("shielding", 0.4, "guard-heal", 0.3), pair("normal-weaken", 0.18, "guard-shield", 0.6)],
-  sprout: [pair("round-team-heal", 0.12, "healing", 0.25), pair("normal-weaken", 0.15, "normal-heal", 0.4), pair("heal-shield", 0.5, "flare-team-charge", 6)],
-  atmoso: [pair("normal-splash", 0.4, "normal-charge", 4), pair("hurt-charge", 8, "cooperation", 0.3), pair("first-action", 0.35, "pierce", 0.2)],
-  aurora: [pair("normal-expose", 0.18, "weakened", 0.3), pair("flare-weaken", 0.2, "shelter", 0.15), pair("hurt-heal", 0.4, "normal-weaken", 0.15)],
-  bliss: [pair("flare-heal", 0.5, "heal-buff", 0.15), pair("normal", 0.3, "normal-heal", 0.25), pair("flare-team-charge", 10, "next-buff", 0.15)],
-  bruno: [pair("normal-reduction", 0.15, "defense", 0.3), pair("guard-shield", 1, "flare-shield", 0.05), pair("normal-expose", 0.18, "guard-team-shield", 0.4)],
-  disciple: [pair("next-buff", 0.25, "cooperation", 0.2), pair("team-charge", 3, "flare-team-charge", 8), pair("heal-buff", 0.2, "normal-splash", 0.25)],
-  elise: [pair("pierce", 0.3, "normal-charge", 3), pair("flare", 0.35, "normal-splash", 0.25), pair("kill-charge", 15, "first-action", 0.3)],
-  razor: [pair("reflect", 0.4, "normal-reduction", 0.15), pair("shielded", 0.4, "flare", 0.25), pair("normal-weaken", 0.2, "solo", 0.3)],
-  rosetta: [pair("status-shield", 0.6, "cooperation", 0.25), pair("exposed", 0.35, "normal-splash", 0.3), pair("normal-expose", 0.2, "next-buff", 0.2)],
-  thornia: [pair("reflect", 0.5, "normal-burn", 0.1), pair("flare-weaken", 0.2, "guard-shield", 0.6), pair("guard-team-shield", 0.6, "shelter", 0.12)],
-  crinso: [pair("burn-power", 0.3, "execution", 0.4), pair("shielded", 0.35, "normal-splash", 0.3), pair("flare", 0.25, "leech", 0.12)],
-  nerithe: [pair("normal-expose", 0.18, "team-charge", 3), pair("flare-team-charge", 8, "normal-reduction", 0.15), pair("flare", 0.3, "kill-charge", 12)],
-  orvella: [pair("normal-shield", 0.6, "guard-team-shield", 0.4), pair("guard-heal", 0.4, "hurt-heal", 0.3), pair("defense", 0.35, "shielded", 0.25)],
-  vaelor: [pair("hurt-charge", 8, "flare", 0.3), pair("cooperation", 0.3, "flare-weaken", 0.18), pair("team-charge", 4, "next-buff", 0.15)],
-  caldrex: [pair("defense", 0.35, "burning", 0.25), pair("reflect", 0.6, "hurt-charge", 5), pair("burn-heal", 0.25, "round-team-heal", 0.1)],
-  solenne: [pair("guard", 0.2, "shelter", 0.15), pair("flare-shield", 0.08, "round-shield", 0.5), pair("absorbed-charge", 8, "flare-team-charge", 6)],
-  myrthen: [pair("execution", 0.45, "normal", 0.25), pair("normal-charge", 5, "wounded", 0.3), pair("kill-heal", 0.08, "kill-charge", 12)],
-  neralis: [pair("heal-shield", 0.6, "recovery", 0.25), pair("guard-team-shield", 0.5, "heal-charge", 5), pair("heal-team-charge", 4, "hurt-heal", 0.3)],
-  varkhel: [pair("hurt-shield", 0.08, "burn-power", 0.3), pair("reflect", 0.5, "shielded", 0.3), pair("guard-team-shield", 0.5, "wounded", 0.3)],
-  seravelle: [pair("normal-heal", 0.45, "flare-team-charge", 6), pair("heal-buff", 0.2, "round-charge", 4), pair("heal-team-charge", 4, "shelter", 0.12)],
-  velmira: [pair("weakened", 0.4, "normal-charge", 4), pair("normal-splash", 0.3, "normal-weaken", 0.18), pair("kill-charge", 12, "leech", 0.1)],
-  maerion: [pair("absorbed-charge", 8, "healing", 0.25), pair("heal-shield", 0.6, "flare-heal", 0.35), pair("heal-charge", 6, "normal-heal", 0.25)],
-  caevren: [pair("defense", 0.4, "hurt-charge", 6), pair("shielding", 0.4, "brace", 0.15), pair("reflect", 0.6, "normal-shield", 0.5)],
-  vespera: [pair("next-buff", 0.2, "flare", 0.25), pair("burn-power", 0.4, "pierce", 0.15), pair("team-charge", 3, "burning", 0.3)],
-  ilyss: [pair("healing", 0.35, "flare-team-charge", 6), pair("heal-shield", 0.6, "resilience", 0.3), pair("heal-buff", 0.2, "guard-heal", 0.3)],
-  asteriel: [pair("healing", 0.3, "heal-buff", 0.18), pair("guard-heal", 0.4, "round-shield", 0.5), pair("heal-team-charge", 4, "normal-charge", 3)],
-  serapha: [pair("flare-heal", 0.4, "guard-team-shield", 0.4), pair("shelter", 0.15, "hurt-heal", 0.4), pair("normal-weaken", 0.18, "round-charge", 4)],
-  ozriel: [pair("hurt-shield", 0.1, "brace", 0.15), pair("flare-weaken", 0.25, "shielding", 0.3), pair("break-heal", 0.5, "round-charge", 5)],
-  ilvaris: [pair("heal-buff", 0.25, "flare-weaken", 0.15), pair("flare-team-charge", 10, "round-team-heal", 0.1), pair("normal-expose", 0.18, "heal-charge", 5)],
-  kaelith: [pair("exposed", 0.4, "pierce", 0.25), pair("normal-expose", 0.2, "kill-charge", 12), pair("execution", 0.4, "normal-weaken", 0.2)]
+  ember: [[e("skill-power", 0.55), e("squad-hp", 0.12), e("squad-defense", 0.04)], [e("hp", 0.11), e("defense", 0.13), e("skill-power", 0.4)], [e("attack", 0.17), e("gauge-gain", 0.35)]],
+  tide: [[e("skill-efficiency", 0.35), e("skill-power", 0.45), e("defense", 0.16)], [e("defense", 0.09), e("gauge-gain", 0.25)], [e("defense", 0.19), e("skill-power", 0.35)]],
+  sprout: [[e("skill-power", 0.65), e("capacity", 0.5)], pair("normal-weaken", 0.15, "normal-heal", 0.4), [e("hp", 0.198), e("gauge-gain", 0.65)]],
+  atmoso: [[e("skill-power", 0.5), e("capacity", 0.6)], [e("squad-hp", 0.11), e("squad-defense", 0.09)], [e("skill-power", 0.45), e("attack", 0.09)]],
+  aurora: [[e("squad-hp", 0.15), e("squad-defense", 0.13)], [e("defense", 0.05), e("skill-power", 0.65)], [e("skill-power", 0.45), e("hp", 0.05)]],
+  bliss: [[e("skill-power", 0.7), e("defense", 0.09)], [e("attack", 0.17), e("crit-rate", 0.25)], [e("skill-efficiency", 0.25), e("gauge-gain", 0.35)]],
+  bruno: [[e("defense", 0.11), e("skill-power", 0.45)], [e("hp", 0.13), e("defense", 0.13)], [e("attack", 0.12), e("defense", 0.17)]],
+  disciple: [[e("hp", 0.15), e("skill-efficiency", 0.35)], pair("team-charge", 3, "flare-team-charge", 8), [e("skill-power", 0.6), e("crit-damage", 0.45)]],
+  elise: [[e("skill-power", 0.55), e("hp", 0.09), e("defense", 0.07)], [e("attack", 0.16), e("skill-power", 0.4)], [e("crit-damage", 0.65), e("gauge-gain", 0.4)]],
+  razor: [[e("hp", 0.2), e("gauge-gain", 0.3)], [e("squad-hp", 0.11), e("squad-skill-efficiency", 0.35)], [e("skill-power", 0.55), e("skill-efficiency", 0.35)]],
+  rosetta: [[e("skill-efficiency", 0.35), e("skill-power", 0.55)], [e("hp", 0.16), e("skill-efficiency", 0.3)], [e("skill-power", 0.6), e("capacity", 0.35)]],
+  thornia: [[e("skill-power", 0.75), e("defense", 0.04)], [e("hp", 0.18), e("defense", 0.12)], [e("skill-power", 0.45), e("gauge-gain", 0.35)]],
+  crinso: [[e("crit-damage", 0.75), e("capacity", 0.5)], [e("defense", 0.11), e("skill-efficiency", 0.45)], [e("skill-power", 0.65), e("skill-efficiency", 0.45)]],
+  nerithe: [[e("attack", 0.15), e("capacity", 0.5)], [e("skill-power", 0.55), e("defense", 0.11)], pair("flare", 0.3, "kill-charge", 12)],
+  orvella: [[e("hp", 0.22), e("capacity", 0.4)], [e("squad-hp", 0.11), e("squad-skill-power", 0.35)], [e("hp", 0.07), e("skill-efficiency", 0.15)]],
+  vaelor: [[e("skill-power", 0.35), e("attack", 0.21)], [e("attack", 0.18), e("skill-efficiency", 0.3)], [e("crit-rate", 0.3), e("gauge-gain", 0.45)]],
+  caldrex: [[e("hp", 0.12), e("defense", 0.1)], [e("hp", 0.1), e("attack", 0.08), e("skill-power", 0.25)], [e("hp", 0.15), e("skill-power", 0.3)]],
+  solenne: [[e("hp", 0.1), e("defense", 0.15)], [e("hp", 0.15), e("skill-power", 0.25)], [e("hp", 0.08), e("skill-power", 0.3), e("skill-efficiency", 0.15)]],
+  myrthen: [[e("attack", 0.12), e("skill-power", 0.35)], [e("attack", 0.09), e("crit-rate", 0.25)], [e("attack", 0.08), e("hp", 0.1), e("skill-power", 0.2)]],
+  neralis: [[e("hp", 0.12), e("skill-power", 0.35)], [e("hp", 0.1), e("defense", 0.12)], [e("hp", 0.08), e("attack", 0.08), e("skill-power", 0.25)]],
+  varkhel: [[e("hp", 0.14), e("defense", 0.1)], [e("hp", 0.1), e("skill-power", 0.35)], [e("hp", 0.1), e("attack", 0.09)]],
+  seravelle: [[e("hp", 0.1), e("skill-power", 0.35)], [e("attack", 0.09), e("skill-power", 0.3)], [e("hp", 0.12), e("defense", 0.08)]],
+  velmira: [[e("attack", 0.12), e("skill-power", 0.3)], [e("attack", 0.09), e("crit-rate", 0.25)], [e("hp", 0.1), e("attack", 0.07), e("skill-power", 0.2)]],
+  maerion: [[e("hp", 0.15), e("skill-power", 0.25)], [e("hp", 0.1), e("skill-power", 0.35)], [e("hp", 0.08), e("skill-efficiency", 0.2)]],
+  caevren: [[e("hp", 0.12), e("defense", 0.12)], [e("hp", 0.15), e("skill-power", 0.25)], [e("defense", 0.1), e("attack", 0.08)]],
+  vespera: [[e("hp", 0.1), e("skill-power", 0.3)], [e("attack", 0.08), e("skill-power", 0.3)], [e("hp", 0.12), e("skill-efficiency", 0.2)]],
+  ilyss: [[e("hp", 0.1), e("skill-power", 0.35)], [e("hp", 0.15), e("skill-power", 0.2)], [e("hp", 0.08), e("skill-efficiency", 0.2)]],
+  asteriel: [[e("hp", 0.12), e("skill-power", 0.3)], [e("hp", 0.15), e("skill-power", 0.25)], [e("hp", 0.08), e("skill-efficiency", 0.2)]],
+  serapha: [[e("hp", 0.12), e("skill-power", 0.35)], [e("hp", 0.1), e("defense", 0.08)], [e("hp", 0.08), e("skill-efficiency", 0.2)]],
+  ozriel: [[e("hp", 0.15), e("defense", 0.13)], [e("defense", 0.11), e("skill-power", 0.45)], [e("hp", 0.11), e("skill-efficiency", 0.45)]],
+  ilvaris: [[e("skill-power", 0.45), e("skill-efficiency", 0.45)], [e("hp", 0.13), e("skill-efficiency", 0.45)], [e("skill-power", 0.55), e("gauge-gain", 0.55)]],
+  kaelith: [[e("skill-power", 0.55), e("attack", 0.09)], [e("skill-efficiency", 0.4), e("crit-rate", 0.3)], [e("skill-power", 0.45), e("gauge-gain", 0.45)]]
 };
 var radiantMasters = Object.fromEntries(
   masterConduits.filter((master2) => characterReleased(master2.character)).map((master2) => {
@@ -18111,7 +18114,12 @@ function radiantSkillStats(state, id, slot) {
     member.stats.hp,
     distinctElements(state.bearers.map((entry) => entry.loadout))
   );
-  return { ...stats, skillPower: stats.skillPower + squadSkillPower(state, member, slot), gaugeGain: gaugeGain(state, member) };
+  return {
+    ...stats,
+    skillPower: stats.skillPower + squadSkillPower(state, member, slot),
+    skillEfficiency: stats.skillEfficiency + squadAura(state, "squad-skill-efficiency"),
+    gaugeGain: gaugeGain(state, member)
+  };
 }
 function squadSkillPower(state, member, slot) {
   const element = (entry) => radiantStarterKits[entry.loadout.starter].elementId;
@@ -18119,7 +18127,7 @@ function squadSkillPower(state, member, slot) {
   const living3 = new Set(state.bearers.filter((entry) => entry.hp > 0).map(element)).size;
   const shielded = member.shields.length > 0 && skillTraits(member.loadout, slot).restore ? squadAura(state, "shielded-restore-power") : 0;
   const alternate = slot !== "flare" && member.stormstep !== void 0 && member.stormstep !== slot ? combatAmount(state, member, "alternate-power") : 0;
-  return oceanic * combatAmount(state, member, "oceanic-power") + living3 * combatAmount(state, member, "census-power") + defeatedCount(state) * combatAmount(state, member, "ruin-power") + shielded + alternate + loneAmount(state, member, "lone-power") + (member.choirPower ?? 0);
+  return oceanic * combatAmount(state, member, "oceanic-power") + living3 * combatAmount(state, member, "census-power") + defeatedCount(state) * combatAmount(state, member, "ruin-power") + shielded + alternate + loneAmount(state, member, "lone-power") + (member.choirPower ?? 0) + squadAura(state, "squad-skill-power");
 }
 function gaugeGain(state, member) {
   const distinct = distinctElements(state.bearers.map((entry) => entry.loadout));
@@ -18202,6 +18210,10 @@ function slotAmount(member, conduitId, kind) {
   const slot = member.loadout.gear?.find((entry) => entry?.id === conduitId);
   return slot ? radiantConduitPrimitives(slot).filter((entry) => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0) : 0;
 }
+function sourceAmount(member, source, kind) {
+  if (source.kind === "gear") return slotAmount(member, source.conduitId, kind);
+  return member.loadout.masterId === null ? 0 : radiantMasters[member.loadout.masterId].effects.filter((entry) => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0);
+}
 function lowestChargeAlly(state, owner) {
   const share = (member) => {
     const entry = state.gauge.members.find((m) => m.id === member.loadout.id);
@@ -18213,7 +18225,7 @@ function radiantActionEfficiency(state, id, slot) {
   const member = bearer(state, id), kit = radiantStarterKits[member.loadout.starter].kit;
   const def = slot === "flare" ? kit.flare : slot === 1 ? kit.skill1 : kit.skill2;
   const tokens = heldEfficiency((member.tokens ?? []).filter((token2) => tokenMatches(token2, { kind: slot === "flare" ? "flare" : "skill", def })));
-  return slot === "flare" ? tokens : radiantSkillStats(state, id, slot).skillEfficiency + tokens;
+  return slot === "flare" ? tokens + squadAura(state, "squad-skill-efficiency") : radiantSkillStats(state, id, slot).skillEfficiency + tokens;
 }
 function allyCritRate(state, actor2, target) {
   const burn2 = target.debuffs.find((effect2) => effect2.category === "burn");
@@ -18827,7 +18839,9 @@ var squadSourceKinds = [
   "skill-mark",
   "burning-attack",
   "weaken-ally-efficiency",
-  "weaken-vulnerability"
+  "weaken-vulnerability",
+  "squad-skill-power",
+  "squad-skill-efficiency"
 ];
 function gearSources(state, holder) {
   const id = holder.loadout.id, seen = /* @__PURE__ */ new Set(), sources = [];
@@ -18841,6 +18855,8 @@ function gearSources(state, holder) {
     for (const slot of member.loadout.gear ?? [])
       if (slot !== null && radiantConduitPrimitives(slot).some((entry) => squadSourceKinds.includes(entry.kind)))
         sources.push({ kind: "gear", bearerId: member.loadout.id, conduitId: slot.id });
+    if (member.loadout.masterId !== null && radiantMasters[member.loadout.masterId].effects.some((entry) => squadSourceKinds.includes(entry.kind)))
+      sources.push({ kind: "master", bearerId: member.loadout.id });
   }
   if (casting?.holderId === id) for (const token2 of casting.tokens) {
     const source = { kind: "gear", bearerId: token2.giverId, conduitId: token2.conduitId };
@@ -19002,7 +19018,7 @@ function accordSave(state, events, holder, giver) {
 }
 function phoenixRevive(state, events, target) {
   const source = gearSourceOf(target, "revive");
-  if (source?.kind !== "gear" || !rescueAvailable(state, target)) return false;
+  if (source === void 0 || source.kind === "leader" || !rescueAvailable(state, target)) return false;
   const id = target.loadout.id;
   markRescued(state, target);
   delete target.accord;
@@ -19012,13 +19028,13 @@ function phoenixRevive(state, events, target) {
   delete target.tokens;
   delete target.stormstep;
   delete target.critCount;
-  target.hp = Math.min(maximumHealth(state, target), Math.max(1, rounded(slotAmount(target, source.conduitId, "revive") * target.stats.hp)));
+  target.hp = Math.min(maximumHealth(state, target), Math.max(1, rounded(sourceAmount(target, source, "revive") * target.stats.hp)));
   events.push({ type: "revive", targetId: id, source, amount: target.hp });
   sync(state);
   const member = state.gauge.members.find((entry) => entry.id === id);
   member.charge = 0;
   events.push({ type: "charge", bearerId: id, personal: 0, bonusRolls: 0, bonusOffered: 0 });
-  const share = slotAmount(target, source.conduitId, "revive-shield");
+  const share = sourceAmount(target, source, "revive-shield");
   for (const ally of state.bearers) if (ally !== target && ally.hp > 0) shield2(state, events, ally, source, share * ally.stats.hp);
   return true;
 }
@@ -19914,7 +19930,7 @@ function flare(state, events, actor2, targetId, hitCharge) {
   if (def.target === "one-enemy" && (targetId === void 0 || enemy(state, targetId).hp <= 0))
     throw new Error("This signature requires a selected living enemy.");
   const held = takeTokens(state, actor2, { kind: "flare", def, targets: castTargets(state, def, targetId) });
-  const spent = spendReadyFlare(state.gauge, actor2.loadout.id, targetEfficiency(state, actor2, def, targetId) + heldEfficiency(held));
+  const spent = spendReadyFlare(state.gauge, actor2.loadout.id, targetEfficiency(state, actor2, def, targetId) + heldEfficiency(held) + squadAura(state, "squad-skill-efficiency"));
   state.gauge = spent.state;
   const tier = spent.tier, scale = radiantFlareTierScale[tier], power2 = radiantFlarePower(actor2.loadout);
   events.push({ type: "flare", bearerId: actor2.loadout.id, tier, name: def.name, cost: spent.cost });
@@ -21409,7 +21425,7 @@ function validEvent(value2) {
   if (value2.critical !== void 0 && (value2.type !== "damage" || !["critical", "elemental"].includes(String(value2.critical)))) return false;
   if (value2.type === "skill" && value2.slot !== 1 && value2.slot !== 2) return false;
   if (value2.type === "flare" && value2.cost !== void 0 && (!Number.isSafeInteger(value2.cost) || Number(value2.cost) < 1)) return false;
-  if (value2.type === "revive" && (!record4(value2.source) || value2.source.kind !== "gear" || !validSource(value2.source) || !Number.isSafeInteger(value2.amount) || Number(value2.amount) < 1)) return false;
+  if (value2.type === "revive" && (!record4(value2.source) || !["gear", "master"].includes(String(value2.source.kind)) || !validSource(value2.source) || !Number.isSafeInteger(value2.amount) || Number(value2.amount) < 1)) return false;
   if (value2.type === "signature" && (!radiantSignatureOps.has(String(value2.op)) || value2.holderId !== void 0 && !validId(value2.holderId))) return false;
   if (value2.boosts !== void 0 && (!["damage", "heal", "shield"].includes(value2.type) || !Array.isArray(value2.boosts) || !value2.boosts.every((boost) => record4(boost) && validSource(boost.source) && record4(boost.source) && ["gear", "master", "leader"].includes(String(boost.source.kind)) && Number.isSafeInteger(boost.amount) && Number(boost.amount) > 0))) return false;
   if (value2.gained !== void 0 && (value2.type !== "charge" || value2.gearSource === void 0 || !Number.isSafeInteger(value2.gained) || Number(value2.gained) < 1)) return false;
@@ -22634,7 +22650,7 @@ function resolveOperation(previous, operation, entropy) {
       saveAccountRewards(storage, result, game.run.session.runId);
       game.run.session.state = result.state;
       game.run.session.stageEvents.push(...result.events);
-      game.run.session.log = [...game.run.session.log, ...result.events.map((e) => e.message)].slice(-100);
+      game.run.session.log = [...game.run.session.log, ...result.events.map((e2) => e2.message)].slice(-100);
       game.run.session.resultsVisible = result.state.phase !== "player";
     }
     game.account = loadAccount(storage);

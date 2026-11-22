@@ -139,12 +139,12 @@ describe('critical hits: damage', () => {
     expect(tick.critical).toBeDefined();
     expect(tick.offered).toBeGreaterThanOrEqual(Math.round(burn.magnitude * 1.5) - 1);
     // Conduit-generated packets (here Worldbreaker Cannonade's splash) carry no critical flag even when the hit crits.
-    // D-493 B4: Atmoso's Sky Without End Turbine Master carries the splash (Worldbreaker Cannonade no longer does).
-    const splashState = createRadiantCombat([{ ...member('atmoso'), masterId: 'master-atmoso-1' }],
+    // D-493 B5a: Vaelor's Leader carries the splash (no Conduit or Master keeps `normal-splash`).
+    const splashState = createRadiantCombat([member('vaelor')],
       ['enemy', 'enemy2'].map(id => ({ id, elementId: null, stats: { hp: 1000000, attack: 400, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
     for (const enemy of splashState.enemies) { enemy.hp -= 1; enemy.currency.lowestHP = enemy.hp; }
-    const splash = certain(splashState, 'atmoso', .8);
-    const events = damage(act(splash, { type: 'normal', bearerId: 'atmoso', targetId: 'enemy' }).events);
+    const splash = certain(splashState, 'vaelor', .8);
+    const events = damage(act(splash, { type: 'normal', bearerId: 'vaelor', targetId: 'enemy' }).events);
     expect(events.find(event => event.origin === 'direct')?.critical).toBeDefined();
     expect(events.filter(event => event.origin === 'generated').length).toBeGreaterThan(0);
     expect(events.filter(event => event.origin === 'generated').every(event => event.critical === undefined)).toBe(true);
