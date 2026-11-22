@@ -1,5 +1,85 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B5c1: Master next-action bonuses (D-493, 2026-11-22)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5d with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5c1-master-next-action-bonuses-d-493-battle-flurry-phase-4c).
+
+**Owner answers (Plan mode):**
+- B5c is split: B5c1 (this entry) and B5c2 (22 trigger rows), with a fresh
+  session between.
+- `master-vaelor-1`: +60% when Last Chord is cast on Crescendo, otherwise
+  +30%.
+
+**What changed:**
+- Bonuses can now come from a Master:
+  - a token names `conduitId` or `masterId`, and may carry `uses`;
+  - D-492 credits the Master, and the bonus tag names it;
+  - old gear tokens validate unchanged.
+- New token rules:
+  - `on`: only against Infernis's Burn, or only on the Quarry;
+  - `hold`: kept while Tidal Shelter's Shield remains;
+  - `perTarget`/`uses`: Elise's Shuriken bonuses;
+  - `max`: Crinso cap and Vaelor Crescendo;
+  - a Skill Duration stat.
+- 18 rows: ember-3, tide-2, sprout-1, atmoso-3, bliss-2 (bonus part),
+  bliss-3, disciple-3, elise-2, elise-3, razor-3, rosetta-2 (bonus part),
+  rosetta-3, crinso-1, nerithe-2, orvella-1 (next-skill part), vaelor-1,
+  vaelor-3, ilyss-3.
+- Saves: optional token `masterId`/`uses` and `RadiantSeed.empowered`. No
+  version bump and no new events or RNG.
+
+**Implementation choices (owner may reverse):**
+- Sprout-1 triggers on bloom, even at full Health.
+- Atmoso-3's Gain Up lasts 2 turns.
+- Disciple-3 reads the current Attack Up source.
+- Tide's own Shield counts for Tide-2.
+- Elise-2 bonuses expire like other bonuses.
+
+**Rows still to build:**
+- **B5c2 (22):**
+  - rows: atmoso-1, atmoso-2, disciple-2, razor-1, razor-2, rosetta-1,
+    crinso-2, crinso-3, nerithe-3, solenne-2, myrthen-3, neralis-2,
+    neralis-3, varkhel-2, seravelle-3, velmira-3, maerion-2, maerion-3,
+    vespera-3, ilyss-2, asteriel-2, asteriel-3;
+  - plus bliss-2's Closing heal and rosetta-2's 8% contributor heal.
+  - `master-disciple-2` and `master-nerithe-3` lose their Radiant-era pairs
+    then.
+  - Row text: the "Restore as" cells of the B5 table in the phase 4
+    restoration doc.
+  - Approach (approved B5c plan): use `masterCharge`, `shield()` and
+    `heal()` with a Master source. Once-per-turn and once-per-round limits
+    use `gearTriggered` keys. Rosetta-1 needs an optional `quarryHits`
+    counter. Myrthen-3 detects the killer in `packet`. The 50% lines read
+    Health before the heal (`hp - effective`). Maerion-2's overheal is
+    `offered - effective`.
+- **B5d (19):** unchanged from the B5a entry below.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5c.test.ts`: 21 of 21. The B5b content
+  test now ignores B5c kinds.
+- Full `npx vitest run`: 11,058 of 11,058 passed (323 files).
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced):
+  - Calamity EX+1/2/3: 100/96.3/92.1% (B5b 100/95.8/92.1%);
+  - Oblivion 161-180: 95.2% (same); Dungeon: 99.9%;
+  - every other ordinary group: 100%;
+  - flare-saving Calamity: 100/100/99.5%.
+  No band moved more than 1 point.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel and tags (tests only), especially the Master
+bonus tags, Tide-2's tag disappearing when its Shield breaks, and Elise's
+"2 stored" tag.
+
+**Open release item (unchanged):** frozen-run version bump (8 → 9) or not;
+see the B5a entry.
+
+**Next:** B5c2 in a fresh Opus session (Plan mode optional; the plan is
+approved).
+
 ## Battle Flurry Phase 4c B5b: Master kit modifiers (D-493, 2026-11-22)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release after

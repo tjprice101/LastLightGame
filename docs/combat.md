@@ -3087,3 +3087,107 @@ existing `burn-power` kind. Master Luminosity grants carry a Master
 Fixtures adjusted: the B5a package table ignores clause kinds;
 `combat-engine.test.ts` compares the Flare offer with and without a Master
 only when the Master leaves the Flare unchanged.
+
+## Conduit restoration B5c1: Master next-action bonuses (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5d with one enemy retune). Rows: the B5 table in the
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md).
+Masters have no ranks.
+
+**Owner answers (Plan mode, 2026-11-22):**
+- B5c is split in two sessions. **B5c1** (this section) changes the token
+  shape and builds 18 rows: 16 next-action bonus rows (including
+  `master-orvella-1`'s next-skill Skill Efficiency moved from B5b) and two
+  conditional rows. **B5c2** builds the 22 Luminosity, Shield and heal
+  trigger rows.
+- `master-vaelor-1` Final Chord Celestial Resonator: the bonus is +60% when
+  Last Chord of the Sky itself is cast on the Crescendo beat, otherwise +30%.
+- Adapt (O1) rows use the pre-Radiant crit triggers (B5a note), so Bliss-2,
+  Elise-3, Razor-3, Crinso-1, Vaelor-3 and Disciple-3 grant real Critical Rate
+  or Critical Damage.
+
+**Master-given bonuses (token shape):** `RadiantToken` now names exactly one
+of `conduitId` (a gear Conduit, as before) or `masterId` (the giver's
+equipped Master), plus an optional `uses`. Saved gear bonuses validate
+unchanged. D-492 credits a Master bonus to that Master (`tokenSource`). The
+bonus tag names the Master ("Unbroken Sunforge Throne · Next damaging skill
++40% Skill Power vs Infernis's Burn").
+
+New token rule fields:
+- `on`: the bonus applies only to hits on an enemy carrying the giver's Burn
+  (Ember-3) or on the giver's Quarry (Rosetta-3). It waits, unspent, for an
+  action that reaches such an enemy.
+- `hold`: Tide-2's bonus is held only while its holder keeps a Shield from
+  Tide's skill (Tidal Shelter). It is removed at the end of the action that
+  breaks the Shield.
+- `perTarget` / `uses`: Elise-2 keeps one shared bonus per enemy, with up to 2
+  stored uses (one per lodged Shuriken); each damaging skill on that enemy
+  spends one use from every copy.
+- `max`: a value cap as a multiple of the Master amount (Crinso-1 ×4 = 60%,
+  Vaelor-1 ×2 on Crescendo).
+- New stat `duration`: +1 turn of Skill Duration on the holder's next skill
+  (cap 6).
+
+**Rows** (every bonus is a next-action bonus that lasts through the end of the
+next turn unless stated; "others" = each other living ally):
+
+| Master | Clause |
+|---|---|
+| `master-ember-3` Unbroken Sunforge Throne | Dawnfire: others +40% Skill Power on their next damaging skill or Convergent Light, against enemies carrying Infernis's Burn. |
+| `master-tide-2` Ocean Memory Worldpump | Tidal Shelter +50% Skill Power; each ally holding its Shield +25% Skill Efficiency on their next skill while the Shield remains. |
+| `master-sprout-1` Worldseed Mercy Foundry | A blooming Seed gives its holder +25% Skill Power on their next skill this turn; an Empowered Seed (Worldseed) also +15% Skill Efficiency. |
+| `master-bliss-2` Stillplume Planetary Ballet | Warfeather Cut in Opening: others +25 Critical Rate on their next damaging action. (The Closing heal is B5c2.) |
+| `master-bliss-3` Quiet Heaven Fanforge | Thousandfeather Stillness: others +25% Skill Efficiency on their next skill; cast in Closing, also +1 turn Skill Duration. |
+| `master-elise-2` Twin Star Planetary Ratchet | Each lodged Shuriken stores a shared +35% Skill Power for the next other ally's damaging skill on that enemy; recalling removes unused ones. |
+| `master-elise-3` Storm Empress Execution Clock | Recalling both Shuriken: others +40% Critical Damage on their next damaging action, plus +15 Critical Rate if both were in the same enemy. |
+| `master-razor-3` Nightglass Counterblade Engine | Nightcleave spending Wounds: others +30 Critical Rate on their next damaging action. |
+| `master-rosetta-2` Virtuous Planet Rosegarden | Crimson Skyfall on the Quarry: each other contributor this turn +20% Skill Efficiency on their next skill. (The heal is B5c2.) |
+| `master-rosetta-3` Golden Thorn Judgment Loom | Golden Thorn Volley: others +35% Skill Power on their next damaging skill on Rosetta's Quarry. |
+| `master-crinso-1` Twin-Rose Singularity Drive | Each Combo Blossoming Cataclysm spends: others +15% Critical Damage on their next damaging action, up to 60%. |
+| `master-nerithe-2` Folded Ocean Planetarium | Fold the Sea moving Survey to a different enemy: others +40% Skill Power on their next damaging skill on that enemy. |
+| `master-orvella-1` Throne Beneath the World | Worldweight Citadel: others +20% Skill Efficiency on their next skill (with the B5b Foundation carry). |
+| `master-vaelor-1` Final Chord Celestial Resonator | Last Chord of the Sky: others +30% Skill Power on their next skill (+60% when cast on Crescendo). |
+| `master-vaelor-3` Broken Sky Imperial Metronome | Vaelor's Normal Attack on Tune: others +25 Critical Rate; on Crescendo: +40% Critical Damage (next damaging action). |
+| `master-ilyss-3` Broken-Link Continuance Engine | Unbind the Living removing Weaken: its target +25% Skill Power on skills and Convergent Light through the next turn (timed, refreshes, not spent). |
+| `master-disciple-3` Sovereign Will Amplifier | While Disciple lives, allies holding Attack Up from Disciple gain +30 Critical Rate and +40% Critical Damage on Normal Attacks, skills and Convergent Light. |
+| `master-atmoso-3` Crosswind Imperial Drive | An ally who adds a Gust gains Luminosity Gain Up +30% (Master source, 2 turns, strongest applies). |
+
+"Next skill" uses the existing `skill` scope (a skill or Convergent Light),
+as in B3b. Seed bonuses granted as a turn begins last that turn.
+
+**Saves (no version bump; loading never writes; no new RNG draws or events):**
+- New optional fields: token `masterId` and `uses`, and `RadiantSeed.empowered`
+  (only `true`, set when Worldseed plants the Seed).
+- Validation rejects:
+  - a Master bonus whose giver does not wear that Master, or whose value is
+    above the Master amount × `max`;
+  - a token with both or neither source field;
+  - `uses` outside 1-2 or on another kind;
+  - duplicates per giver and kind (per enemy for Elise-2);
+  - a Tide-2 bonus without its Shield;
+  - a malformed `empowered`.
+
+**Implementation choices (owner may reverse):**
+- Sprout-1 triggers when the Seed blooms (its heal resolves), even on a holder
+  at full Health.
+- Atmoso-3 lasts 2 turns, ticked with the enemy phase.
+- Disciple-3 reads the holder's current Attack Up source (a stronger Attack Up
+  from another ally replaces it).
+- Tide-2 bonuses go to every ally holding a Shield from Tide's skill,
+  including Tide.
+- Elise-2's bonus ends with the turn after the latest lodge, like other
+  bonuses, even if the Shuriken stays lodged.
+
+**Validation:** `src/game/conduit-restoration-b5c.test.ts` (21 tests) checks:
+- the 18 approved clause rows and their tooltips;
+- every grant: Burn-conditioned spend and Master credit, the Tide Shield hold
+  and break, Seed bloom and Empowered, Opening/Closing, Shuriken stores and
+  uses and recall, recall crits, Wounds, Quarry, Combo cap, Survey, Citadel,
+  Crescendo, Tune, the timed Unbind bonus, the Disciple crit aura (alive,
+  fallen, another source) and the Gust Gain Up;
+- forged Master bonuses and fields are rejected;
+- a settled journal with B5c1 Masters reloads, and a mid-run encounter loads
+  and settles.
+
+The B5b content test now checks only B5b clause kinds.

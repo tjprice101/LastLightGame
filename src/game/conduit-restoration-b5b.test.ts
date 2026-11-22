@@ -37,7 +37,9 @@ const clauses: Record<string, string> = {
   'master-serapha-1': 'signature-cap 1, interval-heal .05',
 };
 const parse = (text: string) => text.split(', ').map(part => { const [kind, amount] = part.split(' '); return [kind, Number(amount)]; });
-const clauseKind = (id: string, kind: string) => (radiantMasterClauseKinds as readonly string[]).includes(kind) ||
+// B5c kinds (listed after 'interval-heal') are checked in their own suite.
+const b5bKinds = radiantMasterClauseKinds.slice(0, radiantMasterClauseKinds.indexOf('interval-heal') + 1) as readonly string[];
+const clauseKind = (id: string, kind: string) => b5bKinds.includes(kind) ||
   (id === 'master-vespera-2' && kind === 'burn-power');
 
 function member(starter: RadiantBearerId, masterId: RadiantMasterId | null = null): RadiantLoadout {

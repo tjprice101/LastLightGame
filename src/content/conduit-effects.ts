@@ -61,7 +61,14 @@ export type RadiantConduitEffect =
   | 'harvest-bloom' | 'carry-current' | 'strain-pierce' | 'strain-charge' | 'move-as-one' | 'first-skill-crosscut'
   | 'seam-weakened' | 'edge-pierce' | 'pane-weaken' | 'refusal-restore' | 'verse-marks' | 'hymn-charge' | 'tomorrow-marks'
   | 'meridian-pierce' | 'shatterfall-incision' | 'denial-incisions' | 'unreturned-cap' | 'covenant' | 'beacon-signal'
-  | 'signal-pierce' | 'resurrection-heal' | 'promise-power' | 'interval-heal';
+  | 'signal-pierce' | 'resurrection-heal' | 'promise-power' | 'interval-heal'
+  // D-493 B5c1 (Masters): next-action bonuses a Master grants (each is also its token kind), Tidal Shelter's Skill Power,
+  // Disciple's Attack Up crit clause and Atmoso's Gust Luminosity Gain Up.
+  | 'dawnfire-ally-power' | 'shelter-power' | 'shelter-efficiency' | 'seed-power' | 'seed-efficiency' | 'opening-ally-crit'
+  | 'stillness-efficiency' | 'stillness-duration' | 'shuriken-power' | 'recall-crit-damage' | 'recall-crit-rate'
+  | 'nightcleave-crit' | 'skyfall-efficiency' | 'volley-power' | 'cataclysm-crit-damage' | 'fold-power' | 'citadel-efficiency'
+  | 'chord-power' | 'tune-crit' | 'crescendo-crit-damage' | 'unbind-power' | 'resolve-crit-rate' | 'resolve-crit-damage'
+  | 'gust-gain';
 /** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration);
  * `step` primitives add `step` per rank instead of scaling (C12 exceptions such as Stasis Reliquary's chance). */
 export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true; step?: number }
@@ -114,10 +121,18 @@ export const radiantMasterClauseKinds = [
   'seam-weakened', 'edge-pierce', 'pane-weaken', 'refusal-restore', 'verse-marks', 'hymn-charge', 'tomorrow-marks',
   'meridian-pierce', 'shatterfall-incision', 'denial-incisions', 'unreturned-cap', 'covenant', 'beacon-signal',
   'signal-pierce', 'resurrection-heal', 'promise-power', 'interval-heal',
+  // B5c1: player-turn triggers and next-action bonuses.
+  'dawnfire-ally-power', 'shelter-power', 'shelter-efficiency', 'seed-power', 'seed-efficiency', 'opening-ally-crit',
+  'stillness-efficiency', 'stillness-duration', 'shuriken-power', 'recall-crit-damage', 'recall-crit-rate',
+  'nightcleave-crit', 'skyfall-efficiency', 'volley-power', 'cataclysm-crit-damage', 'fold-power', 'citadel-efficiency',
+  'chord-power', 'tune-crit', 'crescendo-crit-damage', 'unbind-power', 'resolve-crit-rate', 'resolve-crit-damage',
+  'gust-gain',
 ] as const satisfies readonly RadiantConduitEffect[];
 /** D-493 B5b Master clause rules (fixed): Worldwall Ascendant's Health basis, the Tension spent for Return the Strain's
  * Luminosity, the turns of Pane of Absolution's extra Weaken and of Seismic Hammerfall's Defense reduction. */
-export const radiantMasterRules = { worldwallHealth: .375, strainThreshold: 3, paneTurns: 1, sunderTurns: 2 } as const;
+export const radiantMasterRules = { worldwallHealth: .375, strainThreshold: 3, paneTurns: 1, sunderTurns: 2,
+  /** B5c1: Blossoming Cataclysm's Critical Damage bonus cap, Atmoso's Gust Luminosity Gain Up turns. */
+  cataclysmCap: .6, gustTurns: 2 } as const;
 export const pair = (kind: RadiantConduitEffect, amount: number, related: RadiantConduitEffect, extra: number): RadiantConduitDesign =>
   [effect(kind, amount), effect(related, extra)];
 

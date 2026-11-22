@@ -1,5 +1,6 @@
 import { radiantBeat, radiantShurikenCount, radiantSignatureCaps, radiantTokenRules, type RadiantCombatState, type RadiantToken } from '../game/combat-engine';
 import { getConduit } from '../content/conduits';
+import { getMasterConduit } from '../content/master-conduits';
 import { radiantEquipmentAmount, radiantSignatureCap } from '../content/combat-kits';
 import { characterName } from '../content/character-art';
 import { escapeDialogText as escape } from './game-dialog';
@@ -30,13 +31,22 @@ const turns = (value: number) => `${value} ${value === 1 ? 'turn' : 'turns'}`;
 /** D-493 B3b next-action bonus labels: which action spends it, then the exact bonus. */
 const tokenScopes = { 'damaging-action': 'Next damaging action', skill: 'Next skill', skill12: 'Next Skill 1 or 2',
   'damaging-skill': 'Next damaging skill', flare: 'Next Convergent Light', 'restore-skill': 'Next heal or Shield' } as const;
+/** The Conduit or (D-493 B5c1) Master that granted a bonus. */
+export function radiantTokenSourceName(token: RadiantToken): string {
+  return token.masterId !== undefined ? getMasterConduit(token.masterId).name : getConduit(token.conduitId!).name;
+}
 export function radiantTokenLabel(token: RadiantToken): string {
   const rule = radiantTokenRules[token.kind];
   const bonus = rule.stat === 'crit-rate' ? `+${Number((token.value * 100).toFixed(1))} Critical Rate`
+    : rule.stat === 'duration' ? `+${turns(token.value)} Skill Duration`
     : `+${pct(token.value)} ${{ power: 'Skill Power', 'restore-power': 'Skill Power', efficiency: 'Skill Efficiency', attack: 'Attack',
       'crit-damage': 'Critical Damage', direct: 'direct damage' }[rule.stat]}`;
   const life = rule.life === 'spent' ? ' · until used' : rule.life === 'timed' ? ' · through next turn' : '';
-  return `${getConduit(token.conduitId).name} · ${tokenScopes[rule.scope]} ${bonus}${rule.target ? ' vs marked enemy' : ''}${life}`;
+  const against = rule.on === 'giver-burn' ? " vs Infernis's Burn" : rule.on === 'giver-quarry' ? ' vs Quarry'
+    : rule.target ? ' vs marked enemy' : '';
+  const stored = rule.uses && (token.uses ?? 1) > 1 ? ` · ${token.uses} stored` : '';
+  const kept = rule.hold === 'giver-shield' ? ' · while Shielded' : '';
+  return `${radiantTokenSourceName(token)} · ${tokenScopes[rule.scope]} ${bonus}${against}${stored}${kept}${life}`;
 }
 
 export function radiantSignatureView(state: RadiantCombatState): RadiantSignatureView {
@@ -60,7 +70,7 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
     bonuses[id] = [];
     for (const token of member.tokens ?? []) {
       bonuses[id].push(radiantTokenLabel(token));
-      if (token.targetId) tag(token.targetId, `${getConduit(token.conduitId).name} target (${nameOf(id)})`);
+      if (token.targetId) tag(token.targetId, `${radiantTokenSourceName(token)} target (${nameOf(id)})`);
     }
     // D-493 B3c: Accord held (gold bonus tag), a used Conduit rescue, and Atlas Bastion's taunt.
     if (member.accord) bonuses[id].push(`${getConduit('tranquilitic-accord-bastion').name} · survives one fatal hit (${nameOf(member.accord)})`);

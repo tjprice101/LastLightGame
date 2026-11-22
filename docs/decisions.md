@@ -152,6 +152,18 @@
   skill as cast and are not credited separately in the D-492 summary; other
   allies' Defense clauses and Cover/Foundation auras are credited to the
   Master; Glass Meridian's ignore reads Incisions before the cast.
+- **B5c owner answers (Plan mode, 2026-11-22):** B5c is split into B5c1
+  (Master-token shape change, 16 next-action rows and 2 conditional rows) and
+  B5c2 (22 Luminosity, Shield and heal trigger rows), with a fresh session
+  between. Final Chord Celestial Resonator (`master-vaelor-1`) gives +60% when
+  Last Chord itself is cast on Crescendo, otherwise +30%.
+- **B5c1 implemented (unreleased, 2026-11-22).** 18 Master rows and
+  Master-given next-action bonuses
+  ([combat spec](combat.md#conduit-restoration-b5c1-master-next-action-bonuses-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): Sprout-1 triggers on bloom even
+  at full Health; Atmoso-3's Gain Up lasts 2 turns; Disciple-3 reads the
+  current Attack Up source; Tide's own Shield counts for Tide-2; Elise-2's
+  bonuses expire like other bonuses even while the Shuriken stays lodged.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 
