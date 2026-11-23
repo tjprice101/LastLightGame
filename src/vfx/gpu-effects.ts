@@ -98,7 +98,7 @@ export const beatLight = {
   flareEdge: {
     sparkling: { strength: 'soft' as EdgeStrength, area: 'field' as const, intensity: 1, reach: .2, holdMs: 80, decayMs: 380 },
     glimmering: { strength: 'full' as EdgeStrength, area: 'field' as const, intensity: 1, reach: .24, holdMs: 100, decayMs: 480 },
-    ultimate: { strength: 'full' as EdgeStrength, area: 'screen' as const, intensity: 1.2, reach: .3, holdMs: 120, decayMs: 650 },
+    ultimate: { strength: 'full' as EdgeStrength, area: 'screen' as const, intensity: .85, reach: .26, holdMs: 60, decayMs: 650 },
   },
   /** A support Convergent Light (no damage): soft field light at reduced weight. */
   supportFlareEdge: { strength: 'soft' as EdgeStrength, area: 'field' as const, intensity: .6 },
@@ -106,7 +106,7 @@ export const beatLight = {
   flareRays: {
     sparkling: { size: 1.5, intensity: .7, density: 2.6, spin: .4 },
     glimmering: { size: 1.9, intensity: .9, density: 3.2, spin: .5 },
-    ultimate: { size: 2.6, intensity: 1.2, density: 4, spin: .7 },
+    ultimate: { size: 2.6, intensity: .9, density: 4, spin: .7 },
   },
   /** Critical ring on a critical hit; an Elemental Crit is wider, longer and brighter. */
   crit: { normal: { size: .75, ms: 300, intensity: .9 }, elemental: { size: 1.05, ms: 380, intensity: 1.2 } },

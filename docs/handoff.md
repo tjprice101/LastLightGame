@@ -1,5 +1,50 @@
 # Current state and handoff
 
+## UI and VFX overhaul Phase 1, step 4: finisher tuning (D-494, 2026-11-23)
+
+**Implemented on branch `ui-vfx-shader-kit`, committed locally; not pushed or
+released.** Client only; no authority change.
+
+**What changed:**
+- `src/vfx/spectacle-scene.ts`: with the shader kit on, the full flash draws
+  at 30% instead of 55% (the edge bloom now carries the impact). Kit off keeps
+  55%.
+- `src/vfx/gpu-effects.ts`: Ultimate edge bloom 0.85 (was 1.2), reach 0.26,
+  60 ms hold; Ultimate god rays 0.9 (was 1.2).
+- `src/presentation/battle-cutin.css`: the D-490 glint sweep showed as a
+  hard-edged box (invalid `skew:` property, gradient edges not transparent).
+  Now `transform: skewX(-12deg)` with edges that fade fully.
+- `tools/capture_frames.mjs --low`: reports a 4-core device so the Spectacle
+  layer starts in low quality.
+- Docs: [combat spec](combat.md#step-4-tuning-readable-finisher-peak), D-494,
+  Future Plans row.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- `npx vitest run src/vfx src/presentation/battle-screen.test.ts
+  src/presentation/battle-cutin-radiant.test.ts`: 175 of 175 pass.
+- Real GPU captures (`--stream --gpu`, `nerithe-10`), reviewed frame by frame:
+  - Ultimate, Glimmering, Sparkling after the change: the field stays visible
+    through the finisher peak and the combo total stays readable; the screen
+    is clean within about 1 s.
+  - Phone portrait (390x844) Ultimate after the change: light stays in the
+    field, the total stays readable.
+  - Low quality (`--low`) Ultimate: same look with fewer particles (captured
+    before the flash change; the flash change does not depend on quality).
+  - Skill 1: target veil shows and fades cleanly.
+  - Boss special (round 12, "Ocean Beyond the Map"): soft blue edge bloom,
+    decays cleanly.
+  - Cut-in sweep: now slanted with soft edges.
+- `npx vite build`: succeeded. Full `npx vitest run` was not rerun for this
+  step.
+
+**Not done:**
+- Not captured: critical-hit ring and Conduit callout pulse in motion (unit
+  tests only; the preview has no way to force a crit or callout).
+- Owner in-game feel review.
+- Step 5: release (push `main` and `overhaul/radiant-foundation`, verify the
+  hosted build). Needs owner go-ahead.
+
 ## UI and VFX overhaul Phase 1, step 3: overlays wired into battle beats (D-494, 2026-11-23)
 
 **Implemented on branch `ui-vfx-shader-kit`, committed locally; not pushed or

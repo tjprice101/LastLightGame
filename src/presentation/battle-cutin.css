@@ -87,8 +87,9 @@
 .cutin-bar { position: absolute; left: 0; right: 0; height: 13svh; z-index: 2; background: #020208; }
 .cutin-bar-top { top: 0; transform-origin: top; border-bottom: 2px solid var(--gild-mid); box-shadow: 0 2px 18px color-mix(in srgb, var(--element) 50%, transparent); }
 .cutin-bar-bottom { bottom: 0; transform-origin: bottom; border-top: 2px solid var(--gild-mid); box-shadow: 0 -2px 18px color-mix(in srgb, var(--element) 50%, transparent); }
-.cutin-wipe { position: absolute; top: -10%; bottom: -10%; left: 0; width: 40vw; z-index: 3; opacity: 0; pointer-events: none; skew: -12deg 0;
-  background: linear-gradient(100deg, transparent, color-mix(in srgb, var(--element) 30%, #fff) 50%, transparent); }
+.cutin-wipe { position: absolute; top: -10%; bottom: -10%; left: 0; width: 40vw; z-index: 3; opacity: 0; pointer-events: none; transform: skewX(-12deg);
+  /* Horizontal stops fade fully to transparent at both edges, so the band has no seam (it was a hard-edged box). */
+  background: linear-gradient(90deg, transparent 8%, color-mix(in srgb, var(--element) 30%, #fff) 50%, transparent 92%); }
 @media (max-width: 700px) {
   .cutin-takeover .cutin-portrait { left: -12%; width: 124vw; top: 9svh; height: 62svh; }
   .cutin-takeover .cutin-copy { left: 6%; right: 6%; top: auto; bottom: 15svh; translate: none; justify-items: center; text-align: center; }

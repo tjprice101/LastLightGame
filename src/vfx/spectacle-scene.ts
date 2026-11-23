@@ -653,7 +653,9 @@ export class SpectacleScene extends Phaser.Scene {
   flash(kind: 'soft' | 'full', ms: number): void {
     if (!this.ready) return;
     this.flashTween?.stop();
-    this.flashRect.setAlpha(kind === 'full' ? .55 : .2);
+    // D-494 step 4: with the shader kit the edge bloom carries the impact (and bloom lifts this flat white),
+    // so the full flash drops to keep damage numbers readable; without the kit it keeps its D-490 weight.
+    this.flashRect.setAlpha(kind === 'full' ? (this.shaderKit ? .3 : .55) : .2);
     this.begin();
     let done = false;
     const finish = () => { if (done) return; done = true; this.flashRect.setAlpha(0); this.end(); };

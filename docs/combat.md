@@ -2253,9 +2253,10 @@ never an outcome, RNG or receipt.
 
 ## Battle Spectacle: shader kit (D-494, overhaul Phase 1)
 
-Status: **steps 2 and 3 implemented 2026-11-23 on branch `ui-vfx-shader-kit`,
+Status: **steps 2 to 4 implemented 2026-11-23 on branch `ui-vfx-shader-kit`,
 not released.** Bloom is on, and the battle beats call the overlays (step 3,
-below). Step 4 tunes intensity.
+below). Step 4 tuned the finisher peak (see
+[step 4 tuning](#step-4-tuning-readable-finisher-peak)).
 
 The GPU layer's camera runs one post pass (`src/vfx/shaders/`):
 threshold, a separable blur at half size, then a composite of scene + bloom +
@@ -2313,7 +2314,7 @@ are fractions of the struck unit's smaller side. Times are at battle speed 1.
 | Skill 2 | Element veil 1.15x, 640 ms, plus a soft field edge bloom in the caster's element | First hit only |
 | Convergent Light, Sparkling | God rays 1.5x; soft field edge bloom | Rays rise through the gather; edge bloom on the finisher |
 | Convergent Light, Glimmering | God rays 1.9x; full field edge bloom | As above |
-| Convergent Light, Ultimate | God rays 2.6x, denser and faster; full screen edge bloom | As above |
+| Convergent Light, Ultimate | God rays 2.6x at 0.9, denser and faster; full screen edge bloom at 0.85, reach 0.26, 60 ms hold, 650 ms decay | As above |
 | Support Convergent Light | Soft field edge bloom at 0.6 | Finisher |
 | Critical hit | Chromatic ring in the attacker's element, 0.75x, 300 ms (Elemental Crit 1.05x, 380 ms, brighter) | Each critical packet, alongside the D-493 pulse |
 | Boss special | Soft field edge bloom in the boss's element | The special's first hit |
@@ -2327,6 +2328,20 @@ are fractions of the struck unit's smaller side. Times are at battle speed 1.
   side: veil 0.45, critical ring 0.4, god rays 0.7, 0.85 or 1.1 by tier. A
   Story or War boss has a large art box, and without the cap a Skill 2 veil
   spilled light over the page above and below the field.
+- **Step 4 tuning: readable finisher peak.** <a id="step-4-tuning-readable-finisher-peak"></a>
+  Real GPU captures showed the finisher peak washing the whole field
+  milky white for about 200 ms, hiding the hit numbers by the burst. Two
+  layers stacked: the D-490 flat full flash (55%, then bloomed by the kit)
+  and the new edge bloom. With the shader kit on, the full flash now draws at
+  30% (soft stays 20%); without the kit it keeps 55%. The Ultimate edge bloom
+  and god rays were also lowered (table above). The combo total stays
+  readable through every tier's peak in landscape, phone portrait and low
+  quality.
+- **Cut-in glint sweep fix.** The D-490 `.cutin-wipe` used `skew:`, which
+  is not a CSS property, and a 100° gradient whose edges were not
+  transparent, so it showed as a hard-edged box. It now uses
+  `transform: skewX(-12deg)` and horizontal stops that fade fully at both
+  edges.
 - **Flash budget.** A full edge bloom on a Glimmering or Ultimate finisher
   follows the finisher's full flash. That is two of the three full flashes
   allowed per second; overlapping actions fall back to soft. The boss special
