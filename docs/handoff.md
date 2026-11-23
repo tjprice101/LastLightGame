@@ -2,7 +2,7 @@
 
 ## Battle Flurry Phase 4c release: B1-B5d, `radiant-trio-v2`, schema 9 (D-493, 2026-11-23)
 
-**Release in progress 2026-11-23** (see Release record). Ships every Phase 4c
+**Released 2026-11-23** (see Release record). Ships every Phase 4c
 batch (B1-B5d, the crit step) and the `radiant-trio-v2` retune in one release.
 
 **Owner answers:**
@@ -34,7 +34,18 @@ batch (B1-B5d, the crit step) and the `radiant-trio-v2` retune in one release.
 (Calamity about 13); the B5 Master callouts, Worldseed revive and new enemy
 tags were tested only by code.
 
-**Release record:** pending (merge, push, deploy, hosted check).
+**Release record:**
+- Merged into `main` as `c56381fc` (the `main` tree matches the validated
+  branch; the hotfix conflicts were identical changes). `main`,
+  `overhaul/radiant-foundation` and `battle-flurry-phase3` pushed at
+  `c56381fc`.
+- `game-operation` deployed from `main` (`supabase@3.0.0 functions deploy`,
+  "Deployed Functions."); a fresh bundle rebuild matched the committed one.
+- "Deploy Last Light" run 45178346018: build and deploy succeeded.
+- The hosted site serves `radiant-continuation-v5` and `radiant-trio-v2`.
+- Server secret names checked: `RADIANT_STUDY_CALIBRATION` absent.
+- Not run: hosted smoke scripts (they write disposable production accounts)
+  and a hosted battle played by hand.
 
 **Next:** owner in-game feel review of Phase 4c (fight length, Master
 callouts, revive moment). Then the Radiant follow-through items in Future
