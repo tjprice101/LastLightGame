@@ -173,6 +173,22 @@
   Disciple-2 reads Attack Up held before the action; Neralis-3, Maerion-3 and
   Solenne-2 count skills only; Asteriel-2 triggers on every Shelter cast;
   Myrthen-3 counts Normal defeats; givers must be alive.
+- **B5d owner answers (Plan mode, 2026-11-22):** one session; the
+  `master-sprout-3` Worldseed revive is used only when an ally actually
+  returns; the `master-thornia-1` Thorn Trap Defense cut lasts through the
+  next player turn. Myrthen-2 joins the existing `conduit` stream
+  (`conduitSeed`); no new stream.
+- **B5d implemented (unreleased, 2026-11-22).** 19 Master enemy-phase and
+  special rows, the Worldseed revive on the C18 ledger and Seedtrace's
+  Conduit-stream rolls
+  ([combat spec](combat.md#conduit-restoration-b5d-master-enemy-phase-and-special-clauses-d-493-battle-flurry-phase-4c)).
+  Every live Master now carries its restored effect. Implementation choices
+  (owner may reverse): revived allies act from the next turn; Caldrex-2
+  strikes once per enemy action; Shadow Rose's damage cut covers Thornia;
+  Weaken triggers read the Weaken held when the enemy attacked; the Foundation
+  heal's share above 12% is lost. Release note: pre-release mid-run saves
+  with Seedtrace equipped fail validation without the 8 → 9 bump (B5a open
+  item).
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 

@@ -296,7 +296,7 @@ const leaderDesigns: Record<RadiantBearerId, RadiantConduitDesign> = {
 };
 // D-493 B5a: restored pre-Radiant Master stat packages (C1 x0.2 on always-on Health/Defense/Attack; Skill stats, capacity and
 // crit stats verbatim; "while <bearer> lives" packages are squad auras). D-493 B5b adds 37 kit-modifier clauses (bearer-locked kinds);
-// B5c and B5d add the rest. Masters whose restored effect is only a B5c clause (disciple-2, nerithe-3) keep their Radiant-era designs.
+// B5c adds player-turn triggers and next-action bonuses; B5d adds enemy-phase triggers, the Worldseed revive and Myrthen's rolls.
 /** D-493 B5b: the own counter (or Promise) a bearer's `signature-cap` and `counter-defense` Master clauses act on. */
 const masterCounters: Partial<Record<RadiantBearerId, { key: RadiantSignatureCapKey; label: string }>> = {
   caldrex: { key: 'heat', label: 'Heat' }, neralis: { key: 'current', label: 'Current' },
@@ -415,36 +415,36 @@ export function radiantKitSkill(loadout: RadiantLoadout, slot: 1 | 2 | 'flare'):
 }
 const e = effect;
 const masterDesigns: Record<RadiantBearerId, readonly [RadiantConduitDesign, RadiantConduitDesign, RadiantConduitDesign]> = {
-  ember: [[e('skill-power', .55), e('squad-hp', .12), e('squad-defense', .04)], [e('hp', .11), e('defense', .13), e('skill-power', .4), e('dawnfire-focus', 1.25)], [e('attack', .17), e('gauge-gain', .35), e('dawnfire-ally-power', .4)]],
+  ember: [[e('skill-power', .55), e('squad-hp', .12), e('squad-defense', .04), e('burn-mend', .25)], [e('hp', .11), e('defense', .13), e('skill-power', .4), e('dawnfire-focus', 1.25)], [e('attack', .17), e('gauge-gain', .35), e('dawnfire-ally-power', .4)]],
   tide: [[e('skill-efficiency', .35), e('skill-power', .45), e('defense', .16)], [e('defense', .09), e('gauge-gain', .25), e('shelter-power', .5), e('shelter-efficiency', .25)], [e('defense', .19), e('skill-power', .35), e('tide-shield-pierce', .25)]],
-  sprout: [[e('skill-power', .65), e('capacity', .5), e('seed-power', .25), e('seed-efficiency', .15)], [e('briar-seeds', .45)], [e('hp', .198), e('gauge-gain', .65)]],
+  sprout: [[e('skill-power', .65), e('capacity', .5), e('seed-power', .25), e('seed-efficiency', .15)], [e('briar-seeds', .45)], [e('hp', .198), e('gauge-gain', .65), e('seed-defense', .25), e('worldseed-revive', .35)]],
   atmoso: [[e('skill-power', .5), e('capacity', .6), e('gust-charge', 3)], [e('squad-hp', .11), e('squad-defense', .09), e('cyclone-shield', .3)], [e('skill-power', .45), e('attack', .09), e('gust-gain', .3)]],
-  aurora: [[e('squad-hp', .15), e('squad-defense', .13)], [e('defense', .05), e('skill-power', .65)], [e('skill-power', .45), e('hp', .05)]],
+  aurora: [[e('squad-hp', .15), e('squad-defense', .13), e('weaken-cut', .25), e('weaken-ward', .15)], [e('defense', .05), e('skill-power', .65), e('verdict-charge', 8)], [e('skill-power', .45), e('hp', .05), e('weaken-mend', .08)]],
   bliss: [[e('skill-power', .7), e('defense', .09), e('flourish-both', 1)], [e('attack', .17), e('crit-rate', .25), e('opening-ally-crit', .25), e('warfeather-heal', .06)], [e('skill-efficiency', .25), e('gauge-gain', .35), e('stillness-efficiency', .25), e('stillness-duration', 1)]],
-  bruno: [[e('defense', .11), e('skill-power', .45)], [e('hp', .13), e('defense', .13), e('worldwall-shield', 3.75), e('cover-gain', .25)], [e('attack', .12), e('defense', .17), e('hammerfall-sunder', .25), e('cover-attack', .25)]],
+  bruno: [[e('defense', .11), e('skill-power', .45), e('cover-defense', .4), e('cover-power', .3)], [e('hp', .13), e('defense', .13), e('worldwall-shield', 3.75), e('cover-gain', .25)], [e('attack', .12), e('defense', .17), e('hammerfall-sunder', .25), e('cover-attack', .25)]],
   disciple: [[e('hp', .15), e('skill-efficiency', .35), e('attack-up-duration', 2)], [e('resolve-charge', 10)], [e('skill-power', .6), e('crit-damage', .45), e('resolve-crit-rate', .3), e('resolve-crit-damage', .4)]],
   elise: [[e('skill-power', .55), e('hp', .09), e('defense', .07), e('shuriken-sunder', .15)], [e('attack', .16), e('skill-power', .4), e('shuriken-power', .35)], [e('crit-damage', .65), e('gauge-gain', .4), e('recall-crit-damage', .4), e('recall-crit-rate', .15)]],
   razor: [[e('hp', .2), e('gauge-gain', .3), e('midnight-heal', .2)], [e('squad-hp', .11), e('squad-skill-efficiency', .35), e('bastion-share', .4)], [e('skill-power', .55), e('skill-efficiency', .35), e('nightcleave-crit', .3)]],
   rosetta: [[e('skill-efficiency', .35), e('skill-power', .55), e('quarry-charge', 12)], [e('hp', .16), e('skill-efficiency', .3), e('skyfall-efficiency', .2), e('skyfall-heal', .08)], [e('skill-power', .6), e('capacity', .35), e('volley-power', .35)]],
-  thornia: [[e('skill-power', .75), e('defense', .04)], [e('hp', .18), e('defense', .12)], [e('skill-power', .45), e('gauge-gain', .35)]],
+  thornia: [[e('skill-power', .75), e('defense', .04), e('trap-cut', .2)], [e('hp', .18), e('defense', .12), e('trap-ward', .12)], [e('skill-power', .45), e('gauge-gain', .35), e('trap-shelter', .15), e('trap-power', .2)]],
   crinso: [[e('crit-damage', .75), e('capacity', .5), e('cataclysm-crit-damage', .15)], [e('defense', .11), e('skill-efficiency', .45), e('edge-shield', .12)], [e('skill-power', .65), e('skill-efficiency', .45), e('combo-heal', .08)]],
   nerithe: [[e('attack', .15), e('capacity', .5), e('survey-pierce', .1)], [e('skill-power', .55), e('defense', .11), e('fold-power', .4)], [e('survey-charge', 4)]],
-  orvella: [[e('hp', .22), e('capacity', .4), e('citadel-carry', .4), e('citadel-efficiency', .2)], [e('squad-hp', .11), e('squad-skill-power', .35)], [e('hp', .07), e('skill-efficiency', .15), e('foundation-guard', .25), e('keystone-power', .5)]],
+  orvella: [[e('hp', .22), e('capacity', .4), e('citadel-carry', .4), e('citadel-efficiency', .2)], [e('squad-hp', .11), e('squad-skill-power', .35), e('foundation-store', .4)], [e('hp', .07), e('skill-efficiency', .15), e('foundation-guard', .25), e('keystone-power', .5)]],
   vaelor: [[e('skill-power', .35), e('attack', .21), e('chord-power', .3)], [e('attack', .18), e('skill-efficiency', .3), e('rise-cascade', .2)], [e('crit-rate', .3), e('gauge-gain', .45), e('tune-crit', .25), e('crescendo-crit-damage', .4)]],
-  caldrex: [[e('hp', .12), e('defense', .1), e('signature-cap', 2), e('counter-defense', .12)], [e('hp', .1), e('attack', .08), e('skill-power', .25)], [e('hp', .15), e('skill-power', .3)]],
-  solenne: [[e('hp', .1), e('defense', .15), e('stillness-reduction', .35)], [e('hp', .15), e('skill-power', .25), e('repose-shield', .2)], [e('hp', .08), e('skill-power', .3), e('skill-efficiency', .15)]],
-  myrthen: [[e('attack', .12), e('skill-power', .35), e('harvest-bloom', .75)], [e('attack', .09), e('crit-rate', .25)], [e('attack', .08), e('hp', .1), e('skill-power', .2), e('reaping-heal', .06), e('reaping-charge', 5)]],
+  caldrex: [[e('hp', .12), e('defense', .1), e('signature-cap', 2), e('counter-defense', .12)], [e('hp', .1), e('attack', .08), e('skill-power', .25), e('recoil-strike', .9)], [e('hp', .15), e('skill-power', .3), e('burn-squad-mend', .08)]],
+  solenne: [[e('hp', .1), e('defense', .15), e('stillness-reduction', .35)], [e('hp', .15), e('skill-power', .25), e('repose-shield', .2)], [e('hp', .08), e('skill-power', .3), e('skill-efficiency', .15), e('stillness-charge', 7), e('reverb-charge', 3)]],
+  myrthen: [[e('attack', .12), e('skill-power', .35), e('harvest-bloom', .75)], [e('attack', .09), e('crit-rate', .25), e('harvest-chance', .1), e('ripen-health', .05)], [e('attack', .08), e('hp', .1), e('skill-power', .2), e('reaping-heal', .06), e('reaping-charge', 5)]],
   neralis: [[e('hp', .12), e('skill-power', .35), e('signature-cap', 1), e('carry-current', .09)], [e('hp', .1), e('defense', .12), e('station-shield', .2)], [e('hp', .08), e('attack', .08), e('skill-power', .25), e('weir-charge', 10)]],
   varkhel: [[e('hp', .14), e('defense', .1), e('signature-cap', 1), e('counter-defense', .1)], [e('hp', .1), e('skill-power', .35), e('chain-shield', .16)], [e('hp', .1), e('attack', .09), e('strain-pierce', .35), e('strain-charge', 15)]],
-  seravelle: [[e('hp', .1), e('skill-power', .35), e('signature-cap', 1), e('move-as-one', .4)], [e('attack', .09), e('skill-power', .3)], [e('hp', .12), e('defense', .08), e('road-shield', .22)]],
+  seravelle: [[e('hp', .1), e('skill-power', .35), e('signature-cap', 1), e('move-as-one', .4)], [e('attack', .09), e('skill-power', .3), e('burn-relay', 5)], [e('hp', .12), e('defense', .08), e('road-shield', .22)]],
   velmira: [[e('attack', .12), e('skill-power', .3), e('signature-cap', 1), e('first-skill-crosscut', 1)], [e('attack', .09), e('crit-rate', .25), e('seam-weakened', .35), e('edge-pierce', .35)], [e('hp', .1), e('attack', .07), e('skill-power', .2), e('doorway-charge', 25), e('doorway-heal', .18)]],
   maerion: [[e('hp', .15), e('skill-power', .25), e('unreturned-cap', .85)], [e('hp', .1), e('skill-power', .35), e('ferry-shield', .35)], [e('hp', .08), e('skill-efficiency', .2), e('ferrywake-charge', 15)]],
-  caevren: [[e('hp', .12), e('defense', .12), e('signature-cap', 2), e('counter-defense', .1)], [e('hp', .15), e('skill-power', .25), e('covenant', .55)], [e('defense', .1), e('attack', .08)]],
+  caevren: [[e('hp', .12), e('defense', .12), e('signature-cap', 2), e('counter-defense', .1)], [e('hp', .15), e('skill-power', .25), e('covenant', .55)], [e('defense', .1), e('attack', .08), e('watch-strike', 1)]],
   vespera: [[e('hp', .1), e('skill-power', .3), e('beacon-signal', .5)], [e('attack', .08), e('skill-power', .3), e('burn-power', .3), e('signal-pierce', .15)], [e('hp', .12), e('skill-efficiency', .2), e('relay-charge', 10)]],
   ilyss: [[e('hp', .1), e('skill-power', .35), e('signature-cap', 1), e('resurrection-heal', .13)], [e('hp', .15), e('skill-power', .2), e('unbind-shield', .15)], [e('hp', .08), e('skill-efficiency', .2), e('unbind-power', .25)]],
   asteriel: [[e('hp', .12), e('skill-power', .3), e('signature-cap', 1), e('promise-power', .05)], [e('hp', .15), e('skill-power', .25), e('shelter-heal', .2)], [e('hp', .08), e('skill-efficiency', .2), e('starseed-charge', 8)]],
-  serapha: [[e('hp', .12), e('skill-power', .35), e('signature-cap', 1), e('interval-heal', .05)], [e('hp', .1), e('defense', .08)], [e('hp', .08), e('skill-efficiency', .2)]],
-  ozriel: [[e('hp', .15), e('defense', .13)], [e('defense', .11), e('skill-power', .45), e('pane-weaken', .25)], [e('hp', .11), e('skill-efficiency', .45), e('refusal-restore', 1)]],
+  serapha: [[e('hp', .12), e('skill-power', .35), e('signature-cap', 1), e('interval-heal', .05)], [e('hp', .1), e('defense', .08), e('ceasefire-mend', .12)], [e('hp', .08), e('skill-efficiency', .2), e('weaken-relay', 10)]],
+  ozriel: [[e('hp', .15), e('defense', .13), e('refusal-ward', .2)], [e('defense', .11), e('skill-power', .45), e('pane-weaken', .25)], [e('hp', .11), e('skill-efficiency', .45), e('refusal-restore', 1)]],
   ilvaris: [[e('skill-power', .45), e('skill-efficiency', .45), e('verse-marks', 2)], [e('hp', .13), e('skill-efficiency', .45), e('hymn-charge', 8)], [e('skill-power', .55), e('gauge-gain', .55), e('tomorrow-marks', 3)]],
   kaelith: [[e('skill-power', .55), e('attack', .09), e('meridian-pierce', .4)], [e('skill-efficiency', .4), e('crit-rate', .3), e('shatterfall-incision', 1)], [e('skill-power', .45), e('gauge-gain', .45), e('denial-incisions', 3)]],
 };

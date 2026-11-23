@@ -1,5 +1,68 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B5d: Master enemy-phase and special clauses (D-493, 2026-11-22)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release with
+one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5d-master-enemy-phase-and-special-clauses-d-493-battle-flurry-phase-4c).
+Every live Master now carries its restored effect; every row of the phase 4
+restoration proposal is built.
+
+**Owner answers (Plan mode):**
+- One session for all 19 rows.
+- `master-sprout-3`: the Worldseed revive is used only when an ally returns.
+- `master-thornia-1`: the Thorn Trap Defense cut lasts through the next
+  player turn.
+
+**What changed:**
+- 19 rows: ember-1, sprout-3, aurora-1, aurora-2, aurora-3, bruno-1,
+  thornia-1, thornia-2, thornia-3, orvella-2, caldrex-2, caldrex-3,
+  solenne-3, myrthen-2, seravelle-2, ozriel-1, caevren-3, serapha-2,
+  serapha-3.
+- Worldseed revive on the shared C18 rescue ledger (`reviveMember`, shared
+  with Phoenix Reactor).
+- Myrthen-2's Harvest and All That Ripens rolls use the existing `conduit`
+  stream (`conduitSeed`); the handoff's "new stream" was not needed.
+- Saves (no version bump): optional `RadiantThornTrap.empowered`,
+  `RadiantEnemy.trapCut`, `RadiantBearer.foundationStored`; ops `trap-cut`,
+  `ripen-health`, `foundation-store`; token kinds `cover-power`,
+  `trap-power`; per-enemy ledger keys.
+- Presentation: Trap-cut and All That Ripens callouts; "Thorn-cut" and
+  "Final Dawn Tribunal" enemy tags.
+
+**Implementation choices (owner may reverse):**
+- Revived allies act from the next turn.
+- Caldrex-2 strikes once per enemy action.
+- Shadow Rose's damage cut also protects Thornia.
+- Weaken triggers read the Weaken held when the enemy attacked.
+- The Foundation heal's share above 12% is lost.
+- No Harvest roll when the cast leaves Myrthen in Harvest.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5d.test.ts`: 27 of 27. The B5c2 content
+  test now checks only B5c2 kinds.
+- Full `npx vitest run`: 11,102 of 11,105. The three failures
+  (`acquisition-surfaces`, `archives-controls`) were timeouts under load;
+  both files pass alone (8 of 8).
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1):
+  - balanced: Calamity EX+1/2/3 100/96.3/92.1%; Oblivion 161-180 95.2%;
+    Dungeon 99.9%; every other group 100% (all identical to B5c2);
+  - flare-saving: Calamity 100/100/99.5%; Dungeon 99.7%.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel (tests only), especially the Worldseed revive
+moment, the Caldrex/Caevren strikes and the new enemy tags.
+
+**Open release item (updated):** frozen-run version bump (8 → 9) or not; see
+the B5a entry. B5d adds a case: a mid-run save made before the release with
+Seedtrace Pursuit Distributor equipped has no `conduitSeed` and fails
+validation without the bump.
+
+**Next:** the one enemy retune on the final Conduit set (fresh Opus session,
+Plan mode), then the single release and matching server deploy (needs owner
+approval and the 8 → 9 decision).
+
 ## Battle Flurry Phase 4c B5c2: Master Luminosity, Shield and heal triggers (D-493, 2026-11-22)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release after

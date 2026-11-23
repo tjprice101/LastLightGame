@@ -156,12 +156,21 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
       const cut = caster && caster.hp > 0 ? radiantEquipmentAmount(caster.loadout, 'hammerfall-sunder') : 0;
       if (cut > 0) tag(target.id, `Sundered · ${pct(cut)} less Defense · ${turns(target.sunder.remaining)}`);
     }
+    // D-493 B5d Forbidden Garden Worldlock: a triggered Thorn Trap's Defense reduction (through the next player turn).
+    if (target.trapCut) {
+      const caster = state.bearers.find(unit => unit.loadout.id === target.trapCut!.casterId);
+      const cut = caster && caster.hp > 0 ? radiantEquipmentAmount(caster.loadout, 'trap-cut') : 0;
+      if (cut > 0) tag(target.id, `Thorn-cut · ${pct(cut)} less Defense · this turn`);
+    }
     // D-493 B4 Ruinmark Censer: this enemy carries a living wearer's Weaken.
     const weaken = target.debuffs.find(effect => effect.category === 'weaken');
     const wearer = weaken && weaken.source.kind !== 'enemy' ? state.bearers.find(unit => unit.hp > 0 &&
       unit.loadout.id === (weaken.source as { bearerId: string }).bearerId) : undefined;
     const ruin = wearer ? radiantEquipmentAmount(wearer.loadout, 'weaken-vulnerability') : 0;
     if (ruin > 0) tag(target.id, `${getConduit('calamitic-ruinmark-censer').name} · +${pct(ruin)} damage taken`);
+    // D-493 B5d Final Dawn Tribunal: Aurora's Weaken also lowers Defense while she lives.
+    const tribunal = wearer ? radiantEquipmentAmount(wearer.loadout, 'weaken-cut') : 0;
+    if (tribunal > 0) tag(target.id, `Final Dawn Tribunal · ${pct(tribunal)} less Defense`);
   }
   return { owners, holders, bonuses };
 }

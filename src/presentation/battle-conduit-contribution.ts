@@ -211,6 +211,10 @@ export function radiantConduitCallouts(events: readonly RadiantCombatEvent[], ru
       // D-493 B5b Master moments: Seismic Hammerfall's sunder and The World Refuses restoring Refusal.
       at({ kind: 'master', bearerId: event.bearerId }).notes.push(event.op === 'sunder'
         ? "Seismic Hammerfall · target sundered" : `Refusal restored · ${characterLabel(run, event.holderId)}`);
+    } else if (event.type === 'signature' && (event.op === 'trap-cut' || event.op === 'ripen-health')) {
+      // D-493 B5d Master moments: Forbidden Garden Worldlock's Defense cut; All That Ripens paid with Health.
+      at({ kind: 'master', bearerId: event.bearerId }).notes.push(event.op === 'trap-cut'
+        ? 'Thorn Trap · trapped enemy loses Defense' : `All That Ripens paid with ${number(event.amount)} Health`);
     } else if (event.type === 'signature' && event.op === 'borrowed') {
       // D-493 B4: Throne of Borrowed Tomorrows names each ally granted a borrowed skill.
       at({ kind: 'gear', bearerId: event.bearerId, conduitId: 'calamitic-throne-borrowed-tomorrows' })

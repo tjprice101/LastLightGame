@@ -26,7 +26,8 @@ const clauses: Record<string, string> = {
   'master-maerion-3': 'ferrywake-charge 15', 'master-vespera-3': 'relay-charge 10', 'master-ilyss-2': 'unbind-shield .15',
   'master-asteriel-2': 'shelter-heal .2', 'master-asteriel-3': 'starseed-charge 8',
 };
-const b5c2Kinds = radiantMasterClauseKinds.slice(radiantMasterClauseKinds.indexOf('gust-charge')) as readonly string[];
+const b5c2Kinds = radiantMasterClauseKinds.slice(radiantMasterClauseKinds.indexOf('gust-charge'),
+  radiantMasterClauseKinds.indexOf('starseed-charge') + 1) as readonly string[];
 const parse = (text: string) => text.split(', ').map(part => { const [kind, amount] = part.split(' '); return [kind, Number(amount)]; });
 
 function member(starter: RadiantBearerId, masterId: RadiantMasterId | null = null): RadiantLoadout {

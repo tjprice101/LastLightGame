@@ -3268,3 +3268,117 @@ this section supersedes them for these rows.
 the 24 clause rows and tooltips, every trigger and its limit, forged Quarry
 counts and ledger keys, a settled journal reload and a mid-run load. The
 B5c1 content test now checks only B5c1 kinds.
+
+## Conduit restoration B5d: Master enemy-phase and special clauses (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5d with one enemy retune). Rows: the B5 table in the
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md).
+This spec supersedes the "Restore as" cells of these 19 rows. Masters have
+no ranks. With B5d every live Master carries its restored effect.
+
+**Owner answers (Plan mode, 2026-11-22):**
+- B5d is built in one session.
+- `master-sprout-3`: the once-per-encounter Worldseed revive is used only
+  when at least one ally actually returns.
+- `master-thornia-1`: the Thorn Trap's Defense cut lasts the rest of that
+  enemy phase and the next player turn, and ends when that turn ends.
+
+**The `conduit` stream already existed.** `conduitSeed` (O11; Nullsong
+Transmission, Stasis Reliquary) gains `harvest-chance` and `ripen-health`.
+Encounters with Seedtrace Pursuit Distributor now carry a `conduitSeed`,
+derived from `chargeSeed` at creation (frozen-run rebuild still matches). Its
+draws never touch the charge, crit or other streams.
+
+**Rules shared by the rows:**
+- Master heals, Shields, Luminosity and strikes are credited to the Master,
+  skip Conduit healing/shielding bonuses and Skill Power, and never trigger
+  other Conduits or Masters (`masterEnemyPhase` reads native events only).
+- Each clause needs its wearer alive.
+- "Once per enemy phase" uses the turn ledger (`gearTriggered`, cleared when
+  the enemy phase ends) with `bearer:master`. Once per enemy per enemy phase
+  uses `bearer:master:enemy` (accepted only for Final Dawn Tribunal,
+  Merciful Eclipse Regulator, Thousand-Rose Planetary Aegis). Serapha-2
+  adds `ceasefire-mend` to the once-per-ally keys.
+- Burn rows count ticks of a Burn from an ally's ability (skill, Convergent
+  Light, passive or Normal Attack source), never a Conduit- or Master-applied
+  Burn, at the end of the enemy phase (once per phase).
+- "Lowest Health" and "most-wounded" mean the living ally with the lowest
+  Health percentage.
+- Defense Up clauses join the Defense Up category (strongest applies, 100%
+  cap). Enemy Defense cuts join the C14 80% cap and credit the Master.
+
+| Master | Clause |
+|---|---|
+| `master-ember-1` Helios Pyre Cathedral | After Infernis's Burn damages enemies in an enemy phase: heal the most-wounded ally 25% of that Health damage, up to 12% of their maximum Health. |
+| `master-sprout-3` Evergreen Continuance Crucible | Empowered Seed holders: Defense Up +25% until it heals them. Once per encounter, Worldseed revives defeated allies (C18) with 35% Health and 0 Luminosity, after its heal and Seeds (no Seed). |
+| `master-aurora-1` Final Dawn Tribunal | Enemies carrying Aurora's Weaken: 25% less Defense. Such an enemy attacking: the lowest ally a Shield of 15% (once per enemy per phase). |
+| `master-aurora-2` Prismseal Astral Judiciary | An enemy phase that ends with a living ally holding Final Dawn Verdict's Damage Reduction: each living ally 8 Luminosity. |
+| `master-aurora-3` Merciful Eclipse Regulator | An enemy carrying Aurora's Weaken attacks: heal every living ally 8% (once per enemy per phase). |
+| `master-bruno-1` Living Worldwall Atlas | Bruno: Defense Up +40% while his Cover is on a living ally. Damage redirected to him by Cover: the protected ally +30% Skill Power on their next skill or Convergent Light (next-action bonus `cover-power`). |
+| `master-thornia-1` Forbidden Garden Worldlock | An enemy triggers the Thorn Trap: 20% less Defense through the next player turn (`RadiantEnemy.trapCut`). |
+| `master-thornia-2` Thousand-Rose Planetary Aegis | First Empowered trap trigger per enemy per phase: each ally that enemy's attack hit a Shield of 12%. |
+| `master-thornia-3` Shadow Rose Sovereign Foundry | Enemies carrying her Trap: 15% less direct damage to every squad member (Thornia included). A trigger: Thornia +20% Skill Power on her next skill or Convergent Light (`trap-power`). |
+| `master-orvella-2` Deep Foundation Planetpress | 40% of Foundation-absorbed damage is stored (`foundationStored`); when the next turn begins it heals injured living allies, split equally, up to 12% each. |
+| `master-caldrex-2` Counterstroke Recoil Foundry | An enemy's direct attack damages Caldrex's Health or Shield: he strikes it for 90% of his Attack (can crit), once per enemy action. |
+| `master-caldrex-3` Cinderpulse Triage Converter | Once per enemy phase, an ability Burn damages an enemy: heal every living member 8%. |
+| `master-solenne-3` Cadence Differential Drive | Once per enemy phase, an enemy hit spends Stillness: each living member 7 Luminosity. The Last Reverberation: each other ally 3 Luminosity per Stillness spent. |
+| `master-myrthen-2` Seedtrace Pursuit Distributor | After a skill or Convergent Light that leaves her outside Harvest: one roll, below 10% enters Harvest. All That Ripens: one roll once the Luminosity is ready, below 5% costs 15% of maximum Health instead (Luminosity if the Health cost would defeat her). |
+| `master-seravelle-2` Convoy-Flame Distribution Crown | Once per enemy phase, an ability Burn damages an enemy: each other living member 5 Luminosity. |
+| `master-ozriel-1` Refusal Sovereign Heartdrive | Refusal keeps an ally at 1 Health: that ally a Shield of 20%. |
+| `master-caevren-3` Falling-Star Recoil Turbine | Once per enemy phase, an enemy's direct attack (redirected included) damages Caevren's Health or Shield: he strikes it for 100% of his Attack (can crit). |
+| `master-serapha-2` Articulated Mercy Fanforge | Once per ally per enemy phase, an enemy direct hit on an ally holding Serapha's Damage Reduction: heal that ally 12%. |
+| `master-serapha-3` Unstruck Verdict Concordance | Once per enemy phase, an enemy carrying Serapha's Weaken attacks: the lowest ally 10 Luminosity. |
+
+**Engine:**
+- `reviveMember` is the shared rescue core (Phoenix Reactor keeps its extra
+  Shields). Worldseed's revive runs in `masterAfterCast`.
+- Thornia's clauses run in `springThornTraps` (enemy triggers only, not
+  Shadow Rose Cleave). Thousand-Rose Dominion's traps are now flagged
+  `empowered` (kept when a skill trap merges into one).
+- Stillness and Foundation clauses run in `holdStillness` and
+  `foundationAbsorb`; the Cover bonus in the Cover redirect.
+- Other enemy-phase clauses run in `masterEnemyPhase` before
+  `processRadiantGear`. Weaken is read before the attack; Final Dawn
+  Verdict's Reduction is read before the clocks tick (`verdictHolders`).
+
+**Saves (no version bump; loading never writes):**
+- Optional `RadiantThornTrap.empowered` (only `true`), `RadiantEnemy.trapCut`
+  (`{ casterId }` of a squad Thornia with `trap-cut`; cleared on defeat and
+  when the next enemy phase begins) and `RadiantBearer.foundationStored`
+  (whole, at least 1, living wearer only; lost if Orvella falls).
+- `masterUsed` and the rescue ledger also accept `worldseed-revive`.
+- New signature ops `trap-cut`, `ripen-health`, `foundation-store`. When All
+  That Ripens is paid with Health, its `flare` event has no `cost`.
+- New token kinds `cover-power`, `trap-power`.
+
+**Presentation:** Master callout notes for the Trap cut and All That
+Ripens' Health cost (the Worldseed revive uses the existing revive note).
+Enemy tags "Thorn-cut" and "Final Dawn Tribunal · 25% less Defense".
+
+**Implementation choices (owner may reverse):**
+- Worldseed-revived allies act from the next turn.
+- Caldrex-2 strikes once per enemy action (the row states no limit).
+- Shadow Rose Sovereign Foundry's damage cut also protects Thornia.
+- Thousand-Rose Planetary Aegis shields every ally the attack offered damage
+  to, Shield-absorbed hits included.
+- Aurora-1, Aurora-3 and Serapha-3 trigger on any attack by an enemy that
+  held the Weaken when it attacked, even if every hit was absorbed.
+- Helios Pyre Cathedral counts Health damage only, not Shield-absorbed Burn.
+- Deep Foundation Planetpress: the share above the 12% cap is lost, and
+  nothing heals if no ally is injured.
+- Seedtrace: no Harvest roll when the cast leaves her in Harvest; the All
+  That Ripens roll is drawn even when the Health guard makes her pay
+  Luminosity.
+
+**Release note (joins the B5a open item):** an encounter saved mid-run
+before this release with Seedtrace Pursuit Distributor equipped has no
+`conduitSeed` and fails validation unless the frozen-run version is bumped
+(8 → 9).
+
+**Validation:** `src/game/conduit-restoration-b5d.test.ts` (27 tests) checks
+the 19 rows and tooltips, every clause and its limit, the
+non-trigger cases, forged `trapCut`, `foundationStored` and `masterUsed`, the
+shared rescue ledger, exact Conduit-stream outcomes (xorshift replay), a
+settled journal reload and a mid-run load. The B5c2 content test now checks
+only B5c2 kinds.

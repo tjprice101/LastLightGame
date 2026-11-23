@@ -16,9 +16,9 @@
 - **B5b implemented, unreleased (2026-11-22):** 37 Master kit modifiers ([combat.md](../../combat.md#conduit-restoration-b5b-master-kit-modifiers-d-493-battle-flurry-phase-4c)). Owner answers: `master-bruno-2` takes the largest of the kit 40% Health, 375% Defense or 37.5% Health (the literal row was usually lower); `master-ember-2` Burns only the single target; `master-orvella-1`'s next-skill Skill Efficiency moves to B5c. The combat spec supersedes the "Restore as" cells of these 37 rows.
 - **B5c1 implemented, unreleased (2026-11-22):** Master-given next-action bonuses (token shape change) and 18 rows: ember-3, tide-2, sprout-1, atmoso-3, bliss-2 (bonus part), bliss-3, disciple-3, elise-2, elise-3, razor-3, rosetta-2 (bonus part), rosetta-3, crinso-1, nerithe-2, orvella-1 (next-skill part), vaelor-1, vaelor-3, ilyss-3 ([combat.md](../../combat.md#conduit-restoration-b5c1-master-next-action-bonuses-d-493-battle-flurry-phase-4c)). Owner answers: B5c split into B5c1/B5c2; `master-vaelor-1` doubles when Last Chord is cast on Crescendo. The combat spec supersedes the "Restore as" cells of these rows.
 - **B5c2 implemented, unreleased (2026-11-22):** 22 Master Luminosity, Shield and heal trigger rows plus bliss-2's Closing heal and rosetta-2's contributor heal ([combat.md](../../combat.md#conduit-restoration-b5c2-master-luminosity-shield-and-heal-triggers-d-493-battle-flurry-phase-4c)). `master-disciple-2` and `master-nerithe-3` lost their Radiant-era pairs. The combat spec supersedes the "Restore as" cells of these rows.
-- Next: B5d (19 rows) on `battle-flurry-phase3`; then one enemy retune on the final
-  Conduit set and a single release with the matching server deploy (owner
-  choice, D-493).
+- **B5d implemented, unreleased (2026-11-22):** 19 Master enemy-phase and special rows, the `master-sprout-3` Worldseed revive (C18) and the `master-myrthen-2` rolls on the existing `conduit` stream ([combat.md](../../combat.md#conduit-restoration-b5d-master-enemy-phase-and-special-clauses-d-493-battle-flurry-phase-4c)). Owner answers: the revive is used only when an ally returns; Thornia-1's cut lasts through the next player turn. The combat spec supersedes the "Restore as" cells of these rows. Every row of this proposal is now built.
+- Next: one enemy retune on the final Conduit set and a single release with
+  the matching server deploy (owner choice, D-493).
 
 Plan: [battle-flurry-overhaul.md](../battle-flurry-overhaul.md) §E and the
 Phase 4 round 1 note (D-492). Source of old effects:
