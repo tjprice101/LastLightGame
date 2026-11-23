@@ -58,6 +58,8 @@ export interface RadiantBattleEffects {
   /** D-490: light gathers onto the targets for `beats.gather` just before a Convergent Light finisher. */
   gather?(action: RadiantPlayerAction, state: RadiantCombatState, targetIds: readonly string[], beats: SpectacleBeats): Promise<void>;
   screen?(cue: RadiantScreenCue): void;
+  /** D-494: a Conduit, Master or Leader callout appeared at this screen point (viewport px). */
+  calloutPulse?(at: { x: number; y: number }, elementId: string | null): void;
   /** Resolves once every lingering effect has finished (the aftermath beat). */
   idle?(): Promise<void>;
   pause?(paused: boolean): void;
@@ -1418,6 +1420,7 @@ export class RadiantBattleView {
     return Promise.all(this.placeConduitCallouts(radiantConduitCallouts(frame.events, run)).map(async ({ callout, x, y }) => {
       const node = this.spawn('radiant-conduit-callout', x, y);
       this.fillConduitCallout(node, callout);
+      this.effects?.calloutPulse?.({ x, y }, callout.elementId);
       try {
         await this.animate(node, [
           { opacity: 0, transform: 'translate(-50%, 8px) scale(.92)' },

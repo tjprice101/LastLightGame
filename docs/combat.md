@@ -2253,9 +2253,9 @@ never an outcome, RNG or receipt.
 
 ## Battle Spectacle: shader kit (D-494, overhaul Phase 1)
 
-Status: **step 2 implemented 2026-11-23 on branch `ui-vfx-shader-kit`, not
-released.** Bloom is on; the overlays exist but no battle beat calls them yet
-(step 3).
+Status: **steps 2 and 3 implemented 2026-11-23 on branch `ui-vfx-shader-kit`,
+not released.** Bloom is on, and the battle beats call the overlays (step 3,
+below). Step 4 tunes intensity.
 
 The GPU layer's camera runs one post pass (`src/vfx/shaders/`):
 threshold, a separable blur at half size, then a composite of scene + bloom +
@@ -2300,6 +2300,41 @@ Measured 2026-11-23 at 1280 by 720 (dev preview, `nerithe-10`): 60 frames a
 second on the owner's AMD Radeon integrated GPU with bloom, an edge bloom,
 god rays and four veils at once; about 3 on software WebGL (kit now disabled
 there).
+
+### Overlays per battle beat (step 3)
+
+`GpuBattleEffects` (`src/vfx/gpu-effects.ts`) calls the overlays. Every value
+lives in one table, `beatLight`, so step 4 can tune them in one place. Sizes
+are fractions of the struck unit's smaller side. Times are at battle speed 1.
+
+| Beat | Light | When |
+|---|---|---|
+| Skill 1 | Caster's element veil on each target, 0.9x, 520 ms | First hit only |
+| Skill 2 | Element veil 1.15x, 640 ms, plus a soft field edge bloom in the caster's element | First hit only |
+| Convergent Light, Sparkling | God rays 1.5x; soft field edge bloom | Rays rise through the gather; edge bloom on the finisher |
+| Convergent Light, Glimmering | God rays 1.9x; full field edge bloom | As above |
+| Convergent Light, Ultimate | God rays 2.6x, denser and faster; full screen edge bloom | As above |
+| Support Convergent Light | Soft field edge bloom at 0.6 | Finisher |
+| Critical hit | Chromatic ring in the attacker's element, 0.75x, 300 ms (Elemental Crit 1.05x, 380 ms, brighter) | Each critical packet, alongside the D-493 pulse |
+| Boss special | Soft field edge bloom in the boss's element | The special's first hit |
+| Conduit, Master or Leader callout | Small element ring pulse at the pill | Each callout |
+
+- **God rays** sit at the centre of the targets. When the first hit is the
+  finisher (no gather), they rise with the finisher in 90 ms.
+- **Veils** draw only for a real element (none for neutral). At most four
+  per hit, one per slot.
+- **Cap.** Point overlays stop at a fraction of the battlefield's smaller
+  side: veil 0.45, critical ring 0.4, god rays 0.7, 0.85 or 1.1 by tier. A
+  Story or War boss has a large art box, and without the cap a Skill 2 veil
+  spilled light over the page above and below the field.
+- **Flash budget.** A full edge bloom on a Glimmering or Ultimate finisher
+  follows the finisher's full flash. That is two of the three full flashes
+  allowed per second; overlapping actions fall back to soft. The boss special
+  and Skill 2 stay soft.
+- **Conduit pulse.** The callout pulse is the existing sprite ring, which the
+  kit blooms, so it does not take veil slots from Skills. It goes through the
+  optional `RadiantBattleEffects.calloutPulse`.
+- **Reduce motion:** unchanged. The view never calls these methods then.
 
 Capture: `node tools/capture_frames.mjs --battle <tier> --stream --gpu`.
 Without `--gpu` the capture browser renders in software and shows the battle

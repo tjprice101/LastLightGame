@@ -20,6 +20,7 @@ import type { FlareTier } from '../game/combat-gauge';
 import { elementStyle, type ElementStyle } from './element-styles';
 import { bearerElementStyle } from './bearer-signatures';
 import type { BurstKind, Point, SpectacleScene, SpectacleStats } from './spectacle-scene';
+import { veilMode, type EdgeStrength } from './shaders/spectacle-fx';
 import type Phaser from 'phaser';
 
 interface SpectacleRuntime { game: Phaser.Game; scene: SpectacleScene; host: HTMLElement }
@@ -82,6 +83,41 @@ const meleeMotions = new Set(['slash', 'thrust', 'hammer', 'twin', 'guard']);
 const finisherPower: Record<FlareTier, number> = { sparkling: .6, glimmering: .8, ultimate: 1 };
 /** D-490: the finisher burst's extra size by tier; ordinary Convergent Light hits grow from 1 to 1.25. */
 const finisherIntensity: Record<FlareTier, number> = { sparkling: 1.15, glimmering: 1.25, ultimate: 1.35 };
+
+/**
+ * D-494 step 3: shader-kit light per battle beat. Sizes are fractions of the struck unit's smaller side;
+ * times are ms at battle speed 1 on the scene's scaled clock. Starting values: step 4 tunes them per element.
+ * Every overlay is a no-op when the kit is off (software WebGL, slow-frame guard, start failure).
+ */
+export const beatLight = {
+  /** The caster's element veil on each target of a Skill's first hit (at most four: the veil slots). */
+  veil: { skill1: { size: .9, ms: 520, intensity: .8 }, skill2: { size: 1.15, ms: 640, intensity: 1 } },
+  /** Skill 2: soft light from the field's edges in the caster's element, on its first hit. */
+  skill2Edge: { strength: 'soft' as EdgeStrength, intensity: .7, decayMs: 360 },
+  /** Convergent Light finisher: edge bloom by tier. `full` passes the shared flash governor (R6). */
+  flareEdge: {
+    sparkling: { strength: 'soft' as EdgeStrength, area: 'field' as const, intensity: 1, reach: .2, holdMs: 80, decayMs: 380 },
+    glimmering: { strength: 'full' as EdgeStrength, area: 'field' as const, intensity: 1, reach: .24, holdMs: 100, decayMs: 480 },
+    ultimate: { strength: 'full' as EdgeStrength, area: 'screen' as const, intensity: 1.2, reach: .3, holdMs: 120, decayMs: 650 },
+  },
+  /** A support Convergent Light (no damage): soft field light at reduced weight. */
+  supportFlareEdge: { strength: 'soft' as EdgeStrength, area: 'field' as const, intensity: .6 },
+  /** Convergent Light god rays over the targets, rising through the gather and peaking on the finisher. */
+  flareRays: {
+    sparkling: { size: 1.5, intensity: .7, density: 2.6, spin: .4 },
+    glimmering: { size: 1.9, intensity: .9, density: 3.2, spin: .5 },
+    ultimate: { size: 2.6, intensity: 1.2, density: 4, spin: .7 },
+  },
+  /** Critical ring on a critical hit; an Elemental Crit is wider, longer and brighter. */
+  crit: { normal: { size: .75, ms: 300, intensity: .9 }, elemental: { size: 1.05, ms: 380, intensity: 1.2 } },
+  /** Boss special: soft field light in the boss's element on its first hit; stays below Convergent Light (D-491). */
+  bossEdge: { strength: 'soft' as EdgeStrength, intensity: .8, decayMs: 400 },
+  /** Conduit callout: a small element ring pulse at the pill (sprite, bloomed by the kit; keeps the veil slots for Skills). */
+  callout: { ms: 360, power: .1 },
+  /** Largest radius per point overlay, as a fraction of the field's smaller side: a boss's large art box
+   * must not push light past the battlefield onto the HUD. */
+  cap: { veil: .45, crit: .4, rays: { sparkling: .7, glimmering: .85, ultimate: 1.1 } },
+} as const;
 
 export class GpuBattleEffects implements RadiantBattleEffects {
   private runtime: SpectacleRuntime | null = null;
@@ -233,6 +269,23 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     }
     await scene.wait(beats.travel);
   }
+  /** D-494: `radius` limited to `fraction` of the battlefield's smaller side (unlimited before the field lays out). */
+  private capped(radius: number, fraction: number): number {
+    const field = this.host.querySelector('.radiant-field')?.getBoundingClientRect();
+    const span = field && field.width > 0 && field.height > 0 ? Math.min(field.width, field.height) : Infinity;
+    return Math.min(radius, span * fraction);
+  }
+  /** D-494 god rays over the targets' centre, sized from the largest target; `attack` is the rise in ms. */
+  private godRays(scene: SpectacleScene, beats: SpectacleBeats, flare: FlareTier, style: ElementStyle,
+    rects: readonly DOMRect[], attack: number): void {
+    const light = beatLight.flareRays[flare];
+    const at = { x: rects.reduce((sum, rect) => sum + rect.left + rect.width / 2, 0) / rects.length,
+      y: rects.reduce((sum, rect) => sum + rect.top + rect.height / 2, 0) / rects.length };
+    const size = Math.max(...rects.map(rect => Math.min(rect.width, rect.height)));
+    scene.godRays({ at, color: style.palette.main, radius: this.capped(size * light.size, beatLight.cap.rays[flare]), intensity: light.intensity,
+      density: light.density, spin: light.spin, attackMs: attack, holdMs: Math.max(120, ...beats.slots),
+      decayMs: beats.aftermath + 200 });
+  }
   /** D-490 gather before a Convergent Light finisher: light pulls onto each target and the dim deepens. */
   async gather(action: RadiantPlayerAction, state: RadiantCombatState, targetIds: readonly string[], beats: SpectacleBeats): Promise<void> {
     if (this.disposed || beats.gather <= 0) return;
@@ -240,10 +293,15 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     if (scene) {
       const style = this.bearerStyle(state, action.bearerId);
       const power = beats.flare ? finisherPower[beats.flare] : 1;
+      const rects: DOMRect[] = [];
       for (const id of targetIds.slice(0, 6)) {
         const rect = this.anchor(id);
-        if (rect) scene.converge(GpuBattleEffects.centre(rect), beats.gather, style, power * .8, Math.min(rect.width, rect.height));
+        if (!rect) continue;
+        rects.push(rect);
+        scene.converge(GpuBattleEffects.centre(rect), beats.gather, style, power * .8, Math.min(rect.width, rect.height));
       }
+      // D-494: the god rays rise through the gather and peak as the finisher lands.
+      if (beats.flare && rects.length) this.godRays(scene, beats, beats.flare, style, rects, beats.gather);
       scene.focus(.08, beats.gather, beats.aftermath);
     }
     await this.wait(beats.gather);
@@ -268,7 +326,11 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     const flare = tier === 'flare' ? plan?.flare ?? null : null;
     const progress = plan && hitIndex !== undefined ? hitProgress(plan, hitIndex) : 0;
     const seen = new Set<string>();
-    const struck: { point: Point; size: number; style: ElementStyle; support: boolean }[] = [];
+    const struck: { point: Point; size: number; style: ElementStyle; support: boolean; rect: DOMRect }[] = [];
+    // D-494: a Skill's light lands once, on its first hit (later hits of a multi-hit Skill keep their bursts).
+    const firstHit = (hitIndex ?? 0) === 0;
+    const skillVeil = (tier === 'skill1' || tier === 'skill2') && firstHit ? beatLight.veil[tier] : null;
+    let veils = 0, ownLanded = false;
     for (const packet of packets) {
       if (seen.has(packet.targetId)) continue;
       seen.add(packet.targetId);
@@ -298,10 +360,21 @@ export class GpuBattleEffects implements RadiantBattleEffects {
       if (kind === 'flare') point = { x: point.x + (Math.random() - .5) * size * .24, y: point.y + (Math.random() - .5) * size * .24 };
       scene.burst(point, kind, style, size, intensity);
       // D-493 crit step: a critical hit adds a bright pulse on the target (stronger for an Elemental Crit).
-      if (packet.type === 'damage' && packet.critical) scene.pulse(point, packet.critical === 'elemental' ? 240 : 170, style,
-        packet.critical === 'elemental' ? .85 : .6);
+      if (packet.type === 'damage' && packet.critical) {
+        scene.pulse(point, packet.critical === 'elemental' ? 240 : 170, style, packet.critical === 'elemental' ? .85 : .6);
+        // D-494: and the chromatic critical ring.
+        const ring = beatLight.crit[packet.critical === 'elemental' ? 'elemental' : 'normal'];
+        scene.critFlash({ at: point, color: style.palette.main, radius: this.capped(size * ring.size, beatLight.cap.crit), ms: ring.ms, intensity: ring.intensity });
+      }
+      if (own) ownLanded = true;
+      const mode = own && skillVeil ? veilMode(style.id) : null;
+      if (mode && skillVeil && veils < 4) {
+        veils++;
+        scene.veil({ at: GpuBattleEffects.centre(rect), radius: this.capped(size * skillVeil.size, beatLight.cap.veil), mode, palette: style.palette,
+          ms: skillVeil.ms, intensity: skillVeil.intensity });
+      }
       if (finisher && own && flare && (kind === 'finisher' || kind === 'support'))
-        struck.push({ point: GpuBattleEffects.centre(rect), size, style, support: kind === 'support' });
+        struck.push({ point: GpuBattleEffects.centre(rect), size, style, support: kind === 'support', rect });
     }
     if (scene && flare && struck.length) {
       // D-490 finisher set: a pillar of light on each target, one field shockwave and a lens flare.
@@ -311,8 +384,22 @@ export class GpuBattleEffects implements RadiantBattleEffects {
         if (!target.support) scene.lensFlare(target.point, target.style, power, target.size);
       }
       scene.shockwave(struck[0].point, struck[0].style, struck[0].support ? power * .5 : power);
+      // D-494: edge bloom by tier (soft for a support Convergent Light); god rays here only when no gather raised them.
+      const support = struck.every(target => target.support);
+      scene.edgeBloom({ color: struck[0].style.palette.main, ...(support ? beatLight.supportFlareEdge : beatLight.flareEdge[flare]) });
+      if (plan && plan.gather <= 0) this.godRays(scene, plan, flare, struck[0].style, struck.slice(0, 6).map(target => target.rect), 90);
     }
+    if (scene && action && state && tier === 'skill2' && firstHit && ownLanded)
+      scene.edgeBloom({ color: this.bearerStyle(state, action.bearerId).palette.main, ...beatLight.skill2Edge });
+    if (scene && enemy?.tier === 'special' && hitIndex === 0 && packets.some(packet => packet.source.kind === 'enemy' &&
+      packet.source.enemyId === enemy.enemyId))
+      scene.edgeBloom({ color: this.enemyStyle(enemy).palette.main, ...beatLight.bossEdge });
     await this.wait(slot);
+  }
+  /** D-494: a Conduit, Master or Leader callout appeared at a screen point; a small ring pulse in its element. */
+  calloutPulse(at: Point, elementId: string | null): void {
+    const scene = this.scene();
+    if (scene) scene.pulse(at, beatLight.callout.ms, elementStyle(elementId), beatLight.callout.power);
   }
   /** Flash, dim and hit-stop requested by the view (R2); flashes pass the WCAG governor. */
   screen(cue: RadiantScreenCue): void {

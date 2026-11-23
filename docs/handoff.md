@@ -1,5 +1,49 @@
 # Current state and handoff
 
+## UI and VFX overhaul Phase 1, step 3: overlays wired into battle beats (D-494, 2026-11-23)
+
+**Implemented on branch `ui-vfx-shader-kit`, committed locally; not pushed or
+released.** Client only; no authority change.
+
+**What changed:**
+- `src/vfx/gpu-effects.ts`: new `beatLight` table and overlay calls.
+  - Skill 1: veil on each target (first hit only).
+  - Skill 2: veil plus a soft field edge bloom.
+  - Convergent Light: god rays through the gather, then edge bloom by tier
+    (soft field, full field, full screen).
+  - Critical hits: the chromatic ring.
+  - Boss special: soft edge bloom.
+  - Point overlays are capped to the battlefield size.
+- `src/presentation/battle-screen.ts`: optional `calloutPulse` on
+  `RadiantBattleEffects`; each Conduit, Master or Leader callout pulses a
+  small element ring.
+- Docs: [combat spec](combat.md#overlays-per-battle-beat-step-3), D-494,
+  overhaul plan, Future Plans row.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded.
+- `npx vitest run src/vfx src/presentation/battle-screen.test.ts`: 173 pass,
+  including 7 new beat-light tests.
+- Full `npx vitest run` (before the cap fix): 11,134 of 11,135. The one
+  failure was an `acquisition-surfaces` timeout under load; it passes alone.
+  After the cap fix, only the affected files were rerun (the 173 above).
+- Real GPU captures (`--stream --gpu`, `nerithe-10`):
+  - **Skill 2:** the heat-shimmer veil and field-edge glow show and decay
+    cleanly.
+  - **Ultimate:** god rays rise through the gather, the full-screen edge bloom
+    lands with the finisher, and the screen is clean about 0.8 s later.
+  - **Bug found and fixed:** the first Skill 2 capture showed light spilling
+    above and below the field from the boss's large art box. Fixed by the cap
+    and recaptured.
+
+**Not done:**
+- Not captured: Skill 1, Sparkling, Glimmering, the boss special, critical
+  hits and the callout pulse in motion (unit tests only).
+- Step 4 (Sonnet): tune per element. The Ultimate finisher peak washes the
+  field near white for about 200 ms; numbers are hard to read in that moment.
+  Also: phone portrait, low quality, and the owner feel review.
+- Step 5: release.
+
 ## UI and VFX overhaul Phase 1, step 2: battle shader kit (D-494, 2026-11-23)
 
 **Implemented on branch `ui-vfx-shader-kit`, not released, not pushed.**

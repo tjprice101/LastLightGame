@@ -1,7 +1,7 @@
 # UI and VFX visual overhaul (filed 2026-11-20)
 
 **Status:** Phase 1 (shader foundation and battle) approved 2026-11-23 (D-494);
-step 2 implemented on branch `ui-vfx-shader-kit`, not released. Phases 2
+steps 2 and 3 implemented on branch `ui-vfx-shader-kit`, not released. Phases 2
 (summons) and 3 (menus) and sound remain proposed, not approved.
 
 **Timing:** pick up **after** the current Battle Flurry work: B3c, B4, B5, the
@@ -145,7 +145,7 @@ no GSAP yet; the Spectacle steps 2-7 feel review is folded in; no paid tools.
 |---|---|---|---|
 | 1 | Sonnet | Baseline captures of every tier; owner feel review and `?spectacle-stats` check of the hosted build | Captures done 2026-11-23; owner review pending |
 | 2 | Fable | Shader kit: bloom, edge bloom, god rays, critical ring, six element veils; safety guards; tests | Implemented 2026-11-23, unreleased |
-| 3 | Opus | Wire overlays into the tiers: Skill 1 veil, Skill 2 soft edge bloom and veils, Convergent Light god rays and edge bloom by tier, critical ring, Conduit callout pulse, boss special edge bloom | Not started |
+| 3 | Opus | Wire overlays into the tiers: Skill 1 veil, Skill 2 soft edge bloom and veils, Convergent Light god rays and edge bloom by tier, critical ring, Conduit callout pulse, boss special edge bloom | Implemented 2026-11-23, unreleased |
 | 4 | Sonnet | Tune intensity per element; apply the feel review items; phone portrait and low quality | Not started |
 | 5 | Sonnet | Docs, commit, push both branches, hosted check (client only) | Not started |
 

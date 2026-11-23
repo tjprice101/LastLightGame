@@ -19,9 +19,16 @@
   second there against 60 without it) and turns itself off for the session
   after sustained slow frames; the battle then keeps its pre-shader look.
   Full edge blooms share the flat flashes' WCAG budget (R6).
-- **Status:** step 2 (the kit, with bloom enabled) is implemented on branch
-  `ui-vfx-shader-kit`, **not released**. Step 3 wires the overlays into the
-  battle tiers; step 4 tunes; step 5 releases.
+- **Status:** step 2 (the kit, with bloom enabled) and step 3 (overlays wired
+  into the battle beats) are implemented on branch `ui-vfx-shader-kit`, **not
+  released**. Step 4 tunes; step 5 releases.
+- **Step 3 design choices (2026-11-23):** Skill light lands once per action,
+  on the first hit. Edge bloom escalates by tier: Skill 2 and Sparkling are
+  soft, Glimmering is full on the field, Ultimate is full on the screen. The
+  boss special stays soft, below Convergent Light (D-491). Point overlays are
+  capped to the battlefield so a boss's large art box cannot spill light onto
+  the HUD. The Conduit callout pulse uses the bloomed sprite ring and leaves
+  the veil slots to Skills.
 - **Affected:** `src/vfx/shaders/`, `src/vfx/spectacle-scene.ts`,
   `src/vfx/gpu-effects.ts`, `tools/capture_frames.mjs` (`--gpu`),
   [combat spec](combat.md#battle-spectacle-shader-kit-d-494-overhaul-phase-1).
