@@ -68,7 +68,12 @@ export type RadiantConduitEffect =
   | 'stillness-efficiency' | 'stillness-duration' | 'shuriken-power' | 'recall-crit-damage' | 'recall-crit-rate'
   | 'nightcleave-crit' | 'skyfall-efficiency' | 'volley-power' | 'cataclysm-crit-damage' | 'fold-power' | 'citadel-efficiency'
   | 'chord-power' | 'tune-crit' | 'crescendo-crit-damage' | 'unbind-power' | 'resolve-crit-rate' | 'resolve-crit-damage'
-  | 'gust-gain';
+  | 'gust-gain'
+  // D-493 B5c2 (Masters): player-turn Luminosity, Shield and heal triggers.
+  | 'gust-charge' | 'cyclone-shield' | 'resolve-charge' | 'midnight-heal' | 'bastion-share' | 'quarry-charge' | 'skyfall-heal'
+  | 'warfeather-heal' | 'edge-shield' | 'combo-heal' | 'survey-charge' | 'repose-shield' | 'reaping-heal' | 'reaping-charge'
+  | 'station-shield' | 'weir-charge' | 'chain-shield' | 'road-shield' | 'doorway-charge' | 'doorway-heal' | 'ferry-shield'
+  | 'ferrywake-charge' | 'relay-charge' | 'unbind-shield' | 'shelter-heal' | 'starseed-charge';
 /** `fixed` primitives ignore upgrade-rank scaling (D-493 C12: penalties, thresholds, flat Skill Duration);
  * `step` primitives add `step` per rank instead of scaling (C12 exceptions such as Stasis Reliquary's chance). */
 export interface RadiantConduitPrimitive { kind: RadiantConduitEffect; amount: number; fixed?: true; step?: number }
@@ -127,12 +132,21 @@ export const radiantMasterClauseKinds = [
   'nightcleave-crit', 'skyfall-efficiency', 'volley-power', 'cataclysm-crit-damage', 'fold-power', 'citadel-efficiency',
   'chord-power', 'tune-crit', 'crescendo-crit-damage', 'unbind-power', 'resolve-crit-rate', 'resolve-crit-damage',
   'gust-gain',
+  // B5c2: player-turn Luminosity, Shield and heal triggers.
+  'gust-charge', 'cyclone-shield', 'resolve-charge', 'midnight-heal', 'bastion-share', 'quarry-charge', 'skyfall-heal',
+  'warfeather-heal', 'edge-shield', 'combo-heal', 'survey-charge', 'repose-shield', 'reaping-heal', 'reaping-charge',
+  'station-shield', 'weir-charge', 'chain-shield', 'road-shield', 'doorway-charge', 'doorway-heal', 'ferry-shield',
+  'ferrywake-charge', 'relay-charge', 'unbind-shield', 'shelter-heal', 'starseed-charge',
 ] as const satisfies readonly RadiantConduitEffect[];
 /** D-493 B5b Master clause rules (fixed): Worldwall Ascendant's Health basis, the Tension spent for Return the Strain's
  * Luminosity, the turns of Pane of Absolution's extra Weaken and of Seismic Hammerfall's Defense reduction. */
 export const radiantMasterRules = { worldwallHealth: .375, strainThreshold: 3, paneTurns: 1, sunderTurns: 2,
   /** B5c1: Blossoming Cataclysm's Critical Damage bonus cap, Atmoso's Gust Luminosity Gain Up turns. */
-  cataclysmCap: .6, gustTurns: 2 } as const;
+  cataclysmCap: .6, gustTurns: 2,
+  /** B5c2: Gusts counted by Sky Without End Turbine; Unbroken Midnight Bastion's heal cap; Eclipse Planet Watchtower's
+   * Shield cap; damaging actions per Rose Beyond the Sun Orrery grant; Combo for Crimson Beauty Pyre Requiem's squad heal;
+   * the Health line of Weirheart and Ferrywake; Crosscut for Open-Threshold Return Drive. */
+  gustCount: 5, midnightCap: .15, bastionCap: .45, quarryHits: 2, comboSquad: 3, healthLine: .5, doorwayCrosscut: 3 } as const;
 export const pair = (kind: RadiantConduitEffect, amount: number, related: RadiantConduitEffect, extra: number): RadiantConduitDesign =>
   [effect(kind, amount), effect(related, extra)];
 

@@ -1,5 +1,59 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c B5c2: Master Luminosity, Shield and heal triggers (D-493, 2026-11-22)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5d with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5c2-master-luminosity-shield-and-heal-triggers-d-493-battle-flurry-phase-4c).
+
+**What changed:**
+- 22 rows: atmoso-1, atmoso-2, disciple-2, razor-1, razor-2, rosetta-1,
+  crinso-2, crinso-3, nerithe-3, solenne-2, myrthen-3, neralis-2, neralis-3,
+  varkhel-2, seravelle-3, velmira-3, maerion-2, maerion-3, vespera-3, ilyss-2,
+  asteriel-2, asteriel-3; plus bliss-2's Closing heal and rosetta-2's 8%
+  contributor heal. B5c is complete.
+- `master-disciple-2` and `master-nerithe-3` lost their Radiant-era pairs.
+- Master Luminosity/heals/Shields are credited to the Master and skip Conduit
+  healing/shielding bonuses. Once-per-turn limits use the turn ledger; three
+  Masters use per-ally keys (`bearer:master:ally`).
+- Saves: optional Quarry `quarryHits` (only 1) and the per-ally ledger keys.
+  No version bump and no new events or RNG.
+
+**Implementation choices (owner may reverse):**
+- Rosetta-2 also heals Rosetta.
+- Atmoso-2 counts Health removed, not Shield absorbed.
+- Disciple-2 reads Attack Up held before the action (Disciple counts).
+- Neralis-3, Maerion-3 and Solenne-2 count Skill 1/2 only, not Convergent
+  Light.
+- Asteriel-2 triggers on every Lend the Quiet Seed.
+- Myrthen-3 counts Normal Attack defeats.
+- Disciple-2, Asteriel-3 and Vespera-3 need the giver alive.
+
+**Rows still to build:**
+- **B5d (19):** unchanged from the B5a entry below.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5c2.test.ts`: 20 of 20. The B5c1
+  content test now checks only B5c1 kinds.
+- Full `npx vitest run`: 11,076 of 11,078. The two failures
+  (`acquisition-surfaces`, `archives-controls`) were timeouts under load;
+  both pass alone (8 of 8).
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1):
+  - balanced: Calamity EX+1/2/3 100/96.3/92.1%; Oblivion 161-180 95.2%;
+    Dungeon 99.9%; every other group 100% (all identical to B5c1);
+  - flare-saving: Calamity 100/100/99.5%; Dungeon 99.7%.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel (tests only), especially the Master Shield and
+heal callouts and the contribution summary for Master heals and Shields.
+
+**Open release item (unchanged):** frozen-run version bump (8 → 9) or not;
+see the B5a entry.
+
+**Next:** B5d in a fresh Opus session, Plan mode (enemy-phase and special
+rows: revive on the C18 ledger, `conduit` RNG stream for `master-myrthen-2`).
+
 ## Battle Flurry Phase 4c B5c1: Master next-action bonuses (D-493, 2026-11-22)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release after
@@ -77,8 +131,7 @@ bonus tags, Tide-2's tag disappearing when its Shield breaks, and Elise's
 **Open release item (unchanged):** frozen-run version bump (8 → 9) or not;
 see the B5a entry.
 
-**Next:** B5c2 in a fresh Opus session (Plan mode optional; the plan is
-approved).
+**Next:** B5c2 (done, entry above).
 
 ## Battle Flurry Phase 4c B5b: Master kit modifiers (D-493, 2026-11-22)
 
@@ -135,7 +188,8 @@ B5d with one enemy retune). Spec:
 - Fixtures adjusted: B5a package table ignores clause kinds;
   `combat-engine.test.ts` compares Flare offers only when the Master leaves
   the Flare unchanged.
-- `node toolsun_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+- `node tools
+un_pressure_study.mjs <out> --retune` (radiant-trio-v1,
   balanced): Calamity EX+1/2/3 100/95.8/92.1% (B5a 100/95.8/91.7%);
   Oblivion 161-180 95.2% (same); Dungeon overall 99.9%; every other
   ordinary group 100%; flare-saving Calamity 100/100/99.5%. No band moved

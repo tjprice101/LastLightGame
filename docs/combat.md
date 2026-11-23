@@ -3137,12 +3137,12 @@ next turn unless stated; "others" = each other living ally):
 | `master-ember-3` Unbroken Sunforge Throne | Dawnfire: others +40% Skill Power on their next damaging skill or Convergent Light, against enemies carrying Infernis's Burn. |
 | `master-tide-2` Ocean Memory Worldpump | Tidal Shelter +50% Skill Power; each ally holding its Shield +25% Skill Efficiency on their next skill while the Shield remains. |
 | `master-sprout-1` Worldseed Mercy Foundry | A blooming Seed gives its holder +25% Skill Power on their next skill this turn; an Empowered Seed (Worldseed) also +15% Skill Efficiency. |
-| `master-bliss-2` Stillplume Planetary Ballet | Warfeather Cut in Opening: others +25 Critical Rate on their next damaging action. (The Closing heal is B5c2.) |
+| `master-bliss-2` Stillplume Planetary Ballet | Warfeather Cut in Opening: others +25 Critical Rate on their next damaging action. (The Closing heal: B5c2 section.) |
 | `master-bliss-3` Quiet Heaven Fanforge | Thousandfeather Stillness: others +25% Skill Efficiency on their next skill; cast in Closing, also +1 turn Skill Duration. |
 | `master-elise-2` Twin Star Planetary Ratchet | Each lodged Shuriken stores a shared +35% Skill Power for the next other ally's damaging skill on that enemy; recalling removes unused ones. |
 | `master-elise-3` Storm Empress Execution Clock | Recalling both Shuriken: others +40% Critical Damage on their next damaging action, plus +15 Critical Rate if both were in the same enemy. |
 | `master-razor-3` Nightglass Counterblade Engine | Nightcleave spending Wounds: others +30 Critical Rate on their next damaging action. |
-| `master-rosetta-2` Virtuous Planet Rosegarden | Crimson Skyfall on the Quarry: each other contributor this turn +20% Skill Efficiency on their next skill. (The heal is B5c2.) |
+| `master-rosetta-2` Virtuous Planet Rosegarden | Crimson Skyfall on the Quarry: each other contributor this turn +20% Skill Efficiency on their next skill. (The heal: B5c2 section.) |
 | `master-rosetta-3` Golden Thorn Judgment Loom | Golden Thorn Volley: others +35% Skill Power on their next damaging skill on Rosetta's Quarry. |
 | `master-crinso-1` Twin-Rose Singularity Drive | Each Combo Blossoming Cataclysm spends: others +15% Critical Damage on their next damaging action, up to 60%. |
 | `master-nerithe-2` Folded Ocean Planetarium | Fold the Sea moving Survey to a different enemy: others +40% Skill Power on their next damaging skill on that enemy. |
@@ -3191,3 +3191,80 @@ as in B3b. Seed bonuses granted as a turn begins last that turn.
   and settles.
 
 The B5b content test now checks only B5b clause kinds.
+
+## Conduit restoration B5c2: Master Luminosity, Shield and heal triggers (D-493, Battle Flurry Phase 4c)
+
+**Implemented on `battle-flurry-phase3`, not released.** Completes B5c with
+the 22 trigger rows of the approved B5c plan, plus `master-bliss-2`'s Closing
+heal and `master-rosetta-2`'s contributor heal. Row text: the "Restore as"
+cells of the B5 table in
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md);
+this section supersedes them for these rows.
+
+**Shared rules:**
+- Luminosity uses `masterCharge` (credited to the Master, rounded once after
+  the recipient's Gauge Gain). Heals and Shields use `heal()`/`shield()` with
+  a Master source, so Conduit healing and shielding bonuses do not raise them.
+- Amounts are a share of the recipient's maximum Health on the N7 basis (as
+  Conduit heals). Health-percentage tests (lowest ally, the 50% line) read the
+  current maximum Health.
+- "Scaled by Skill Power" rows multiply by the bearer's Skill Power for that
+  cast (no Convergent Light tier scaling).
+- Once-per-turn limits use the turn ledger (`gearTriggered`, cleared every
+  turn; a turn and a round are the same here) with the Master key
+  `bearer:master`. Once-per-ally limits use `bearer:master:ally`, accepted
+  only for wearers of Weirheart, Ferrywake or Unbinding Mercy.
+- `master-disciple-2` and `master-nerithe-3` lose their Radiant-era pairs.
+
+| Master | Clause |
+|---|---|
+| `master-atmoso-1` Sky Without End Turbine | Cyclone release: each living ally 3 Luminosity per Gust held (max 5). |
+| `master-atmoso-2` Horizon Cyclone Orrery | Cyclone release: each living ally a Shield of 30% of the enemy Health the release removed. |
+| `master-bliss-2` Stillplume Planetary Ballet | Warfeather Cut in Closing also heals every other living ally 6% (not scaled by Skill Power). |
+| `master-disciple-2` Concord Planet Thoughtforge | Once per action, an ally holding Attack Up from Disciple before acting uses a skill or Convergent Light: each other living ally 10 Luminosity. |
+| `master-razor-1` Unbroken Midnight Bastion | Unbroken Midnight spending Wounds: heal each other living ally 20% of the Wounds spent, up to 15% of their maximum Health. |
+| `master-razor-2` Eclipse Planet Watchtower | Eclipse Bastion's Shield on Razor: each other living ally a Shield of 40% of it, up to 45% of their maximum Health. |
+| `master-rosetta-1` Rose Beyond the Sun Orrery | Every 2 damaging actions by any ally that hit the Quarry (Health or Shield): each living ally 12 Luminosity. A new Quarry resets the count. |
+| `master-rosetta-2` Virtuous Planet Rosegarden | Crimson Skyfall on the Quarry heals Rosetta and each ally who hit it this turn 8%. |
+| `master-crinso-2` Duality Planet Flamewheel | Golden Edge right after Crimson Rupture: the living ally with the lowest Health percentage a Shield of 12%. |
+| `master-crinso-3` Crimson Beauty Pyre Requiem | Gaining Combo: heal the lowest-percentage ally 8%; at 3+ Combo, every living ally. |
+| `master-nerithe-3` Abyssal Surveyor Crown | Each Survey Ocean Beyond the Map spends: each living ally 4 Luminosity. |
+| `master-solenne-2` Quiet-Arc Shelter Projector | After Solenne's Skill 1 or Skill 2: the lowest-percentage ally a Shield of 20%. |
+| `master-myrthen-3` Reaping-Tide Recovery Dynamo | Once per turn, Myrthen's action directly defeats an enemy: each living squad member heals 6% and gains 5 Luminosity. |
+| `master-neralis-2` Blackwing Crossing Stabilizer | After Light the Next Station: its target a Shield of 20% × Skill Power. |
+| `master-neralis-3` Weirheart Recollection Dynamo | Once per ally per turn, Neralis's Skill 1 or Skill 2 heals an ally who was below 50%: that ally 10 Luminosity. |
+| `master-varkhel-2` Scarlet-Hinge Load Distributor | After Set the Warning Chain: each other living member a Shield of 16% × Skill Power. |
+| `master-seravelle-3` Braided-Signal Continuance Engine | After The Road Belongs to Everyone: each living member a Shield of 22% × Skill Power. |
+| `master-velmira-3` Open-Threshold Return Drive | Leave the Doorway Standing spending 3+ Crosscut: Velmira 25 Luminosity after its cost and a heal of 18%. |
+| `master-maerion-2` Crescent Rib Mercy Foundry | A Place on the Ferry's overheal (`offered - effective`) becomes a Shield for its target, up to 35%. |
+| `master-maerion-3` Ferrywake Remembrance Dynamo | Once per ally per turn, Maerion's Skill 1 or Skill 2 heals an ally from below 50% to 50% or more: that ally 15 Luminosity. |
+| `master-vespera-3` Unextinguished Relay Cathedral | Once per turn, another ally spends Vespera's Signal: that ally 10 Luminosity after the attack. |
+| `master-ilyss-2` Unbinding Mercy Worldlock | Once per ally per turn, Ilyss removes Weaken from an ally: that ally a Shield of 15%. |
+| `master-asteriel-2` Night-Library Germination Vault | Once per turn, after Lend the Quiet Seed (Shelter): heal the lowest-percentage ally 20%. |
+| `master-asteriel-3` Freely-Given Starseed Distributor | Once per turn, another ally holding Attack Up from Asteriel uses a damaging action: that ally 8 Luminosity after it. |
+
+**Saves (no version bump; loading never writes; no new RNG draws or events):**
+- New optional `quarryHits` (only `1`) on Rosetta's Quarry, on a living Quarry,
+  for the wearer of Rose Beyond the Sun Orrery.
+- New once-per-ally ledger keys (above).
+- `shield()` now returns the amount it created (no behavior change).
+
+**Implementation choices (owner may reverse):**
+- Rosetta-2 also heals Rosetta (Crimson Skyfall itself hits the Quarry).
+- Atmoso-2 counts Health removed, not Shield absorbed. A Cyclone that Cyclone
+  Weave replaces also releases and triggers both Atmoso rows.
+- Disciple-2 reads Attack Up held before the action, so Disciple counts when
+  she already held her own Attack Up.
+- Neralis-3, Maerion-3 and Solenne-2 count Skill 1/Skill 2 only, not
+  Convergent Light.
+- Asteriel-2 triggers on every Lend the Quiet Seed, even when already in
+  Shelter.
+- Myrthen-3 counts Normal Attack defeats too.
+- Disciple-2, Asteriel-3 and Vespera-3 need the giver alive.
+- Rosetta-1: the action that sets a new Quarry does not count; an action
+  that defeats the Quarry still counts toward a grant.
+
+**Validation:** `src/game/conduit-restoration-b5c2.test.ts` (20 tests) checks
+the 24 clause rows and tooltips, every trigger and its limit, forged Quarry
+counts and ledger keys, a settled journal reload and a mid-run load. The
+B5c1 content test now checks only B5c1 kinds.

@@ -26,7 +26,9 @@ const clauses: Record<string, string> = {
   'master-nerithe-2': 'fold-power .4', 'master-orvella-1': 'citadel-efficiency .2', 'master-vaelor-1': 'chord-power .3',
   'master-vaelor-3': 'tune-crit .25, crescendo-crit-damage .4', 'master-ilyss-3': 'unbind-power .25',
 };
-const b5cKinds = radiantMasterClauseKinds.slice(radiantMasterClauseKinds.indexOf('dawnfire-ally-power')) as readonly string[];
+// B5c2 kinds (listed after 'gust-gain') are checked in conduit-restoration-b5c2.test.ts.
+const b5cKinds = radiantMasterClauseKinds.slice(radiantMasterClauseKinds.indexOf('dawnfire-ally-power'),
+  radiantMasterClauseKinds.indexOf('gust-gain') + 1) as readonly string[];
 const parse = (text: string) => text.split(', ').map(part => { const [kind, amount] = part.split(' '); return [kind, Number(amount)]; });
 
 function member(starter: RadiantBearerId, masterId: RadiantMasterId | null = null): RadiantLoadout {

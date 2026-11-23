@@ -154,7 +154,9 @@ export type RadiantOwnSignature =
   | { kind: 'shuriken'; held: number; lodged: string[] }
   | { kind: 'wounds'; wounds: number }
   /** Rosetta: her Quarry (a living enemy or none) and the other allies who hit it this turn. */
-  | { kind: 'quarry'; targetId: string | null; contributors: string[] }
+  | { kind: 'quarry'; targetId: string | null; contributors: string[];
+    /** D-493 B5c2 Rose Beyond the Sun Orrery: damaging actions that hit this Quarry since the last grant (1 when present). */
+    quarryHits?: number }
   /** Thornia: at most one Thorn Trap per living enemy. */
   | { kind: 'thorns'; traps: RadiantThornTrap[] }
   /** Crinso: Combo 0-5 and the last skill slot used (Rose Duality). */
@@ -1121,7 +1123,11 @@ function validateEnemyLedger(state: RadiantCombatState, member: RadiantBearer, o
     return true;
   };
   if (own.kind === 'quarry') {
-    if (Object.keys(own).length !== 3 || !Array.isArray(own.contributors)) throw new Error('Invalid radiant Quarry.');
+    // D-493 B5c2: the optional hit count exists only on a living Quarry, for the wearer of Rose Beyond the Sun Orrery.
+    const counted = own.quarryHits !== undefined;
+    if (Object.keys(own).length !== (counted ? 4 : 3) || !Array.isArray(own.contributors)) throw new Error('Invalid radiant Quarry.');
+    if (counted && (own.quarryHits !== 1 || own.targetId === null || !(masterAmount(member, 'quarry-charge') > 0)))
+      throw new Error('Invalid radiant Quarry count.');
     if (own.targetId !== null) livingEnemies([own.targetId], 'Quarry');
     if (new Set(own.contributors).size !== own.contributors.length || own.contributors.some(id =>
       id === member.loadout.id || !state.bearers.some(entry => entry.loadout.id === id)))
@@ -1338,7 +1344,10 @@ export function validateRadiantCombat(state: RadiantCombatState): void {
   if (paid !== state.currencyEarned) throw new Error('Radiant paid currency total mismatch.');
   const gearKeys = state.bearers.flatMap(member => (member.loadout.gear ?? [])
     .flatMap(slot => slot === null ? [] : [`${member.loadout.id}:${slot.id}`])
-    .concat(member.loadout.masterId ? [`${member.loadout.id}:${member.loadout.masterId}`] : [], [`${member.loadout.id}:leader`]));
+    .concat(member.loadout.masterId ? [`${member.loadout.id}:${member.loadout.masterId}`] : [], [`${member.loadout.id}:leader`])
+    // D-493 B5c2: once-per-ally Master limits (Weirheart, Ferrywake, Unbinding Mercy) key each ally separately.
+    .concat(perAllyMasterKinds.some(kind => masterAmount(member, kind) > 0)
+      ? state.bearers.map(ally => masterAllyKey(member, ally)) : []));
   if (!Array.isArray(state.gearTriggered) || new Set(state.gearTriggered).size !== state.gearTriggered.length ||
       state.gearTriggered.some(key => !gearKeys.includes(key)))
     throw new Error('Invalid radiant gear trigger ledger.');
@@ -1657,16 +1666,17 @@ function heal(
 function shield(
   state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer,
   source: RadiantSource, magnitude: number,
-): void {
+): number {
   const shielded = () => rounded(magnitude *
     (native(source) ? 1 + combatAmount(state, bearer(state, source.bearerId), 'shielding') : 1));
   const amount = shielded();
-  if (amount === 0 || target.hp === 0) return;
+  if (amount === 0 || target.hp === 0) return 0;
   const shieldId = state.nextShieldId++;
   safe(state.nextShieldId, 'shield serial', 1);
   target.shields.push({ id: shieldId, source, remaining: amount });
   const boosts = native(source) ? attribute(state, bearer(state, source.bearerId), amount, shielded) : undefined;
   events.push({ type: 'shield', source, targetId: target.loadout.id, amount, shieldId, ...(boosts ? { boosts } : {}) });
+  return amount;
 }
 /** N6: same category does not stack. The strongest applies (keeping its source); the longer duration is kept. */
 function applyCategory<C extends RadiantCategory>(
@@ -1786,7 +1796,7 @@ function releaseEnemySignatures(state: RadiantCombatState, events: RadiantCombat
       own.lodged = own.lodged.filter(id => id !== enemyId);
       own.held += count;
       events.push({ type: 'signature', bearerId: member.loadout.id, op: 'return', holderId: enemyId, amount: own.held });
-    } else if (own?.kind === 'quarry' && own.targetId === enemyId) own.targetId = null;
+    } else if (own?.kind === 'quarry' && own.targetId === enemyId) { own.targetId = null; delete own.quarryHits; }
     else if (own?.kind === 'thorns') own.traps = own.traps.filter(trap => trap.enemyId !== enemyId);
     else if (own?.kind === 'marks') own.marks = own.marks.filter(mark => mark.enemyId !== enemyId);
     else if (own?.kind === 'incisions') own.incisions = own.incisions.filter(entry => entry.enemyId !== enemyId);
@@ -1877,12 +1887,20 @@ function releaseCyclone(
 ): void {
   const own = actor.signature;
   if (own?.kind !== 'cyclone' || own.cyclone === null) return;
-  const coefficient = (own.cyclone.coefficient + own.cyclone.perGust * own.gusts) * multiplier;
+  const coefficient = (own.cyclone.coefficient + own.cyclone.perGust * own.gusts) * multiplier, gusts = own.gusts;
   own.cyclone = null;
   own.gusts = 0;
   events.push({ type: 'signature', bearerId: actor.loadout.id, op: 'cyclone-release', amount: 0 });
   if (actor.hp === 0) return;
+  const start = events.length;
   for (const target of state.enemies.filter(member => member.hp > 0)) strike(state, events, actor, target, source, coefficient);
+  // D-493 B5c2 Sky Without End Turbine and Horizon Cyclone Orrery: the release fills Luminosity per Gust and shields the squad.
+  const perGust = masterAmount(actor, 'gust-charge'), share = masterAmount(actor, 'cyclone-shield');
+  const removed = events.slice(start).reduce((sum, event) => event.type === 'damage' ? sum + event.healthLoss : sum, 0);
+  for (const ally of state.bearers) if (ally.hp > 0) {
+    masterCharge(state, events, actor, ally, perGust * Math.min(gusts, radiantMasterRules.gustCount));
+    if (share > 0 && removed > 0) shield(state, events, ally, masterSource(actor), share * removed);
+  }
 }
 /** A counter signature (Heat, Stillness, Season, Current, Tension, Cadence, Crosscut, Load, Severance, Interval), if any. */
 function counterOf(own: RadiantOwnSignature | null): Extract<RadiantOwnSignature, { latch: boolean }> | undefined {
@@ -1993,6 +2011,32 @@ function masterCharge(state: RadiantCombatState, events: RadiantCombatEvent[], o
   if (event.type === 'charge') {
     event.gearSource = { kind: 'master', bearerId: owner.loadout.id };
     if (event.personal > before) event.gained = event.personal - before;
+  }
+}
+/** D-493 B5c2: Master kinds limited once per ally per turn; their ledger key names the Master and the ally. */
+const perAllyMasterKinds: readonly RadiantConduitEffect[] = ['weir-charge', 'ferrywake-charge', 'unbind-shield'];
+function masterAllyKey(owner: RadiantBearer, ally: RadiantBearer): string {
+  return `${owner.loadout.id}:${owner.loadout.masterId}:${ally.loadout.id}`;
+}
+/** D-493 B5c2: claims a once-per-turn trigger key (the ledger clears each turn); false if already used. */
+function claimOnce(state: RadiantCombatState, key: string): boolean {
+  if (state.gearTriggered.includes(key)) return false;
+  state.gearTriggered.push(key);
+  return true;
+}
+function masterKey(owner: RadiantBearer): string {
+  return `${owner.loadout.id}:${owner.loadout.masterId}`;
+}
+const masterSource = (owner: RadiantBearer): RadiantSource => ({ kind: 'master', bearerId: owner.loadout.id });
+/** D-493 B5c2: a Master heal or Shield on each listed ally worth `fraction` of that ally's maximum Health (N7 basis). */
+function masterRestore(
+  state: RadiantCombatState, events: RadiantCombatEvent[], owner: RadiantBearer, kind: 'heal' | 'shield',
+  allies: readonly (RadiantBearer | undefined)[], fraction: number,
+): void {
+  if (!(fraction > 0)) return;
+  for (const ally of allies) if (ally && ally.hp > 0) {
+    if (kind === 'heal') heal(state, events, ally, masterSource(owner), fraction * ally.stats.hp);
+    else shield(state, events, ally, masterSource(owner), fraction * ally.stats.hp);
   }
 }
 /** +1 to a bearer's counter, within its cap. */
@@ -2126,6 +2170,8 @@ function signatureClauses(
       case 'quarry':
         // Golden Thorn Volley marks its surviving target as Rosetta's Quarry.
         if (own?.kind !== 'quarry' || !primary || primary.hp === 0) break;
+        // D-493 B5c2: a new Quarry resets Rose Beyond the Sun Orrery's count.
+        if (own.targetId !== primary.id) delete own.quarryHits;
         own.targetId = primary.id;
         events.push({ type: 'signature', bearerId: id, op: 'quarry', holderId: primary.id, amount: own.contributors.length });
         placedMarks.add(id);
@@ -2190,6 +2236,9 @@ function signatureClauses(
       case 'spend-all-survey':
         // Meridian Break spends 1 Survey, Ocean Beyond the Map all of it; their Defense ignore applied before the damage.
         if (own?.kind !== 'survey' || own.count === 0 || !primary || own.targetId !== primary.id) break;
+        // D-493 B5c2 Abyssal Surveyor Crown: each Survey Ocean Beyond the Map spends fills every living ally.
+        if (clause.op === 'spend-all-survey')
+          for (const ally of state.bearers) masterCharge(state, events, actor, ally, masterAmount(actor, 'survey-charge') * own.count);
         own.count = clause.op === 'spend-survey' ? own.count - 1 : 0;
         if (own.count === 0) own.targetId = null;
         events.push({ type: 'signature', bearerId: id, op: 'survey', holderId: primary.id, amount: own.count });
@@ -2303,9 +2352,13 @@ function signatureClauses(
       case 'spend-wounds': {
         // Nightcleave / Unbroken Midnight: an extra strike equal to `value` x the Wounds spent (no mitigation).
         if (own?.kind !== 'wounds' || own.wounds === 0 || !primary || primary.hp === 0) break;
-        const amount = rounded(own.wounds * value * input.damageScale);
+        const amount = rounded(own.wounds * value * input.damageScale), spentWounds = own.wounds;
         own.wounds = 0;
         events.push({ type: 'signature', bearerId: id, op: 'wounds', amount: 0 });
+        // D-493 B5c2 Unbroken Midnight Bastion: spending Wounds heals the other allies, each up to a share of their maximum Health.
+        const mend = input.kind === 'flare' ? masterAmount(actor, 'midnight-heal') : 0;
+        if (mend > 0) for (const ally of state.bearers) if (ally !== actor && ally.hp > 0)
+          heal(state, events, ally, masterSource(actor), Math.min(mend * spentWounds, radiantMasterRules.midnightCap * ally.stats.hp));
         // D-493 B5c1 Nightglass Counterblade Engine: Nightcleave spending Wounds sharpens the other allies.
         if (input.slot === 1) giveOthers(state, actor, 'nightcleave-crit');
         if (amount > 0) {
@@ -2514,6 +2567,8 @@ function cast(
   // Heals and Shields resolve before ally buffs (no rule depends on the order), so each recipient's
   // heal and its attached statuses present as one impact.
   let restored = false;
+  // D-493 B5c2: each kit heal of this cast (Health before, offered, effective) for the Master Health-line and overheal rows.
+  const healed: RadiantHealed[] = [];
   // D-493 B5b Quarry Planet Gravitas: Worldwall Ascendant's Shield on Bruno takes the largest of its kit value, a share of his
   // current Defense (read before this cast's buffs) and a share of his maximum Health.
   const worldwall = input.kind === 'flare' ? combatAmount(state, actor, 'worldwall-shield') : 0;
@@ -2537,13 +2592,22 @@ function cast(
           input.effectScale * powered
         : valueOf(effect) * input.effectScale * powered * ally.stats.hp) + carried;
       if (effect.kind === 'heal') {
-        const gained = heal(state, events, ally, source, magnitude);
+        const before = ally.hp, gained = heal(state, events, ally, source, magnitude);
+        const offeredEvent = events[events.length - 1];
+        if (before > 0) healed.push({ ally, before, effective: gained,
+          offered: offeredEvent?.type === 'heal' && offeredEvent.targetId === ally.loadout.id ? offeredEvent.offered : gained });
         restored = gained > 0 || restored;
         const lift = combatAmount(state, actor, 'lift-guard'), from = gearSourceOf(actor, 'lift-guard');
         if (low && gained > 0 && lift > 0 && from && ally.hp >= line * maximumHealth(state, ally))
           applyCategory(events, ally.loadout.id, ally.buffs, 'defense-up', from, lift, 1);
       }
-      else shield(state, events, ally, source, magnitude);
+      else {
+        const amount = shield(state, events, ally, source, magnitude);
+        // D-493 B5c2 Eclipse Planet Watchtower: Eclipse Bastion's Shield on Razor is shared with the other allies.
+        const share = input.slot === 2 && ally === actor && actor.loadout.starter === 'razor' ? masterAmount(actor, 'bastion-share') : 0;
+        if (share > 0 && amount > 0) for (const other of state.bearers) if (other !== actor && other.hp > 0)
+          shield(state, events, other, masterSource(actor), Math.min(share * amount, radiantMasterRules.bastionCap * other.stats.hp));
+      }
     }
   }
   // Returning Current: a skill or Flare heal that restores Health adds 1 Current, once per action (after any spend).
@@ -2556,6 +2620,9 @@ function cast(
         removed = cleared || removed;
         // D-493 B5c1 Broken-Link Continuance Engine: Unbind the Living removing Weaken empowers its target.
         if (cleared && input.slot === 2) giveMaster(state, actor, ally, 'unbind-power', masterAmount(actor, 'unbind-power'));
+        // D-493 B5c2 Unbinding Mercy Worldlock: removing Weaken Shields that ally, once per ally per turn.
+        const ward = cleared ? masterAmount(actor, 'unbind-shield') : 0;
+        if (ward > 0 && claimOnce(state, masterAllyKey(actor, ally))) masterRestore(state, events, actor, 'shield', [ally], ward);
       }
       // What Need Not Remain: removing a Weaken gives Ilyss 1 Severance, once per player turn.
       if (removed && own?.kind === 'severance' && !own.latch) { own.latch = true; gainCounter(events, actor); }
@@ -2589,14 +2656,20 @@ function cast(
     own.count = own.count === 2 ? (combatAmount(state, actor, 'harvest-bloom') > 0 ? 1 : 0) : own.count + 1;
     events.push({ type: 'signature', bearerId: id, op: 'season', amount: own.count });
   }
-  masterAfterCast(state, events, actor, input, stacks, primary);
+  masterAfterCast(state, events, actor, input, stacks, primary, healed);
+  // D-493 B5c2 Unextinguished Relay Cathedral: another ally who spent Vespera's Signal gains Luminosity, once per turn.
+  const giver = signal.giver;
+  if (giver && giver !== actor && giver.hp > 0 && masterAmount(giver, 'relay-charge') > 0 && actor.hp > 0 &&
+    claimOnce(state, masterKey(giver))) masterCharge(state, events, giver, actor, masterAmount(giver, 'relay-charge'));
   return hits;
 }
+/** D-493 B5c2: one kit heal of a cast, read by the Master Health-line and overheal rows. */
+interface RadiantHealed { ally: RadiantBearer; before: number; offered: number; effective: number }
 /** D-493 B5b Master clauses that act after a cast resolves: Recoil-Star's Luminosity, Twin-Edge's first-skill Crosscut,
  * Hymnwind's squad Luminosity, Absolution's extra Weaken and Unfallen Continuum's Refusal restore. */
 function masterAfterCast(
   state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, input: RadiantCast, stacks: number,
-  primary: RadiantEnemy | undefined,
+  primary: RadiantEnemy | undefined, healed: readonly RadiantHealed[] = [],
 ): void {
   if (actor.loadout.masterId === null || actor.hp === 0) return;
   const own = actor.signature, id = actor.loadout.id;
@@ -2644,6 +2717,7 @@ function masterAfterCast(
   if (starter === 'orvella' && input.kind === 'flare') giveOthers(state, actor, 'citadel-efficiency');
   if (starter === 'vaelor' && input.kind === 'flare')
     giveOthers(state, actor, 'chord-power', masterAmount(actor, 'chord-power') * (condition(state, actor, 'crescendo') ? 2 : 1));
+  masterRestoreAfterCast(state, events, actor, input, stacks, primary, healed);
   if (own?.kind === 'refusal' && input.kind === 'flare' && combatAmount(state, actor, 'refusal-restore') > 0) {
     const restored = own.spent.filter(entry => bearer(state, entry).hp > 0);
     if (restored.length) {
@@ -2652,6 +2726,58 @@ function masterAfterCast(
         events.push({ type: 'signature', bearerId: id, op: 'refusal-restore', holderId, amount: own.spent.length });
     }
   }
+}
+/** D-493 B5c2 Master heals, Shields and Luminosity that follow a cast. Health percentages read the current maximum Health;
+ * amounts use each recipient's maximum Health (N7 basis) and ignore Conduit healing/shielding bonuses. */
+function masterRestoreAfterCast(
+  state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, input: RadiantCast, stacks: number,
+  primary: RadiantEnemy | undefined, healed: readonly RadiantHealed[],
+): void {
+  const starter = actor.loadout.starter, own = actor.signature, power = input.skill.skillPower;
+  const others = state.bearers.filter(member => member !== actor && member.hp > 0);
+  const squad = state.bearers.filter(member => member.hp > 0);
+  // Stillplume Planetary Ballet: Warfeather Cut in Closing heals every other living ally.
+  if (starter === 'bliss' && input.slot === 1 && condition(state, actor, 'closing'))
+    masterRestore(state, events, actor, 'heal', others, masterAmount(actor, 'warfeather-heal'));
+  // Virtuous Planet Rosegarden: Crimson Skyfall on the Quarry heals Rosetta and each ally who hit it this turn.
+  if (own?.kind === 'quarry' && input.slot === 2 && primary && own.targetId === primary.id)
+    masterRestore(state, events, actor, 'heal', [actor, ...own.contributors.map(entry => bearer(state, entry))],
+      masterAmount(actor, 'skyfall-heal'));
+  // Duality Planet Flamewheel: Golden Edge right after Crimson Rupture (Combo still holds the previous skill here).
+  if (starter === 'crinso' && input.slot === 1 && condition(state, actor, 'after-rupture'))
+    masterRestore(state, events, actor, 'shield', [woundedAlly(state)], masterAmount(actor, 'edge-shield'));
+  // Quiet-Arc Shelter Projector: after Solenne's skill.
+  if (starter === 'solenne' && input.kind === 'skill')
+    masterRestore(state, events, actor, 'shield', [woundedAlly(state)], masterAmount(actor, 'repose-shield'));
+  // Blackwing Crossing Stabilizer: Light the Next Station's heal target, scaled by Skill Power.
+  if (starter === 'neralis' && input.slot === 1)
+    masterRestore(state, events, actor, 'shield', healed.map(entry => entry.ally).slice(0, 1), masterAmount(actor, 'station-shield') * power);
+  // Scarlet-Hinge Load Distributor and Braided-Signal Continuance Engine, scaled by Skill Power.
+  if (starter === 'varkhel' && input.slot === 1)
+    masterRestore(state, events, actor, 'shield', others, masterAmount(actor, 'chain-shield') * power);
+  if (starter === 'seravelle' && input.kind === 'flare')
+    masterRestore(state, events, actor, 'shield', squad, masterAmount(actor, 'road-shield') * power);
+  // Open-Threshold Return Drive: Leave the Doorway Standing spending enough Crosscut (read before the spend).
+  if (starter === 'velmira' && input.kind === 'flare' && stacks >= radiantMasterRules.doorwayCrosscut) {
+    masterCharge(state, events, actor, actor, masterAmount(actor, 'doorway-charge'));
+    masterRestore(state, events, actor, 'heal', [actor], masterAmount(actor, 'doorway-heal'));
+  }
+  // Crescent Rib Mercy Foundry: A Place on the Ferry's overheal becomes a Shield, capped by the target's maximum Health.
+  const ferry = starter === 'maerion' && input.slot === 2 ? masterAmount(actor, 'ferry-shield') : 0;
+  if (ferry > 0) for (const entry of healed) if (entry.ally.hp > 0 && entry.offered > entry.effective)
+    shield(state, events, entry.ally, masterSource(actor), Math.min(entry.offered - entry.effective, ferry * entry.ally.stats.hp));
+  // Weirheart Recollection Dynamo and Ferrywake Remembrance Dynamo: Health lines read before and after each skill heal.
+  if (input.kind === 'skill') for (const entry of healed) {
+    if (entry.effective <= 0 || entry.ally.hp === 0) continue;
+    const line = radiantMasterRules.healthLine * maximumHealth(state, entry.ally);
+    const kind = starter === 'neralis' && entry.before < line ? 'weir-charge'
+      : starter === 'maerion' && entry.before < line && entry.ally.hp >= line ? 'ferrywake-charge' : undefined;
+    const value = kind ? masterAmount(actor, kind) : 0;
+    if (value > 0 && claimOnce(state, masterAllyKey(actor, entry.ally))) masterCharge(state, events, actor, entry.ally, value);
+  }
+  // Night-Library Germination Vault: entering Shelter heals the most wounded ally, once per turn.
+  const vault = starter === 'asteriel' && input.slot === 1 ? masterAmount(actor, 'shelter-heal') : 0;
+  if (vault > 0 && claimOnce(state, masterKey(actor))) masterRestore(state, events, actor, 'heal', [woundedAlly(state)], vault);
 }
 /** D-493 Nullsong Transmission: one Conduit roll per skill or Convergent Light while equipped. */
 function gambleRoll(state: RadiantCombatState, actor: RadiantBearer): boolean | undefined {
@@ -2680,9 +2806,14 @@ function skillAction(
   // Rose Duality: alternating skills add 1 Combo (max 5); repeating a skill resets it. The first skill only sets the slot.
   const own = actor.signature;
   if (own?.kind === 'combo') {
+    const prior = own.combo;
     if (own.last !== null) own.combo = own.last === action.slot ? 0 : Math.min(radiantSignatureCaps.combo, own.combo + 1);
     own.last = action.slot;
     events.push({ type: 'signature', bearerId: id, op: 'combo', amount: own.combo });
+    // D-493 B5c2 Crimson Beauty Pyre Requiem: gaining Combo heals the most wounded ally, or every living ally at 3 or more.
+    if (own.combo > prior && actor.hp > 0)
+      masterRestore(state, events, actor, 'heal', own.combo >= radiantMasterRules.comboSquad
+        ? state.bearers.filter(member => member.hp > 0) : [woundedAlly(state)], masterAmount(actor, 'combo-heal'));
   }
   return hits;
 }
@@ -2928,6 +3059,37 @@ function recordContributors(
     events.push({ type: 'signature', bearerId: member.loadout.id, op: 'contributor', holderId: id, amount: own.contributors.length });
   });
 }
+/** D-493 B5c2 Master triggers read across one whole player action: Concord Planet Thoughtforge and Freely-Given Starseed
+ * Distributor (Attack Up held before the action), Rose Beyond the Sun Orrery (damaging actions that hit the Quarry). */
+function masterActionTriggers(
+  state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, type: 'normal' | 'skill' | 'flare',
+  heldAttackUp: RadiantSource | undefined, quarries: readonly (string | null)[], quarryCounts: readonly number[],
+): void {
+  const id = actor.loadout.id;
+  const damaged = (targetId?: string) => events.some(event => event.type === 'damage' && event.origin === 'direct' &&
+    event.healthLoss + event.absorbed > 0 && event.source.kind !== 'enemy' && event.source.bearerId === id &&
+    (event.source.kind === 'normal' || event.source.kind === 'skill' || event.source.kind === 'flare') &&
+    (targetId === undefined || event.targetId === targetId));
+  const giver = heldAttackUp && heldAttackUp.kind !== 'enemy' ? state.bearers.find(member => member.loadout.id === heldAttackUp.bearerId) : undefined;
+  if (giver && giver.hp > 0 && giver.loadout.masterId !== null) {
+    // Concord: once per action, a skill or Convergent Light from a holder fills each ally other than that holder.
+    const concord = type !== 'normal' && giver.loadout.starter === 'disciple' ? masterAmount(giver, 'resolve-charge') : 0;
+    if (concord > 0) for (const ally of state.bearers) if (ally !== actor) masterCharge(state, events, giver, ally, concord);
+    // Starseed: once per turn, another ally's damaging action fills that ally after it resolves.
+    const starseed = giver !== actor && giver.loadout.starter === 'asteriel' ? masterAmount(giver, 'starseed-charge') : 0;
+    if (starseed > 0 && actor.hp > 0 && damaged() && claimOnce(state, masterKey(giver))) masterCharge(state, events, giver, actor, starseed);
+  }
+  state.bearers.forEach((member, index) => {
+    const own = member.signature, quarry = quarries[index], value = masterAmount(member, 'quarry-charge');
+    if (own?.kind !== 'quarry' || quarry === null || member.hp === 0 || !(value > 0) || !damaged(quarry)) return;
+    const count = quarryCounts[index] + 1, granted = count >= radiantMasterRules.quarryHits;
+    if (granted) for (const ally of state.bearers) masterCharge(state, events, member, ally, value);
+    // The count stays only while the same Quarry lives (a defeated or replaced Quarry already reset it).
+    if (own.targetId === quarry) {
+      if (granted) delete own.quarryHits; else own.quarryHits = count;
+    }
+  });
+}
 /** Process a fixed native ledger once. Gear output is never an input to another
  * native/gear trigger, and multi-target packets cannot multiply action grants. */
 function processRadiantGear(
@@ -3105,6 +3267,16 @@ function processRadiantGear(
           }
           case 'kill-heal': if (killed && wounded) heal(state, events, wounded, source, amount * owner.stats.hp); break;
           case 'kill-charge': if (killed) grant(owner, amount); break;
+          case 'reaping-heal':
+            // D-493 B5c2 Reaping-Tide Recovery Dynamo: once per turn, this bearer's own action directly defeats an enemy.
+            if (source.kind === 'master' && ownAction && killed && claimOnce(state, key)) {
+              const charge = effects.find(entry => entry.kind === 'reaping-charge')?.amount ?? 0;
+              for (const ally of state.bearers) if (ally.hp > 0) {
+                heal(state, events, ally, source, amount * ally.stats.hp);
+                grant(ally, charge);
+              }
+            }
+            break;
           case 'normal-splash':
             if (normalHit && primary) {
               const other = state.enemies.filter(enemy => enemy.hp > 0 && enemy.id !== primary.targetId)
@@ -3590,6 +3762,9 @@ export function applyRadiantCombatAction(
     let hits = 0;
     const hitCharge: RadiantHitCharge = { bonusRolls: 0, bonusOffered: 0 };
     const quarries = state.bearers.map(member => member.signature?.kind === 'quarry' ? member.signature.targetId : null);
+    // D-493 B5c2: Attack Up givers the actor holds before acting (Concord Planet Thoughtforge, Freely-Given Starseed Distributor).
+    const heldAttackUp = actor.buffs.find(effect => effect.category === 'attack-up')?.source;
+    const quarryCounts = state.bearers.map(member => member.signature?.kind === 'quarry' ? member.signature.quarryHits ?? 0 : 0);
     let normalUsed: RadiantToken[] = [];
     if (action.type === 'normal') {
       try { hits = normal(state, events, actor, action.targetId, hitCharge); } finally { normalUsed = casting?.tokens ?? []; casting = null; }
@@ -3615,6 +3790,7 @@ export function applyRadiantCombatAction(
       casting = null;
     }
     recordContributors(state, events, actor, quarries);
+    masterActionTriggers(state, events, actor, action.type, heldAttackUp, quarries, quarryCounts);
     const charge = grantRadiantAction(state.gauge, action.bearerId, action.type, action.type === 'normal' ? hits : 0);
     state.gauge = charge.state;
     events.push({ type: 'charge', bearerId: action.bearerId,

@@ -164,6 +164,15 @@
   at full Health; Atmoso-3's Gain Up lasts 2 turns; Disciple-3 reads the
   current Attack Up source; Tide's own Shield counts for Tide-2; Elise-2's
   bonuses expire like other bonuses even while the Shuriken stays lodged.
+- **B5c2 implemented (unreleased, 2026-11-22).** 22 Master Luminosity, Shield
+  and heal trigger rows plus Bliss-2's Closing heal and Rosetta-2's
+  contributor heal
+  ([combat spec](combat.md#conduit-restoration-b5c2-master-luminosity-shield-and-heal-triggers-d-493-battle-flurry-phase-4c)).
+  Approach as approved in the B5c plan. Implementation choices (owner may
+  reverse): Rosetta-2 also heals Rosetta; Atmoso-2 counts Health removed;
+  Disciple-2 reads Attack Up held before the action; Neralis-3, Maerion-3 and
+  Solenne-2 count skills only; Asteriel-2 triggers on every Shelter cast;
+  Myrthen-3 counts Normal defeats; givers must be alive.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 
