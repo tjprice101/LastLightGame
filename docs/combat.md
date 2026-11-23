@@ -507,9 +507,9 @@ event, so it triggers no Conduits. The mote is deterministic and uses no RNG.
   Flare.
 
 **Versions.**
-- Combat-state and frozen-run schemas are **8**. Versions 3-7 retire read-only
-  with the standard notice.
-- The media type is `radiant-continuation-v4`.
+- Combat-state and frozen-run schemas are **9** (D-493 release). Versions 3-8
+  retire read-only with the standard notice.
+- The media type is `radiant-continuation-v5`.
 - Saved Normal drops accept any positive whole amount, because Gauge Gain
   varies it.
 
@@ -2969,8 +2969,10 @@ designs. At release, an encounter saved mid-run with a Conduit or Master whose
 Health, Attack, Defense, capacity or Skill Efficiency changed in B1-B5 will no
 longer validate. Options: bump the frozen-run version (8 → 9) so older
 encounters end with the existing "Combat rules changed" notice (saved rewards
-kept), or keep the version (such encounters fail to load). Owner decision
-needed before the release.
+kept), or keep the version (such encounters fail to load). **Owner decision
+(2026-11-23): bump to 9.** Version-8 encounters (including any underway on
+`radiant-trio-v1`) retire read-only with the notice; media type
+`radiant-continuation-v5`.
 
 ## Conduit restoration B5b: Master kit modifiers (D-493, Battle Flurry Phase 4c)
 
@@ -3374,7 +3376,7 @@ Enemy tags "Thorn-cut" and "Final Dawn Tribunal · 25% less Defense".
 **Release note (joins the B5a open item):** an encounter saved mid-run
 before this release with Seedtrace Pursuit Distributor equipped has no
 `conduitSeed` and fails validation unless the frozen-run version is bumped
-(8 → 9).
+(8 → 9). Resolved: the release bumps to 9, so such encounters retire.
 
 **Validation:** `src/game/conduit-restoration-b5d.test.ts` (27 tests) checks
 the 19 rows and tooltips, every clause and its limit, the

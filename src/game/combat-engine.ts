@@ -254,7 +254,7 @@ export interface RadiantEnemy {
 }
 export interface RadiantEnemyMark { casterId: string; remaining: number }
 export interface RadiantCombatState {
-  version: 8;
+  version: 9;
   bearers: RadiantBearer[];
   enemies: RadiantEnemy[];
   gauge: RadiantGaugeState;
@@ -1229,7 +1229,7 @@ function validateTokens(state: RadiantCombatState, member: RadiantBearer): void 
   }
 }
 export function validateRadiantCombat(state: RadiantCombatState): void {
-  if (!state || state.version !== 8 || !Array.isArray(state.bearers) || !state.bearers.length ||
+  if (!state || state.version !== 9 || !Array.isArray(state.bearers) || !state.bearers.length ||
       state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length ||
       !['player', 'enemy', 'victory', 'defeat'].includes(state.phase))
     throw new Error('Invalid radiant combat roster or version.');
@@ -1428,7 +1428,7 @@ export function createRadiantCombat(
   criticalHits = true,
 ): RadiantCombatState {
   const state: RadiantCombatState = {
-    version: 8,
+    version: 9,
     bearers: loadouts.map(loadout => {
       const stats = resolveRadiantStarterStats(loadout);
       return { loadout: structuredClone(loadout), stats, hp: rounded(stats.hp), shields: [], buffs: [],

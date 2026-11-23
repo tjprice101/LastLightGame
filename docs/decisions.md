@@ -201,6 +201,12 @@
   95% has reliable winning teams; **Fatebreaker Warden (2/12) is accepted as
   challenge content and the D-481 source-fix item for it and Training 120 is
   closed.**
+- **Release frozen-run bump (owner decision, 2026-11-23): bump 8 → 9.**
+  Combat-state and frozen-run schemas become 9; version-8 encounters saved
+  mid-run (any calibration) end read-only with the "Combat rules changed"
+  notice and keep saved rewards. Media type `radiant-continuation-v5`, so
+  pre-release clients get the refresh response. B1-B5d and `radiant-trio-v2`
+  ship in this single release with the matching `game-operation` deploy.
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 

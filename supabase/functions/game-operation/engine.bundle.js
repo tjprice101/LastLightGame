@@ -19012,7 +19012,7 @@ function validateTokens(state, member) {
   }
 }
 function validateRadiantCombat(state) {
-  if (!state || state.version !== 8 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
+  if (!state || state.version !== 9 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
     throw new Error("Invalid radiant combat roster or version.");
   safe(state.round, "round", 1);
   safe(state.chargeSeed, "charge seed");
@@ -19170,7 +19170,7 @@ function validateRadiantParty(loadouts) {
 }
 function createRadiantCombat(loadouts, enemies2, chargeSeed, criticalHits = true) {
   const state = {
-    version: 8,
+    version: 9,
     bearers: loadouts.map((loadout) => {
       const stats = resolveRadiantStarterStats(loadout);
       return {
@@ -21800,7 +21800,7 @@ function radiantPressureEnemyAction(state, enemy2, targetRandom) {
 }
 
 // src/online/battle-run.ts
-var radiantContinuationMediaType = "application/vnd.lastlight.radiant-continuation-v4+json";
+var radiantContinuationMediaType = "application/vnd.lastlight.radiant-continuation-v5+json";
 var radiantClientAccept = `application/json, ${radiantContinuationMediaType}`;
 var RadiantRunError = class extends Error {
   constructor(code, message) {
@@ -21824,7 +21824,7 @@ function validateRadiantCheckpoint(value2) {
   }
 }
 function retiredRunVersion(version) {
-  return version === 3 || version === 4 || version === 5 || version === 6 || version === 7;
+  return version === 3 || version === 4 || version === 5 || version === 6 || version === 7 || version === 8;
 }
 var uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function invalid(message) {
@@ -21901,7 +21901,7 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1, cont
     validateRadiantCombat(initial);
   }
   return {
-    version: 8,
+    version: 9,
     id: entropy.runId,
     encounter: encounter2,
     anchor,
@@ -22094,7 +22094,7 @@ function resolveRadiantRun(snapshot, request, authority) {
     discover = true;
   } else {
     const run2 = game.radiantStudy;
-    if (!run2 || run2.version !== 8 || run2.id !== request.runId || run2.encounter !== request.encounter)
+    if (!run2 || run2.version !== 9 || run2.id !== request.runId || run2.encounter !== request.encounter)
       throw new RadiantRunError("stale-run", "The saved Radiant encounter does not match.");
     validateFrozenRadiantRun(run2);
     if (run2.enemies.length !== run2.state.enemies.length || run2.enemies.some((enemy2, i) => enemy2.id !== run2.state.enemies[i].id || enemy2.currencyBudget !== run2.state.enemies[i].currency.budget || enemy2.currencyBudget !== run2.initial.enemies[i]?.currency.budget))
@@ -22193,7 +22193,7 @@ function canonical(value2) {
 }
 function validateFrozenRadiantRun(value2) {
   try {
-    if (!record4(value2) || value2.version !== 8 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !isRadiantCalibrationId(value2.calibration) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
+    if (!record4(value2) || value2.version !== 9 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !isRadiantCalibrationId(value2.calibration) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
       throw new Error();
     for (const key of ["encounterSeed", "initialChargeSeed", "initialTargetSeed"])
       seed2(value2[key]);

@@ -1,8 +1,48 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c release: B1-B5d, `radiant-trio-v2`, schema 9 (D-493, 2026-11-23)
+
+**Release in progress 2026-11-23** (see Release record). Ships every Phase 4c
+batch (B1-B5d, the crit step) and the `radiant-trio-v2` retune in one release.
+
+**Owner answers:**
+- Frozen-run bump: **8 → 9**. Encounters saved mid-run on version 8 (any
+  calibration, including `radiant-trio-v1`) end with the "Combat rules
+  changed" notice; saved rewards are kept.
+- Full release approved: merge, push, `game-operation` deploy, hosted check.
+
+**What changed:**
+- Combat-state and frozen-run schemas 9; versions 3-8 retire read-only.
+- Media type `radiant-continuation-v5`: pre-release clients get the refresh
+  response instead of a run they cannot read.
+- Tests: retired-version cases extend to 8; new runs expect 9.
+- Docs: decisions (D-493), combat spec versions and release items, Future
+  Plans row.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Targeted `npx vitest run src/online` plus combat-engine and B5a/B5d tests:
+  1,321 of 1,321.
+- Full `npx vitest run`: 11,106 of 11,107; the one failure
+  (`acquisition-surfaces`) was a 23-second timeout under load and passes alone
+  (1 of 1).
+- `npx vite build`: succeeded (chunk advisory).
+- `node tools\bundle_server_game.mjs`: rebuilt (bundle has
+  `radiant-continuation-v5`, `radiant-trio-v2`, retired version 8).
+
+**Not verified:** in-game feel. Fights now last about 10 rounds on average
+(Calamity about 13); the B5 Master callouts, Worldseed revive and new enemy
+tags were tested only by code.
+
+**Release record:** pending (merge, push, deploy, hosted check).
+
+**Next:** owner in-game feel review of Phase 4c (fight length, Master
+callouts, revive moment). Then the Radiant follow-through items in Future
+Plans (economy review, GPU check, icon art).
+
 ## Battle Flurry Phase 4c retune: live calibration `radiant-trio-v2` (D-493, 2026-11-23)
 
-**Implemented on `battle-flurry-phase3`, not released.** This is the one enemy
+**Released with schema 9** (see the release entry above). This is the one enemy
 retune on the final Conduit set (B1-B5d). Sheet:
 [Phase 4c retune sheet](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#phase-4c-retune-sheet-radiant-trio-v2-proposal-2026-11-23-numbers-await-owner-approval).
 

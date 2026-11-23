@@ -22,7 +22,7 @@ import { applyRadiantCombatAction, createRadiantCombat, validateRadiantCombat, v
   radiantSignatureOpList, type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState } from '../game/combat-engine';
 
 /** v4: Phase 3 kits and rules (D-473); v3 introduced device-run encounters with one settle replay (D-471). */
-export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v4+json';
+export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v5+json';
 export const radiantClientAccept = `application/json, ${radiantContinuationMediaType}`;
 
 export type RadiantRunErrorCode = 'manual-squad' | 'invalid-input' | 'stale-revision' |
@@ -41,7 +41,7 @@ export interface RadiantContinuation {
   state: RadiantCombatState;
 }
 export interface FrozenRadiantRun {
-  version: 8;
+  version: 9;
   id: string;
   encounter: number;
   anchor: RadiantPressureAnchor;
@@ -127,7 +127,7 @@ export interface RadiantRunAuthority {
 }
 /** Frozen runs from earlier combat rules end read-only; their saved rewards were already kept. */
 export function retiredRunVersion(version: unknown): boolean {
-  return version === 3 || version === 4 || version === 5 || version === 6 || version === 7;
+  return version === 3 || version === 4 || version === 5 || version === 6 || version === 7 || version === 8;
 }
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function invalid(message: string): never { throw new RadiantRunError('invalid-input', message); }
@@ -189,7 +189,7 @@ function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun
     }
     validateRadiantCombat(initial);
   }
-  return { version: 8, id: entropy.runId, encounter, anchor, calibration,
+  return { version: 9, id: entropy.runId, encounter, anchor, calibration,
     encounterSeed: entropy.encounterSeed, initialChargeSeed: entropy.chargeSeed,
     initialTargetSeed: entropy.targetSeed, targetSeed: entropy.targetSeed, enemies,
     initial: structuredClone(initial), state: initial,
@@ -352,7 +352,7 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
     discover = true;
   } else {
     const run = game.radiantStudy;
-    if (!run || run.version !== 8 || run.id !== request.runId || run.encounter !== request.encounter)
+    if (!run || run.version !== 9 || run.id !== request.runId || run.encounter !== request.encounter)
       throw new RadiantRunError('stale-run', 'The saved Radiant encounter does not match.');
     validateFrozenRadiantRun(run);
     if (run.enemies.length !== run.state.enemies.length ||
@@ -426,7 +426,7 @@ function canonical(value: unknown): string {
 }
 export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
   try {
-    if (!record(value) || value.version !== 8 || typeof value.id !== 'string' || !uuid.test(value.id) ||
+    if (!record(value) || value.version !== 9 || typeof value.id !== 'string' || !uuid.test(value.id) ||
       typeof value.encounter !== 'number' || !Number.isSafeInteger(value.encounter) || value.encounter < 1 ||
       typeof value.quit !== 'boolean' || !record(value.anchor) ||
       !isRadiantCalibrationId(value.calibration) ||
