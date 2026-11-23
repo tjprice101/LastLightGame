@@ -1,5 +1,44 @@
 # Current state and handoff
 
+## UI and VFX overhaul Phase 1, step 2: battle shader kit (D-494, 2026-11-23)
+
+**Implemented on branch `ui-vfx-shader-kit`, not released, not pushed.**
+Client only; no authority change.
+
+**Owner answers (2026-11-23):** shader foundation and battle first; Fable for
+shaders only; no GSAP yet; fold in the Spectacle feel review; no paid tools.
+[Approved plan steps](Future%20Plans/ui-vfx-polish-toolkit.md#8-phase-1-plan-approved-2026-11-23-d-494).
+
+**What changed:**
+- `src/vfx/shaders/`: original GLSL (`glsl.ts`), overlay state
+  (`spectacle-fx.ts`), camera post pipeline (`spectacle-pipeline.ts`).
+- `spectacle-scene.ts`: attaches the kit; new `edgeBloom`, `godRays`,
+  `critFlash`, `veil`; software-renderer and slow-frame guards.
+- Bloom is on for everything the GPU layer draws. No battle beat calls the
+  overlays yet (step 3).
+- `tools/capture_frames.mjs --gpu`: captures on the real GPU.
+- Docs: D-494, [combat spec](combat.md#battle-spectacle-shader-kit-d-494-overhaul-phase-1),
+  overhaul plan, Future Plans row.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded.
+- `npx vitest run src/vfx`: all pass, including the new kit tests.
+- Full `npx vitest run`: 11,126 of 11,129 before a one-line fix to a new kit
+  test; the other two failures (`acquisition-surfaces`, `archives-controls`)
+  were timeouts under load and pass alone.
+- Real GPU (AMD Radeon integrated, headless Chromium, Direct3D 11): shaders
+  compile with no console errors; every overlay and all six veils reviewed in
+  the dev battle preview; 60 frames a second with everything at once; Skip
+  clears all overlays.
+- Before and after tier captures (`nerithe-10`): bloom adds a halo to the
+  Skill 2 beam and a white-hot core to the Ultimate bursts.
+
+**Not done:**
+- Step 1's owner feel review and `?spectacle-stats` check on the hosted build.
+- Step 3 (Opus): wire the overlays into the tiers. Step 4 (Sonnet): tune.
+  Step 5: release.
+- Phone and low-end GPU check of the kit (only one desktop GPU measured).
+
 ## Battle Flurry Phase 4c release: B1-B5d, `radiant-trio-v2`, schema 9 (D-493, 2026-11-23)
 
 **Released 2026-11-23** (see Release record). Ships every Phase 4c

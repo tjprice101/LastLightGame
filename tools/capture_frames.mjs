@@ -19,6 +19,8 @@
 // --stream records Chrome's screencast instead of screenshotting (screenshots stall rendering,
 // which slows GPU-timed effects) and keeps, for every --every ms after the input, the latest
 // streamed frame (JPEG). Timing follows the browser clock.
+// --gpu renders on this machine's real GPU (Windows, Direct3D 11). The shader kit (D-494) stays off on
+// software WebGL, so captures without --gpu show the battle without bloom or light overlays.
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { chromium } from 'playwright';
@@ -26,7 +28,7 @@ import { chromium } from 'playwright';
 function parse(argv) {
   const opts = { url: 'http://127.0.0.1:5173/LastLightGame/', clicks: [], wait: 1500, frames: 24,
     every: 80, width: 1280, height: 720, sheet: false, out: null, battle: null, leader: null, encounter: null, member: 0,
-    flareTier: null, speed: null, reduced: false, stream: false };
+    flareTier: null, speed: null, reduced: false, stream: false, gpu: false };
   for (let i = 0; i < argv.length; i += 1) {
     const key = argv[i];
     const next = () => argv[++i];
@@ -48,6 +50,7 @@ function parse(argv) {
     else if (key === '--speed') opts.speed = next();
     else if (key === '--reduced') opts.reduced = true;
     else if (key === '--stream') opts.stream = true;
+    else if (key === '--gpu') opts.gpu = true;
     else throw new Error(`Unknown option ${key}`);
   }
   if (!opts.out) throw new Error('--out <dir> is required');
@@ -59,7 +62,8 @@ function parse(argv) {
 
 const opts = parse(process.argv.slice(2));
 mkdirSync(opts.out, { recursive: true });
-const browser = await chromium.launch({ args: ['--use-gl=angle', '--enable-gpu-rasterization'] });
+const browser = await chromium.launch({ args: ['--use-gl=angle', '--enable-gpu-rasterization',
+  ...(opts.gpu ? ['--use-angle=d3d11', '--ignore-gpu-blocklist', '--enable-gpu'] : [])] });
 const context = await browser.newContext({ viewport: { width: opts.width, height: opts.height } });
 const page = await context.newPage();
 const shots = [];

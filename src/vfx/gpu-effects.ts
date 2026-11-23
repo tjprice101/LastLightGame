@@ -107,6 +107,7 @@ export class GpuBattleEffects implements RadiantBattleEffects {
     this.runtime.host.style.visibility = '';
     this.runtime.scene.attach(() => this.host.querySelector<HTMLElement>('.radiant-field'));
     this.runtime.scene.setPaused(this.paused);
+    this.runtime.scene.shareFlashGovernor(this.governor);
   }
   private scene(): SpectacleScene | null {
     if (!this.runtime || this.disposed) return null;

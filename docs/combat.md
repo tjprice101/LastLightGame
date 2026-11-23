@@ -2250,6 +2250,61 @@ never an outcome, RNG or receipt.
   Overdrive needs an ordinary enemy of Lv.50 or higher, such as late Story
   stages; no preview fixture reaches it yet.
 
+
+## Battle Spectacle: shader kit (D-494, overhaul Phase 1)
+
+Status: **step 2 implemented 2026-11-23 on branch `ui-vfx-shader-kit`, not
+released.** Bloom is on; the overlays exist but no battle beat calls them yet
+(step 3).
+
+The GPU layer's camera runs one post pass (`src/vfx/shaders/`):
+threshold, a separable blur at half size, then a composite of scene + bloom +
+light overlays. All shaders are original GLSL (WebGL 1 compatible) and use no
+textures beyond the scene and its bloom.
+
+| Effect | Scene method | What it draws | Slots |
+|---|---|---|---|
+| Bloom | always on | A soft glow around every bright sprite, beam and particle the layer draws | - |
+| Edge bloom | `edgeBloom` | Light pouring in from the edges of the field (or the whole screen), in streaked fingers. `soft` or `full` | 2 |
+| God rays | `godRays` | Two counter-turning layers of light shafts around a white core | 1 |
+| Critical ring | `critFlash` | A fast shock ring whose red, green and blue bands separate as it expands | 3 |
+| Element veil | `veil` | The element's light language in a soft disc (below) | 4 |
+
+Element veils: Infernic heat shimmer (rising tongues), Oceanic ripples with
+caustic glints, Atmospheric re-striking arcs, Botanic drifting motes in a
+green swirl, Tranquilitic rings of dashes and ticks, Chaotic cracks that
+spread through churning smoke. Palettes come from `element-styles.ts`.
+
+Rules:
+- **Light only.** The cutouts and HUD are DOM under the canvas. Overlays add
+  light (with partial cover so a color holds its hue on bright backgrounds);
+  they never warp the art.
+- **Finite and disposable.** Every overlay has a fixed life on the scene's
+  scaled clock (battle speed, hit-stop, Settings pause), keeps the scene awake
+  only while it lives, and ends at once on Skip, Exit or Retry. A full slot
+  list displaces the overlay nearest its end.
+- **Flash budget (R6).** A `full` edge bloom counts as a full flash and shares
+  one `FlashGovernor` with the flat flashes: a fourth within a second plays as
+  `soft`.
+- **Reduce motion and no WebGL:** unchanged. The view never calls GPU effects
+  under Reduce motion; without WebGL the static rings show.
+- **Performance (R7).** Low quality uses one blur pair and two noise octaves:
+  cheaper, same look. The kit is not attached on software WebGL
+  (SwiftShader, llvmpipe, Microsoft Basic Render Driver), and 12 net frames
+  over 50 ms with the kit on turn it off for the session; the battle then
+  looks as it did before D-494. `?spectacle-stats` reports `shaderKit`.
+- **Wake frame.** The first frame after the layer wakes reports the whole
+  sleep as its delta; overlays treat it as one normal frame.
+
+Measured 2026-11-23 at 1280 by 720 (dev preview, `nerithe-10`): 60 frames a
+second on the owner's AMD Radeon integrated GPU with bloom, an edge bloom,
+god rays and four veils at once; about 3 on software WebGL (kit now disabled
+there).
+
+Capture: `node tools/capture_frames.mjs --battle <tier> --stream --gpu`.
+Without `--gpu` the capture browser renders in software and shows the battle
+without the kit.
+
 ## Conduit callouts and contribution (D-492, Battle Flurry Phase 4a)
 
 Problem (D-470): Conduits worked in the engine but nothing on screen showed it.

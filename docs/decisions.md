@@ -1,5 +1,31 @@
 # Decision log
 
+## UI and VFX overhaul Phase 1: battle shader kit (D-494, 2026-11-23)
+
+- **Owner-approved scope (2026-11-23):** the
+  [UI and VFX overhaul](Future%20Plans/ui-vfx-polish-toolkit.md) starts with a
+  shader foundation applied to battle; summons and menus follow and reuse it.
+  Fable writes the shaders; Opus and Sonnet wire and tune. No GSAP, no paid
+  tools. The pending Spectacle steps 2-7 feel review is folded into this work.
+- **Selected design:** one camera post pass on the existing GPU layer: bloom
+  on everything the layer draws, plus procedural light overlays (edge bloom,
+  god rays, a chromatic critical-hit ring, six element veils). Original GLSL;
+  no MagnumOpus shader code and no new textures (the 50-texture budget is
+  unchanged).
+- **Known limit:** the cutouts and HUD are DOM under the canvas, so shaders
+  add light over them and cannot warp them. "Per-element distortion" is
+  delivered as element veils.
+- **Safety:** the kit stays off on software WebGL (measured about 3 frames a
+  second there against 60 without it) and turns itself off for the session
+  after sustained slow frames; the battle then keeps its pre-shader look.
+  Full edge blooms share the flat flashes' WCAG budget (R6).
+- **Status:** step 2 (the kit, with bloom enabled) is implemented on branch
+  `ui-vfx-shader-kit`, **not released**. Step 3 wires the overlays into the
+  battle tiers; step 4 tunes; step 5 releases.
+- **Affected:** `src/vfx/shaders/`, `src/vfx/spectacle-scene.ts`,
+  `src/vfx/gpu-effects.ts`, `tools/capture_frames.mjs` (`--gpu`),
+  [combat spec](combat.md#battle-spectacle-shader-kit-d-494-overhaul-phase-1).
+
 ## Battle Flurry Phase 4b approved: Conduit restoration (D-493, 2026-11-19)
 
 - **Owner-approved (2026-11-19), in full:** the

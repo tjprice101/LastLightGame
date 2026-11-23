@@ -12,6 +12,10 @@ import Phaser from 'phaser';
 import { spectacleTextures, spectacleTextureUrl, textureEdge, type SpectacleTexture } from './vfx-textures';
 import { toneColor, type BurstKind, type ElementStyle, type SparkPreset, type Travel } from './element-styles';
 import { battleSpeed } from '../presentation/battle-speed';
+import type { FlashGovernor } from './spectacle-timing';
+import { kitSlowFrameLimit, kitSlowFrameMs, softwareRenderer, SpectacleFxState, type CritFlashOptions, type EdgeBloomOptions, type EdgeStrength, type FxView,
+  type GodRaysOptions, type VeilOptions } from './shaders/spectacle-fx';
+import { SpectacleFxPipeline, spectaclePipelineKey } from './shaders/spectacle-pipeline';
 
 export interface Point { x: number; y: number }
 export type { BurstKind } from './element-styles';
@@ -43,6 +47,8 @@ export interface SpectacleStats {
   maximumFrameMs: number;
   slowFrames: number;
   liveObjects: number;
+  /** D-494: false on software WebGL, after a start failure, or once the slow-frame guard turned the kit off. */
+  shaderKit: boolean;
 }
 
 export class SpectacleScene extends Phaser.Scene {
@@ -72,6 +78,10 @@ export class SpectacleScene extends Phaser.Scene {
   private dimTween: Phaser.Tweens.BaseTween | null = null;
   private flashTween: Phaser.Tweens.BaseTween | null = null;
   private frameSamples: number[] = [];
+  /** Shader kit (D-494): bloom and light overlays drawn by one camera post pass. */
+  private readonly fx = new SpectacleFxState();
+  private shaderKit = false;
+  private kitSlowFrames = 0;
   readonly stats: SpectacleStats;
   private readonly speedChange = () => this.applyTimeScale();
 
@@ -80,7 +90,8 @@ export class SpectacleScene extends Phaser.Scene {
     const navigatorInfo = navigator as Navigator & { deviceMemory?: number };
     this.quality = (navigator.hardwareConcurrency || 8) <= 4 || (navigatorInfo.deviceMemory ?? 8) <= 4 ? 'low' : 'high';
     this.stats = { quality: this.quality, cap: particleCaps[this.quality], peakParticles: 0, activeFrames: 0,
-      averageFrameMs: 0, maximumFrameMs: 0, slowFrames: 0, liveObjects: 0 };
+      averageFrameMs: 0, maximumFrameMs: 0, slowFrames: 0, liveObjects: 0,
+      shaderKit: false };
   }
   preload(): void {
     this.load.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: Phaser.Loader.File) => {
@@ -93,6 +104,7 @@ export class SpectacleScene extends Phaser.Scene {
     if (renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) {
       const gl = renderer.gl;
       add = renderer.addBlendMode([gl.ONE, gl.ONE, gl.ONE, gl.ONE_MINUS_SRC_ALPHA], gl.FUNC_ADD);
+      this.attachShaderKit(renderer);
     }
     this.dimRect = this.add.rectangle(0, 0, 1, 1, 0x05060c, 1).setOrigin(0).setDepth(-10).setAlpha(0);
     this.flashRect = this.add.rectangle(0, 0, 1, 1, 0xffffff, 1).setOrigin(0).setDepth(100).setBlendMode(add).setAlpha(0);
@@ -110,6 +122,41 @@ export class SpectacleScene extends Phaser.Scene {
     for (const key of retry) this.load.image(key, spectacleTextureUrl(key, 'png'));
     this.load.once(Phaser.Loader.Events.COMPLETE, finish);
     this.load.start();
+  }
+  /** Shader kit (D-494). If the pipeline cannot start, the layer keeps its pre-shader look. */
+  private attachShaderKit(renderer: Phaser.Renderer.WebGL.WebGLRenderer): void {
+    try {
+      const info = renderer.gl.getExtension('WEBGL_debug_renderer_info');
+      if (softwareRenderer(info ? String(renderer.gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : null)) return;
+      if (!renderer.pipelines.postPipelineClasses.has(spectaclePipelineKey))
+        renderer.pipelines.addPostPipeline(spectaclePipelineKey, SpectacleFxPipeline);
+      const camera = this.cameras.main;
+      camera.setPostPipeline(SpectacleFxPipeline);
+      const found = camera.getPostPipeline(SpectacleFxPipeline);
+      const pipeline = (Array.isArray(found) ? found[0] : found) as unknown as SpectacleFxPipeline | undefined;
+      if (!pipeline) return;
+      pipeline.fx = this.fx;
+      pipeline.fxView = () => this.fxView();
+      this.fx.onEnd = () => this.end();
+      this.shaderKit = true; this.stats.shaderKit = true;
+    } catch (error) {
+      console.error('Battle effects could not start the shader kit; effects play without bloom.', error);
+      this.cameras.main.resetPostPipeline();
+    }
+  }
+  /** Slow-frame guard: the battle returns to its pre-shader look for the rest of the session. */
+  private dropShaderKit(): void {
+    if (!this.shaderKit) return;
+    this.shaderKit = false; this.stats.shaderKit = false;
+    const live = this.fx.count;
+    this.fx.clear();
+    this.cameras.main.resetPostPipeline();
+    for (let index = 0; index < live; index++) this.end();
+  }
+  private fxView(): FxView {
+    const { left, top, width, height } = this.fieldBox;
+    return { fieldLeft: left, fieldTop: top, fieldWidth: width, fieldHeight: height,
+      width: this.scale.width, height: this.scale.height };
   }
   /** Draws every texture once, nearly invisible, so first-use GPU uploads happen at boot, not on the first hit. */
   private warmUp(done: () => void): void {
@@ -170,6 +217,9 @@ export class SpectacleScene extends Phaser.Scene {
       this.focusRect.setSize(box.width, box.height);
     }
     if (this.frozenUntil && performance.now() >= this.frozenUntil) { this.frozenUntil = 0; this.applyTimeScale(); }
+    this.fx.quality = this.quality;
+    // The first frame after the loop wakes reports the whole sleep as its delta; overlays start from a normal frame.
+    this.fx.advance((delta > 250 ? 1000 / 60 : delta) * this.time.timeScale);
     if (!this.active) return;
     this.recordFrame(delta);
   }
@@ -178,6 +228,10 @@ export class SpectacleScene extends Phaser.Scene {
     const stats = this.stats;
     stats.peakParticles = Math.max(stats.peakParticles, alive);
     stats.liveObjects = this.live.size;
+    if (this.shaderKit && delta > 0) {
+      this.kitSlowFrames = delta > kitSlowFrameMs ? this.kitSlowFrames + 1 : Math.max(0, this.kitSlowFrames - 1);
+      if (this.kitSlowFrames >= kitSlowFrameLimit) this.dropShaderKit();
+    }
     if (delta <= 0 || delta > 250) return;
     stats.activeFrames++;
     stats.maximumFrameMs = Math.max(stats.maximumFrameMs, delta);
@@ -620,8 +674,40 @@ export class SpectacleScene extends Phaser.Scene {
     ], onComplete: finish });
     this.dimTween.once(Phaser.Tweens.Events.TWEEN_STOP, finish);
   }
+
+  // ---- shader kit overlays (D-494) --------------------------------------------
+  /** Flat flashes and full edge blooms share one WCAG budget (R6). */
+  shareFlashGovernor(governor: FlashGovernor): void { this.fx.governor = governor; }
+  /** Light pours in from the field's (or screen's) edges. Returns the strength played; a refused `full` plays `soft`. */
+  edgeBloom(options: EdgeBloomOptions): EdgeStrength | null {
+    if (!this.ready || !this.shaderKit) return null;
+    // Begin first: a displaced overlay ends inside the call and must not make the scene look idle.
+    this.begin();
+    const played = this.fx.edgeBloom(options);
+    if (!played) this.end();
+    return played;
+  }
+  private overlay(added: () => boolean): void {
+    if (!this.ready || !this.shaderKit) return;
+    this.begin();
+    if (!added()) this.end();
+  }
+  /** Turning light shafts from a screen point. */
+  godRays(options: GodRaysOptions): void {
+    this.overlay(() => this.fx.godRays({ ...options, at: this.toWorld(options.at) }));
+  }
+  /** Chromatic shock ring at a screen point (critical hits). */
+  critFlash(options: CritFlashOptions): void {
+    this.overlay(() => this.fx.critFlash({ ...options, at: this.toWorld(options.at) }));
+  }
+  /** The element's light language in a soft disc around a screen point. */
+  veil(options: VeilOptions): void {
+    this.overlay(() => this.fx.veil({ ...options, at: this.toWorld(options.at) }));
+  }
+
   /** Ends every live effect now (Skip, Exit, Retry). Pending waits resolve. */
   cancelAll(): void {
+    this.fx.clear();
     for (const tween of [...this.tweensLive]) tween.stop();
     this.tweensLive.clear();
     this.dimTween?.stop(); this.flashTween?.stop(); this.focusTween?.stop();

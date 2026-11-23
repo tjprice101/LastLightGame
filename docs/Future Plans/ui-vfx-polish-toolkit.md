@@ -1,6 +1,8 @@
 # UI and VFX visual overhaul (filed 2026-11-20)
 
-**Status:** proposed, not approved, not started. Filed at the owner's request.
+**Status:** Phase 1 (shader foundation and battle) approved 2026-11-23 (D-494);
+step 2 implemented on branch `ui-vfx-shader-kit`, not released. Phases 2
+(summons) and 3 (menus) and sound remain proposed, not approved.
 
 **Timing:** pick up **after** the current Battle Flurry work: B3c, B4, B5, the
 single enemy retune and that release (D-493).
@@ -133,3 +135,19 @@ mode. That session confirms:
 - the model (Fable for shader authoring, if chosen);
 - any new dependencies (GSAP, Rive);
 - any paid tools.
+
+## 8. Phase 1 plan (approved 2026-11-23, D-494)
+
+Owner answers: shader foundation and battle first; Fable writes shaders only;
+no GSAP yet; the Spectacle steps 2-7 feel review is folded in; no paid tools.
+
+| Step | Model | Work | Status |
+|---|---|---|---|
+| 1 | Sonnet | Baseline captures of every tier; owner feel review and `?spectacle-stats` check of the hosted build | Captures done 2026-11-23; owner review pending |
+| 2 | Fable | Shader kit: bloom, edge bloom, god rays, critical ring, six element veils; safety guards; tests | Implemented 2026-11-23, unreleased |
+| 3 | Opus | Wire overlays into the tiers: Skill 1 veil, Skill 2 soft edge bloom and veils, Convergent Light god rays and edge bloom by tier, critical ring, Conduit callout pulse, boss special edge bloom | Not started |
+| 4 | Sonnet | Tune intensity per element; apply the feel review items; phone portrait and low quality | Not started |
+| 5 | Sonnet | Docs, commit, push both branches, hosted check (client only) | Not started |
+
+Details: [combat spec](../combat.md#battle-spectacle-shader-kit-d-494-overhaul-phase-1).
+Limit: shaders add light over the DOM cutouts; they cannot warp them.
