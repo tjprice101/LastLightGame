@@ -193,7 +193,7 @@ describe('actual saved Account to frozen radiant loadouts', () => {
 describe('authority-ready frozen run and settled encounter Haul', () => {
   it('uses actual authored enemies, explicit shared calibration and minimum currency table', () => {
     const value = entered(), run = value.state.radiantStudy!;
-    expect(run.version).toBe(8);
+    expect(run.version).toBe(9);
     expect(run.enemies).toEqual(adaptRadiantPressureEncounter(run.anchor, 1729, pressureRadiantCalibration));
     expect(run.state.chargeSeed).toBe(104729);
     expect(run.targetSeed).toBe(7);
@@ -382,11 +382,12 @@ describe('authority-ready frozen run and settled encounter Haul', () => {
     expect(result.state.radiantStudy).toBeTruthy();
     expect(result.state.account.fractalis).toBe(777);
   });
-  it('retires a saved v6 run read-only with the rules notice', () => {
+  it('retires saved v6 and v8 runs read-only with the rules notice', () => {
     const value = entered();
     expect(retiredRunVersion(6)).toBe(true);
     expect(retiredRunVersion(7)).toBe(true);
-    expect(retiredRunVersion(8)).toBe(false);
+    expect(retiredRunVersion(8)).toBe(true);
+    expect(retiredRunVersion(9)).toBe(false);
     value.state.radiantStudy!.version = 6 as never;
     const raw = structuredClone(value);
     const checked = validateRadiantRunSnapshot(value);
@@ -461,7 +462,7 @@ describe('authority-ready frozen run and settled encounter Haul', () => {
     const budget = structuredClone(value);
     budget.state.radiantStudy!.enemies[0].currencyBudget++;
     expect(() => resolveRadiantRun(budget, req, authority())).toThrow();
-    expect(value.state.radiantStudy!.version).toBe(8);
+    expect(value.state.radiantStudy!.version).toBe(9);
   });
   it('explicit client outcome, HP, budget, enemy-action and seed injection are rejected', () => {
     const value = entered(), req = request(value, settleOp(value));

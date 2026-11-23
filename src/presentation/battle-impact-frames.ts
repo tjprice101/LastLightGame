@@ -1,6 +1,7 @@
-import { validateRadiantCombat, validateRadiantDropEvents, type RadiantCombatEvent, type RadiantCombatState,
+import { radiantHealthBound, validateRadiantCombat, validateRadiantDropEvents, type RadiantCombatEvent, type RadiantCombatState,
   type RadiantShield, type RadiantSource } from '../game/combat-engine';
 import { grantRadiantDrop, personalChargeUnit, spendReadyFlare, type RadiantGaugeState } from '../game/combat-gauge';
+import { convergentLightTier } from '../content/progression';
 import { applyRadiantStatusEvent, radiantStatusSnapshot, type RadiantStatusSnapshot } from './battle-timed-status';
 
 export interface RadiantReadout {
@@ -18,7 +19,7 @@ export function radiantReadout(state: RadiantCombatState): RadiantReadout {
   validateRadiantCombat(state);
   return { units: Object.fromEntries([...state.bearers, ...state.enemies].map(unit => [
     'loadout' in unit ? unit.loadout.id : unit.id,
-    { hp: unit.hp, maximum: Math.round(unit.stats.hp), shield: unit.shields.reduce((sum, layer) => sum + layer.remaining, 0),
+    { hp: unit.hp, maximum: 'loadout' in unit ? radiantHealthBound(state, unit) : Math.round(unit.stats.hp), shield: unit.shields.reduce((sum, layer) => sum + layer.remaining, 0),
       layers: structuredClone(unit.shields) },
   ])), gauge: structuredClone(state.gauge), currency: state.currencyEarned, round: state.round };
 }
@@ -64,12 +65,28 @@ function apply(readout: RadiantReadout, event: RadiantCombatEvent): void {
       else unit.layers.push({ id: event.shieldId, source: structuredClone(event.source), remaining: event.amount });
     }
     else if (event.type === 'defeated' && unit.hp !== 0) throw new Error('Saved defeat precedes its impact.');
+    else if (event.type === 'revive') {
+      // D-493 B3c Phoenix Reactor: only a defeated bearer returns.
+      const member = readout.gauge.members.find(entry => entry.id === event.targetId);
+      if (unit.hp !== 0 || !member || member.living || !Number.isSafeInteger(event.amount) || event.amount < 1)
+        throw new Error('Saved revival does not follow a defeat.');
+      unit.hp = event.amount; member.living = true;
+    }
     if (unit.hp > unit.maximum) throw new Error('Saved healing exceeds displayed maximum HP.');
   }
   if (event.type === 'flare') {
-    const spent = spendReadyFlare(readout.gauge, event.bearerId);
-    if (spent.tier !== event.tier) throw new Error('Saved Convergent Light rank does not match displayed charge.');
-    readout.gauge = spent.state;
+    // D-493 B3b: the event carries the Luminosity actually spent (per-cast discounts); journals saved before B3b have
+    // none and replay at the stored loadout cost.
+    const member = readout.gauge.members.find(entry => entry.id === event.bearerId);
+    if (event.cost !== undefined && member) {
+      if (member.charge < event.cost || convergentLightTier(member.convergenceRank) !== event.tier)
+        throw new Error('Saved Convergent Light rank does not match displayed charge.');
+      member.charge = (Math.round(member.charge * personalChargeUnit) - event.cost * personalChargeUnit) / personalChargeUnit;
+    } else {
+      const spent = spendReadyFlare(readout.gauge, event.bearerId);
+      if (spent.tier !== event.tier) throw new Error('Saved Convergent Light rank does not match displayed charge.');
+      readout.gauge = spent.state;
+    }
   } else if (event.type === 'skill') {
     const member = readout.gauge.members.find(member => member.id === event.bearerId);
     if (!member || member.charge < event.cost) throw new Error('Saved skill cost exceeds displayed charge.');
@@ -106,7 +123,7 @@ export function radiantImpactFrames(before: RadiantCombatState, after: RadiantCo
       const event = events[index++];
       batch.push(structuredClone(event)); apply(displayed, event);
       if (event.type === 'status') applyRadiantStatusEvent(statuses, event);
-      else if (event.type === 'defeated') statuses[event.targetId] = [];
+      else if (event.type === 'defeated' || event.type === 'revive') statuses[event.targetId] = [];
       if ('targetId' in event && sourceKey(event) !== null) targets.add(event.targetId);
       const next = events[index];
       if (!next || key === null) break;

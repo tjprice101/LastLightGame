@@ -86,10 +86,10 @@ export const radiantKitText: Record<RadiantKitId, RadiantKitText> = {
   },
   // Batch 2: Rose and Calamitic.
   rosetta: {
-    skill1: '4-hit Tranquilitic attack on one enemy (250%), marks it as Quarry, Exposes target (+15% damage taken, 2 turns).',
+    skill1: '4-hit Tranquilitic attack on one enemy (250%), marks it as Quarry, gives target Critical Up (+30% Critical Rate, 2 turns).',
     skill2: '5-hit Tranquilitic attack on the Quarry, or on the current target if there is none (300%, +40% per contributor this turn).',
-    flare: '{h}-hit Tranquilitic attack on the Quarry, or on the current target if there is none ({d:1350}), Exposes target (+{e:30} damage taken, 3 turns), heals each contributor this turn ({e:20} of max Health).',
-    leader: 'boosts damage of Tranquilitic allies against Exposed enemies (+{l:25}); a Tranquilitic ally\'s Normal Attack hit Exposes the target (+{l:8} damage taken, this turn).',
+    flare: '{h}-hit Tranquilitic attack on the Quarry, or on the current target if there is none ({d:1350}), gives target Critical Up (+{e:60} Critical Rate, 3 turns), heals each contributor this turn ({e:20} of max Health).',
+    leader: 'boosts damage of Tranquilitic allies against enemies with Critical Up (+{l:25}); a Tranquilitic ally\'s Normal Attack hit gives the target Critical Up (+{l:16} Critical Rate, this turn).',
   },
   thornia: {
     skill1: '2-hit Chaotic attack on one enemy (160%), places a Thorn Trap on the target (3 charges, 3 turns).',
@@ -118,15 +118,15 @@ export const radiantKitText: Record<RadiantKitId, RadiantKitText> = {
   kaelith: {
     skill1: '5-hit Chaotic attack on all enemies (200%).',
     skill2: '6-hit Chaotic attack on one enemy (360%, +20% per Incision on it), then consumes its Incisions.',
-    flare: '{h}-hit Chaotic attack on all enemies ({d:1000}), Exposes all enemies (+{e:25} damage taken, 2 turns).',
-    leader: 'boosts damage of Chaotic allies against enemies at full Health (+{l:25}) and against Exposed enemies (+{l:20}).',
+    flare: '{h}-hit Chaotic attack on all enemies ({d:1000}), gives all enemies Critical Up (+{e:50} Critical Rate, 2 turns).',
+    leader: 'boosts damage of Chaotic allies against enemies at full Health (+{l:25}) and against enemies with Critical Up (+{l:20}).',
   },
   // Batch 3: Elemental War.
   nerithe: {
     skill1: '4-hit Oceanic attack on the Surveyed enemy, or on the current target if there is none (260%), spends 1 Survey to ignore 25% of its Defense.',
     skill2: '6-hit Oceanic attack on all enemies (180%), moves all Survey to the current target.',
     flare: '{h}-hit Oceanic attack on the Surveyed enemy, or on the current target if there is none ({d:1250}), spends all Survey (each ignores 20% of its Defense).',
-    leader: 'an Oceanic ally\'s Normal Attack hit Exposes the target (+{l:10} damage taken, this turn) and fills each other ally\'s Luminosity (+{ln:1}).',
+    leader: 'an Oceanic ally\'s Normal Attack hit gives the target Critical Up (+{l:20} Critical Rate, this turn) and fills each other ally\'s Luminosity (+{ln:1}).',
   },
   orvella: {
     skill1: '3-hit Botanic attack on one enemy (210%), repairs the Foundation (8% of Orvella\'s max Health). With no Foundation: 270% instead.',
@@ -153,7 +153,7 @@ export const radiantKitText: Record<RadiantKitId, RadiantKitText> = {
     leader: 'a Tranquilitic ally that uses a skill takes {l:10} less direct damage until the next player turn; when an enemy breaks a Tranquilitic ally\'s last Shield, that ally heals ({l:20} of its Recovery, once per turn).',
   },
   myrthen: {
-    skill1: '4-hit Botanic attack on one enemy (250%), Exposes target (+12% damage taken, 2 turns).',
+    skill1: '4-hit Botanic attack on one enemy (250%), gives target Critical Up (+24% Critical Rate, 2 turns).',
     skill2: '6-hit Botanic attack on all enemies (170%).',
     flare: '{h}-hit Botanic attack on one enemy ({d:1250}).',
     leader: 'boosts damage of Botanic allies against enemies at or below 25% Health (+{l:30}); a Botanic ally\'s defeat of an enemy heals the ally with the lowest Health ({l:3} of its max Health, once per action).',

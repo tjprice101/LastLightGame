@@ -3,12 +3,13 @@ import { masterConduits, type MasterConduitId } from './master-conduits';
 import { starters, type StarterId } from './starters';
 import { characterLevelCap, convergentLightRankCap, convergentLightTier, weaponRules,
   type CharacterAscension, type ConvergentLightTier } from './progression';
-import { radiantGearAmount, validateRadiantGear, pair, type RadiantGear,
+import { radiantGearAmount, validateRadiantGear, pair, effect, type RadiantGear,
   type RadiantConduitDesign, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
 import { radiantConduitDescription } from './conduit-effect-text';
 import type { ElementId } from './activities';
 import { intrinsicRole } from './role-perks';
-import { radiantFlareTierScale, radiantKits, type RadiantKitDef, type RadiantKitId } from './radiant-kits';
+import { radiantFlareTierScale, radiantKits, radiantSignatureCaps, type RadiantKitDef, type RadiantKitEffect, type RadiantKitId,
+  type RadiantSignatureCapKey, type RadiantSkillDef } from './radiant-kits';
 
 export type RadiantBearerId = StarterId & (
   | 'ember' | 'tide' | 'sprout' | 'rosetta' | 'thornia' | 'crinso'
@@ -158,6 +159,27 @@ const bearerTuning: Record<RadiantBearerId, {
     leader: 'Fractalized Incision', leaderStat: 'attack', leaderBonus: .14, family: 'Glass Meridian' },
 };
 
+/** D-493 crit step: base Critical Rate (fraction) and Critical Damage (multiplier) per bearer, the pre-Radiant
+ * values. Fixed: no level, form or rank growth. A critical hit multiplies direct damage by `damage`. */
+export interface RadiantCriticalStats { rate: number; damage: number }
+export const radiantCriticalStats: Readonly<Record<RadiantBearerId, RadiantCriticalStats>> = {
+  ember: { rate: .15, damage: 1.5 }, tide: { rate: .1, damage: 1.5 }, sprout: { rate: .2, damage: 1.5 },
+  rosetta: { rate: .2, damage: 1.6 }, thornia: { rate: .1, damage: 1.5 }, crinso: { rate: .25, damage: 1.7 },
+  atmoso: { rate: .2, damage: 1.6 }, aurora: { rate: .12, damage: 1.5 }, bliss: { rate: .25, damage: 1.7 },
+  bruno: { rate: .08, damage: 1.5 }, disciple: { rate: .12, damage: 1.5 }, elise: { rate: .25, damage: 1.7 },
+  razor: { rate: .1, damage: 1.5 }, maerion: { rate: .12, damage: 1.5 }, caevren: { rate: .1, damage: 1.5 },
+  vespera: { rate: .12, damage: 1.5 }, ilyss: { rate: .12, damage: 1.5 }, asteriel: { rate: .12, damage: 1.5 },
+  serapha: { rate: .12, damage: 1.5 }, nerithe: { rate: .18, damage: 1.6 }, orvella: { rate: .1, damage: 1.5 },
+  vaelor: { rate: .22, damage: 1.65 }, caldrex: { rate: .1, damage: 1.5 }, solenne: { rate: .12, damage: 1.5 },
+  myrthen: { rate: .22, damage: 1.65 }, neralis: { rate: .12, damage: 1.5 }, varkhel: { rate: .1, damage: 1.5 },
+  seravelle: { rate: .14, damage: 1.5 }, velmira: { rate: .23, damage: 1.65 }, ozriel: { rate: .1, damage: 1.5 },
+  ilvaris: { rate: .15, damage: 1.55 }, kaelith: { rate: .22, damage: 1.7 },
+};
+/** Every enemy: flat Critical Rate and Critical Damage (owner, 2026-11-20). */
+export const radiantEnemyCritical: RadiantCriticalStats = { rate: .1, damage: 1.5 };
+/** Above 100% Critical Rate, a second roll against the excess makes an Elemental Crit: Critical Damage x this. */
+export const radiantElementalCritFactor = 1.5;
+
 export const releasedRadiantIds = starters.filter(entry => characterReleased(entry.id)).map(entry => entry.id) as RadiantBearerId[];
 function kitFor(id: RadiantBearerId): RadiantKitDef {
   if (!Object.hasOwn(radiantKits, id)) throw new Error(`Missing radiant kit for released Element-Bearer: ${id}`);
@@ -182,8 +204,8 @@ export const radiantBearerKits: Record<RadiantBearerId, RadiantBearerKit> = Obje
 ) as Record<RadiantBearerId, RadiantBearerKit>;
 
 /** Display summary of the unconditional generic clauses of a kit Flare (Step 3 replaces this with kit text). */
-function flareSummary(id: RadiantBearerId, tier: ConvergentLightTier, power = 1): RadiantFlareOffer {
-  const def = kitFor(id).flare, scale = radiantFlareTierScale[tier];
+function flareSummary(id: RadiantBearerId, tier: ConvergentLightTier, power = 1, def: RadiantSkillDef = kitFor(id).flare): RadiantFlareOffer {
+  const scale = radiantFlareTierScale[tier];
   const offer: RadiantFlareOffer = { name: def.name, comboHits: def.target === 'none' ? 0 : scale.hits,
     target: def.target === 'none' ? 'all-allies' : def.target, damage: def.power * scale.damage * power,
     burn: 0, burnPhases: 0, shieldDefense: 0, shieldHP: 0, reduction: 0, reductionPhases: 0, weaken: 0, weakenPhases: 0,
@@ -272,39 +294,159 @@ const leaderDesigns: Record<RadiantBearerId, RadiantConduitDesign> = {
   ilvaris: pair('heal-buff', .1, 'round-charge', 2),
   kaelith: pair('opening', .25, 'exposed', .2),
 };
+// D-493 B5a: restored pre-Radiant Master stat packages (C1 x0.2 on always-on Health/Defense/Attack; Skill stats, capacity and
+// crit stats verbatim; "while <bearer> lives" packages are squad auras). D-493 B5b adds 37 kit-modifier clauses (bearer-locked kinds);
+// B5c adds player-turn triggers and next-action bonuses; B5d adds enemy-phase triggers, the Worldseed revive and Myrthen's rolls.
+/** D-493 B5b: the own counter (or Promise) a bearer's `signature-cap` and `counter-defense` Master clauses act on. */
+const masterCounters: Partial<Record<RadiantBearerId, { key: RadiantSignatureCapKey; label: string }>> = {
+  caldrex: { key: 'heat', label: 'Heat' }, neralis: { key: 'current', label: 'Current' },
+  varkhel: { key: 'tension', label: 'Tension' }, seravelle: { key: 'cadence', label: 'Cadence' },
+  velmira: { key: 'crosscut', label: 'Crosscut' }, caevren: { key: 'load', label: 'Load' },
+  ilyss: { key: 'severance', label: 'Severance' }, asteriel: { key: 'promise', label: 'Promise' },
+  serapha: { key: 'interval', label: 'Interval' },
+};
+/** Exact tooltip line for one Master primitive (counter clauses name the bearer's counter and the raised cap). */
+export function radiantMasterEffectText(starter: RadiantBearerId, primitive: RadiantConduitPrimitive): string {
+  const counter = masterCounters[starter];
+  const name = radiantBearerKits[starter]?.name ?? starter;
+  if (counter && primitive.kind === 'signature-cap')
+    return `Maximum ${counter.label} becomes ${radiantSignatureCaps[counter.key] + primitive.amount}.`;
+  if (counter && primitive.kind === 'counter-defense')
+    return `${name} has Defense Up +${Number((primitive.amount * 100).toPrecision(12))}% per stored ${counter.label} (strongest Defense Up applies, up to 100%).`;
+  return radiantConduitDescription(primitive);
+}
+/** D-493 B5b: a bearer's own counter or Promise cap with its Master's `signature-cap` (the base cap without one). */
+export function radiantSignatureCap(loadout: RadiantLoadout, key: RadiantSignatureCapKey): number {
+  const raised = masterCounters[loadout.starter]?.key === key ? radiantEquipmentAmount(loadout, 'signature-cap') : 0;
+  return radiantSignatureCaps[key] + raised;
+}
+const kitSkillCache = new Map<string, RadiantSkillDef>();
+/** D-493 B5b: a skill as this loadout casts it, with its Master's structural clause applied (target, recipients, kit values,
+ * durations). Masters have no ranks, so each result depends only on the Master and is cached. */
+export function radiantKitSkill(loadout: RadiantLoadout, slot: 1 | 2 | 'flare'): RadiantSkillDef {
+  const kit = radiantBearerKits[loadout.starter].kit;
+  const def: RadiantSkillDef = slot === 'flare' ? kit.flare : slot === 1 ? kit.skill1 : kit.skill2;
+  const masterId = loadout.masterId;
+  if (masterId === null || !Object.hasOwn(radiantMasters, masterId)) return def;
+  const key = `${masterId}:${slot}`;
+  const cached = kitSkillCache.get(key);
+  if (cached) return cached;
+  const amount = (kind: RadiantConduitEffect) => radiantMasters[masterId].effects
+    .filter(entry => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0);
+  let result: RadiantSkillDef = def;
+  const map = (change: (effect: RadiantKitEffect) => object) => {
+    result = { ...result, effects: result.effects.map(effect => change(effect) as RadiantKitEffect) };
+  };
+  const op = (effect: RadiantKitEffect, name: string) => effect.kind === 'signature' && effect.op === name;
+  switch (loadout.starter) {
+    case 'ember':
+      // Cinderstar Genesis Engine: Dawnfire strikes and Burns only the current target (its Attack Up still reaches all allies).
+      if (slot === 'flare' && amount('dawnfire-focus') > 0) {
+        result = { ...result, target: 'one-enemy' };
+        map(effect => effect.kind === 'burn' ? { ...effect, to: 'target' } : effect);
+      }
+      break;
+    case 'sprout':
+      if (slot === 1 && amount('briar-seeds') > 0) map(effect => op(effect, 'seed') ? { ...effect, to: 'all-allies' } : effect);
+      break;
+    case 'bliss':
+      if (slot === 2 && amount('flourish-both') > 0) map(effect => {
+        const { when: _when, ...rest } = effect;
+        return rest;
+      });
+      break;
+    case 'disciple': {
+      const longer = amount('attack-up-duration');
+      if (longer > 0) map(effect => effect.kind === 'attack-up' ? { ...effect, turns: effect.turns + longer } : effect);
+      break;
+    }
+    case 'vaelor':
+      if (slot === 2 && amount('rise-cascade') > 0)
+        map(effect => effect.kind === 'attack-up' ? { ...effect, to: 'all-allies' } : effect);
+      break;
+    case 'varkhel': {
+      const pierce = amount('strain-pierce');
+      if (slot === 2 && pierce > 0) map(effect => effect.kind === 'ignore-defense' ? { ...effect, value: pierce } : effect);
+      break;
+    }
+    case 'seravelle': {
+      const value = amount('move-as-one');
+      if (slot === 2 && value > 0) map(effect => effect.kind === 'attack-up' ? { ...effect, value } : effect);
+      break;
+    }
+    case 'velmira': {
+      const pierce = amount('edge-pierce');
+      if (slot === 2 && pierce > 0) map(effect => effect.kind === 'ignore-defense' ? { ...effect, value: pierce } : effect);
+      break;
+    }
+    case 'neralis': {
+      const per = amount('carry-current');
+      if (slot === 2 && per > 0) map(effect => effect.kind === 'heal' ? { ...effect, perStack: per } : effect);
+      break;
+    }
+    case 'ilyss': {
+      const per = amount('resurrection-heal');
+      if (slot === 'flare' && per > 0) map(effect => effect.kind === 'heal' ? { ...effect, perStack: per } : effect);
+      break;
+    }
+    case 'serapha': {
+      const per = amount('interval-heal');
+      if (slot === 'flare' && per > 0) map(effect => effect.kind === 'heal' ? { ...effect, perStack: (effect.perStack ?? 0) + per } : effect);
+      break;
+    }
+    case 'caevren': {
+      const value = amount('covenant');
+      if (slot === 2 && value > 0) map(effect => effect.kind === 'shield' || op(effect, 'cover') ? { ...effect, value } : effect);
+      break;
+    }
+    case 'vespera': {
+      const value = amount('beacon-signal');
+      if (slot === 2 && value > 0) map(effect => op(effect, 'signal') ? { ...effect, value } : effect);
+      break;
+    }
+    case 'ilvaris': {
+      const value = slot === 1 ? amount('verse-marks') : slot === 'flare' ? amount('tomorrow-marks') : 0;
+      if (value > 0) map(effect => op(effect, 'fate-mark') ? { ...effect, value } : effect);
+      break;
+    }
+  }
+  kitSkillCache.set(key, result);
+  return result;
+}
+const e = effect;
 const masterDesigns: Record<RadiantBearerId, readonly [RadiantConduitDesign, RadiantConduitDesign, RadiantConduitDesign]> = {
-  ember: [pair('burn-power', .4, 'leech', .08), pair('flare', .3, 'normal-burn', .15), pair('burning', .35, 'flare-heal', .3)],
-  tide: [pair('break-heal', .4, 'defense', .25), pair('shielding', .4, 'guard-heal', .3), pair('normal-weaken', .18, 'guard-shield', .6)],
-  sprout: [pair('round-team-heal', .12, 'healing', .25), pair('normal-weaken', .15, 'normal-heal', .4), pair('heal-shield', .5, 'flare-team-charge', 6)],
-  atmoso: [pair('normal-splash', .4, 'normal-charge', 4), pair('hurt-charge', 8, 'cooperation', .3), pair('first-action', .35, 'pierce', .2)],
-  aurora: [pair('normal-expose', .18, 'weakened', .3), pair('flare-weaken', .2, 'shelter', .15), pair('hurt-heal', .4, 'normal-weaken', .15)],
-  bliss: [pair('flare-heal', .5, 'heal-buff', .15), pair('normal', .3, 'normal-heal', .25), pair('flare-team-charge', 10, 'next-buff', .15)],
-  bruno: [pair('normal-reduction', .15, 'defense', .3), pair('guard-shield', 1, 'flare-shield', .05), pair('normal-expose', .18, 'guard-team-shield', .4)],
-  disciple: [pair('next-buff', .25, 'cooperation', .2), pair('team-charge', 3, 'flare-team-charge', 8), pair('heal-buff', .2, 'normal-splash', .25)],
-  elise: [pair('pierce', .3, 'normal-charge', 3), pair('flare', .35, 'normal-splash', .25), pair('kill-charge', 15, 'first-action', .3)],
-  razor: [pair('reflect', .4, 'normal-reduction', .15), pair('shielded', .4, 'flare', .25), pair('normal-weaken', .2, 'solo', .3)],
-  rosetta: [pair('status-shield', .6, 'cooperation', .25), pair('exposed', .35, 'normal-splash', .3), pair('normal-expose', .2, 'next-buff', .2)],
-  thornia: [pair('reflect', .5, 'normal-burn', .1), pair('flare-weaken', .2, 'guard-shield', .6), pair('guard-team-shield', .6, 'shelter', .12)],
-  crinso: [pair('burn-power', .3, 'execution', .4), pair('shielded', .35, 'normal-splash', .3), pair('flare', .25, 'leech', .12)],
-  nerithe: [pair('normal-expose', .18, 'team-charge', 3), pair('flare-team-charge', 8, 'normal-reduction', .15), pair('flare', .3, 'kill-charge', 12)],
-  orvella: [pair('normal-shield', .6, 'guard-team-shield', .4), pair('guard-heal', .4, 'hurt-heal', .3), pair('defense', .35, 'shielded', .25)],
-  vaelor: [pair('hurt-charge', 8, 'flare', .3), pair('cooperation', .3, 'flare-weaken', .18), pair('team-charge', 4, 'next-buff', .15)],
-  caldrex: [pair('defense', .35, 'burning', .25), pair('reflect', .6, 'hurt-charge', 5), pair('burn-heal', .25, 'round-team-heal', .1)],
-  solenne: [pair('guard', .2, 'shelter', .15), pair('flare-shield', .08, 'round-shield', .5), pair('absorbed-charge', 8, 'flare-team-charge', 6)],
-  myrthen: [pair('execution', .45, 'normal', .25), pair('normal-charge', 5, 'wounded', .3), pair('kill-heal', .08, 'kill-charge', 12)],
-  neralis: [pair('heal-shield', .6, 'recovery', .25), pair('guard-team-shield', .5, 'heal-charge', 5), pair('heal-team-charge', 4, 'hurt-heal', .3)],
-  varkhel: [pair('hurt-shield', .08, 'burn-power', .3), pair('reflect', .5, 'shielded', .3), pair('guard-team-shield', .5, 'wounded', .3)],
-  seravelle: [pair('normal-heal', .45, 'flare-team-charge', 6), pair('heal-buff', .2, 'round-charge', 4), pair('heal-team-charge', 4, 'shelter', .12)],
-  velmira: [pair('weakened', .4, 'normal-charge', 4), pair('normal-splash', .3, 'normal-weaken', .18), pair('kill-charge', 12, 'leech', .1)],
-  maerion: [pair('absorbed-charge', 8, 'healing', .25), pair('heal-shield', .6, 'flare-heal', .35), pair('heal-charge', 6, 'normal-heal', .25)],
-  caevren: [pair('defense', .4, 'hurt-charge', 6), pair('shielding', .4, 'brace', .15), pair('reflect', .6, 'normal-shield', .5)],
-  vespera: [pair('next-buff', .2, 'flare', .25), pair('burn-power', .4, 'pierce', .15), pair('team-charge', 3, 'burning', .3)],
-  ilyss: [pair('healing', .35, 'flare-team-charge', 6), pair('heal-shield', .6, 'resilience', .3), pair('heal-buff', .2, 'guard-heal', .3)],
-  asteriel: [pair('healing', .3, 'heal-buff', .18), pair('guard-heal', .4, 'round-shield', .5), pair('heal-team-charge', 4, 'normal-charge', 3)],
-  serapha: [pair('flare-heal', .4, 'guard-team-shield', .4), pair('shelter', .15, 'hurt-heal', .4), pair('normal-weaken', .18, 'round-charge', 4)],
-  ozriel: [pair('hurt-shield', .1, 'brace', .15), pair('flare-weaken', .25, 'shielding', .3), pair('break-heal', .5, 'round-charge', 5)],
-  ilvaris: [pair('heal-buff', .25, 'flare-weaken', .15), pair('flare-team-charge', 10, 'round-team-heal', .1), pair('normal-expose', .18, 'heal-charge', 5)],
-  kaelith: [pair('exposed', .4, 'pierce', .25), pair('normal-expose', .2, 'kill-charge', 12), pair('execution', .4, 'normal-weaken', .2)],
+  ember: [[e('skill-power', .55), e('squad-hp', .12), e('squad-defense', .04), e('burn-mend', .25)], [e('hp', .11), e('defense', .13), e('skill-power', .4), e('dawnfire-focus', 1.25)], [e('attack', .17), e('gauge-gain', .35), e('dawnfire-ally-power', .4)]],
+  tide: [[e('skill-efficiency', .35), e('skill-power', .45), e('defense', .16)], [e('defense', .09), e('gauge-gain', .25), e('shelter-power', .5), e('shelter-efficiency', .25)], [e('defense', .19), e('skill-power', .35), e('tide-shield-pierce', .25)]],
+  sprout: [[e('skill-power', .65), e('capacity', .5), e('seed-power', .25), e('seed-efficiency', .15)], [e('briar-seeds', .45)], [e('hp', .198), e('gauge-gain', .65), e('seed-defense', .25), e('worldseed-revive', .35)]],
+  atmoso: [[e('skill-power', .5), e('capacity', .6), e('gust-charge', 3)], [e('squad-hp', .11), e('squad-defense', .09), e('cyclone-shield', .3)], [e('skill-power', .45), e('attack', .09), e('gust-gain', .3)]],
+  aurora: [[e('squad-hp', .15), e('squad-defense', .13), e('weaken-cut', .25), e('weaken-ward', .15)], [e('defense', .05), e('skill-power', .65), e('verdict-charge', 8)], [e('skill-power', .45), e('hp', .05), e('weaken-mend', .08)]],
+  bliss: [[e('skill-power', .7), e('defense', .09), e('flourish-both', 1)], [e('attack', .17), e('crit-rate', .25), e('opening-ally-crit', .25), e('warfeather-heal', .06)], [e('skill-efficiency', .25), e('gauge-gain', .35), e('stillness-efficiency', .25), e('stillness-duration', 1)]],
+  bruno: [[e('defense', .11), e('skill-power', .45), e('cover-defense', .4), e('cover-power', .3)], [e('hp', .13), e('defense', .13), e('worldwall-shield', 3.75), e('cover-gain', .25)], [e('attack', .12), e('defense', .17), e('hammerfall-sunder', .25), e('cover-attack', .25)]],
+  disciple: [[e('hp', .15), e('skill-efficiency', .35), e('attack-up-duration', 2)], [e('resolve-charge', 10)], [e('skill-power', .6), e('crit-damage', .45), e('resolve-crit-rate', .3), e('resolve-crit-damage', .4)]],
+  elise: [[e('skill-power', .55), e('hp', .09), e('defense', .07), e('shuriken-sunder', .15)], [e('attack', .16), e('skill-power', .4), e('shuriken-power', .35)], [e('crit-damage', .65), e('gauge-gain', .4), e('recall-crit-damage', .4), e('recall-crit-rate', .15)]],
+  razor: [[e('hp', .2), e('gauge-gain', .3), e('midnight-heal', .2)], [e('squad-hp', .11), e('squad-skill-efficiency', .35), e('bastion-share', .4)], [e('skill-power', .55), e('skill-efficiency', .35), e('nightcleave-crit', .3)]],
+  rosetta: [[e('skill-efficiency', .35), e('skill-power', .55), e('quarry-charge', 12)], [e('hp', .16), e('skill-efficiency', .3), e('skyfall-efficiency', .2), e('skyfall-heal', .08)], [e('skill-power', .6), e('capacity', .35), e('volley-power', .35)]],
+  thornia: [[e('skill-power', .75), e('defense', .04), e('trap-cut', .2)], [e('hp', .18), e('defense', .12), e('trap-ward', .12)], [e('skill-power', .45), e('gauge-gain', .35), e('trap-shelter', .15), e('trap-power', .2)]],
+  crinso: [[e('crit-damage', .75), e('capacity', .5), e('cataclysm-crit-damage', .15)], [e('defense', .11), e('skill-efficiency', .45), e('edge-shield', .12)], [e('skill-power', .65), e('skill-efficiency', .45), e('combo-heal', .08)]],
+  nerithe: [[e('attack', .15), e('capacity', .5), e('survey-pierce', .1)], [e('skill-power', .55), e('defense', .11), e('fold-power', .4)], [e('survey-charge', 4)]],
+  orvella: [[e('hp', .22), e('capacity', .4), e('citadel-carry', .4), e('citadel-efficiency', .2)], [e('squad-hp', .11), e('squad-skill-power', .35), e('foundation-store', .4)], [e('hp', .07), e('skill-efficiency', .15), e('foundation-guard', .25), e('keystone-power', .5)]],
+  vaelor: [[e('skill-power', .35), e('attack', .21), e('chord-power', .3)], [e('attack', .18), e('skill-efficiency', .3), e('rise-cascade', .2)], [e('crit-rate', .3), e('gauge-gain', .45), e('tune-crit', .25), e('crescendo-crit-damage', .4)]],
+  caldrex: [[e('hp', .12), e('defense', .1), e('signature-cap', 2), e('counter-defense', .12)], [e('hp', .1), e('attack', .08), e('skill-power', .25), e('recoil-strike', .9)], [e('hp', .15), e('skill-power', .3), e('burn-squad-mend', .08)]],
+  solenne: [[e('hp', .1), e('defense', .15), e('stillness-reduction', .35)], [e('hp', .15), e('skill-power', .25), e('repose-shield', .2)], [e('hp', .08), e('skill-power', .3), e('skill-efficiency', .15), e('stillness-charge', 7), e('reverb-charge', 3)]],
+  myrthen: [[e('attack', .12), e('skill-power', .35), e('harvest-bloom', .75)], [e('attack', .09), e('crit-rate', .25), e('harvest-chance', .1), e('ripen-health', .05)], [e('attack', .08), e('hp', .1), e('skill-power', .2), e('reaping-heal', .06), e('reaping-charge', 5)]],
+  neralis: [[e('hp', .12), e('skill-power', .35), e('signature-cap', 1), e('carry-current', .09)], [e('hp', .1), e('defense', .12), e('station-shield', .2)], [e('hp', .08), e('attack', .08), e('skill-power', .25), e('weir-charge', 10)]],
+  varkhel: [[e('hp', .14), e('defense', .1), e('signature-cap', 1), e('counter-defense', .1)], [e('hp', .1), e('skill-power', .35), e('chain-shield', .16)], [e('hp', .1), e('attack', .09), e('strain-pierce', .35), e('strain-charge', 15)]],
+  seravelle: [[e('hp', .1), e('skill-power', .35), e('signature-cap', 1), e('move-as-one', .4)], [e('attack', .09), e('skill-power', .3), e('burn-relay', 5)], [e('hp', .12), e('defense', .08), e('road-shield', .22)]],
+  velmira: [[e('attack', .12), e('skill-power', .3), e('signature-cap', 1), e('first-skill-crosscut', 1)], [e('attack', .09), e('crit-rate', .25), e('seam-weakened', .35), e('edge-pierce', .35)], [e('hp', .1), e('attack', .07), e('skill-power', .2), e('doorway-charge', 25), e('doorway-heal', .18)]],
+  maerion: [[e('hp', .15), e('skill-power', .25), e('unreturned-cap', .85)], [e('hp', .1), e('skill-power', .35), e('ferry-shield', .35)], [e('hp', .08), e('skill-efficiency', .2), e('ferrywake-charge', 15)]],
+  caevren: [[e('hp', .12), e('defense', .12), e('signature-cap', 2), e('counter-defense', .1)], [e('hp', .15), e('skill-power', .25), e('covenant', .55)], [e('defense', .1), e('attack', .08), e('watch-strike', 1)]],
+  vespera: [[e('hp', .1), e('skill-power', .3), e('beacon-signal', .5)], [e('attack', .08), e('skill-power', .3), e('burn-power', .3), e('signal-pierce', .15)], [e('hp', .12), e('skill-efficiency', .2), e('relay-charge', 10)]],
+  ilyss: [[e('hp', .1), e('skill-power', .35), e('signature-cap', 1), e('resurrection-heal', .13)], [e('hp', .15), e('skill-power', .2), e('unbind-shield', .15)], [e('hp', .08), e('skill-efficiency', .2), e('unbind-power', .25)]],
+  asteriel: [[e('hp', .12), e('skill-power', .3), e('signature-cap', 1), e('promise-power', .05)], [e('hp', .15), e('skill-power', .25), e('shelter-heal', .2)], [e('hp', .08), e('skill-efficiency', .2), e('starseed-charge', 8)]],
+  serapha: [[e('hp', .12), e('skill-power', .35), e('signature-cap', 1), e('interval-heal', .05)], [e('hp', .1), e('defense', .08), e('ceasefire-mend', .12)], [e('hp', .08), e('skill-efficiency', .2), e('weaken-relay', 10)]],
+  ozriel: [[e('hp', .15), e('defense', .13), e('refusal-ward', .2)], [e('defense', .11), e('skill-power', .45), e('pane-weaken', .25)], [e('hp', .11), e('skill-efficiency', .45), e('refusal-restore', 1)]],
+  ilvaris: [[e('skill-power', .45), e('skill-efficiency', .45), e('verse-marks', 2)], [e('hp', .13), e('skill-efficiency', .45), e('hymn-charge', 8)], [e('skill-power', .55), e('gauge-gain', .55), e('tomorrow-marks', 3)]],
+  kaelith: [[e('skill-power', .55), e('attack', .09), e('meridian-pierce', .4)], [e('skill-efficiency', .4), e('crit-rate', .3), e('shatterfall-incision', 1)], [e('skill-power', .45), e('gauge-gain', .45), e('denial-incisions', 3)]],
 };
 export const radiantMasters: Record<RadiantMasterId, RadiantMasterDefinition> = Object.fromEntries(
   masterConduits.filter(master => characterReleased(master.character)).map(master => {
@@ -315,7 +457,7 @@ export const radiantMasters: Record<RadiantMasterId, RadiantMasterDefinition> = 
       attunement: masterAttunements[master.character as RadiantBearerId][slot - 1],
       rule: 'standard',
       enhancement: 'none', magnitude: 0, effects,
-      effect: effects.map(radiantConduitDescription).join(' '),
+      effect: effects.map(entry => radiantMasterEffectText(master.character as RadiantBearerId, entry)).join(' '),
     }];
   }),
 ) as Record<RadiantMasterId, RadiantMasterDefinition>;
@@ -361,7 +503,8 @@ export function radiantFlarePower(loadout: RadiantLoadout): number {
 }
 /** Display summary of this loadout's Flare at a tier (before Skill Power and category caps). */
 export function radiantFinalFlare(loadout: RadiantLoadout, tier: ConvergentLightTier): RadiantFlareOffer {
-  return flareSummary(loadout.starter, tier, radiantFlarePower(loadout));
+  // D-493 B5b: the Flare as this loadout casts it (a Master clause can change its target, values or durations).
+  return flareSummary(loadout.starter, tier, radiantFlarePower(loadout), radiantKitSkill(loadout, 'flare'));
 }
 
 export function validateRadiantStats(stats: RadiantStats): void {

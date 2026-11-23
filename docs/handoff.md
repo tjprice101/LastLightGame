@@ -1,5 +1,803 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c release: B1-B5d, `radiant-trio-v2`, schema 9 (D-493, 2026-11-23)
+
+**Release in progress 2026-11-23** (see Release record). Ships every Phase 4c
+batch (B1-B5d, the crit step) and the `radiant-trio-v2` retune in one release.
+
+**Owner answers:**
+- Frozen-run bump: **8 → 9**. Encounters saved mid-run on version 8 (any
+  calibration, including `radiant-trio-v1`) end with the "Combat rules
+  changed" notice; saved rewards are kept.
+- Full release approved: merge, push, `game-operation` deploy, hosted check.
+
+**What changed:**
+- Combat-state and frozen-run schemas 9; versions 3-8 retire read-only.
+- Media type `radiant-continuation-v5`: pre-release clients get the refresh
+  response instead of a run they cannot read.
+- Tests: retired-version cases extend to 8; new runs expect 9.
+- Docs: decisions (D-493), combat spec versions and release items, Future
+  Plans row.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Targeted `npx vitest run src/online` plus combat-engine and B5a/B5d tests:
+  1,321 of 1,321.
+- Full `npx vitest run`: 11,106 of 11,107; the one failure
+  (`acquisition-surfaces`) was a 23-second timeout under load and passes alone
+  (1 of 1).
+- `npx vite build`: succeeded (chunk advisory).
+- `node tools\bundle_server_game.mjs`: rebuilt (bundle has
+  `radiant-continuation-v5`, `radiant-trio-v2`, retired version 8).
+
+**Not verified:** in-game feel. Fights now last about 10 rounds on average
+(Calamity about 13); the B5 Master callouts, Worldseed revive and new enemy
+tags were tested only by code.
+
+**Release record:** pending (merge, push, deploy, hosted check).
+
+**Next:** owner in-game feel review of Phase 4c (fight length, Master
+callouts, revive moment). Then the Radiant follow-through items in Future
+Plans (economy review, GPU check, icon art).
+
+## Battle Flurry Phase 4c retune: live calibration `radiant-trio-v2` (D-493, 2026-11-23)
+
+**Released with schema 9** (see the release entry above). This is the one enemy
+retune on the final Conduit set (B1-B5d). Sheet:
+[Phase 4c retune sheet](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#phase-4c-retune-sheet-radiant-trio-v2-proposal-2026-11-23-numbers-await-owner-approval).
+
+**Owner answers (Plan mode):**
+- Keep the D-481 targets: ordinary at least 95% per band, Calamity EX+1/2/3
+  80/50/30%.
+- Keep the current study builds.
+- Approve the fitted numbers.
+- Accept Fatebreaker Warden as challenge content. The Warden/Training 120
+  source-fix item is closed.
+
+**What changed:**
+- New calibration `radiant-trio-v2` (`radiantTrioV2Calibration`) is live for
+  new encounters. `radiant-trio-v1` stays frozen.
+- `previousLiveRadiantCalibrationId` became the list
+  `previousLiveRadiantCalibrationIds` (`authored-control`, `radiant-trio-v1`).
+  The authority lets encounters underway on either finish, and refuses new
+  starts on them.
+- Updated: smoke scripts, the server README, `tools/retune-fit.ts` (fitted id),
+  tests, decisions, combat docs and Future Plans.
+
+**Results** (balanced player; flare-saving in brackets):
+- ordinary 97.0% (98.6%);
+- Calamity EX+1/2/3 80.1/50.0/31.0% (93.1/67.1/34.3%);
+- v1 on B5d was 99.9% and 100/96.3/92.1%.
+
+**Verified:**
+- `node tools\run_pressure_study.mjs <out> --retune-fit` on B5d (`ab1457dd`),
+  then `--retune` with `RETUNE_CANDIDATE` set to the fitted table. The numbers
+  above come from that run.
+- Every encounter below 95% has at least 2 of 12 team/policy combinations
+  that win every seed.
+- `npx tsc --noEmit`: 0 errors.
+- Targeted tests 477 of 477 (`enemy-pressure`, `battle-dispatch` with a new
+  v1-underway settle test, `enemy-strength`).
+- Full `npx vitest run`: 11,104 of 11,106. The two failures
+  (`acquisition-surfaces`, `archives-controls`) were timeouts under load and
+  pass alone (8 of 8).
+- `npx vite build`: succeeded (chunk advisory).
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel. Fights now last about 10 rounds on average
+(was 5), and Calamity about 13 (was 6).
+
+**Release notes (next session):**
+- Client and server must deploy together. The new authority rejects a
+  `radiant-trio-v1` start from an old client ("refresh" message).
+- `RADIANT_STUDY_CALIBRATION` must stay unset (check names only).
+- The 8 → 9 frozen-run bump decision is still open (B5a/B5d entries).
+
+**Next:** the single D-493 release (Sonnet): the 8 → 9 decision, merge to
+`main` and `overhaul/radiant-foundation`, push, bundle and deploy
+`game-operation` (owner approval), then the hosted check.
+
+## Battle Flurry Phase 4c B5d: Master enemy-phase and special clauses (D-493, 2026-11-22)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release with
+one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5d-master-enemy-phase-and-special-clauses-d-493-battle-flurry-phase-4c).
+Every live Master now carries its restored effect; every row of the phase 4
+restoration proposal is built.
+
+**Owner answers (Plan mode):**
+- One session for all 19 rows.
+- `master-sprout-3`: the Worldseed revive is used only when an ally returns.
+- `master-thornia-1`: the Thorn Trap Defense cut lasts through the next
+  player turn.
+
+**What changed:**
+- 19 rows: ember-1, sprout-3, aurora-1, aurora-2, aurora-3, bruno-1,
+  thornia-1, thornia-2, thornia-3, orvella-2, caldrex-2, caldrex-3,
+  solenne-3, myrthen-2, seravelle-2, ozriel-1, caevren-3, serapha-2,
+  serapha-3.
+- Worldseed revive on the shared C18 rescue ledger (`reviveMember`, shared
+  with Phoenix Reactor).
+- Myrthen-2's Harvest and All That Ripens rolls use the existing `conduit`
+  stream (`conduitSeed`); the handoff's "new stream" was not needed.
+- Saves (no version bump): optional `RadiantThornTrap.empowered`,
+  `RadiantEnemy.trapCut`, `RadiantBearer.foundationStored`; ops `trap-cut`,
+  `ripen-health`, `foundation-store`; token kinds `cover-power`,
+  `trap-power`; per-enemy ledger keys.
+- Presentation: Trap-cut and All That Ripens callouts; "Thorn-cut" and
+  "Final Dawn Tribunal" enemy tags.
+
+**Implementation choices (owner may reverse):**
+- Revived allies act from the next turn.
+- Caldrex-2 strikes once per enemy action.
+- Shadow Rose's damage cut also protects Thornia.
+- Weaken triggers read the Weaken held when the enemy attacked.
+- The Foundation heal's share above 12% is lost.
+- No Harvest roll when the cast leaves Myrthen in Harvest.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5d.test.ts`: 27 of 27. The B5c2 content
+  test now checks only B5c2 kinds.
+- Full `npx vitest run`: 11,102 of 11,105. The three failures
+  (`acquisition-surfaces`, `archives-controls`) were timeouts under load;
+  both files pass alone (8 of 8).
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1):
+  - balanced: Calamity EX+1/2/3 100/96.3/92.1%; Oblivion 161-180 95.2%;
+    Dungeon 99.9%; every other group 100% (all identical to B5c2);
+  - flare-saving: Calamity 100/100/99.5%; Dungeon 99.7%.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel (tests only), especially the Worldseed revive
+moment, the Caldrex/Caevren strikes and the new enemy tags.
+
+**Open release item (updated):** frozen-run version bump (8 → 9) or not; see
+the B5a entry. B5d adds a case: a mid-run save made before the release with
+Seedtrace Pursuit Distributor equipped has no `conduitSeed` and fails
+validation without the bump.
+
+**Next:** the one enemy retune on the final Conduit set (fresh Opus session,
+Plan mode), then the single release and matching server deploy (needs owner
+approval and the 8 → 9 decision).
+
+## Battle Flurry Phase 4c B5c2: Master Luminosity, Shield and heal triggers (D-493, 2026-11-22)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5d with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5c2-master-luminosity-shield-and-heal-triggers-d-493-battle-flurry-phase-4c).
+
+**What changed:**
+- 22 rows: atmoso-1, atmoso-2, disciple-2, razor-1, razor-2, rosetta-1,
+  crinso-2, crinso-3, nerithe-3, solenne-2, myrthen-3, neralis-2, neralis-3,
+  varkhel-2, seravelle-3, velmira-3, maerion-2, maerion-3, vespera-3, ilyss-2,
+  asteriel-2, asteriel-3; plus bliss-2's Closing heal and rosetta-2's 8%
+  contributor heal. B5c is complete.
+- `master-disciple-2` and `master-nerithe-3` lost their Radiant-era pairs.
+- Master Luminosity/heals/Shields are credited to the Master and skip Conduit
+  healing/shielding bonuses. Once-per-turn limits use the turn ledger; three
+  Masters use per-ally keys (`bearer:master:ally`).
+- Saves: optional Quarry `quarryHits` (only 1) and the per-ally ledger keys.
+  No version bump and no new events or RNG.
+
+**Implementation choices (owner may reverse):**
+- Rosetta-2 also heals Rosetta.
+- Atmoso-2 counts Health removed, not Shield absorbed.
+- Disciple-2 reads Attack Up held before the action (Disciple counts).
+- Neralis-3, Maerion-3 and Solenne-2 count Skill 1/2 only, not Convergent
+  Light.
+- Asteriel-2 triggers on every Lend the Quiet Seed.
+- Myrthen-3 counts Normal Attack defeats.
+- Disciple-2, Asteriel-3 and Vespera-3 need the giver alive.
+
+**Rows still to build:**
+- **B5d (19):** unchanged from the B5a entry below.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5c2.test.ts`: 20 of 20. The B5c1
+  content test now checks only B5c1 kinds.
+- Full `npx vitest run`: 11,076 of 11,078. The two failures
+  (`acquisition-surfaces`, `archives-controls`) were timeouts under load;
+  both pass alone (8 of 8).
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1):
+  - balanced: Calamity EX+1/2/3 100/96.3/92.1%; Oblivion 161-180 95.2%;
+    Dungeon 99.9%; every other group 100% (all identical to B5c1);
+  - flare-saving: Calamity 100/100/99.5%; Dungeon 99.7%.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel (tests only), especially the Master Shield and
+heal callouts and the contribution summary for Master heals and Shields.
+
+**Open release item (unchanged):** frozen-run version bump (8 → 9) or not;
+see the B5a entry.
+
+**Next:** B5d in a fresh Opus session, Plan mode (enemy-phase and special
+rows: revive on the C18 ledger, `conduit` RNG stream for `master-myrthen-2`).
+
+## Battle Flurry Phase 4c B5c1: Master next-action bonuses (D-493, 2026-11-22)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5d with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5c1-master-next-action-bonuses-d-493-battle-flurry-phase-4c).
+
+**Owner answers (Plan mode):**
+- B5c is split: B5c1 (this entry) and B5c2 (22 trigger rows), with a fresh
+  session between.
+- `master-vaelor-1`: +60% when Last Chord is cast on Crescendo, otherwise
+  +30%.
+
+**What changed:**
+- Bonuses can now come from a Master:
+  - a token names `conduitId` or `masterId`, and may carry `uses`;
+  - D-492 credits the Master, and the bonus tag names it;
+  - old gear tokens validate unchanged.
+- New token rules:
+  - `on`: only against Infernis's Burn, or only on the Quarry;
+  - `hold`: kept while Tidal Shelter's Shield remains;
+  - `perTarget`/`uses`: Elise's Shuriken bonuses;
+  - `max`: Crinso cap and Vaelor Crescendo;
+  - a Skill Duration stat.
+- 18 rows: ember-3, tide-2, sprout-1, atmoso-3, bliss-2 (bonus part),
+  bliss-3, disciple-3, elise-2, elise-3, razor-3, rosetta-2 (bonus part),
+  rosetta-3, crinso-1, nerithe-2, orvella-1 (next-skill part), vaelor-1,
+  vaelor-3, ilyss-3.
+- Saves: optional token `masterId`/`uses` and `RadiantSeed.empowered`. No
+  version bump and no new events or RNG.
+
+**Implementation choices (owner may reverse):**
+- Sprout-1 triggers on bloom, even at full Health.
+- Atmoso-3's Gain Up lasts 2 turns.
+- Disciple-3 reads the current Attack Up source.
+- Tide's own Shield counts for Tide-2.
+- Elise-2 bonuses expire like other bonuses.
+
+**Rows still to build:**
+- **B5c2 (22):**
+  - rows: atmoso-1, atmoso-2, disciple-2, razor-1, razor-2, rosetta-1,
+    crinso-2, crinso-3, nerithe-3, solenne-2, myrthen-3, neralis-2,
+    neralis-3, varkhel-2, seravelle-3, velmira-3, maerion-2, maerion-3,
+    vespera-3, ilyss-2, asteriel-2, asteriel-3;
+  - plus bliss-2's Closing heal and rosetta-2's 8% contributor heal.
+  - `master-disciple-2` and `master-nerithe-3` lose their Radiant-era pairs
+    then.
+  - Row text: the "Restore as" cells of the B5 table in the phase 4
+    restoration doc.
+  - Approach (approved B5c plan): use `masterCharge`, `shield()` and
+    `heal()` with a Master source. Once-per-turn and once-per-round limits
+    use `gearTriggered` keys. Rosetta-1 needs an optional `quarryHits`
+    counter. Myrthen-3 detects the killer in `packet`. The 50% lines read
+    Health before the heal (`hp - effective`). Maerion-2's overheal is
+    `offered - effective`.
+- **B5d (19):** unchanged from the B5a entry below.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5c.test.ts`: 21 of 21. The B5b content
+  test now ignores B5c kinds.
+- Full `npx vitest run`: 11,058 of 11,058 passed (323 files).
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced):
+  - Calamity EX+1/2/3: 100/96.3/92.1% (B5b 100/95.8/92.1%);
+  - Oblivion 161-180: 95.2% (same); Dungeon: 99.9%;
+  - every other ordinary group: 100%;
+  - flare-saving Calamity: 100/100/99.5%.
+  No band moved more than 1 point.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel and tags (tests only), especially the Master
+bonus tags, Tide-2's tag disappearing when its Shield breaks, and Elise's
+"2 stored" tag.
+
+**Open release item (unchanged):** frozen-run version bump (8 → 9) or not;
+see the B5a entry.
+
+**Next:** B5c2 (done, entry above).
+
+## Battle Flurry Phase 4c B5b: Master kit modifiers (D-493, 2026-11-22)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5d with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5b-master-kit-modifiers-d-493-battle-flurry-phase-4c).
+- Owner answers (Plan mode):
+  - Quarry Planet Gravitas: Worldwall Ascendant's Shield is the largest of
+    the kit 40% Health, 375% Defense or 37.5% Health.
+  - Cinderstar Genesis Engine: Dawnfire is single-target and Burns only that
+    target.
+  - Throne Beneath the World: the next-skill Skill Efficiency moves to B5c.
+  - Defaults accepted (sunder through the next enemy phase; bearer alive for
+    Elise-1, Nerithe-1, Tide-3; fixed Vaelor-2 and Ozriel-2 values; Serapha-1
+    additive).
+- What changed:
+  - 37 Masters carry their kit clause as bearer-locked primitives with exact
+    tooltips; `master-sprout-2` lost its Radiant-era placeholder.
+  - `radiantKitSkill` applies structural clauses everywhere a skill's shape
+    is read (engine, pressure policy, battle screen, VFX, Flare offer).
+  - Per-bearer signature caps (`radiantSignatureCap`) in play, validation and
+    chips.
+  - C14: Seismic Hammerfall's sunder and Elise's lodged Shuriken reduce enemy
+    Defense for every ally; Tizu's and Nerithe's clauses add holder ignore.
+  - Cover Gauge Gain/Attack Up, Foundation Defense Up, Defense Up per stored
+    count, Promise Skill Power, Stillness, Harvest, Unreturned, Varkhel's and
+    Ilvaris's Luminosity, Velmira's Crosscut, Kaelith's Incisions, Ozriel's
+    Weaken and Refusal restore.
+  - Save state: optional `RadiantEnemy.sunder` and `RadiantBearer.masterUsed`;
+    ops `sunder`, `refusal-restore`; no version bump.
+- Implementation choices (owner may reverse): kit value replacements are part
+  of the skill and not credited separately in the D-492 summary; Glass
+  Meridian reads Incisions before the cast.
+
+**Rows still to build:**
+- **B5c (40 with the Orvella part):** ember-3, tide-2, sprout-1, atmoso-1..3,
+  bliss-2, bliss-3, disciple-2, disciple-3, elise-2, elise-3, razor-1..3,
+  rosetta-1..3, crinso-1..3, nerithe-2, nerithe-3, vaelor-1, vaelor-3,
+  solenne-2, myrthen-3, neralis-2, neralis-3, varkhel-2, seravelle-3,
+  velmira-3, maerion-2, maerion-3, vespera-3, ilyss-2, ilyss-3, asteriel-2,
+  asteriel-3, plus orvella-1's "+20% Skill Efficiency on each other ally's
+  next skill". Tokens store a gear `conduitId`; Master-given tokens need a
+  token-shape change (save allowlist, `validateTokens`, `gearSources`).
+- **B5d (19):** unchanged from the B5a entry below.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5b.test.ts`: 14 of 14 (rows, tooltips,
+  structural kit changes, each clause family, caps and forged-state
+  rejection, settled journal reload, unknown op rejected, mid-run load and
+  settle).
+- Full `npx vitest run`: 11,036 of 11,037. The one failure was
+  `acquisition-surfaces`, a 20-second timeout under load; it passes alone.
+- Fixtures adjusted: B5a package table ignores clause kinds;
+  `combat-engine.test.ts` compares Flare offers only when the Master leaves
+  the Flare unchanged.
+- `node tools
+un_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced): Calamity EX+1/2/3 100/95.8/92.1% (B5a 100/95.8/91.7%);
+  Oblivion 161-180 95.2% (same); Dungeon overall 99.9%; every other
+  ordinary group 100%; flare-saving Calamity 100/100/99.5%. No band moved
+  more than 5 points.
+- `node toolsundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel and tooltips (tests only), especially
+Dawnfire's targeting with Cinderstar Genesis Engine and the "Sundered" tag.
+
+**Open release item (unchanged):** frozen-run version bump (8 → 9) or not;
+see the B5a entry.
+
+**Next:** B5c in a fresh Opus session, Plan mode.
+
+## Battle Flurry Phase 4c B5a: Master stat packages (D-493, 2026-11-21)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b5a-master-stat-packages-d-493-battle-flurry-phase-4c).
+- Owner answer (Plan mode): B5 splits into four sessions by engine seam.
+- What changed:
+  - 93 Masters carry their restored always-on stat package; the Radiant-era
+    pairs are gone. Values follow the C1 rescale (×0.2 on always-on Health,
+    Defense and Attack); Skill stats, capacity and crit stats are verbatim.
+  - New squad auras: `squad-skill-power` (Deep Foundation Planetpress) and
+    `squad-skill-efficiency` (Eclipse Planet Watchtower; also applies to
+    Convergent Light).
+  - Another bearer's Master aura is now credited in D-492 attribution.
+  - Revive amounts and the `revive` event accept a Master source, ready for
+    B5d.
+- Implementation choices (owner may reverse):
+  - `master-sprout-2`, `master-disciple-2` and `master-nerithe-3` (clause-only)
+    keep their Radiant-era pair until their part ships.
+  - The O6 test lets Masters of different bearers share a stat package.
+  - Per-Master signature-cap and clause hooks are left to B5b, which designs
+    them against its own rows (the plan had listed them for B5a).
+
+**Rows still to build:**
+- **B5b kit modifiers (37):** ember-2, tide-3, sprout-2, bliss-1, bruno-2,
+  bruno-3, disciple-1, elise-1, nerithe-1, orvella-1, orvella-3, vaelor-2,
+  caldrex-1, solenne-1, myrthen-1, neralis-1, varkhel-1, varkhel-3,
+  seravelle-1, velmira-1, velmira-2, ozriel-2, ozriel-3, ilvaris-1..3,
+  kaelith-1..3, maerion-1, caevren-1, caevren-2, vespera-1, vespera-2, ilyss-1,
+  asteriel-1, serapha-1.
+- **B5c player-turn triggers and next-action bonuses (39):** ember-3, tide-2,
+  sprout-1, atmoso-1..3, bliss-2, bliss-3, disciple-2, disciple-3, elise-2,
+  elise-3, razor-1..3, rosetta-1..3, crinso-1..3, nerithe-2, nerithe-3,
+  vaelor-1, vaelor-3, solenne-2, myrthen-3, neralis-2, neralis-3, varkhel-2,
+  seravelle-3, velmira-3, maerion-2, maerion-3, vespera-3, ilyss-2, ilyss-3,
+  asteriel-2, asteriel-3. Note: tokens store a gear `conduitId`; Master-given
+  tokens need a token-shape change (save allowlist).
+- **B5d enemy-phase and special (19):** ember-1, sprout-3 (revive on the C18
+  ledger + Empowered Seed Defense Up), aurora-1..3, bruno-1, thornia-1..3,
+  orvella-2, caldrex-2, caldrex-3, solenne-3, myrthen-2 (`conduit` stream),
+  seravelle-2, ozriel-1, caevren-3, serapha-2, serapha-3.
+- Adapt (O1) Master rows take real crit triggers from the pre-Radiant column,
+  not the "more direct damage" text.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b5a.test.ts`: 8 of 8, including the
+  save-compatibility checks:
+  - a settled journal with Masters reloads;
+  - a Master revive source passes the allowlist and a leader source is
+    rejected;
+  - a mid-run encounter with Masters loads and settles.
+- Updated fixtures:
+  - `combat-consolidation` (O6 test scoped; Flare charge reads the event
+    cost; splash now from the Vaelor Leader);
+  - `combat-engine` (Flare spends Luminosity);
+  - `conduit-effects` (`break-heal` from the Solenne Leader, splash from the
+    Vaelor Leader);
+  - `critical-hits` (splash from the Vaelor Leader).
+- Full `npx vitest run`: 11,021 of 11,023. The 2 failures were
+  `critical-hits` (fixed above; the file then passed) and
+  `acquisition-surfaces`, a 21-second timeout under load (passes alone).
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced; the study builds equip Masters, so it sees B5a):
+  - ordinary 99.9% (B4 99.8%);
+  - Calamity EX+1/2/3 100/95.8/91.7% (B4 99.1/94.0/88.4%);
+  - Oblivion 161-180 95.2% (B4 90.5%); Dungeon 101-120 99.5% (same);
+  - flare-saving Calamity 100/100/99.5%.
+  No band moved more than 5 points.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** Master tooltips and the squad-aura numbers seen in game
+(tests only).
+
+**Open release item (owner decision before the D-493 release):** encounters
+saved mid-run with a Conduit or Master whose stats changed in B1-B5 fail
+frozen-stat validation after release. Options: bump the frozen-run version
+(8 → 9) so they end with the existing "Combat rules changed" notice (rewards
+kept), or keep version 8 (those saves fail to load).
+
+**Next:** B5b (37 kit modifiers). Fresh Opus session, Plan mode.
+
+## Battle Flurry Phase 4c B4: Calamitic Conduits and the borrowed skill (D-493, 2026-11-21)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b4-calamitic-and-the-borrowed-skill-d-493-battle-flurry-phase-4c).
+All 14 Calamitic Conduits now carry their restored effects.
+- Owner answers (Plan mode): Throne of Borrowed Tomorrows keeps the player
+  turn open while an ally can pay for its borrowed Skill 1 or 2 (End Turn
+  gives it up); allies who used Convergent Light that turn are eligible.
+- New engine pieces: borrowed skills (G12: `borrowed?` / `borrowedSpent?`,
+  `radiantPendingActors`, turn hold, op `borrowed`), Choir-Array mark trigger
+  (`choirPower?` / `choirUsed?`, op `choir`, 4 per encounter), Ruinmark Censer
+  damage-taken bonus on every ally source (direct, Burn, generated), Lone
+  Apostate solo-squad stats, heal/Shield Skill Efficiency. Cathedral uses real
+  crits; Causality's Skill Efficiency steps +2% per rank.
+- UI: gold "borrowed skill" tag and card frame, a tap opens the fan
+  (Convergent Light reads "Skill 1 or 2 only"), "Borrowed skill ready",
+  "End Turn · forfeit borrowed skills", rising gold threads on a grant (none
+  under Reduce motion), Choir and Throne callouts, Ruinmark enemy tag; glossary
+  entries "Borrowed skill" and "Mark". The pressure AI and the two study tools
+  use borrowed skills.
+- Implementation choices (owner may reverse): Ruinmark and Choir need their
+  wearer alive; one Choir trigger per action; Choir Skill Power ends with the
+  player turn; the turn hold ignores target-bound discounts.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- New `src/game/conduit-restoration-b4.test.ts`: 49 of 49, including the
+  save-compatibility checks: a pre-B4 journal and a mid-run save load and
+  settle; the new ops pass the allowlist; forged borrowed and Choir state is
+  rejected; a settled replay containing borrowed skills matches.
+- It caught one bug, now fixed: a Convergent Light that won the encounter left
+  `borrowed` set, so the final state failed validation.
+- Updated fixtures (old Calamitic designs): `combat-skills`, `conduit-effects`
+  (Leader amplifier test reduced: no Conduit keeps `leader` any more;
+  `break-heal` and `normal-splash` now tested through Masters),
+  `critical-hits`.
+- Full `npx vitest run`: 11,015 of 11,015 (320 files).
+- `node tools\run_pressure_study.mjs <out> --retune`: identical to B3c on
+  every band. **The study cannot see B4:** `tools/retune-study.ts` refuses
+  Calamitic Conduits (`assertNonCalamitic`, D-404 preparation). The retune
+  should decide whether Calamity builds get Calamitic Conduits.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+- `capture_frames.mjs --battle flare --stream`: the battle renders and
+  Convergent Light fires (the preview squad has no Conduits).
+
+**Not verified:** borrowed-skill, Choir and Ruinmark visuals seen in game
+(covered by tests only).
+
+**Next:** B5 (Masters, 96 rows, includes the `master-sprout-3` revive on the
+B3c ledger). Fresh Opus session, Plan mode; it is large, so consider
+splitting it like B3.
+
+## Battle Flurry Phase 4c B3c: rescue limit, revive, Accord, taunt (D-493, 2026-11-21)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b3c-rescue-limit-revive-accord-taunt-d-493-battle-flurry-phase-4c).
+All 45 Omnic Conduits now carry their restored effects.
+- Owner answers (Plan mode): Atlas Bastion's taunt overrides Calamity boss
+  targeting too; the `master-sprout-3` Worldseed revive waits for B5 (same
+  ledger).
+- New engine pieces: shared rescue ledger (`rescued?`, C18; Refusal stays
+  separate and runs first), Phoenix Reactor revive inside the damage packet (a
+  last-bearer revival never ends the encounter; the revived bearer leaves the
+  rest of that attack), Accord (`accord?` on the holder; 1 Health save plus a
+  next-skill +25% Skill Efficiency bonus), Atlas Bastion taunt (`taunt?`;
+  enemy targeting still draws its roll, so the target stream stays aligned).
+  New `revive` event; signature ops `accord`, `accord-save`, `taunt`.
+- UI: Accord gold bonus tag, "Conduit rescue used", taunter chip and
+  "Taunted · attacks …" enemy tags, callouts leading with the revival, save or
+  taunt, "Revived +N" number, rising embers on a revival and a light bloom on
+  an Accord save (none under Reduce motion; number and callout stay static);
+  glossary entries "Taunt" and "Rescue limit".
+- Implementation choices (owner may reverse): an Accord save uses a Phoenix
+  wearer's rescue (legacy order Refusal, Accord, Phoenix); Accord only goes to
+  other allies, from the wearer's own heals and Shields, and needs the giver
+  alive; a revival clears timed effects and held bonuses and uses the frozen
+  maximum Health; no Atlas Luminosity from an attack that defeats the taunter.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- Full `npx vitest run`: 10,966 of 10,966 (319 files).
+- New `src/game/conduit-restoration-b3c.test.ts`: 25 of 25, including the
+  save-compatibility checks:
+  - a settled journal written before B3c loads; an added `revive` event passes
+    the allowlist; a bad source or amount, a forged rescue ledger and a forged
+    taunt are rejected;
+  - a mid-run save from before B3c loads and settles.
+- Updated fixture: `conduit-effects.test.ts` Shield-order test now uses
+  Calamitic Conduits (Phoenix Reactor no longer carries `break-heal`).
+- `node tools
+un_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced): identical to B3b on every band (ordinary 99.8%; Calamity
+  EX+1/2/3 99.1/94.0/88.4%; Oblivion 141-160 100%, 161-180 90.5%; Training
+  101-120 100%; Dungeon 101-120 99.5%; flare-saving Calamity
+  100/99.5/98.1%). **The study cannot see B3c:** every loss comes from squads
+  without a B3c Conduit, the squads that wear Phoenix Reactor (Ember) or
+  Accord (Bliss, Aurora) already win 100%, and no study build equips Atlas
+  Bastion (the Botanic Omnic set in `tools/battle-survey.ts` omits it). The
+  retune should decide whether its builds include Atlas.
+- `node toolsundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** the revive, Accord and taunt visuals seen in game (the
+preview squad has no Conduits; covered by tests only). The Conduit behavior
+matrix (`docs/conduit-behavior-matrix.md`) is a frozen Phase 0 report that no
+D-493 batch updates; left unchanged.
+
+**Next:** B4 (includes G12, the extra skill after Convergent Light for Throne
+of Borrowed Tomorrows). Fresh Opus session, Plan mode. Start the study early.
+
+## Battle Flurry Phase 4c B3b: next-action bonuses (D-493, 2026-11-20)
+
+**Implemented on `battle-flurry-phase3` (`7e1a4640`), not released** (single
+release after B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b3b-next-action-bonuses-d-493-battle-flurry-phase-4c).
+- Owner answers (Plan mode): Shared Tide is adapted for Tide (the
+  most-wounded recipient of the wearer's skill Shield gains an extra 50%
+  Shield; closes the B3a open item); Tempest Return's bonus is kept until
+  used.
+- New engine piece: next-action bonuses (C17), held per ally in
+  `RadiantBearer.tokens?`, with scope, lifetime, shared and target-bound
+  variants. The 13 rows are restored with real crits. Undertide discounts
+  Convergent Light, and the flare event carries an optional `cost`.
+- UI: the fan, readiness and the pressure policy include held bonuses;
+  gold-framed bonus tags, with a one-time sheen when a bonus is granted
+  (static under Reduce motion); glossary entry "Next-action bonus".
+- Implementation choices (owner may reverse): readiness ignores target
+  discounts; Dawn Witness is inert without crit rolls; Thunderbird's "critical
+  skill" includes Convergent Light; a newer Secondbeat or Sootwake target
+  replaces the earlier one; Triage's discount applies to a skill that heals or
+  Shields; Rosefault's once-per-turn trigger is used by the first critical
+  action even without a Shield.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk
+  advisory).
+- Full `npx vitest run`: 10,940 of 10,941. The one failure
+  (`acquisition-surfaces.test.ts`, a 20 s timeout while the study ran)
+  passes on its own.
+- New `src/game/conduit-restoration-b3b.test.ts`: 45 of 45, including the
+  save-compatibility checks:
+  - a settled journal written before B3b (flare events without `cost`) and a
+    mid-run save load, settle and reload;
+  - a tampered cost and a forged bonus are rejected.
+- Updated fixtures: B3a Shared Tide, the Verdant heal-trigger test, the crit
+  splash test.
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced; B3b vs crit step):
+  - ordinary 99.8% (99.8%);
+  - Calamity EX+1/2/3 99.1/94.0/88.4% (97.2/86.6/80.1%);
+  - Oblivion 141-160 100%, 161-180 90.5% (unchanged);
+  - Training 101-120 100% (100%); Dungeon 101-120 99.5% (100%);
+  - flare-saving Calamity 100/99.5/98.1% (100/99.5/94.9%).
+  - Calamity EX+2/EX+3 moved more than 5 points (O4). The release is already
+    held for one enemy retune on the final Conduit set.
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+- `capture_frames.mjs --battle flare|attack --stream`: the battle renders and
+  Convergent Light fires. The preview squad has no Conduits, so bonus tags
+  are covered by tests only.
+
+**Not verified:** bonus tags and the sheen seen in game (unreleased).
+
+**Filed (not approved):** the
+[UI and VFX visual overhaul](Future%20Plans/ui-vfx-polish-toolkit.md) (Calamity
+mod visuals with Brave Frontier's game style, original shaders, tools and
+costs). It resumes after the D-493 release.
+
+**Next:** B3c (rescue ledger shared by Phoenix Reactor, Accord and
+`master-sprout-3`; Phoenix Reactor revive; Atlas Bastion taunt). Fresh Opus
+session, Plan mode. Start the study early.
+
+## Battle Flurry Phase 4c crit step: critical hits and Critical Up (D-493, 2026-11-20)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#critical-hits-and-critical-up-d-493-crit-step-battle-flurry-phase-4c).
+- Owner answers (Plan mode): Critical Up is an enemy mark replacing Exposure;
+  pre-Radiant crit scope (Normal Attacks, skills, Convergent Light, kit
+  signature strikes, kit Burn ticks; never Conduit-generated); every enemy
+  10% / 1.5x; Elemental Crit restored.
+- Separate `critSeed` stream; per-bearer pre-Radiant Critical Rate and
+  Critical Damage (`radiantCriticalStats`); Critical Up = 2 points of Critical
+  Rate per stored point. 18 built rows (B1, B2, B3a) now carry real crit
+  stats and triggers (new kinds `crit-rate`, `crit-damage`, `skill-crit-damage`,
+  `flare-crit-rate`, `flare-crit-damage`, `crit-heal`, `first-crit-*`,
+  `burn-ally-crit`, `skill-shield-crit`); C9, C10 and M3 retired.
+- UI: gold-rimmed "Critical" / "Elemental Crit" numbers, GPU pulse, static
+  under Reduce motion; "Critical Up · +N% Critical Rate" status rows;
+  Critical Rate and Critical Damage in character stats; glossary entries;
+  kit text and the Phase 3 drafts now say Critical Up.
+- Implementation choices (owner may reverse): fixed crit stats (no growth);
+  the x2 Critical Up conversion (Golden Thorn Volley +30, Rose Beyond the Sun
+  +60, Denial of Fate +50, Reaper's Claim +24); encounters saved before this
+  step finish without crits on the old Exposure rule (no version bump);
+  no extra crit hit-stop (R2); old x1.5 Last Flare crit bonus not restored.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded (chunk advisory).
+- Full `npx vitest run` (with the study running): 10,889 of 10,895; the 6
+  failures were stale no-crit assertions and stat-row counts, fixed and rerun
+  per file (battle-screen, hub, kit-text, information-layout: all pass). New
+  `src/game/critical-hits.test.ts`: 16 of 16 (includes pre-crit save
+  load/settle/reload and tamper rejection); battle-screen crit number test
+  passes.
+- `node tools\run_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced; crit step vs B3a): ordinary 99.8% (99.8%); Calamity EX+1/2/3
+  97.2/86.6/80.1% (96.8/85.2/78.7%); Oblivion 141-160 100%, 161-180 90.5%
+  (unchanged); Training 101-120 100% (88.9%; 18 samples); Dungeon 101-120
+  100%. Flare-saving Calamity 100/99.5/94.9% (100/100/95.4%).
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+- `capture_frames.mjs --battle attack --stream` (Elise, Bliss, Crinso
+  leaders): renders; the preview seeds landed no critical hit, so the crit
+  look is covered by the markup test only.
+
+**Not verified:** a critical hit seen in game (unreleased).
+
+**Next:** B3b (next-action tokens, 13 rows incl. 7 O1 rows now built with
+real crits; flare event gains `cost`; Undertide's Convergent Light discount;
+decide Shared Tide). Fresh Opus session, Plan mode. Start the study early.
+
+## Battle Flurry Phase 4c B3a: Omnic Conduit restoration, no new systems (D-493, 2026-11-20)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b3a-omnic-without-new-systems-d-493-battle-flurry-phase-4c).
+- B3 split in three: B3a (29 rows, this entry), B3b (next-action tokens, 13
+  rows), B3c (rescue ledger, revive, Accord, taunt, 3 rows). G12 (extra skill
+  after Convergent Light) belongs to B4 (Throne of Borrowed Tomorrows).
+- New engine pieces: squad auras per living wearer (maximum Health, Attack,
+  Defense, Gauge Gain), Faultkeeper's Defense share, combat-only Skill Power
+  (Clearwater, Pyre Census, Ruinselect, Ward Loom), per-target Defense ignore
+  and Skill Power (Eclipse Mantle, Worldroot Graft), ally direct-damage
+  bonuses (Ember Iris, Nightglass marks, Aegis Crown), Nightglass marks on
+  enemies, Cinder Testament's Burn bonus, Eternal Cinder's Burn transfer,
+  Worldtree's overheal Shield, 15 new triggers. Enemy tags show marks and Burn
+  bonuses. `radiantHealthBound` now takes the state.
+- Implementation choices (owner may reverse): auras multiply separately from
+  the gear pool; Health above a maximum lowered by a fallen aura wearer stays
+  until damage; Worldtree raises its existing Shield instead of replacing it
+  (the impact replay can only add Shield); Conduits acting on other allies need
+  their wearer alive.
+- Open item: Shared Tide Lifesea Engine only triggers on a skill that Shields
+  exactly one ally; no released Oceanic kit has one, so it never fires today.
+- Not yet: Undertide's discount on Convergent Light (B3b). The battle fan shows
+  costs before a target is chosen.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded.
+- Full `npx vitest run`: 10,870 of 10,871; the one failure
+  (`acquisition-surfaces.test.ts`, 21 s timeout under load) and
+  `conduit-element.test.ts` (worker failed to start) pass on their own (10 of
+  10). New `conduit-restoration-b3a.test.ts`: 87 of 87. Updated fixtures:
+  `conduit-effects.test.ts` (no Conduit carries Recovery; triage test drops
+  Worldroot Graft), `conduit-loadout.test.ts` (Cinder Testament keyword).
+- `node tools
+un_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced; B1+B2+B3a vs B1+B2): ordinary 99.8% (98.1%); Calamity EX+1/2/3
+  96.8/85.2/78.7% (94.9/73.6/62.5%; D-481: 85.2/52.8/33.3%); Oblivion 141-160
+  100% (91.7%), 161-180 90.5% (61.9%); Training 101-120 88.9% (72.2%);
+  Dungeon 101-120 100% (95.3%). Flare-saving Calamity 100/100/95.4%
+  (100/93.5/80.6%). Several bands moved more than 5 points (O4); the release
+  is already held for one enemy retune on the final Conduit set (owner
+  choice), and the gap keeps widening.
+- `node toolsundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** a look in game (unreleased).
+
+**Next:** owner decision 2026-11-20: critical hits return (old base values,
+enemy crits, Critical Up replaces Exposure; see decisions D-493). Plan the crit
+step in a fresh Opus session in Plan mode before B3b; it also converts the
+about 20 built crit-conversion rows. Then B3b (next-action tokens; flare event
+gains `cost`). Start the pressure study early (it takes about an hour).
+**Standing requirement (owner, 2026-11-20):** every step must keep existing
+saves working. Each batch adds a test that loads saves and saved encounters
+(including settled journals) written before the change, and checks any new
+event type or state field against the saved-event allowlist in
+`src/online/battle-run.ts` (`eventFields` / `validEvent`). Background: the
+released game rejected any save holding a settled encounter with signature
+events (fix `562de239` on this branch, hotfix `c732c7ee` on `main`,
+**released 2026-11-20**: pushed `main` and `overhaul/radiant-foundation`,
+Deploy Last Light run succeeded, `game-operation` deployed from `main`).
+
+## Battle Flurry Phase 4c B2: Legendary Conduit restoration (D-493, 2026-11-19)
+
+**Implemented on `battle-flurry-phase3`, not released** (single release after
+B5 with one enemy retune). Spec:
+[combat spec](combat.md#conduit-restoration-b2-legendary-d-493-battle-flurry-phase-4c).
+- All 15 Legendaries restored: Skill 2 Power/Efficiency, Convergent Light
+  Power, area and support Skill Power, skill-only direct damage, Starvein's
+  distinct-element condition, Citadel's Defense Up aura, Heartcase's raised
+  maximum Health and Defense below the Convergent Light cost, Granite's
+  enemy-phase Shield, Pale Bulwark's Shield guard, Meridian, Verdict.
+- New Conduit RNG stream (`conduitSeed`, only when Nullsong or Stasis is
+  equipped) for Nullsong's ±Skill Power roll and Stasis's block.
+- Implementation choice (owner may reverse): Heartcase never removes Health
+  without an event; above the cost, healing stops at the normal maximum and
+  extra Health stays until damaged.
+- `skill-leech` removed (no remaining wearer).
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded.
+- Full `npx vitest run`: 10,794 of 10,794 (new
+  `conduit-restoration-b2.test.ts`: 28).
+- `--retune` study (radiant-trio-v1, balanced; B1+B2): ordinary 98.1%;
+  Calamity EX+1/2/3 94.9/73.6/62.5% (D-481: 85.2/52.8/33.3%); Oblivion
+  141-160 91.7%, 161-180 61.9%; Training 101-120 72.2%; Dungeon 101-120
+  95.3%. Flare-saving player: Calamity 100/93.5/80.6%. The final enemy
+  retune must bring Calamity back toward its targets.
+- `node toolsundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** a look in game (unreleased).
+
+**Next:** B3 Omnic (45 rows; large engine gaps G7 tokens, G10 revive, G12
+extra skill, G13 taunt) in a fresh Opus session, planned in Plan mode.
+
+## Battle Flurry Phase 4c B1: Common + Rare Conduit restoration (D-493, 2026-11-19)
+
+**Implemented on `battle-flurry-phase3`, not released** (owner choice: release
+once after B5 with one enemy retune). Owner approved the full 4b proposal
+(number sheet, O1-O14, B1-B5). Spec:
+[combat spec](combat.md#conduit-restoration-b1-common--rare-d-493-battle-flurry-phase-4c).
+- All 25 Common/Rare Conduits restored to their pre-Radiant effects (C1 ×0.2
+  rescale on always-on Health/Defense/Attack).
+- New kinds: Skill Power (flat, Skill 1, debuff, heal/Shield, per 450 Health),
+  Skill Efficiency (now also on Convergent Light), Skill Duration (never on
+  signature resources), Gauge Gain, capacity above the Convergent Light cost,
+  direct damage, skill-only pierce, squad enemy-Defense aura (no stacking),
+  drain, Duplex self-heal, Twinpulse fill. Fixed (rank-proof) primitives.
+- Gauge members carry optional `capacity` / `flareEfficiency` (validated).
+- `shield-break` removed. Character Skill stats panel shows per-slot
+  Duration and capacity.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded.
+- Full `npx vitest run`: 10,766 of 10,767; the one failure (a
+  `battle-local.test.ts` fixture expecting Reserve Torque Crank's D-480
+  effect) was updated and passes (14 of 14). New
+  `src/game/conduit-restoration-b1.test.ts`: 40 of 40.
+- `node tools
+un_pressure_study.mjs <out> --retune` (radiant-trio-v1,
+  balanced): ordinary 98.0% (was 96.9%); Calamity EX+1/2/3 91.7/60.6/45.8%
+  (was 85.2/52.8/33.3%); Sunshade 101-140 100% (was 92-94%); Dungeon 101-120
+  95.8%, War 121-140 97.7%, Oblivion 141-160 81.3%, 161-180 59.5%, Training
+  101-120 50%.
+- `node toolsundle_server_game.mjs`: bundle rebuilt; **not deployed**.
+
+**Not verified:** a look in game (unreleased).
+
+**Next:** B2 Legendary (15 rows) in a fresh Opus session; then B3-B5, one
+enemy retune on the final Conduit set, release with the authority deploy.
+
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 
 **Implemented on `battle-flurry-phase3`.** Spec:

@@ -99,11 +99,12 @@ No current menu/battle caller sends this shape.
 - `RADIANT_STUDY_SECRET`: server-only stable secret, at least32 UTF-8 bytes.
   Missing/short secrets fail closed. Never expose/log it or commit a value.
 - `RADIANT_STUDY_CALIBRATION`: absent means the live calibration
-  `radiant-trio-v1` (D-481); leave it unset in production. Setting it to
-  `authored-control` or the experimental `radiant-pressure-v2` overrides new
-  starts. Client choice alone cannot select a different enemy calibration.
-  Encounters already underway on `authored-control` (the pre-D-481 live
-  calibration) may still finish.
+  `radiant-trio-v2` (D-493 retune); leave it unset in production. Setting it to
+  `authored-control`, `radiant-trio-v1` or the experimental `radiant-pressure-v2`
+  overrides new starts. Client choice alone cannot select a different enemy
+  calibration. Encounters already underway on an earlier live calibration
+  (`authored-control` before D-481, `radiant-trio-v1` before the D-493 retune)
+  may still finish.
 
 **Do not enable/deploy this as the completed overhaul.** Full authored rewards
 are connected; actual DB proof and production run/UI migration remain unfinished.

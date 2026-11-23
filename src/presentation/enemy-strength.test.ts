@@ -88,7 +88,7 @@ describe('visible enemy strength', () => {
       for (const boss of [false, true]) {
         const stats = enemyCombatStats(level, boss);
         document.body.innerHTML = enemyStrength({ level, boss, stats });
-        // Panels show the live calibration's stats (radiant-trio-v1 flattens enemies above Lv.95, D-481).
+        // Panels show the live calibration's stats (radiant-trio-v2 flattens enemies above Lv.100, D-493 retune).
         const actual = calibratedRadiantEnemyStats(stageBossStats(stats, boss), level, boss ? 'boss' : 'ordinary', liveRadiantCalibration);
         expect(Array.from(document.querySelectorAll('dd')).map(cell => cell.textContent)).toEqual(
           [actual.hp, actual.attack, actual.defense].map(value => formatStat(value)));

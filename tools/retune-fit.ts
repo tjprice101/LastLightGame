@@ -33,7 +33,7 @@ function curve(schedule: Schedule): RadiantCalibrationPoint[] {
   return [{ level: 1, ...unity }, ...full.map(([level, e]) => compressionFactors(level, e))];
 }
 export function compressionCalibration(ordinary: Schedule, boss: Schedule, calamity: Schedule,
-  id = 'radiant-trio-v1'): RadiantEnemyCalibration {
+  id = 'radiant-trio-v2'): RadiantEnemyCalibration {
   return { id, points: curve(ordinary), categoryPoints: { boss: curve(boss), calamity: curve(calamity) },
     categories: { ordinary: unity, boss: unity, calamity: unity } };
 }

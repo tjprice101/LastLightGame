@@ -40,7 +40,7 @@ const keys = Array.isArray(parsed) ? parsed : parsed.api_keys ?? parsed.keys;
 const serviceKey = keys?.find(k => k.name === 'service_role')?.api_key;
 if (!serviceKey) throw new Error('Hosted service key unavailable.');
 const admin = createClient('https://ohtfgwomdfteaxubndww.supabase.co', serviceKey, { auth: { persistSession: false } });
-const config = { enabled: 'true', secret: randomBytes(32).toString('hex'), calibration: 'radiant-trio-v1' };
+const config = { enabled: 'true', secret: randomBytes(32).toString('hex'), calibration: 'radiant-trio-v2' };
 
 let userId = null;
 const latencies = [];
@@ -110,7 +110,7 @@ try {
   // 2. Stale revision: rejected, nothing written.
   const before = await storedAggregate();
   const start = (revision, requestId = randomUUID()) => ({ requestId, expectedRevision: revision, runId: null,
-    encounter: null, operation: { kind: 'start', activity: { kind: 'training' }, calibration: 'radiant-trio-v1' } });
+    encounter: null, operation: { kind: 'start', activity: { kind: 'training' }, calibration: 'radiant-trio-v2' } });
   const stale = await send(start(r0));
   assert.equal(stale.status, 409);
   const afterStale = await storedAggregate();

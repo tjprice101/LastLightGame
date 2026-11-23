@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { radiantKitText } from '../content/radiant-kit-text';
 import { radiantKits, type RadiantKitEffect, type RadiantKitId } from '../content/radiant-kits';
+import { radiantCriticalUpRate } from '../content/conduit-effects';
 import { radiantBearerKits, radiantLeaderEffects, type RadiantBearerId, type RadiantLoadout } from '../content/combat-kits';
 import { radiantFlareText, radiantLeaderSkillText, radiantSkillText, renderRadiantKitText } from './kit-text';
 
@@ -64,7 +65,8 @@ describe('Phase 3 kit text (D-479)', () => {
     const kit = radiantKits[id], text = radiantKitText[id];
     const effectNumbers = (effects: readonly RadiantKitEffect[]) => effects.flatMap(effect =>
       effect.kind === 'signature' || effect.kind === 'cleanse' || effect.kind === 'ignore-defense' || effect.kind === 'damage-bonus'
-        ? [] : [{ kind: effect.kind, value: effect.value, perStack: effect.perStack }]);
+        // D-493 crit step: Critical Up (internal `expose`) shows 2 points of Critical Rate per stored point.
+        ? [] : [{ kind: effect.kind, value: effect.kind === 'expose' ? effect.value * radiantCriticalUpRate : effect.value, perStack: effect.perStack }]);
     for (const slot of ['skill1', 'skill2'] as const) {
       const def = kit[slot], line = text[slot];
       if (def.hits) expect(line).toContain(`${def.hits}-hit`);
@@ -84,7 +86,8 @@ describe('Phase 3 kit text (D-479)', () => {
       expect(line).toContain(effect.kind === 'fill' ? `{f:${effect.value}}` : `{e:${token(effect.value)}}`);
       if (effect.perStack) expect(line).toContain(`+{e:${token(effect.perStack)}}`);
     }
-    for (const entry of radiantLeaderEffects(formOne(id)))
+    for (const leader of radiantLeaderEffects(formOne(id)))
+      for (const entry of [leader.kind === 'normal-expose' ? { ...leader, amount: leader.amount * radiantCriticalUpRate } : leader])
       expect(text.leader).toMatch(new RegExp(`\\{(l:${token(entry.amount).replace('.', '\\.')}|ln:${Number(entry.amount.toFixed(2))})\\}`));
   });
 

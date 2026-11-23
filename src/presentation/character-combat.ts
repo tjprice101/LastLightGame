@@ -1,9 +1,9 @@
-import { radiantAttunement, radiantBearerKits, radiantFlarePower, radiantLeaderBonus, radiantMasters, resolveRadiantStarterStats,
-  radiantRoleSkillPower, radiantSupportSquadHeal, radiantTankTargetWeight,
+import { radiantAttunement, radiantBearerKits, radiantEquipmentAmount, radiantFlarePower, radiantLeaderBonus, radiantMasters, resolveRadiantStarterStats,
+  radiantRoleSkillPower, radiantSupportSquadHeal, radiantTankTargetWeight, radiantCriticalStats,
   type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
 import type { RadiantSkillSlot } from '../content/radiant-kits';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
-import { radiantChargeRules, radiantSkillCost } from '../game/combat-gauge';
+import { radiantCapacityCap, radiantChargeRules, radiantFlareTierCost, radiantSkillCost } from '../game/combat-gauge';
 import { radiantHealthMote, radiantLoadoutSkillStats, radiantMaximumDuration } from '../game/combat-engine';
 import { radiantFlareText, radiantLeaderSkillText, radiantSkillName, radiantSkillText } from './kit-text';
 import { getMasterConduit } from '../content/master-conduits';
@@ -90,7 +90,18 @@ export function radiantStatsPanel(loadout: RadiantLoadout, label = 'Current comb
     const direction = statDirection(base[key], values[key]);
     const modified = direction !== 'unchanged';
     return `<div data-radiant-stat="${key}"><dt>${radiantStatLabels[key]}</dt><dd><strong${modified ? ` class="stat-change stat-change--${direction}"` : ''}>${formatStat(values[key])}</strong>${modified ? `<span class="info-label">Before Conduits: ${formatStat(base[key])}</span>` : ''}</dd></div>`;
-  }).join('')}</dl>`;
+  }).join('')}${radiantCriticalRows(loadout)}</dl>`;
+}
+/** D-493 crit step: Critical Rate (base + Conduit points) and Critical Damage (base x Conduit bonus), always-on parts only. */
+function radiantCriticalRows(loadout: RadiantLoadout): string {
+  const base = radiantCriticalStats[loadout.starter];
+  const rate = base.rate + radiantEquipmentAmount(loadout, 'crit-rate');
+  const damage = base.damage * (1 + radiantEquipmentAmount(loadout, 'crit-damage'));
+  const row = (key: string, label: string, value: string, before: string) =>
+    `<div data-radiant-stat="${key}"><dt>${label}</dt><dd><strong${value !== before ? ' class="stat-change stat-change--increase"' : ''}>${value}</strong>${
+      value !== before ? `<span class="info-label">Before Conduits: ${before}</span>` : ''}</dd></div>`;
+  return row('crit-rate', 'Critical Rate', percent(rate), percent(base.rate)) +
+    row('crit-damage', 'Critical Damage', `×${number(damage)}`, `×${number(base.damage)}`);
 }
 
 /** Same row markup as stat-preview.ts statPreview, over the four combat stats. */
@@ -117,7 +128,8 @@ export function radiantFlareTierUnlocked(loadout: RadiantLoadout, tier: Converge
 }
 
 function flareCost(loadout: RadiantLoadout, tier: ConvergentLightTier): string {
-  const cost = radiantBearerKits[loadout.starter].baseCost * (tier === 'sparkling' ? 1 : 2);
+  const cost = radiantFlareTierCost(radiantBearerKits[loadout.starter].baseCost, tier,
+    radiantLoadoutSkillStats(loadout, 'flare').skillEfficiency);
   return `${cost} Luminosity`;
 }
 
@@ -148,6 +160,18 @@ export function radiantRoleTrait(id: RadiantBearerId): string {
   return `Support: +50% Health, +${percent(radiantRoleSkillPower.Support)} Skill Power. Each skill and Convergent Light also heals all allies (${percent(radiantSupportSquadHeal)} of max Health; not scaled by Skill Power).`;
 }
 
+/** Skill Duration per slot (D-493: Weaken/Critical Up/Burn skills may gain extra turns). */
+function durationText(loadout: RadiantLoadout): string {
+  const turns = ([1, 2, 'flare'] as const).map(slot => radiantLoadoutSkillStats(loadout, slot).skillDuration);
+  const label = (value: number) => `+${value} turn${value === 1 ? '' : 's'}`;
+  return turns.every(value => value === turns[0]) ? label(turns[0])
+    : `Skill 1 ${label(turns[0])} · Skill 2 ${label(turns[1])} · Convergent Light ${label(turns[2])}`;
+}
+/** D-493 C8: personal Luminosity capacity, including Conduit capacity above the Convergent Light cost. */
+function luminosityCapacity(loadout: RadiantLoadout): number {
+  return Math.floor(radiantBearerKits[loadout.starter].baseCost * (loadout.form >= 4 ? 2 : 1) *
+    (1 + Math.min(radiantCapacityCap, radiantEquipmentAmount(loadout, 'capacity'))));
+}
 /** N4 Skill stats for this loadout: per-slot Skill Power, Efficiency and cost, plus Duration and Gauge Gain. */
 export function radiantSkillStatsPanel(loadout: RadiantLoadout): string {
   const rows = ([1, 2, 'flare'] as const).map(slot => {
@@ -158,7 +182,8 @@ export function radiantSkillStatsPanel(loadout: RadiantLoadout): string {
   }).join('');
   const shared = radiantLoadoutSkillStats(loadout, 1);
   return `<dl class="info-stat-table radiant-skill-stats" aria-label="Skill stats">${rows}
-    <div data-radiant-skill-stat="duration"><dt>Skill Duration</dt><dd><strong>+${shared.skillDuration} turns</strong> on timed skill effects (max ${radiantMaximumDuration} turns)</dd></div>
+    <div data-radiant-skill-stat="duration"><dt>Skill Duration</dt><dd><strong>${durationText(loadout)}</strong> on timed skill effects (max ${radiantMaximumDuration} turns)</dd></div>
+    <div data-radiant-skill-stat="capacity"><dt>Luminosity capacity</dt><dd><strong>${luminosityCapacity(loadout)}</strong> Luminosity</dd></div>
     <div data-radiant-skill-stat="gauge"><dt>Gauge Gain</dt><dd><strong>${percent(shared.gaugeGain)}</strong> of every Luminosity gain</dd></div></dl>
     <p class="info-label">Skill Power scales skill and Convergent Light damage, Burn, heals, Shields and buff and debuff strength. It does not scale Normal Attack, fills or Conduit-generated effects. Skill Efficiency discounts costs (max 50%; Convergent Light cost at least 70).</p>`;
 }
@@ -233,12 +258,18 @@ export function radiantBasicArticles(loadout: RadiantLoadout): string {
 export function radiantKitGlossary(): string {
   return `<dl class="info-glossary radiant-glossary">
     <div><dt>Turns</dt><dd>Durations count player turns. A timed effect cast this turn counts its first turn at the end of this turn's enemy phase.</dd></div>
-    <div><dt>Categories</dt><dd>Allies hold Attack Up, Defense Up, Damage Reduction, Luminosity Gain Up and Health Over Time; enemies hold Weaken, Expose and Burn. The same category does not stack: the strongest applies and the duration becomes the longer one. Different categories combine. Caps: Attack Up and Defense Up +100%, Damage Reduction 75%, Luminosity Gain Up +100%, Health Over Time 30% of max Health per turn, Weaken 50%, Expose +80%.</dd></div>
+    <div><dt>Categories</dt><dd>Allies hold Attack Up, Defense Up, Damage Reduction, Luminosity Gain Up and Health Over Time; enemies hold Weaken, Critical Up and Burn. The same category does not stack: the strongest applies and the duration becomes the longer one. Different categories combine. Caps: Attack Up and Defense Up +100%, Damage Reduction 75%, Luminosity Gain Up +100%, Health Over Time 30% of max Health per turn, Weaken 50%, Critical Up +160% Critical Rate.</dd></div>
     <div><dt>Burn</dt><dd>Deals damage based on the caster's Attack at the end of each enemy phase, ignoring Defense. No cap.</dd></div>
     <div><dt>Weaken</dt><dd>Lowers the holder's Attack.</dd></div>
-    <div><dt>Expose</dt><dd>Raises the direct damage the enemy takes.</dd></div>
+    <div><dt>Critical Hit</dt><dd>Each Normal Attack, skill, Convergent Light, signature strike and Burn tick rolls once per target against the attacker's Critical Rate (each bearer has a base rate; every enemy has 10%). A critical hit multiplies that damage by the attacker's Critical Damage (enemies 1.5x). Above 100% Critical Rate, a second roll against the excess makes an Elemental Crit: Critical Damage x1.5 again. Conduit-generated strikes never crit.</dd></div>
+    <div><dt>Critical Up</dt><dd>Hits on the enemy gain the listed Critical Rate, added to the attacker's.</dd></div>
+    <div><dt>Next-action bonus</dt><dd>A Conduit bonus held by one ally for their next matching action (the Conduit names it). Each Conduit gives an ally one at a time: a new one replaces it rather than stacking. The next matching action spends it; otherwise it ends with the turn after the one that granted it, unless the Conduit states another limit. Skill Efficiency from bonuses still caps the total discount at 50%.</dd></div>
     <div><dt>Shield</dt><dd>Absorbs damage until broken. Shields from skills and Convergent Light stack. Kit heals and Shields are a percentage of the recipient's max Health.</dd></div>
     <div><dt>Targets</dt><dd>One-enemy skills hit the current target. Ally skills reach all allies, the other allies, the caster, or the ally with the lowest Health.</dd></div>
+    <div><dt>Taunt</dt><dd>While an ally taunts, every enemy attack aims at that ally, including Calamity attacks that pick by Health. A taunt ends with the enemy phase it covers or when its holder is defeated; the latest taunt in the squad applies.</dd></div>
+    <div><dt>Rescue limit</dt><dd>Each ally can be rescued by a Conduit once per encounter: Phoenix Reactor's revival and Accord's save share that one rescue. Ozriel's Refusal is separate and can still save an ally afterwards.</dd></div>
+    <div><dt>Borrowed skill</dt><dd>An extra Skill 1 or Skill 2 for an ally who already acted this turn, at its normal Luminosity cost (Throne of Borrowed Tomorrows; once per ally per turn). The turn waits while an ally can pay for it; End Turn gives up unused ones.</dd></div>
+    <div><dt>Mark</dt><dd>For Conduits that count marks: Quarry, Survey, Fate-seared Mark, Incision, Thorn Trap or Nightglass mark, placed by the Conduit's bearer.</dd></div>
     <div><dt>Luminosity</dt><dd>Normal Attack hits fill ${radiantChargeRules.normal}; each enemy hit taken fills ${radiantChargeRules.incomingAttack}. Skill 1 costs 25, Skill 2 costs 40, a Convergent Light costs 100 (Sparkling) or 200 (Glimmering and Ultimate). Skills and Convergent Light fill none.</dd></div>
     <div><dt>Health mote</dt><dd>Each defeated enemy heals the Element-Bearer who defeated it (${percent(radiantHealthMote)} of max Health; the Burn's caster for a Burn defeat). Motes never revive.</dd></div>
   </dl>`;

@@ -293,6 +293,7 @@ what is complete, what remains, dependencies and the exact restart/approval gate
 251 required seasonal/War images,326 with paused Story,343 with production-related
 options and351 with experiments;24 War portraits already exist. Active contracts
 stay in this library; historical "pending" entries below are not current debt.
+[UI and VFX visual overhaul](Future%20Plans/ui-vfx-polish-toolkit.md) (filed 2026-11-20, not approved): battle effects, summons and menus inspired by the Calamity mod's visuals and Brave Frontier's game style, with original shaders; tools and costs catalogued; resumes after the D-493 release.
 
 **Latest Moon redesign and reclaimed Elemental War art (2026-11-06):**
 All six Moon characters now share black-white/silver material and vivid

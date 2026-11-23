@@ -1,12 +1,12 @@
 import { radiantKits, type RadiantKitId } from '../content/radiant-kits';
-import { radiantMasters, type RadiantLoadout } from '../content/combat-kits';
+import { radiantKitSkill, radiantMasters, type RadiantLoadout } from '../content/combat-kits';
 import type { ConvergentLightTier } from '../content/progression';
 
 const number = (value: number): string => String(Number(value.toPrecision(12)));
 
 /** Whether this loadout's kit Flare strikes one selected enemy (the tier does not change the target). */
 export function radiantFlareNeedsTarget(loadout: RadiantLoadout, _tier?: ConvergentLightTier): boolean {
-  return radiantKits[loadout.starter as RadiantKitId].flare.target === 'one-enemy';
+  return radiantKitSkill(loadout, 'flare').target === 'one-enemy';
 }
 export function radiantPassiveEnhancements(loadout: RadiantLoadout): string[] {
   const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];

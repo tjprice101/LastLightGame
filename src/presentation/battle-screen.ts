@@ -2,12 +2,13 @@ import { characterName } from '../content/character-art';
 import { getStarter } from '../content/starters';
 import { radiantAttunement } from '../content/combat-kits';
 import { grantRadiantDrop, personalChargeMaximum, personalChargeUnit, radiantChargeRules, radiantFlareCost, radiantSkillCost,
-  readyFlare, readySkill } from '../game/combat-gauge';
-import { radiantSkillStats, type RadiantCombatState } from '../game/combat-engine';
+  readySkill } from '../game/combat-gauge';
+import { radiantActionEfficiency, radiantFlareReady, radiantHasBorrowedSkill, radiantPendingActors, type RadiantCombatState,
+  type RadiantCritical } from '../game/combat-engine';
 import { radiantKits, radiantSkillAcceptsTarget, radiantSkillCosts, type RadiantKitId, type RadiantSkillSlot } from '../content/radiant-kits';
 import { abilityIcon } from './ability-icon';
 import { radiantSkillName, radiantSkillText, radiantFlareText } from './kit-text';
-import { radiantSignatureChips, radiantSignatureTags, radiantSignatureView, type RadiantSignatureView } from './battle-signatures';
+import { radiantBonusTags, radiantSignatureChips, radiantSignatureTags, radiantSignatureView, type RadiantSignatureView } from './battle-signatures';
 import { RadiantSession } from '../online/battle-session';
 import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun, type RadiantTurnAction } from '../online/battle-run';
 import { lusterSheen } from './luster';
@@ -30,7 +31,7 @@ import { lootArt, lootItems } from './battle-loot';
 import { radiantFormation, radiantFormationStyle } from './battle-formation';
 import { radiantEnemyCutin, radiantFlareCutin } from './battle-cutin';
 import './battle-cutin.css';
-import { radiantBearerKits, radiantFlareName } from '../content/combat-kits';
+import { radiantBearerKits, radiantFlareName, radiantKitSkill } from '../content/combat-kits';
 import { elementDamageMultiplier } from '../content/element-matchups';
 import { beatPlan, elementTint, enemyBeatPlan, enemyScreenTools, hitProgress, screenTools, spectacleTier, staticImpactMs, tintCss,
   type FlashKind, type ScreenTools, type SpectacleBeats } from '../vfx/spectacle-timing';
@@ -176,6 +177,8 @@ export class RadiantBattleView {
   private gestures: ReturnType<typeof bindRadiantPortraitGestures>;
   /** Signature counters shown so far (synced with the status snapshot at presentation boundaries). */
   private signatures: RadiantSignatureView;
+  /** D-493 B3b: bonus tags already shown per bearer, so only newly granted ones play their sheen. */
+  private bonusesShown = new Map<string, Set<string>>();
   private signatureMarkup = new Map<string, string>();
   /** The card whose Skill 1 / Skill 2 / Flare fan is open (D-479). */
   private openFan: string | null = null;
@@ -204,7 +207,8 @@ export class RadiantBattleView {
         const gauge = this.session.view().run?.state.gauge;
         const member = gauge?.members.find(member => member.id === id);
         const button = this.host.querySelector<HTMLButtonElement>(`[data-radiant-actor="${id}"]`);
-        const tier = member?.living && button && !button.disabled && gauge ? readyFlare(gauge, id) : null;
+        const state = this.session.view().run?.state;
+        const tier = member?.living && button && !button.disabled && state && !state.acted.includes(id) ? radiantFlareReady(state, id) : null;
         return tier ? tierNames[tier] : null;
       },
       cast: (id, slot) => { this.castFanSlot(id, slot); },
@@ -312,7 +316,7 @@ export class RadiantBattleView {
           <p data-radiant-no-effects>No active effects.</p></section>`).join('')}</div>
         <p>Tap members in any order: each action resolves at once on this device. End Turn skips members who have not acted; the enemy phase follows once every living member has acted.
         Prismatica gathered during the encounter fills the Haul, which is saved with your rewards when the encounter ends (victory or defeat). Leaving mid-encounter forfeits that encounter’s unsaved Haul; rewards saved from earlier encounters are kept.</p>
-        <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
+        <p>Normal Attack and Defense each use this member’s action for the round. Hits can land critical hits (see Critical Hit in the glossary).
         A damaging Normal hit generates ${radiantChargeRules.normal} Luminosity for its attacker and a separate 1 for each other living same-element ally.
         Surviving each direct incoming hit on Health or Shields grants ${radiantChargeRules.incomingAttack} Luminosity to the recipient only.
         Personal capacity is 100, or 200 from form 4. Convergent Light, defeats, Defense, new rounds, generated and periodic damage grant no base personal Luminosity.</p>
@@ -367,6 +371,9 @@ export class RadiantBattleView {
     }
     if (button.dataset.radiantActor) {
       if (this.gestures.consumeClick(button)) return;
+      const run = this.session.view().run;
+      // D-493 B4 (G12): a bearer holding a borrowed skill can only use Skill 1 or Skill 2, so a tap opens its fan.
+      if (run && radiantHasBorrowedSkill(run.state, button.dataset.radiantActor)) { this.showFan(button.dataset.radiantActor, true); return; }
       this.closeFan(false);
       this.enqueueAction('normal', button.dataset.radiantActor); return;
     }
@@ -454,18 +461,22 @@ export class RadiantBattleView {
     for (const choice of Array.from(fan.querySelectorAll<HTMLButtonElement>('[data-radiant-skill]'))) {
       const slot = choice.dataset.radiantSkill;
       let ready: boolean, cost: string;
-      if (slot === 'flare') {
-        const tier = readyFlare(run.state.gauge, id);
+      if (slot === 'flare' && run.state.acted.includes(id)) {
+        // D-493 B4 (G12): a borrowed skill is Skill 1 or Skill 2 only.
+        ready = false;
+        cost = 'Skill 1 or 2 only';
+      } else if (slot === 'flare') {
+        const tier = radiantFlareReady(run.state, id);
         ready = tier !== null;
-        cost = tier ? tierNames[tier] : `${radiantFlareCost(member)}`;
+        cost = tier ? tierNames[tier] : `${radiantFlareCost(member, (member.flareEfficiency ?? 0) + radiantActionEfficiency(run.state, id, 'flare'))}`;
       } else {
-        const skillSlot = slot === '2' ? 2 : 1, efficiency = radiantSkillStats(run.state, id, skillSlot).skillEfficiency;
+        const skillSlot = slot === '2' ? 2 : 1, efficiency = radiantActionEfficiency(run.state, id, skillSlot);
         ready = readySkill(run.state.gauge, id, skillSlot, efficiency);
         cost = `${radiantSkillCost(skillSlot, efficiency)}`;
       }
       choice.setAttribute('aria-disabled', String(!ready));
       choice.classList.toggle('is-ready', ready);
-      if (slot === 'flare') { const tier = readyFlare(run.state.gauge, id); if (tier) choice.dataset.readyTier = tier; else delete choice.dataset.readyTier; }
+      if (slot === 'flare') { const tier = ready ? radiantFlareReady(run.state, id) : null; if (tier) choice.dataset.readyTier = tier; else delete choice.dataset.readyTier; }
       choice.querySelector<HTMLElement>('[data-radiant-skill-cost]')!.textContent = cost;
     }
   }
@@ -475,11 +486,12 @@ export class RadiantBattleView {
     const status = this.element<HTMLElement>('[data-radiant-gesture-status]');
     if (!run) return;
     if (slot === 'flare') {
-      if (!readyFlare(run.state.gauge, id)) { status.textContent = 'Convergent Light is not ready; no action spent.'; return; }
+      if (run.state.acted.includes(id)) { status.textContent = 'A borrowed skill is Skill 1 or Skill 2; no action spent.'; return; }
+      if (!radiantFlareReady(run.state, id)) { status.textContent = 'Convergent Light is not ready; no action spent.'; return; }
       this.closeFan(false);
       this.enqueueAction('flare', id); return;
     }
-    const efficiency = radiantSkillStats(run.state, id, slot).skillEfficiency;
+    const efficiency = radiantActionEfficiency(run.state, id, slot);
     if (!readySkill(run.state.gauge, id, slot, efficiency)) {
       status.textContent = `Skill ${slot} needs ${radiantSkillCost(slot, efficiency)} Luminosity; no action spent.`; return;
     }
@@ -594,14 +606,19 @@ export class RadiantBattleView {
     for (const button of Array.from(this.host.querySelectorAll<HTMLButtonElement>('[data-radiant-actor]'))) {
       const id = button.dataset.radiantActor!;
       const savedMember = run.state.bearers.find(member => member.loadout.id === id);
-      button.disabled = blocked || this.queuedActionActors.has(id) || !savedMember ||
-        savedMember.hp === 0 || run.state.acted.includes(id);
+      const borrowed = radiantHasBorrowedSkill(run.state, id), acted = run.state.acted.includes(id) && !borrowed;
+      button.disabled = blocked || this.queuedActionActors.has(id) || !savedMember || savedMember.hp === 0 || acted;
       button.closest('.radiant-member')!.classList.toggle('is-defeated', !savedMember || savedMember.hp === 0);
-      button.closest('.radiant-member')!.classList.toggle('has-acted', run.state.acted.includes(id));
-      const tier = savedMember && savedMember.hp > 0 ? readyFlare(run.state.gauge, id) : null;
+      button.closest('.radiant-member')!.classList.toggle('has-acted', acted);
+      button.closest('.radiant-member')!.classList.toggle('has-borrowed', borrowed);
+      const tier = savedMember && savedMember.hp > 0 && !borrowed ? radiantFlareReady(run.state, id) : null;
       if (this.openFan === id) { if (button.disabled) this.closeFan(false); else this.renderFan(run, id); }
+      const bonuses = this.signatures.bonuses[id] ?? [], seen = this.bonusesShown.get(id) ?? new Set<string>();
+      const fresh = new Set(bonuses.filter(text => !seen.has(text)));
+      this.bonusesShown.set(id, new Set(bonuses));
       const chips = this.displayed.units[id]?.hp > 0
-        ? radiantSignatureChips(this.signatures.owners[id] ?? []) + radiantSignatureTags(this.signatures.holders[id] ?? []) : '';
+        ? radiantSignatureChips(this.signatures.owners[id] ?? []) + radiantSignatureTags(this.signatures.holders[id] ?? []) +
+          radiantBonusTags(bonuses, fresh) : '';
       if (this.signatureMarkup.get(id) !== chips) {
         const host = this.element<HTMLElement>(`[data-radiant-signatures="${id}"]`);
         host.innerHTML = chips; host.hidden = !chips; this.signatureMarkup.set(id, chips);
@@ -609,8 +626,9 @@ export class RadiantBattleView {
       button.dataset.readyTier = !button.disabled && tier ? tier : '';
       button.closest<HTMLElement>('.radiant-member')!.dataset.readyTier = button.dataset.readyTier;
       this.element<HTMLElement>(`[data-radiant-readiness="${id}"]`).textContent =
-        !savedMember || savedMember.hp === 0 ? 'Defeated' : run.state.acted.includes(id) ? 'Acted this round' :
-          tier ? `${tierNames[tier]} ready` : 'Convergent Light charging';
+        !savedMember || savedMember.hp === 0 ? 'Defeated' : borrowed
+          ? radiantPendingActors(run.state).includes(id) ? 'Borrowed skill ready' : 'Borrowed skill · needs Luminosity'
+          : acted ? 'Acted this round' : tier ? `${tierNames[tier]} ready` : 'Convergent Light charging';
     }
     for (const unit of Array.from(this.host.querySelectorAll<HTMLElement>('[data-radiant-field-unit]'))) {
       const id = unit.dataset.radiantFieldUnit!;
@@ -648,6 +666,10 @@ export class RadiantBattleView {
     this.element<HTMLElement>('[data-radiant-round]').textContent = `Round ${this.displayed.round}`;
     const endTurn = this.element<HTMLButtonElement>('[data-radiant-end-turn]');
     endTurn.disabled = blocked || this.actionQueue.length > 0;
+    // D-493 B4 (G12): End Turn gives up unused borrowed skills.
+    const forfeit = run.state.phase === 'player' && !!run.state.borrowed?.length;
+    const endLabel = forfeit ? 'End Turn · forfeit borrowed skills' : 'End Turn';
+    if (endTurn.textContent !== endLabel) endTurn.textContent = endLabel;
     endTurn.hidden = run.state.phase === 'victory' || run.state.phase === 'defeat' || run.quit;
     this.renderHaul(view.busy && view.settleDue, view.settleDue && !view.busy && !!view.pending);
     const leader = this.element<HTMLElement>('[data-radiant-leader-reference]');
@@ -748,12 +770,11 @@ export class RadiantBattleView {
     const before = this.session.view().run;
     if (!before) throw new Error('A saved encounter is required.');
     // Programmatic callers may omit the member; every card action passes its own.
-    const actor = bearerId ?? (before.state.bearers.find(unit => unit.hp > 0 && !before.state.acted.includes(unit.loadout.id))
-      ?? before.state.bearers[0]).loadout.id;
+    const actor = bearerId ?? radiantPendingActors(before.state)[0] ?? before.state.bearers[0].loadout.id;
     const member = before.state.bearers.find(unit => unit.loadout.id === actor)!;
-    const tier = member.hp > 0 ? readyFlare(before.state.gauge, actor) : null;
+    const tier = member.hp > 0 ? radiantFlareReady(before.state, actor) : null;
     const focusedTarget = this.target;
-    const skill = radiantKits[member.loadout.starter as RadiantKitId]?.[slot === 1 ? 'skill1' : 'skill2'];
+    const skill = radiantKitSkill(member.loadout, slot === 2 ? 2 : 1);
     const action: RadiantPlayerAction =
       kind === 'normal' ? { type: kind, bearerId: actor, targetId: focusedTarget ?? '' } :
       kind === 'skill' ? { type: kind, bearerId: actor, slot,
@@ -795,12 +816,16 @@ export class RadiantBattleView {
       this.displayed.round !== run.state.round || view.preparationPending || view.preparationPresentation ||
       !this.actionQueueRunning && (view.busy || view.pending || view.presentation)) return;
     const member = run.state.bearers.find(unit => unit.loadout.id === bearerId);
-    if (!member || member.hp <= 0 || run.state.acted.includes(bearerId)) return;
-    if (kind === 'flare' && !readyFlare(run.state.gauge, bearerId)) {
+    if (!member || member.hp <= 0 || run.state.acted.includes(bearerId) && !radiantHasBorrowedSkill(run.state, bearerId)) return;
+    if (kind !== 'skill' && run.state.acted.includes(bearerId)) {
+      this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = 'A borrowed skill is Skill 1 or Skill 2; no action spent.';
+      return;
+    }
+    if (kind === 'flare' && !radiantFlareReady(run.state, bearerId)) {
       this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = 'Convergent Light is not ready.';
       return;
     }
-    if (kind === 'skill' && (!slot || !readySkill(run.state.gauge, bearerId, slot, radiantSkillStats(run.state, bearerId, slot).skillEfficiency))) {
+    if (kind === 'skill' && (!slot || !readySkill(run.state.gauge, bearerId, slot, radiantActionEfficiency(run.state, bearerId, slot)))) {
       this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = 'Not enough Luminosity for that skill; no action spent.';
       return;
     }
@@ -824,7 +849,8 @@ export class RadiantBattleView {
           break;
         }
         const member = run.state.bearers.find(unit => unit.loadout.id === queued.bearerId);
-        if (!member || member.hp <= 0 || run.state.acted.includes(queued.bearerId)) {
+        if (!member || member.hp <= 0 || run.state.acted.includes(queued.bearerId) &&
+          !(queued.kind === 'skill' && radiantHasBorrowedSkill(run.state, queued.bearerId))) {
           this.report(new Error(`${member?.loadout.starter ?? 'Squad member'} could not take the queued action.`));
           this.queuedActionActors.delete(queued.bearerId);
           continue;
@@ -981,7 +1007,7 @@ export class RadiantBattleView {
         event.type === 'damage' && event.healthLoss + event.absorbed > 0));
       const finisherFrame = strikeFrames.at(-1) ?? hitFrames.at(-1);
       const tier = player ? spectacleTier(player) : null;
-      const flareTier = player?.type === 'flare' ? readyFlare(before.gauge, player.bearerId) : null;
+      const flareTier = player?.type === 'flare' ? radiantFlareReady(before, player.bearerId) : null;
       const finisherAt = finisherFrame === undefined ? undefined : hitFrames.indexOf(finisherFrame);
       const beats = tier ? beatPlan(tier, flareTier, hitFrames.length, finisherAt) : null;
       const tools = tier ? screenTools(tier, flareTier) : null;
@@ -1073,6 +1099,7 @@ export class RadiantBattleView {
         track(this.haulMotes(frame, random));
         track(this.damageNumbers(frame, before, random, tier === 'flare' && playerHit));
         track(this.conduitCallouts(frame));
+        track(this.rescueBursts(frame));
         for (const event of frame.events) if (event.type === 'defeated')
           track(this.lootDrops(response, played, event.targetId, random));
         if (playerHit && beats) {
@@ -1539,6 +1566,35 @@ export class RadiantBattleView {
         for (const entry of previous) entry.element.scrollTop = entry.scrollTop;
     };
   }
+  /** D-493 B3c: a finite, pointer-transparent burst on a rescued bearer: rising embers for Phoenix Reactor's revival, a soft
+   * light bloom for an Accord save. D-493 B4: a gold thread of light rising through each ally granted a borrowed skill by
+   * Throne of Borrowed Tomorrows. Skipped under Reduce motion (numbers, callouts and the gold tag still show, static). */
+  private async rescueBursts(frame: RadiantImpactFrame): Promise<void> {
+    if (reducedMotion() || this.disposed) return;
+    const rescues = frame.events.flatMap(event => event.type === 'revive' ? [{ id: event.targetId, kind: 'revive' }]
+      : event.type === 'signature' && event.op === 'accord-save' && event.holderId ? [{ id: event.holderId, kind: 'accord' }]
+        : event.type === 'signature' && event.op === 'borrowed' && event.holderId ? [{ id: event.holderId, kind: 'borrowed' }] : []);
+    await Promise.all(rescues.map(async ({ id, kind }) => {
+      const target = this.host.querySelector<HTMLElement>(`[data-radiant-target="${id}"] .radiant-unit-motion`);
+      if (!target) return;
+      const burst = document.createElement('span');
+      burst.className = `radiant-rescue-burst is-${kind}`; burst.setAttribute('aria-hidden', 'true');
+      const count = kind === 'revive' ? 7 : kind === 'borrowed' ? 3 : 0;
+      for (let index = 0; index < count; index++) {
+        const ember = document.createElement('i');
+        ember.style.setProperty('--x', `${(index - (count - 1) / 2) * (kind === 'borrowed' ? 14 : 9)}px`); ember.style.setProperty('--d', `${index * 45}ms`);
+        burst.append(ember);
+      }
+      target.append(burst);
+      const cleanup = () => burst.remove(); this.effectsCleanup.add(cleanup);
+      try {
+        await this.animate(burst, [{ opacity: 0, transform: 'translateY(10px) scale(.6)' },
+          { opacity: 1, transform: 'translateY(0) scale(1)', offset: .25 },
+          { opacity: 0, transform: `translateY(${kind === 'revive' ? -28 : kind === 'borrowed' ? -18 : -8}px) scale(1.25)` }],
+          kind === 'revive' ? 1000 : kind === 'borrowed' ? 900 : 760);
+      } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
+    }));
+  }
   private async impact(frame: RadiantImpactFrame): Promise<void> {
     const targets = new Set(frame.events.filter(event => event.type === 'damage' || event.type === 'heal' || event.type === 'shield')
       .map(event => event.targetId));
@@ -1704,13 +1760,15 @@ export class RadiantBattleView {
     };
     const enemyElement = (id: string) => state.enemies.find(enemy => enemy.id === id)?.elementId ?? null;
     const enemies = new Set(state.enemies.map(enemy => enemy.id));
-    const show = (targetId: string, text: string, kind: string, tag?: string) => {
+    // D-493 crit step: critical hits get a larger, gold-rimmed number, a sharper pop and a 'Critical' tag.
+    const show = (targetId: string, text: string, kind: string, tag?: string, crit?: RadiantCritical) => {
       const anchor = this.host.querySelector(`[data-radiant-art="${targetId}"]`);
       if (!anchor) return;
       const box = anchor.getBoundingClientRect();
       const stack = this.numberStacks.get(targetId) ?? 0;
       this.numberStacks.set(targetId, stack + 1);
-      const node = this.spawn(`radiant-number is-${kind}${compact ? ' is-compact' : ''}`,
+      const critClass = crit === 'elemental' ? ' is-crit is-elemental-crit' : crit ? ' is-crit' : '';
+      const node = this.spawn(`radiant-number is-${kind}${critClass}${compact ? ' is-compact' : ''}`,
         box.left + box.width / 2 + (random() - .5) * box.width * .3, box.top + box.height * .32 - (stack % 5) * (compact ? 16 : 22));
       node.innerHTML = `${tag ? `<small>${escape(tag)}</small>` : ''}<b>${escape(text)}</b>`;
       const release = () => {
@@ -1719,12 +1777,12 @@ export class RadiantBattleView {
       };
       if (reducedMotion()) { node.classList.add('is-static'); this.staticCue(node, staticImpactMs, release); return; }
       floats.push(this.animate(node, [
-        { opacity: 0, transform: 'translate(-50%, 8px) scale(.6)', easing: 'cubic-bezier(.2,.9,.3,1.3)' },
-        { opacity: 1, transform: 'translate(-50%, -10px) scale(1.2)', offset: .14, easing: 'ease-out' },
+        { opacity: 0, transform: `translate(-50%, 8px) scale(${crit ? .4 : .6})`, easing: 'cubic-bezier(.2,.9,.3,1.3)' },
+        { opacity: 1, transform: `translate(-50%, -10px) scale(${crit === 'elemental' ? 1.55 : crit ? 1.4 : 1.2})`, offset: .14, easing: 'ease-out' },
         { opacity: 1, transform: 'translate(-50%, -16px) scale(1)', offset: .3, easing: 'linear' },
         { opacity: 1, transform: 'translate(-50%, -30px) scale(1)', offset: .78, easing: 'ease-in' },
         { opacity: 0, transform: 'translate(-50%, -44px) scale(.92)' },
-      ], kind === 'weak' ? 1000 : 860, { easing: 'linear' }).finally(() => {
+      ], crit ? 1150 : kind === 'weak' ? 1000 : 860, { easing: 'linear' }).finally(() => {
         release();
         node.dispatchEvent(new Event('radiant-fx-done'));
       }));
@@ -1734,19 +1792,23 @@ export class RadiantBattleView {
         const attacker = event.source.kind === 'enemy' ? enemyElement(event.source.enemyId) : bearerElement(event.source.bearerId);
         const defender = enemies.has(event.targetId) ? enemyElement(event.targetId) : bearerElement(event.targetId);
         const weak = event.origin === 'direct' && elementDamageMultiplier(attacker, defender) > 1;
+        const critTag = event.critical === 'elemental' ? 'Elemental Crit' : event.critical ? 'Critical' : undefined;
+        const tag = [critTag, weak ? 'Weakness' : undefined].filter(Boolean).join(' · ') || undefined;
         if (event.healthLoss > 0) show(event.targetId, amountText(event.healthLoss),
           !enemies.has(event.targetId) ? 'hurt' : event.origin === 'periodic' ? 'periodic' : weak ? 'weak' : 'damage',
-          weak ? 'Weakness' : undefined);
-        if (event.absorbed > 0) show(event.targetId, `Shield −${amountText(event.absorbed)}`, 'absorb');
+          tag, event.critical);
+        else if (event.critical && event.absorbed > 0) show(event.targetId, `Shield −${amountText(event.absorbed)}`, 'absorb', critTag, event.critical);
+        if (event.absorbed > 0 && !(event.critical && event.healthLoss === 0)) show(event.targetId, `Shield −${amountText(event.absorbed)}`, 'absorb');
       } else if (event.type === 'heal' && event.effective > 0) show(event.targetId, `+${amountText(event.effective)}`, 'heal');
       else if (event.type === 'shield' && event.amount > 0) show(event.targetId, `Shield +${amountText(event.amount)}`, 'shield');
+      else if (event.type === 'revive') show(event.targetId, `Revived +${amountText(event.amount)}`, 'heal');
     }
     return Promise.all(floats).then(() => {});
   }
   /** Flare cut-in during the windup: the bearer's portrait, tier and Flare name. */
   private async flareCutin(action: RadiantPlayerAction, before: RadiantCombatState, duration: number): Promise<void> {
     if (action.type !== 'flare' || reducedMotion() || this.disposed) return;
-    const tier = readyFlare(before.gauge, action.bearerId);
+    const tier = radiantFlareReady(before, action.bearerId);
     const member = before.bearers.find(unit => unit.loadout.id === action.bearerId);
     if (!tier || !member) return;
     const card = this.host.querySelector<HTMLElement>(`[data-radiant-unit="${action.bearerId}"]`);
@@ -1894,9 +1956,8 @@ export class RadiantBattleView {
     const member = before.bearers.find(unit => unit.loadout.id === action.bearerId);
     if (!art || !member) return Promise.resolve();
     const motion = characterChoreography[member.loadout.starter].motion;
-    const kit = radiantKits[member.loadout.starter as RadiantKitId];
-    const reach = action.type === 'normal' ? 'one-enemy' : action.type === 'skill'
-      ? kit?.[action.slot === 2 ? 'skill2' : 'skill1'].target ?? 'one-enemy' : kit?.flare.target ?? 'all-enemies';
+    const reach = action.type === 'normal' ? 'one-enemy'
+      : radiantKitSkill(member.loadout, action.type === 'skill' ? (action.slot === 2 ? 2 : 1) : 'flare').target;
     const poised = motion === 'cast' ? 'translateY(-4px)' : motion === 'bow' ? 'translateX(5px)' :
       motion === 'hammer' ? 'translate(-5px, -4px) rotate(3deg)' : motion === 'guard' ? 'translateX(-3px)' :
         motion === 'twin' ? 'translateX(-8px) rotate(-2deg)' : 'translateX(-12px)';

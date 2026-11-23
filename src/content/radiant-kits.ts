@@ -47,6 +47,20 @@ export type RadiantSkillSlot = 1 | 2;
 export function radiantSkillAcceptsTarget(def: RadiantSkillDef): boolean {
   return def.target === 'one-enemy' || def.effects.some(effect => effect.kind === 'signature' && effect.op === 'move-survey');
 }
+/** Signature caps for batches 2-4 (D-473). D-493 B5b Masters raise a bearer's own counter or Promise cap (`signature-cap`). */
+export const radiantSignatureCaps = {
+  combo: 5, marks: 5, incisions: 3,
+  survey: 3, heat: 3, stillness: 4, season: 2, current: 3, tension: 4, cadence: 3, crosscut: 3,
+  load: 3, severance: 3, interval: 3, promise: 3,
+} as const;
+export type RadiantSignatureCapKey = keyof typeof radiantSignatureCaps;
+/** Passive values for batches 1-4 (D-473). */
+export const radiantPassiveValues = {
+  emberBurn: .3, tideRefund: 8, brunoRedirect: .25, discipleFill: 5, auroraWeakenTurns: 1,
+  markTaken: .1, markTurns: 2, incisionTaken: .1,
+  surveyFill: 5, foundationShare: .2, stillnessReduction: .2, harvestBonus: .35, harvestIgnore: .2,
+  unreturnedCap: .45, signalTurns: 2,
+} as const;
 /** N2 base Luminosity costs. */
 export const radiantSkillCosts: Record<RadiantSkillSlot, number> = { 1: 25, 2: 40 };
 

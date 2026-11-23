@@ -2,6 +2,7 @@ import type { RadiantCategory, RadiantCombatEvent, RadiantCombatState, RadiantSh
 import { characterName } from '../content/character-art';
 import { formatStat } from '../content/combat';
 import { getConduit } from '../content/conduits';
+import { radiantCriticalUpRate } from '../content/conduit-effects';
 import { getMasterConduit } from '../content/master-conduits';
 import { radiantMasters } from '../content/combat-kits';
 import type { FrozenRadiantRun } from '../online/battle-run';
@@ -71,9 +72,11 @@ export function radiantSourceLabel(source: RadiantSource, run: FrozenRadiantRun)
     passive: 'Passive', role: 'Role trait' };
   return `${name} · ${kinds[source.kind]}`;
 }
-const descriptions: Record<RadiantStatusRow['kind'], { label: string; clock: string; icon?: StatusArtId; percent: boolean }> = {
+const descriptions: Record<RadiantStatusRow['kind'], { label: string; clock: string; icon?: StatusArtId; percent: boolean;
+  /** Shown amount per stored point and its unit (Critical Up: 2 points of Critical Rate per point, D-493 crit step). */
+  scale?: number; unit?: string }> = {
   burn: { label: 'Burn', clock: 'turn', icon: 'burn', percent: false },
-  expose: { label: 'Expose', clock: 'turn', percent: true },
+  expose: { label: 'Critical Up', clock: 'turn', percent: true, scale: radiantCriticalUpRate, unit: ' Critical Rate' },
   weaken: { label: 'Weaken', clock: 'turn', percent: true },
   'attack-up': { label: 'Attack Up', clock: 'turn', percent: true },
   'defense-up': { label: 'Defense Up', clock: 'turn', percent: true },
@@ -88,7 +91,9 @@ export function radiantStatusLabel(kind: RadiantStatusRow['kind'] | 'weaken-remo
 export function radiantStatusRows(rows: readonly RadiantStatusRow[], run: FrozenRadiantRun): string {
   return rows.map(row => {
     const definition = descriptions[row.kind];
-    const amount = definition.percent ? `${Number((row.magnitude * 100).toPrecision(12))}%` : formatStat(row.magnitude);
+    const amount = definition.percent
+      ? `${definition.scale ? '+' : ''}${Number((row.magnitude * (definition.scale ?? 1) * 100).toPrecision(12))}%${definition.unit ?? ''}`
+      : formatStat(row.magnitude);
     const clock = row.remaining === null ? definition.clock :
       `${row.remaining} ${definition.clock}${row.remaining === 1 ? '' : 's'} remaining`;
     return `<li data-radiant-effect="${row.kind}">${definition.icon ? statusIcon(definition.icon) : ''}

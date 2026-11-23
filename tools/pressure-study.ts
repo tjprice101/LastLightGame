@@ -7,7 +7,7 @@ import { adaptRadiantLoadouts } from '../src/game/combat-loadout';
 import { radiantPressureAnchors, adaptRadiantPressureEncounter, assertRadiantPressureAccess,
   type RadiantPressureAnchor } from '../src/game/enemy-pressure-encounters';
 import { chooseRadiantPressureAction, runRadiantPressure, type RadiantPressurePolicy } from '../src/game/enemy-pressure';
-import { applyRadiantCombatAction, createRadiantCombat, type RadiantCombatEvent } from '../src/game/combat-engine';
+import { applyRadiantCombatAction, createRadiantCombat, radiantPendingActors, type RadiantCombatEvent } from '../src/game/combat-engine';
 
 export const pressureStudySeeds = [1, 1729, 104729] as const;
 export const pressureStudyNow = Date.parse('2026-11-08T19:13:07.317Z');
@@ -76,8 +76,8 @@ function paperControls(emit: (row: unknown) => void): void {
     };
     for (let round = 0; round < rounds; round++) {
       while (state.phase === 'player') {
-        const actor = state.bearers.find(member => member.hp > 0 && !state.acted.includes(member.loadout.id))!;
-        const result = applyRadiantCombatAction(state, chooseRadiantPressureAction(state, actor.loadout.id, 'balanced'));
+        const actorId = radiantPendingActors(state)[0];
+        const result = applyRadiantCombatAction(state, chooseRadiantPressureAction(state, actorId, 'balanced'));
         state = result.state; collect(result.events);
       }
       const idle = applyRadiantCombatAction(state, { type: 'enemy-heal', enemyId: 'paper', amount: 0 });
@@ -101,7 +101,7 @@ export function executeRadiantPressureStudy(emit: (row: unknown) => void, tunedO
       'Budgets use fixed minimum ordinary Prismatica; Calamity budget zero, no chest/recruitment simulation.',
       'Three seeds are a small reproducible sample, not population clear rates or confidence intervals.',
       'Inactive/locked studies retained with explicit access errors, never certified playable.',
-      'Single-target authored enemy schedule, deterministic noncritical damage; legacy critical/taunt omitted in new model.',
+      'Single-target authored enemy schedule; critical hits roll on their own stream; an Atlas Bastion taunt overrides enemy targeting.',
       'All authored species/forms are exercised; anchors do not cover every floor or every acquired roster/gear permutation.',
       'Species-completion anchors use one seed; early/mid/final/boss and controls use three.',
       'Calamitic trio uses bounded greedy personal-Master screening against Machines EX+3, seed1; not a global optimum.'] } });

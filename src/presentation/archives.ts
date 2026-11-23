@@ -181,7 +181,7 @@ function bindConduitFilters(host: HTMLElement): void {
     const index: Record<ConduitSearchScope, string> = {
       name: text(card.querySelectorAll(':scope > h3')),
       effect,
-      ability: (effect.match(/\[[^\]]+\]|\b(?:normal attack|convergent light|leader skill|defense|shield|burn|weaken|exposure)\b/g) ?? []).join(' '),
+      ability: (effect.match(/\[[^\]]+\]|\b(?:normal attack|convergent light|leader skill|defense|shield|burn|weaken|critical up|critical rate|critical damage)\b/g) ?? []).join(' '),
       lore: text(card.querySelectorAll('.conduit-lore')),
       all: '',
     };

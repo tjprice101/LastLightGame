@@ -276,7 +276,8 @@ describe('device-run three-member Radiant battle surface', () => {
     expect(host.querySelectorAll('.radiant-field [data-radiant-art]')).toHaveLength(5);
     expect(host.querySelectorAll('.radiant-allies .compact-portrait')).toHaveLength(0);
     expect(host.querySelector('.radiant-squad .radiant-ally-art')).toBeNull();
-    expect(host.textContent).not.toMatch(/Critical|Shatter Damage|Elemental Damage/);
+    // D-493 crit step: critical hits are back; retired legacy stats stay out.
+    expect(host.textContent).not.toMatch(/Critical Damage Multiplier|Shatter Damage|Elemental Damage/);
     expect(host.querySelector('[data-radiant-shared]')).toBeNull();
     expect(host.querySelectorAll('.radiant-member-head.radiant-visually-hidden, .radiant-member-foot.radiant-visually-hidden')).toHaveLength(6);
     expect(host.getAttribute('aria-busy')).toBe('false');
@@ -586,6 +587,31 @@ describe('device-run three-member Radiant battle surface', () => {
     await Promise.all([first, second]);
     expect(impacts.some(action => action === null)).toBe(true);
     expect(impacts.findIndex(action => action === null)).toBeGreaterThan(impacts.findIndex(action => action?.bearerId === 'ember'));
+  });
+  it('shows a critical hit as a larger tagged number (D-493 crit step)', async () => {
+    const original = Object.getOwnPropertyDescriptor(Element.prototype, 'animate');
+    const numbers: { text: string; classes: string }[] = [];
+    Object.defineProperty(Element.prototype, 'animate', { configurable: true, value: function (this: Element): Animation {
+      if (this instanceof HTMLElement && this.classList.contains('radiant-number')) numbers.push({ text: this.textContent ?? '', classes: this.className });
+      const animation: Partial<Animation> = { playbackRate: 1, playState: 'finished',
+        finished: Promise.resolve().then(() => animation as Animation), cancel() {}, pause() {}, play() {} };
+      return animation as Animation;
+    } });
+    try {
+      // Critical Up at its cap (+160 points) makes every hit on these enemies a critical hit.
+      const { view } = fixture(3, 6, undefined, 25, undefined, undefined, false, state => {
+        for (const enemy of state.enemies) enemy.debuffs = [{ category: 'expose',
+          source: { kind: 'skill', bearerId: state.bearers[0].loadout.id }, magnitude: .8, remaining: 3 }];
+      });
+      await view.finishEntrance();
+      await view.act('normal');
+      const crit = numbers.find(entry => entry.classes.includes('is-crit'));
+      expect(crit?.text).toMatch(/^(Critical|Elemental Crit)/);
+      expect(crit?.classes).toContain('is-crit');
+    } finally {
+      if (original) Object.defineProperty(Element.prototype, 'animate', original);
+      else Reflect.deleteProperty(Element.prototype, 'animate');
+    }
   });
   it('streams exact damage numbers, pours Prismatica into the Haul and cycles battle speed', async () => {
     const original = Object.getOwnPropertyDescriptor(Element.prototype, 'animate');

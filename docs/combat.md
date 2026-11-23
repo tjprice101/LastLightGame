@@ -507,9 +507,9 @@ event, so it triggers no Conduits. The mote is deterministic and uses no RNG.
   Flare.
 
 **Versions.**
-- Combat-state and frozen-run schemas are **8**. Versions 3-7 retire read-only
-  with the standard notice.
-- The media type is `radiant-continuation-v4`.
+- Combat-state and frozen-run schemas are **9** (D-493 release). Versions 3-8
+  retire read-only with the standard notice.
+- The media type is `radiant-continuation-v5`.
 - Saved Normal drops accept any positive whole amount, because Gauge Gain
   varies it.
 
@@ -857,9 +857,9 @@ bonuses; personal Masters retain their existing Prism-base profiles.
 ## Live Radiant encounters and continuity (2026-11-10)
 
 Radiant combat is used by normal online and local encounters throughout the
-game. Its actual enemy statistics use the live calibration (`radiant-trio-v1`
-since D-481; `authored-control` before it, and encounters already underway on
-it may finish); activity strength panels display those calibrated Health,
+game. Its actual enemy statistics use the live calibration (`radiant-trio-v2`
+since the D-493 retune; `radiant-trio-v1` from D-481 and `authored-control`
+before that, and encounters already underway on either may finish); activity strength panels display those calibrated Health,
 Attack and Defense values. Earlier legacy-combat and preview-only sections below are historical
 where they conflict with the current
 [Radiant specification](Future%20Plans/combat-system-specification.md).
@@ -2315,3 +2315,1072 @@ damage, pure bookkeeping), `src/presentation/battle-conduit-contribution.test.ts
 Motion review: `node tools/capture_frames.mjs --battle attack --member 0
 --encounter nerithe-10 --stream` (Infernis's Normal Attack shows "Leader Skill
 +N damage"), desktop and `--width 390 --height 844`.
+
+## Conduit restoration B1: Common + Rare (D-493, Battle Flurry Phase 4c)
+
+The 25 Common and Rare Conduits now carry their pre-Radiant effects in today's
+terms, per the approved
+[restoration proposal](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+(B1 table; number sheet C1-C18). Legendary, Omnic, Calamitic and Master rows
+(B2-B5) keep their Radiant-era designs until their batch ships. Stable IDs,
+ranks, upgrade costs, ownership and loadouts are unchanged.
+
+- **New primitive kinds** (`src/content/conduit-effects.ts`, tooltips in
+  `conduit-effect-text.ts`):
+  - `skill-power` (Skill 1, Skill 2, Convergent Light), `skill1-power`,
+    `debuff-power` (skills whose kit definition applies Weaken, Expose or Burn),
+    `restore-power` (skills whose kit definition heals or grants Shields) and
+    `health-skill-power` (per full 450 of the bearer's maximum Health; the step
+    is fixed). Signature clauses do not count as traits (C13).
+  - `skill-efficiency`: adds to the slot Imbue; the 50% cap and the 1/70 floors
+    (`radiantCostRules`) are unchanged. It now also discounts Convergent Light.
+  - `skill-duration` and `debuff-duration`: whole turns on timed effects from
+    kit effects (Burn, Weaken, Expose, ally categories), total at most 6. They
+    never extend Shields, instant effects or signature resources (Cover, Thorn
+    Traps, Marks, Burn boost): signature clauses receive Skill Duration 0 (C5).
+  - `gauge-gain`: Gauge Gain = 1 + Conduit/Master Gauge Gain + Luminosity Gain
+    Up, rounded once per gain (C6).
+  - `capacity`: Luminosity capacity = floor(cost layers x (1 + bonus)); the
+    bonus is summed and capped at +100% (C8). Convergent Light cost and
+    readiness are unchanged; capacity never fills Luminosity.
+  - `direct`: Normal Attacks, skills and Convergent Light deal more direct
+    damage; it joins the existing additive layer (C9, C11).
+  - `skill-pierce` (skills and Convergent Light only) and `enemy-defense`
+    (all enemies, for every squad member, for the encounter; copies do not
+    stack, the strongest squad member's amount applies). Both share the 80%
+    cap with `pierce` and kit Defense ignore (C14).
+  - `drain` (heal from direct damage to enemy Health and Shields after each
+    damaging action), `ally-heal-self` (once per skill or Convergent Light
+    that restores another ally's Health) and `twin-charge` (each landed Normal
+    Attack fills the bearer and the other living ally with the lowest
+    Luminosity percentage; ties go to squad order).
+- **Fixed primitives** (`fixedEffect`, `fixed: true`) keep their amount at every
+  rank: Wardglass Transformer's Defense −7%, Opal Indexer's and Resonance
+  Crucible's +1 turn (C12). Negative stat amounts read "decreases by".
+- **Gauge state.** `RadiantGaugeMember` gains optional `capacity` and
+  `flareEfficiency`, stored only when positive and validated against the
+  frozen loadout; older states without them stay valid.
+- **Removed:** the D-480 `shield-break` kind (only Fieldbrace Coupler carried
+  it).
+- **Attribution (D-492).** Skill Power, direct damage, skill pierce and enemy
+  Defense recompute with the source removed, so callouts and the summary
+  credit them; another member's Breach Pendulum is credited on the hits it
+  helped. Not itemized: Gauge Gain and capacity.
+- **UI.** The character Skill stats panel shows per-slot Skill Power and
+  Efficiency, per-slot Skill Duration when slots differ, and Luminosity
+  capacity; Convergent Light costs include Skill Efficiency.
+
+Validation: `src/game/conduit-restoration-b1.test.ts` (every B1 row at +0,
+rank rules, tooltips, Skill stats and traits, Skill Duration on a real Burn,
+cost discounts, capacity and its cap, Gauge Gain rounding, Twinpulse,
+direct damage, skill-only pierce, Breach non-stacking and attribution,
+Wardglass penalty, Lifeline and Duplex sustain); `conduit-effects.test.ts`
+and `combat-consolidation.test.ts` (O6: up to 6 primitives, unique kind and
+amount lists).
+
+## Conduit restoration B2: Legendary (D-493, Battle Flurry Phase 4c)
+
+The 15 Legendary Conduits carry their approved B2 restore text. Unreleased
+with B1 (single release after B5 and one enemy retune).
+
+- **Skill stats:** `skill2-power`, `skill2-efficiency` (Execution Orrery),
+  `flare-power` (Worldbreaker Drive), `aoe-power` (skills whose kit definition
+  hits all enemies with damage; Siege Cantilever), `support-power` (kit heals,
+  Shields or ally categories; Judgment Lens), `skill-direct` (damage from Skill
+  1, Skill 2 and Convergent Light only).
+- **Starvein Conductor:** `prism-efficiency` and `prism-gain` apply when every
+  squad member has a different element (defeated members count; a solo squad
+  qualifies). Menus outside a squad show stats without them.
+- **Conditional Defense Up (C2):** Citadel Spine's `ally-guard` (other living
+  allies below 75% of their current maximum Health while a wearer lives;
+  copies do not stack) and Horizon Heartcase's `reserve-defense` (Luminosity
+  below the Convergent Light cost) join the Defense Up category: the strongest
+  applies, cap 100%.
+- **Horizon Heartcase maximum Health:** `reserve-health` raises maximum Health
+  while Luminosity is below the Convergent Light cost (`radiantMaximumHealth`).
+  Bearers start at the raised maximum. At or above the cost, healing cannot
+  raise Health above the normal maximum; Health already above it stays until
+  lost to damage (no event-less Health loss, so the impact replay stays exact).
+  Validation and the battle readout use the raised bound
+  (`radiantHealthBound`). Heal caps, the most-wounded choice, `wounded`,
+  `shelter` and `brace` thresholds read the current maximum; percentage bases
+  for heals and Shields still use the frozen maximum Health.
+- **Granite Hourglass:** wearers record Health lost to direct enemy damage in
+  the enemy phase (`phaseLoss`, wearers only); the round start grants a Shield
+  of 30% of it, then the ledger clears.
+- **Pale Bulwark Diadem (C15):** enemy hits remove less of the wearer's Shield
+  per point of damage (`keep = 1 - min(80%, amount)`); damage left after a
+  Shield breaks hits Health. `absorbed` stays the Shield removed.
+- **Conduit RNG stream (O11).** `state.conduitSeed` (xorshift32, seeded from
+  the charge seed) exists only when a random Conduit is equipped; the charge
+  stream is untouched.
+  - **Nullsong Transmission:** one roll per Skill 1, Skill 2 or Convergent
+    Light: 50% for +75% Skill Power (scales with rank), otherwise −75%.
+  - **Stasis Reliquary:** when an enemy hit breaks the wearer's last Shield,
+    a roll at 10% + 2% per rank blocks the rest of that hit. Then `stasis` is
+    `current` (no further block that phase), `next` for the following enemy
+    phase (+25% damage taken from enemy attacks, no block), then clears.
+- **Meridian Inverter** (`restore-charge`) fills each ally a skill or
+  Convergent Light restored, once per cast; **Verdict Caliper**
+  (`exposed-heal`) heals 25% of maximum Health once per action when a
+  damaging action hits an enemy with Exposure (Exposure applied by the same
+  action counts).
+- **Removed:** the D-480 `skill-leech` kind (only Starvein Conductor and
+  Duplex Heart carried it).
+- **Attribution:** another member's Citadel Spine is credited on the hits it
+  reduced. Not itemized: Nullsong's swing, Stasis blocks, Pale Bulwark's
+  saved Shield.
+
+Validation: `src/game/conduit-restoration-b2.test.ts` (rows, Stasis rank step,
+tooltips, slot/area/support traits, Starvein condition, Citadel aura and
+non-stacking, Heartcase maximum Health and Defense, Granite ledger, Pale
+Bulwark, Stasis block and vulnerability, Nullsong stream isolation and both
+outcomes, Meridian, Verdict, direct damage).
+
+## Conduit restoration B3a: Omnic without new systems (D-493, Battle Flurry Phase 4c)
+
+29 of the 45 Omnic Conduits carry their approved B3 restore text. Unreleased
+with B1 and B2. The other 16 Omnics keep their Radiant-era designs until B3b
+(next-action tokens) and B3c (rescue, revive, Accord, taunt).
+
+- **Squad auras (per living wearer).** `squad-hp` (Ouroboros Core, Seraph
+  Mirror, Fractured Mercy Governor), `squad-attack` (Nightglass Archive),
+  `squad-gain` and `squad-defense` (Firstlight Concordance) sum over living
+  wearers and multiply separately from the gear pool, like Leader effects.
+  Frozen stats are unchanged. Maximum Health reads them in
+  `radiantMaximumHealth`; when a wearer falls, Health above the lowered
+  maximum stays until lost to damage (Heartcase rule). `radiantHealthBound`
+  now takes the state and includes every possible raise.
+- **Faultkeeper Loom** (`ally-defense-share`): other living allies add 25% of
+  the wearer's current Defense, read without flat shares (no recursion).
+- **Combat-only Skill Power** (menus show the loadout value without it):
+  Clearwater (`oceanic-power` × other Oceanic members, defeated included),
+  Pyre Census (`census-power` × distinct elements among living members),
+  Ruinselect (`ruin-power` and `ruin-defense` × currently defeated members),
+  Leviathan Ward Loom (`shielded-restore-power` on heal or Shield slots while
+  the holder has a Shield). Ember Iris's `burn-skill-power` is a slot trait
+  and shows in menus.
+- **Per-target hooks in a cast.** Eclipse Mantle: Weakened targets (Weaken read
+  before the hit) lose 35% Defense inside the C14 80% cap and give +20% Skill
+  Power when another ally applied the Weaken. Worldroot Graft: kit heals on
+  allies below 40% of current maximum Health gain +50% Skill Power; an ally
+  lifted to 40% or more gains Defense Up +30% (1 turn, gear source).
+  Ember Iris and Undertide Chronometer add 1 turn to the wearer's skill Burn
+  or Weaken (fixed, cap 6).
+- **Ally direct damage** (superseded by the crit step below: these three now
+  grant Critical Rate or Critical Damage) (C11 additive layer): Ember Iris +10% for other allies
+  on enemies carrying the wearer's Burn; Nightglass +12.5% for other allies'
+  Normal Attacks on a marked enemy; Aegis Covenant Crown +10% for holders of the
+  wearer's skill or Convergent Light Shield, plus 30% less damage from enemy
+  hits above 20% of maximum Health (joins `brace`, 80% combined). All need the
+  wearer alive.
+- **Nightglass marks** (`RadiantEnemy.marks`, one per wearer): damaging skills
+  and Convergent Light mark surviving enemies hit for 2 turns; clocks tick at
+  the end of the enemy phase. Shown as an enemy tag.
+- **Cinder Testament** (`amp` on the Burn entry, Burn only): +20% per other
+  ally's skill or Convergent Light that damages an enemy carrying the wearer's
+  Burn, cap +60% (fixed). Kept when the same caster refreshes; cleared when a
+  stronger Burn from another caster replaces it. Tick =
+  magnitude × (1 + Burn boost + amp). Shown as an enemy tag.
+- **Eternal Cinder** (`burn-transfer`): when an enemy carrying Burn is defeated,
+  tick × remaining turns strikes the living enemy with the highest Health
+  percentage (generated). A Burn tick that defeats its holder transfers the
+  turns left after that tick.
+- **Worldtree Heart** (`overheal-shield`): 60% of overhealing from the wearer's
+  skills becomes a Shield, cap 20% of that ally's maximum Health.
+  Implementation choice: a later Shield raises the existing one to the new
+  amount instead of replacing it (the impact replay needs every Shield change
+  as an event, and an event can only add).
+- **Triggers:** Kirin Cradle (heal for 100% current Defense, cap 50% maximum
+  Health; all full: 8 Luminosity), Leviathan Pump (any Shield absorbing an
+  enemy attack fills its holder once per attack), Seraph Mirror, Sky Sovereign
+  Escapement and Tempest Shelter Sovereign (once per turn via the gear trigger
+  ledger), Stillhour Carillon (`state.flared` holds wearers who used
+  Convergent Light this turn; the next turn start heals and fills, then it
+  clears), Fractured Mercy (once per Weaken-applying cast), Shared Tide
+  (adapted in B3b, see that section), Sap Cathedral (15% of enemy
+  Health removed, cap 10% per cast), Phoenix Lifeforge (squad Attack Up +100%
+  joins the category while any enemy burns; each ability Burn tick that
+  damages Health heals the squad 8%), Mercy Reflector (`reflected` ledger per
+  enemy phase, cap 150% of current Attack), Undertide (other allies' damaging
+  Skill 1/2 aimed at an enemy carrying the wearer's Weaken: +15% Skill
+  Efficiency, applied in `skillAction`), Solace Monolith (acting first gives
+  other living allies Attack Up +20% for the turn).
+- **Undertide on Convergent Light:** added in B3b (see that section). The
+  battle fan shows the cost before a target is chosen, so a skill affordable
+  only with Undertide's discount appears unaffordable there.
+- **Bases:** "% of maximum Health" heal and Shield bases use the frozen maximum
+  Health, as kit heals do; caps and thresholds read the current maximum.
+- **Attribution:** other members' aura, Burn, mark, Shield-holder, Lifeforge
+  and Undertide Conduits join `gearSources` for D-492 callouts.
+- **Fixtures updated:** no Conduit carries Recovery any more (the always-on
+  stat test covers Health, Attack and Defense); the triage healing test drops
+  Worldroot Graft; Cinder Testament's search keyword is now "burn".
+
+Validation: `src/game/conduit-restoration-b3a.test.ts` (rows, fixed rules,
+tooltips, auras and fallen wearers, Faultkeeper, combat-only Skill Power,
+Ward Loom, Lifeforge, Eclipse, Ember Iris, Aegis Crown, Undertide, Graft, every
+trigger, marks and Burn bonus tags, validation of the new fields, replay).
+
+## Critical hits and Critical Up (D-493 crit step, Battle Flurry Phase 4c)
+
+Owner decision 2026-11-20 (reverses D-473 O4 and replaces the C9/C10
+deterministic conversion). Unreleased with B1-B3a.
+
+- **Base values** (`radiantCriticalStats`, `src/content/combat-kits.ts`): the
+  pre-Radiant Critical Rate and Critical Damage per bearer (rate 8-25%,
+  damage 1.5x-1.7x). Fixed: level, form and rank do not change them
+  (implementation choice; the old potency scaling is not restored). Every enemy:
+  10%, 1.5x (`radiantEnemyCritical`).
+- **Which hits roll:** Normal Attacks, Skill 1/2 and Convergent Light (one roll
+  per target per cast, before the hit split, so every hit on that target shares
+  the outcome), kit signature strikes (Cyclone, Shuriken recall, Thorn Trap,
+  Flame Arc detonation, Foundation and Wounds spends) and kit Burn ticks (with
+  the caster's stats; Defense still ignored). Enemy attacks roll once per target
+  per action. Conduit-generated packets (reflect, splash, Burn transfer) never
+  crit.
+- **Formula:** chance = base + `crit-rate` Conduits (+ `flare-crit-rate` on
+  Convergent Light) + 2 × the target's Critical Up + ally Critical Rate (Ember
+  Coronation Iris on the wearer's Burn, Aegis Covenant Crown for its Shield
+  holders). One roll against min(1, chance); above 100%, a second roll against
+  the excess makes an Elemental Crit. Critical multiplier = base Critical
+  Damage × (1 + `crit-damage` + `skill-crit-damage` on skills and Convergent
+  Light + `flare-crit-damage` on Convergent Light + Nightglass mark bonus on
+  other allies' Normal Attacks) × 1.5 for an Elemental Crit. It joins the
+  output multiplier before the single rounding (floor 1, mitigation, pierce,
+  guard and Shields unchanged). Enemy crits: 1.5x, applied before guard,
+  reduction and protection; Aegis Crown's 30% reduction applies to enemy
+  critical hits only (the 20% heavy-hit stand-in is removed).
+- **RNG:** a separate `critSeed` stream (Xorshift32, seeded from the charge
+  seed with its own constant). Charge, Conduit, target, encounter and reward
+  streams never move (tests compare against a crit-free run). Rolls happen
+  outside the D-492 `attribute()` recomputes; the multiplier is pure, so
+  Critical Damage Conduits are credited in `boosts`.
+- **Critical Up** (internal category `expose`, unchanged for saves): hits on
+  the enemy gain 2 points of Critical Rate per stored point (cap 0.8 stored =
+  +160 points); it no longer raises damage taken. Kit values: Golden Thorn
+  Volley +30, Rose Beyond the Sun +60, Denial of Fate +50 (all enemies),
+  Reaper's Claim +24 (before Skill Power and tier scaling). Leader and Master
+  `normal-expose` amounts show doubled; `exposed` conditions read Critical Up.
+- **Restored crit rows** (pre-Radiant values): Precision Escapement (+10%
+  Critical Damage), Fieldbrace Coupler (+25 points), Falcon Sight (+25),
+  Wardglass Transformer (+35%), Hammerbalance Link (+15%), Coilfeed Ratchet
+  (+8), Astral Prism (+30, +25%), Judgment Lens (damaging skills +50%), Horizon
+  Heartcase (Convergent Light +35%, +10), Verdict Caliper (heal after a
+  critical hit), Leviathan Pump (+25), Seraph Mirror (first critical action
+  each turn), Nightglass Archive (+50% Critical Damage on marks), Aegis Covenant
+  Crown (+40%; holders +20 points and 30% less from enemy crits), Ember
+  Coronation Iris (others +20 points on its Burn), Sky Sovereign Escapement
+  (+40; first critical Skill 1/2), Solace Witness Monolith (+35%), Tempest
+  Shelter Sovereign (+30; first critical skill). Worldbreaker Drive's verbatim
+  direct-damage bonus is unchanged.
+- **Saves:** encounters saved before this step have no `critSeed`; they
+  rebuild, replay and settle without critical hits and with the old Exposure
+  rule (`createRadiantCombat(..., criticalHits=false)`,
+  `validateFrozenRadiantRun` passes `run.initial.critSeed !== undefined`). A run
+  whose state and initial disagree on the stream is rejected. Damage events may
+  carry `critical: 'critical' | 'elemental'` (allowlisted on damage only).
+- **Presentation:** a larger, gold-rimmed number with a "Critical" or
+  "Elemental Crit" tag (joined with "Weakness" when both apply) and a GPU pulse
+  on the target; static tag under Reduce motion. No extra hit-stop (R2 keeps
+  hit-stop by tier). Status rows show "Critical Up · +N% Critical Rate".
+  Character stats show Critical Rate and Critical Damage (always-on Conduit
+  parts, with "Before Conduits"). The glossary defines Critical Hit and
+  Critical Up once. `radiantCriticalRate(state, bearer, enemy, slot)` reads a
+  hit's chance.
+
+Validation: `src/game/critical-hits.test.ts` (base values, stream isolation,
+observed rate, single rounding, Elemental Crit, per-target roll, Burn ticks,
+generated packets, enemy crits, Critical Up, crit Conduits and attribution,
+pre-crit save load/settle/reload, tampered flag and stripped stream); updated
+B1/B2/B3a restoration tests, kit text (drafts updated to Critical Up), hub and
+information layout stat rows.
+
+## Conduit restoration B3b: next-action bonuses (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5 with one enemy retune). Plan rows:
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md).
+
+Owner answers (2026-11-20): Shared Tide is adapted for Tide; Tempest Return's
+bonus is kept until used.
+
+- **Next-action bonuses (C17):** `RadiantBearer.tokens?` holds
+  `{ kind, giverId, conduitId, value, until, targetId?, relayId? }`; the
+  primitive kind is the bonus kind (`radiantTokenRules`: stat, scope, life).
+  One per Conduit effect per holder: a new one replaces the old (no
+  stacking). The holder's next action whose scope matches spends it: any
+  damaging action, a skill or Convergent Light, Skill 1/2 only, a damaging
+  skill or Convergent Light, Convergent Light only, or a skill or Convergent
+  Light that heals or Shields. Unspent bonuses end with the turn after the one
+  that granted them (`until` = that round; bonuses granted as a turn begins
+  last that turn). Lives: `timed` (Paradox Spindle: not spent, lasts through
+  the next turn), `action` (Triage, Sootwake: also lost after the holder's
+  next action), `spent` (Tempest Return: `until: null`). Shared bonuses
+  (Stormstep, Covercharge) go to every other living ally; the first to spend
+  one removes every copy. Target-bound bonuses (Secondbeat, Sootwake) apply
+  only to that enemy's hit and end when it is defeated.
+- **How bonuses apply:** Skill Power joins the cast's Skill Power (a
+  target-bound one only that target's damage); Attack multiplies the
+  attacker's Attack for direct damage; direct damage joins the
+  `(1 + flare + direct + ...)` layer; Critical Rate and Critical Damage join
+  the hit's crit stats (not signature strikes or Burn ticks); Skill Efficiency
+  adds to the cast's discount (50% cap and floors unchanged); restore Skill
+  Power raises the cast's heals and Shields. Spent bonuses sit in a
+  module-level `casting` context while the action resolves so D-492 credit
+  recomputes read them; the giver's Conduit is credited.
+- **Rows** (+0; every percentage scales with rank; counts and lifetimes are
+  fixed):
+  - Dawn Witness Array: a damaging action with no critical hit gives others
+    +15 Critical Rate and itself +30% Critical Damage and +200% direct damage
+    on the next damaging action; inert on encounters without crit rolls.
+  - Paradox Spindle: Defense +7%, Skill Efficiency +20%; after its Convergent
+    Light, others +40% Skill Power and +20% Skill Efficiency through the next
+    turn.
+  - Skythread Rudder: capacity +60%, Gauge Gain +35%; each Normal Attack gives
+    the other ally with the lowest Luminosity percentage +25% Skill Efficiency
+    on Skill 1/2.
+  - Stormstep Dynamo: Attack +14%, Skill Efficiency +25%; alternating Skill 1/2
+    +30% Skill Power (`stormstep?` keeps the last slot); then the next other
+    ally's skill +15% Skill Efficiency.
+  - Thunderbird Coil: Attack +19%, Critical Damage +45%; a critical skill or
+    Convergent Light strikes the other enemy with the highest Health
+    percentage for 40% of the first target's Health damage (Conduit-generated);
+    with none left, others +20 Critical Rate.
+  - Verdant Covenant: Health +19%, Gauge Gain +25%; allies its skills heal gain
+    +30% Skill Power on their next damaging skill.
+  - Phoenix Temper Dominion: Attack +20%, Critical Rate +10; healed by another
+    ally's skill: +40% Attack on its next damaging action, then that healer
+    +20% Skill Efficiency.
+  - Rosefault Precision Sovereign: Health +11%, Convergent Light +70%; while
+    Shielded +50% Critical Damage; the first critical action each turn gives
+    the provider of its oldest Shield +20% Skill Power on their next skill.
+  - Secondbeat Rupture Throne: Health +7%, Critical Rate +15; after another ally
+    damages an enemy, its next damaging skill on that enemy gains +35% Skill
+    Power and grants that ally 8 Luminosity.
+  - Sootwake Phoenix Mirror: Skill Power +75%, Critical Damage +25%; its Burn
+    tick on an enemy gives others +30% Skill Power on that enemy until their
+    next action.
+  - Tempest Return Chronarch: Critical Rate +35, capacity +75%; every third
+    critical action (`critCount?`) gives every living ally +25% Skill
+    Efficiency on their next Convergent Light, kept until used.
+  - Worldgrove Covercharge Heart: Skill Power +60%, capacity +50%; after its
+    skill, the next other ally's skill gains +20% Skill Power if it damaged and
+    +15% Skill Efficiency if it healed or Shielded.
+  - Worldroot Triage Sanctuary: Health +14%, Defense +12%; at turn start the
+    ally with the lowest Health percentage gains +25% Skill Efficiency and +35%
+    Skill Power on heals and Shields until its next action ends.
+- **Shared Tide Lifesea Engine (owner adaptation):** when the wearer's skill or
+  Convergent Light Shields one or more allies, the most-wounded recipient gains
+  an extra Conduit-generated Shield worth 50% of the Shield it received. It now
+  fires for Tide's Tidal Shelter and Ocean Memory.
+- **Undertide Chronometer on Convergent Light:** its +15% Skill Efficiency
+  applies to another ally's damaging Convergent Light aimed at an enemy
+  carrying the wearer's Weaken. The flare event now carries `cost`
+  (`spendReadyFlare(gauge, id, extra)` adds the per-cast discount on top of the
+  stored `flareEfficiency`, which stays fixed so saves validate). Impact replay
+  spends the carried cost; journals without it spend the stored cost.
+- **Readiness and the fan:** costs and readiness include held bonuses
+  (`radiantActionEfficiency`, `radiantFlareReady`), not target discounts
+  (Undertide lowers the amount spent once a target is chosen). The pressure
+  policy uses the same readiness and reads spent Luminosity from events.
+- **Presentation:** each held bonus shows as a gold-framed tag on the holder's
+  card ("Conduit · Next skill +30% Skill Power"); a target-bound one also tags
+  its enemy. A newly granted tag plays one luster sweep (static under Reduce
+  motion). The glossary defines "Next-action bonus" once.
+- **Saves:** new fields are optional and absent on older saves; flare `cost`
+  is optional in the saved-event allowlist (a safe integer of at least 1).
+  Training continuation clears bonuses, Stormstep's slot and Tempest's count.
+  Validation rejects bonuses from Conduits the giver does not wear,
+  out-of-range clocks or values, duplicates, and leftover Stormstep or Tempest
+  state.
+- **Implementation choices (owner may reverse):** readiness ignores target
+  discounts; Dawn Witness is inert without crit rolls; Thunderbird's "critical
+  skill" includes Convergent Light (Tempest Shelter precedent); a newer
+  Secondbeat or Sootwake target replaces the earlier one; Triage's discount
+  applies to a skill that heals or Shields; Rosefault's once-per-turn trigger is
+  used by the first critical action even without a Shield.
+
+Validation: `src/game/conduit-restoration-b3b.test.ts` (rows, tooltips, rank
+scaling, every trigger, refresh and expiry, shared and target-bound bonuses,
+Tempest persistence, Undertide flare cost and impact replay, validation,
+pre-B3b journal and mid-run save load/settle/reload, tampered cost and forged
+bonus); updated Shared Tide, Verdant fixture and crit splash fixture tests.
+
+## Conduit restoration B3c: rescue limit, revive, Accord, taunt (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5 with one enemy retune). Plan rows:
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+(C18, G10, G11, G13). The last three Omnic rows: all 45 Omnics now carry their
+restored effects.
+
+Owner answers (2026-11-20): Atlas Bastion's taunt overrides Calamity boss
+targeting too (the boss text already says "unless taunted"); the
+`master-sprout-3` Worldseed revive waits for B5 and will use the same ledger.
+
+- **Shared rescue limit (C18):** `RadiantCombatState.rescued?` lists the
+  bearers whose one Conduit rescue is used this encounter (omitted when none).
+  Phoenix Reactor and Accord use it; Ozriel's Refusal keeps its own ledger,
+  runs first and never uses this one (O12). Order on a lethal enemy hit:
+  Refusal, then Accord, then (on an actual defeat) Phoenix Reactor.
+- **Phoenix Reactor** (`squad-hp` .11, `revive` .35, `revive-shield` .15):
+  in `packet()`, after the `defeated` event and before `sync()`, a defeated
+  wearer whose rescue is unused returns with 35% of its frozen maximum Health
+  (rounded, at least 1). It loses timed effects, Cover, Seed, held bonuses,
+  Stormstep's slot and Tempest's count. Its Luminosity becomes 0 (a `charge`
+  event), it leaves the rest of that enemy attack (no further hits and no
+  hit Luminosity), and each other living ally gains a Conduit-generated Shield
+  worth 15% of their own maximum Health. A last-bearer revival never ends the
+  encounter. New event `{ type: 'revive', targetId, source, amount }` (gear
+  source); impact replay accepts it only for a defeated bearer and clears that
+  bearer's status rows.
+- **Accord Seraph Sanctuary** (`hp` .17, `skill-efficiency` .2,
+  `accord-efficiency` .25): when the wearer's own heal or Shield (kit skills,
+  Convergent Light, passives; not Conduit-generated) reaches another living
+  ally, that ally gains Accord (`RadiantBearer.accord?` = giver id), one at a
+  time and never after its rescue is used. A fatal direct enemy hit on the
+  holder while the giver lives leaves it at 1 Health, spends Accord, uses the
+  rescue and grants the next-action bonus `accord-efficiency` (+25% Skill
+  Efficiency on the next skill or Convergent Light, through the next turn).
+  Signature ops `accord` (granted) and `accord-save` record it.
+- **Atlas Bastion** (`taunt` fixed, `taunt-charge` 4): each Normal Attack by
+  the wearer sets `RadiantCombatState.taunt?` (latest wins; signature op
+  `taunt`). `radiantPressureEnemyAction` still draws the target roll, then aims
+  at a living taunter, overriding the weighted roll and Calamity `targeting`
+  (device, server replay and the pressure study share it). Each enemy attack
+  aimed at the taunting wearer grants each other living ally 4 Luminosity
+  (Gauge Gain, rounded once, capacity), counted even when Cover redirects or a
+  Shield absorbs it. The taunt ends in `finishRound` or when the taunter is
+  defeated without a revival.
+- **Presentation:** Accord shows as a gold bonus tag on its holder; "Conduit
+  rescue used" tags a rescued ally; the taunter's card shows "Atlas Bastion ·
+  taunting all enemies" and every enemy "Taunted · attacks …". Callouts lead
+  with "Revived · N Health", "… kept at 1 Health" and "Taunt · all enemies";
+  the number "Revived +N" floats on the bearer. A revival plays rising embers
+  and an Accord save a soft light bloom (finite, pointer-transparent; none
+  under Reduce motion, where the number and callout show statically). Glossary
+  entries "Taunt" and "Rescue limit".
+- **Saves:** every new field and event is optional; there is no version bump.
+  Training continuation clears Accord; the rescue ledger and taunt start fresh
+  with each encounter. Validation rejects Accord from a non-wearer, on the
+  giver itself or on an already-rescued ally; an empty, duplicate or unknown
+  rescue ledger, or one in a squad with no rescue Conduit; a taunt by a
+  non-wearer or a defeated bearer; a revive event without a gear source or with
+  an amount below 1.
+- **Implementation choices (owner may reverse):** an Accord save uses a
+  Phoenix Reactor wearer's rescue, so its revival no longer fires (legacy
+  order); Accord goes only to other allies, only from the wearer's own heals
+  and Shields, and needs the giver alive at the save; a revival clears timed
+  effects and held bonuses, uses the frozen maximum Health and ends that
+  attack's remaining hits on the bearer; no Atlas Luminosity from an attack
+  that defeats the taunter.
+
+Validation: `src/game/conduit-restoration-b3c.test.ts` (rows, tooltips, rank
+scaling, revive amount/Luminosity/Shields, last-bearer revival, multi-hit
+exit, Accord grant and save, Refusal independence, giver alive, shared limit
+with Phoenix, taunt overriding the roll and Calamity targeting with the roll
+still drawn, aimed-attack Luminosity, latest taunt and defeated taunter, tags,
+callouts, glossary, validation, impact replay, pre-B3c journal and mid-run
+save load/settle, revive event allowlist, forged rescue ledger and taunt);
+`conduit-effects.test.ts` Shield-order fixture now uses Calamitic Conduits
+(Phoenix Reactor no longer carries `break-heal`).
+
+## Conduit restoration B4: Calamitic and the borrowed skill (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5 with one enemy retune). Plan rows:
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+(B4, G12; C1 ×0.2 on always-on Health and Defense; real crits on Cathedral).
+
+Owner answers (Plan mode, 2026-11-21): while any living ally holds an unused
+borrowed skill it can pay for, the player turn stays open (End Turn gives it
+up; when no holder can pay, the turn ends as before); an ally who used
+Convergent Light earlier in the same turn is still eligible (O10 text).
+
+| Conduit | Primitives at +0 | Effect |
+|---|---|---|
+| Aegis-Engine of Severed Fate | `skill-power` .5, `shield-guard` .367 | Skill Power +50%; enemy hits remove 36.7% less Shield (C15 cap 80%). |
+| Bulwark of the Last Horizon | `hp` .4, `defense` .4, `shield-guard` .167 | Maximum Health +40%, Defense +40%, 16.7% less Shield lost. |
+| Cathedral of the Final Equation | `skill-efficiency` .65, `crit-rate` 2.5, `crit-damage` 1.2 | Skill Efficiency +65% (discount cap 50%); +250 points Critical Rate and +120% Critical Damage (crit-step scope). |
+| Causality Funeral Engine | `skill-efficiency` .5 (+.02 per rank, stepped), `flare` 1.25 | Skill Efficiency 50% + 2% per rank (cap 50%, Convergent Light floor 70); Convergent Light deals 125% more damage. |
+| Choir-Array of Branded Stars | `hp` .093, `defense` .093, `mark-team-power` .333, `mark-team-charge` 6.7 | See below. |
+| Heartforge of the Sunless Dawn | `hp` .667, `skill-power` .167 | Maximum Health +66.7%, Skill Power +16.7%. |
+| Horizon-Cleaving Godpress | `defense` .15, `skill-pierce` .55 | Defense +15%; skills (C13: Skill 1, Skill 2, Convergent Light) ignore 55% of Defense (C14 cap 80%). |
+| Monolith of the Unmoved Star | `defense` .667, `skill-efficiency` .1 | Defense +66.7%, Skill Efficiency +10%. |
+| Reliquary of Unending Mercy | `restore-power` .833, `restore-efficiency` .233 | Heal/Shield skills +83.3% Skill Power and +23.3% Skill Efficiency. |
+| Ruinmark Censer | `defense` .1, `skill-power` .4, `weaken-vulnerability` .1 | See below. |
+| Throne of Borrowed Tomorrows | `hp` .09, `defense` .09, `flare-extra-skill` (fixed) | See below. |
+| Throne of the Lone Apostate | `lone-defense` .333, `lone-hp` .333, `lone-power` .833 | Only squad member: Defense +33.3%, maximum Health +33.3%, Skill Power +83.3% (combat only; menus show the tooltip). |
+| World-Eater's Orrery | `skill-duration` 3 (fixed), `debuff-power` 1.25 | Skill Duration +3 turns (max 6); Weaken, Critical Up and Burn skills +125% Skill Power. |
+| Worldbreaker Cannonade | `aoe-power` 1.667 | Skills that damage all enemies +166.7% Skill Power. |
+
+Rank scaling (C12): every beneficial value ×(1 + 0.1·rank) except Causality's
+stepped Skill Efficiency, World-Eater's Skill Duration and the Throne's extra
+skill. Fixed rule: `radiantCalamiticRules.markTriggers` = 4.
+
+- **Throne of Borrowed Tomorrows (G12):** after the wearer's Convergent
+  Light, each other living ally already in `acted` that has not held or used a
+  borrowed skill this turn joins `RadiantCombatState.borrowed?` (signature op
+  `borrowed`, holder = ally). A holder may use one Skill 1 or Skill 2 at its
+  normal cost; Normal Attack and Convergent Light stay rejected. Using it moves
+  the ally to `borrowedSpent?` (once per ally per turn) and does not add a
+  second `acted` entry, so it is never a "first action" and Bliss reads it as
+  Closing. The enemy phase starts when every living bearer has acted **and**
+  no living holder can pay for Skill 1 or 2 (`radiantPendingActors`, using
+  held discounts but not target discounts, as the fan does). End Turn, a
+  holder's defeat, the start of the enemy phase and a finished encounter clear
+  `borrowed`; `finishRound` clears `borrowedSpent`. Every ordinary trigger
+  (Luminosity, Conduits, next-action bonuses) applies to the borrowed skill.
+- **Choir-Array of Branded Stars:** after an action in which the living wearer
+  placed a mark (Quarry; Survey added or moved, not spent; Fate-seared Mark;
+  Incision added; Thorn Trap; Nightglass mark), each living squad member gains
+  +33.3% Skill Power until the end of the player turn
+  (`RadiantBearer.choirPower?`, summed per trigger, read with squad Skill
+  Power) and 6.7 Luminosity (Gauge Gain, rounded once). One trigger per action;
+  at most 4 per encounter per wearer (`RadiantBearer.choirUsed?`). Signature op
+  `choir` (amount = triggers used). `choirPower` ends when the enemy phase
+  starts or the encounter ends.
+- **Ruinmark Censer:** an enemy whose Weaken came from a living wearer takes
+  ×1.1 damage from every ally source: direct hits through `vulnerability()`,
+  Burn ticks, Burn detonation and Conduit-generated strikes in `packet()` (non-
+  direct packets from allies, rounded once, at least 1). One Weaken has one
+  source, so copies never stack. D-492 credits the share to Ruinmark on direct
+  hits.
+- **Presentation:** a gold "Throne of Borrowed Tomorrows · one extra Skill 1 or
+  Skill 2 this turn" bonus tag and a gold card frame on each holder; a tap on
+  that card opens the fan, where Convergent Light reads "Skill 1 or 2 only";
+  readiness "Borrowed skill ready" (or "· needs Luminosity"); End Turn reads
+  "End Turn · forfeit borrowed skills" while any remain. Grants play three gold
+  threads of light rising through each holder (finite, pointer-transparent;
+  none under Reduce motion, where the tag and callout stay). Callouts:
+  "Borrowed Tomorrows · <ally> may use one more skill" and "Squad +33.3% Skill
+  Power this turn (n/4)"; a Choir bonus tag on each squad member; enemies show
+  "Ruinmark Censer · +10% damage taken". Glossary entries "Borrowed skill" and
+  "Mark".
+- **AI and tools:** `chooseRadiantPressureAction` gives a holder Skill 2, else
+  Skill 1; `runRadiantPressure`, `tools/pressure-study.ts` and
+  `tools/economy-study.ts` iterate `radiantPendingActors`. Study builds do not
+  equip the Throne (as with Atlas Bastion; the retune decides).
+- **Saves:** every new field and op is optional; no version bump. Validation
+  rejects a borrowed ledger without a Throne wearer in the squad, an empty,
+  duplicate or overlapping list, holders outside `acted`, defeated holders or
+  holders outside the player phase; Choir Skill Power outside the player phase
+  or without a Choir-Array wearer; a trigger count above 4 or on a non-wearer.
+- **Implementation choices (owner may reverse):** Ruinmark and Choir need
+  their wearer alive (B3a rule); one Choir trigger per action however many
+  marks land; Choir Skill Power ends with the player turn, not the round;
+  readiness and the turn hold ignore target-bound discounts.
+
+Validation: `src/game/conduit-restoration-b4.test.ts` (rows, tooltips, rank
+rules, Causality cost, Lone Apostate on/off, Reliquary slots, Ruinmark direct
+and Burn and fallen wearer, Choir stacking/Luminosity/turn end/4 cap/Survey
+spend/other allies' marks, Throne grant/turn hold/Skill-only/normal cost/once
+per turn/auto end/End Turn/Convergent Light users/policy, forged ledgers,
+glossary, pre-B4 journal and mid-run save load/settle, a settled replay that
+includes borrowed skills). Fixtures moved off replaced Calamitic designs in
+`combat-skills.test.ts`, `conduit-effects.test.ts` and `critical-hits.test.ts`
+(`break-heal`, `normal-splash` and `leader` remain only on Masters or not at
+all).
+
+## Conduit restoration B5a: Master stat packages (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5 with one enemy retune). Plan rows:
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+(B5; C1 ×0.2 on always-on Health, Defense and Attack; real crits on the Adapt
+(O1) rows).
+
+Owner answer (Plan mode, 2026-11-21): B5 is split into four parts by engine
+seam. **B5a** (this section): the always-on stat package of every live Master
+and the shared plumbing. **B5b**: 37 kit-modifier rows (signature caps,
+coefficients, skill target or value changes, signature-driven Defense
+reduction). **B5c**: 39 player-turn trigger and next-action rows. **B5d**: 19
+enemy-phase and special rows, including the `master-sprout-3` revive on the
+C18 ledger and the `master-myrthen-2` chance rolls on the `conduit` stream.
+The row lists are in the B5a handoff entry.
+
+**What B5a changes:**
+- `masterDesigns` (`src/content/combat-kits.ts`) now holds primitive lists.
+  93 Masters carry their restored stat package; the Radiant-era pairs are
+  gone (O14). Masters have no ranks (C12) and keep their attunement (O13).
+- `master-sprout-2`, `master-disciple-2` and `master-nerithe-3` have no stat
+  package (their restored effect is only a kit clause), so they keep their
+  Radiant-era pair until B5b/B5c replaces it.
+- Kit clauses (named skills, signatures, triggers) are not active yet. A Master
+  whose clause belongs to B5b-d is only its stat package until that part ships.
+- Package rules:
+  - Always-on Health, Defense and Attack use `hp`, `defense`, `attack` at
+    ×0.2 of the old value.
+  - Skill Power, Skill Efficiency, Gauge Gain and capacity (`capacity`, C8)
+    are verbatim.
+  - Crit stats are verbatim (`crit-rate` / `crit-damage`): Stillplume
+    Planetary Ballet +25 points, Sovereign Will Amplifier +45%, Storm Empress
+    Execution Clock +65%, Twin-Rose Singularity Drive +75%, Broken Sky
+    Imperial Metronome +30 points, Seedtrace Pursuit Distributor +25 points,
+    Goldseam Precision Fracturer +25 points, Thousand-Fault Rupture
+    Accelerator +30 points.
+  - "While <bearer> lives, every squad member" packages are squad auras
+    (`squad-hp`, `squad-defense`; each living wearer adds its own; they multiply
+    separately, B3a rule).
+- New aura kinds:
+  - `squad-skill-power` (Deep Foundation Planetpress +35%) adds to every
+    living squad member's Skill Power in combat.
+  - `squad-skill-efficiency` (Eclipse Planet Watchtower +35%) adds to skill
+    Skill Efficiency and joins Convergent Light on top of the stored loadout
+    value (readiness and spend). Existing caps apply: 50% discount, floors 1
+    and 70.
+  - Both need the wearer alive. Menus show loadout values without them
+    (combat only, like the other squad conditionals).
+- **D-492 attribution:** another squad member's Master with a squad-aura kind
+  is now a boost source for this bearer (previously only gear was scanned).
+- **Plumbing for B5d:**
+  - Phoenix-style revive amounts read their own gear or Master source
+    (`sourceAmount`).
+  - The `revive` event source may be `gear` or `master` (saved-event
+    allowlist updated; `leader` stays rejected).
+
+**Distinct-design test (O6, adjusted):** Conduits stay globally unique by
+(kind, amount) list. A Master must differ from every Conduit and from its own
+bearer's other two Masters; Masters of different bearers may share a stat
+package because Masters are locked to their bearer and their kit clauses differ.
+
+**Fixtures moved to Leaders:**
+- No Conduit or Master keeps `break-heal` or `normal-splash` any more. Tests of
+  those primitives now use the Solenne Leader (`break-heal`) and the Vaelor
+  Leader (`normal-splash`).
+- Flare-cost fixtures read the flare event `cost`, because Master Skill
+  Efficiency now lowers the Convergent Light cost.
+
+**Validation:** `src/game/conduit-restoration-b5a.test.ts` checks:
+- the approved package table;
+- tooltips;
+- the squad Skill Power, Health and Skill Efficiency auras (alive and fallen);
+- that Master crit stats reach the roll;
+- that Master capacity is stored;
+- Master aura attribution;
+- save compatibility: a settled journal with Masters reloads, a Master
+  revive source passes the allowlist, a leader source is rejected, and a
+  mid-run encounter with Masters loads and settles.
+
+**Release open item (all of D-493):** frozen encounters revalidate
+bearer stats, capacity and Convergent Light efficiency against the current
+designs. At release, an encounter saved mid-run with a Conduit or Master whose
+Health, Attack, Defense, capacity or Skill Efficiency changed in B1-B5 will no
+longer validate. Options: bump the frozen-run version (8 → 9) so older
+encounters end with the existing "Combat rules changed" notice (saved rewards
+kept), or keep the version (such encounters fail to load). **Owner decision
+(2026-11-23): bump to 9.** Version-8 encounters (including any underway on
+`radiant-trio-v1`) retire read-only with the notice; media type
+`radiant-continuation-v5`.
+
+## Conduit restoration B5b: Master kit modifiers (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5d with one enemy retune). Rows: the B5 table in the
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md);
+row list in the B5a handoff entry. Masters have no ranks.
+
+**Owner answers (Plan mode, 2026-11-21):**
+- `master-bruno-2` Quarry Planet Gravitas: Worldwall Ascendant's Shield on
+  Bruno uses the largest of the kit 40% of maximum Health, 375% of his current
+  Defense (read before the cast's own Defense Up) or 37.5% of maximum Health;
+  Flare tier and Skill Power then apply.
+- `master-ember-2` Cinderstar Genesis Engine: Dawnfire becomes single-target
+  (it needs a selected enemy) and deals 125% more damage (additive damage
+  layer, C11). Its Burn lands only on that target; its Attack Up still reaches
+  every ally. It no longer counts as an all-enemies skill.
+- `master-orvella-1` Throne Beneath the World: only the Foundation carry
+  ships (Worldweight Citadel's new Foundation adds 40% of the durability it
+  spent, to durability and maximum). Its next-skill Skill Efficiency moves to
+  B5c with the Master-token shape change.
+- Defaults: Seismic Hammerfall's sunder (`master-bruno-3`) lasts through the
+  end of the next enemy phase; the Elise-1, Nerithe-1 and Tide-3 Defense
+  clauses need that bearer alive; Vaelor-2's Luminosity Gain Up +20% and
+  Ozriel-2's 25% Weaken (1 turn, Aurora's +1 applies) are fixed Master-sourced
+  values; Serapha-1 adds +5% of maximum Health per Interval spent.
+
+**Representation:**
+- Each clause is a bearer-locked primitive on the Master design
+  (`radiantMasterClauseKinds` in `src/content/conduit-effects.ts`). Tooltips
+  (`conduit-effect-text.ts`) name the bearer's skills with exact values.
+- Two generic kinds: `signature-cap` (+N to the bearer's own counter or
+  Promise) and `counter-defense` (Defense Up per stored count, category rules,
+  cap 100%). `radiantMasterEffectText` writes them with the counter name
+  ("Maximum Heat becomes 5.").
+- Structural clauses change the skill as the loadout casts it:
+  `radiantKitSkill(loadout, slot)` in `combat-kits.ts` (Dawnfire target and
+  Burn, Briar Shot's Seeds on every living ally, Quietstorm Flourish without
+  Tempo conditions, Resonance Cascade's Attack Up to all allies, Disciple's
+  Attack Up +2 turns, Move as One +40%, Carry Them Back 9%, No Promise of
+  Resurrection 13%, Let Them Leave Alive +5% per Interval, Return the Strain
+  and Turn the Other Edge 35% ignore, Counterweight Covenant 55%, Keep the
+  Last Beacon +50%, Unwritten Verse 2 Marks, Tomorrow, Unwritten 3 Marks). The
+  engine, the pressure policy, the battle screen, VFX and the Flare offer all
+  read it. These changes are part of the skill and are not credited
+  separately in the D-492 summary.
+- Amount clauses are read inside the damage, Defense, Gauge Gain and stat
+  recomputes, so D-492 attribution credits the Master: Dawnfire's bonus, Open
+  the Seam (+35% against an enemy Weakened before the hit), Glass Meridian
+  (40% ignore when it consumes 3 Incisions, read before the cast),
+  Mirror-Pennant's 15% ignore when another ally spends Vespera's Signal on an
+  enemy carrying her Burn, Cover Gauge Gain and Attack Up (living Bruno),
+  Foundation Defense Up (living Orvella with a Foundation), and the C14
+  clauses below. Kinds that change another member's numbers join
+  `squadSourceKinds`.
+- Signature caps and passive values moved to `src/content/radiant-kits.ts`
+  (re-exported by the engine). `radiantSignatureCap(loadout, key)` is used in
+  play, in save validation and in the battle chips. Raised caps: Heat 5,
+  Current 4, Tension 5, Cadence 4, Crosscut 4, Load 5, Severance 4, Promise 4,
+  Interval 4.
+
+**C14 additions (`gearDefense` → `masterDefenseCut`):** enemy "less Defense"
+for every ally: Seismic Hammerfall's sunder (25%, while Bruno lives) and
+Elise's lodged Shuriken (15% each, while Elise lives). Holder-conditional
+ignore: allies holding a Shield from Tizu's skill or Convergent Light ignore
+25% against enemies carrying Tizu's Weaken (Tizu alive); other allies'
+damaging skills and Convergent Light ignore 10% per Survey on the Surveyed
+enemy (Nerithe alive, Survey not spent). All share the 80% total cap.
+
+**Other clauses:** Stillness reduces a hit by 35%; Harvest's bonus becomes
+75% and a spent Harvest returns to Bloom; Unreturned stores up to 85% of
+Maerion's maximum Health and also counts Shield-absorbed direct enemy damage;
+Return the Strain grants Varkhel 15 Luminosity (× Gauge Gain, after its cost)
+when it spends at least 3 Tension; Velmira's first Skill 1 or Skill 2 each
+encounter adds 1 Crosscut after it resolves; Glasschoir Hymn grants each living
+squad member 8 Luminosity (× Gauge Gain); Shatterfall adds 1 extra Incision;
+Denial of Fate sets damaged enemies to 3 Incisions; The World Refuses restores
+Refusal for living allies who used it; Briar Shot's Seeds gain +45% Skill
+Power; Keystone Reversal's repair gains +50% Skill Power; Asteriel gains +5%
+Skill Power per stored Promise (combat only); Mirror-Pennant's +30% Burn is the
+existing `burn-power` kind. Master Luminosity grants carry a Master
+`gearSource`.
+
+**Saves (no version bump; loading never writes; no new RNG draws):**
+- New optional state: `RadiantEnemy.sunder` (`{ casterId, remaining }`, valid
+  only for a squad Bruno with `hammerfall-sunder`, remaining 1-2, ticked with
+  the enemy phase, cleared on defeat) and `RadiantBearer.masterUsed` (valid
+  only with `first-skill-crosscut`; a revive does not clear it).
+- Counter, Promise and Unreturned caps validate per member; saves without
+  these Masters validate exactly as before.
+- New signature ops `sunder` and `refusal-restore` (saved-journal allowlist).
+- Presentation: a "Sundered" enemy tag and Master callout notes.
+
+**Validation:** `src/game/conduit-restoration-b5b.test.ts`:
+- the 37 approved clause rows (sprout-2 lost its placeholder);
+- tooltips;
+- the structural kit changes;
+- Dawnfire's target and Burn, and the pressure policy aiming it;
+- raised caps (Heat 5 passes, 6 and plain Heat 4 fail; Promise 4/5);
+- Defense Up per Heat and Skill Power per Promise;
+- sunder (applied, boosts an ally's hit, forged and long clocks rejected);
+- Tizu, Elise and Nerithe clauses (alive and fallen; Normal Attacks excluded
+  for Nerithe; Master credit);
+- Cover Gauge Gain and Attack Up, Foundation Defense Up;
+- the Worldwall Shield formula;
+- the Flora, Disciple, Vaelor, Ilvaris, Kaelith, Myrthen and Ozriel clauses;
+- Velmira's once-per-encounter Crosscut (forged flag rejected);
+- Varkhel's Luminosity;
+- the Citadel carry;
+- Maerion's Shield-absorbed Unreturned and the 85% cap;
+- a settled journal with B5b Masters reloads; an unknown op is rejected;
+- a mid-run encounter with B5b Masters loads and settles.
+
+Fixtures adjusted: the B5a package table ignores clause kinds;
+`combat-engine.test.ts` compares the Flare offer with and without a Master
+only when the Master leaves the Flare unchanged.
+
+## Conduit restoration B5c1: Master next-action bonuses (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5d with one enemy retune). Rows: the B5 table in the
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md).
+Masters have no ranks.
+
+**Owner answers (Plan mode, 2026-11-22):**
+- B5c is split in two sessions. **B5c1** (this section) changes the token
+  shape and builds 18 rows: 16 next-action bonus rows (including
+  `master-orvella-1`'s next-skill Skill Efficiency moved from B5b) and two
+  conditional rows. **B5c2** builds the 22 Luminosity, Shield and heal
+  trigger rows.
+- `master-vaelor-1` Final Chord Celestial Resonator: the bonus is +60% when
+  Last Chord of the Sky itself is cast on the Crescendo beat, otherwise +30%.
+- Adapt (O1) rows use the pre-Radiant crit triggers (B5a note), so Bliss-2,
+  Elise-3, Razor-3, Crinso-1, Vaelor-3 and Disciple-3 grant real Critical Rate
+  or Critical Damage.
+
+**Master-given bonuses (token shape):** `RadiantToken` now names exactly one
+of `conduitId` (a gear Conduit, as before) or `masterId` (the giver's
+equipped Master), plus an optional `uses`. Saved gear bonuses validate
+unchanged. D-492 credits a Master bonus to that Master (`tokenSource`). The
+bonus tag names the Master ("Unbroken Sunforge Throne · Next damaging skill
++40% Skill Power vs Infernis's Burn").
+
+New token rule fields:
+- `on`: the bonus applies only to hits on an enemy carrying the giver's Burn
+  (Ember-3) or on the giver's Quarry (Rosetta-3). It waits, unspent, for an
+  action that reaches such an enemy.
+- `hold`: Tide-2's bonus is held only while its holder keeps a Shield from
+  Tide's skill (Tidal Shelter). It is removed at the end of the action that
+  breaks the Shield.
+- `perTarget` / `uses`: Elise-2 keeps one shared bonus per enemy, with up to 2
+  stored uses (one per lodged Shuriken); each damaging skill on that enemy
+  spends one use from every copy.
+- `max`: a value cap as a multiple of the Master amount (Crinso-1 ×4 = 60%,
+  Vaelor-1 ×2 on Crescendo).
+- New stat `duration`: +1 turn of Skill Duration on the holder's next skill
+  (cap 6).
+
+**Rows** (every bonus is a next-action bonus that lasts through the end of the
+next turn unless stated; "others" = each other living ally):
+
+| Master | Clause |
+|---|---|
+| `master-ember-3` Unbroken Sunforge Throne | Dawnfire: others +40% Skill Power on their next damaging skill or Convergent Light, against enemies carrying Infernis's Burn. |
+| `master-tide-2` Ocean Memory Worldpump | Tidal Shelter +50% Skill Power; each ally holding its Shield +25% Skill Efficiency on their next skill while the Shield remains. |
+| `master-sprout-1` Worldseed Mercy Foundry | A blooming Seed gives its holder +25% Skill Power on their next skill this turn; an Empowered Seed (Worldseed) also +15% Skill Efficiency. |
+| `master-bliss-2` Stillplume Planetary Ballet | Warfeather Cut in Opening: others +25 Critical Rate on their next damaging action. (The Closing heal: B5c2 section.) |
+| `master-bliss-3` Quiet Heaven Fanforge | Thousandfeather Stillness: others +25% Skill Efficiency on their next skill; cast in Closing, also +1 turn Skill Duration. |
+| `master-elise-2` Twin Star Planetary Ratchet | Each lodged Shuriken stores a shared +35% Skill Power for the next other ally's damaging skill on that enemy; recalling removes unused ones. |
+| `master-elise-3` Storm Empress Execution Clock | Recalling both Shuriken: others +40% Critical Damage on their next damaging action, plus +15 Critical Rate if both were in the same enemy. |
+| `master-razor-3` Nightglass Counterblade Engine | Nightcleave spending Wounds: others +30 Critical Rate on their next damaging action. |
+| `master-rosetta-2` Virtuous Planet Rosegarden | Crimson Skyfall on the Quarry: each other contributor this turn +20% Skill Efficiency on their next skill. (The heal: B5c2 section.) |
+| `master-rosetta-3` Golden Thorn Judgment Loom | Golden Thorn Volley: others +35% Skill Power on their next damaging skill on Rosetta's Quarry. |
+| `master-crinso-1` Twin-Rose Singularity Drive | Each Combo Blossoming Cataclysm spends: others +15% Critical Damage on their next damaging action, up to 60%. |
+| `master-nerithe-2` Folded Ocean Planetarium | Fold the Sea moving Survey to a different enemy: others +40% Skill Power on their next damaging skill on that enemy. |
+| `master-orvella-1` Throne Beneath the World | Worldweight Citadel: others +20% Skill Efficiency on their next skill (with the B5b Foundation carry). |
+| `master-vaelor-1` Final Chord Celestial Resonator | Last Chord of the Sky: others +30% Skill Power on their next skill (+60% when cast on Crescendo). |
+| `master-vaelor-3` Broken Sky Imperial Metronome | Vaelor's Normal Attack on Tune: others +25 Critical Rate; on Crescendo: +40% Critical Damage (next damaging action). |
+| `master-ilyss-3` Broken-Link Continuance Engine | Unbind the Living removing Weaken: its target +25% Skill Power on skills and Convergent Light through the next turn (timed, refreshes, not spent). |
+| `master-disciple-3` Sovereign Will Amplifier | While Disciple lives, allies holding Attack Up from Disciple gain +30 Critical Rate and +40% Critical Damage on Normal Attacks, skills and Convergent Light. |
+| `master-atmoso-3` Crosswind Imperial Drive | An ally who adds a Gust gains Luminosity Gain Up +30% (Master source, 2 turns, strongest applies). |
+
+"Next skill" uses the existing `skill` scope (a skill or Convergent Light),
+as in B3b. Seed bonuses granted as a turn begins last that turn.
+
+**Saves (no version bump; loading never writes; no new RNG draws or events):**
+- New optional fields: token `masterId` and `uses`, and `RadiantSeed.empowered`
+  (only `true`, set when Worldseed plants the Seed).
+- Validation rejects:
+  - a Master bonus whose giver does not wear that Master, or whose value is
+    above the Master amount × `max`;
+  - a token with both or neither source field;
+  - `uses` outside 1-2 or on another kind;
+  - duplicates per giver and kind (per enemy for Elise-2);
+  - a Tide-2 bonus without its Shield;
+  - a malformed `empowered`.
+
+**Implementation choices (owner may reverse):**
+- Sprout-1 triggers when the Seed blooms (its heal resolves), even on a holder
+  at full Health.
+- Atmoso-3 lasts 2 turns, ticked with the enemy phase.
+- Disciple-3 reads the holder's current Attack Up source (a stronger Attack Up
+  from another ally replaces it).
+- Tide-2 bonuses go to every ally holding a Shield from Tide's skill,
+  including Tide.
+- Elise-2's bonus ends with the turn after the latest lodge, like other
+  bonuses, even if the Shuriken stays lodged.
+
+**Validation:** `src/game/conduit-restoration-b5c.test.ts` (21 tests) checks:
+- the 18 approved clause rows and their tooltips;
+- every grant: Burn-conditioned spend and Master credit, the Tide Shield hold
+  and break, Seed bloom and Empowered, Opening/Closing, Shuriken stores and
+  uses and recall, recall crits, Wounds, Quarry, Combo cap, Survey, Citadel,
+  Crescendo, Tune, the timed Unbind bonus, the Disciple crit aura (alive,
+  fallen, another source) and the Gust Gain Up;
+- forged Master bonuses and fields are rejected;
+- a settled journal with B5c1 Masters reloads, and a mid-run encounter loads
+  and settles.
+
+The B5b content test now checks only B5b clause kinds.
+
+## Conduit restoration B5c2: Master Luminosity, Shield and heal triggers (D-493, Battle Flurry Phase 4c)
+
+**Implemented on `battle-flurry-phase3`, not released.** Completes B5c with
+the 22 trigger rows of the approved B5c plan, plus `master-bliss-2`'s Closing
+heal and `master-rosetta-2`'s contributor heal. Row text: the "Restore as"
+cells of the B5 table in
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md);
+this section supersedes them for these rows.
+
+**Shared rules:**
+- Luminosity uses `masterCharge` (credited to the Master, rounded once after
+  the recipient's Gauge Gain). Heals and Shields use `heal()`/`shield()` with
+  a Master source, so Conduit healing and shielding bonuses do not raise them.
+- Amounts are a share of the recipient's maximum Health on the N7 basis (as
+  Conduit heals). Health-percentage tests (lowest ally, the 50% line) read the
+  current maximum Health.
+- "Scaled by Skill Power" rows multiply by the bearer's Skill Power for that
+  cast (no Convergent Light tier scaling).
+- Once-per-turn limits use the turn ledger (`gearTriggered`, cleared every
+  turn; a turn and a round are the same here) with the Master key
+  `bearer:master`. Once-per-ally limits use `bearer:master:ally`, accepted
+  only for wearers of Weirheart, Ferrywake or Unbinding Mercy.
+- `master-disciple-2` and `master-nerithe-3` lose their Radiant-era pairs.
+
+| Master | Clause |
+|---|---|
+| `master-atmoso-1` Sky Without End Turbine | Cyclone release: each living ally 3 Luminosity per Gust held (max 5). |
+| `master-atmoso-2` Horizon Cyclone Orrery | Cyclone release: each living ally a Shield of 30% of the enemy Health the release removed. |
+| `master-bliss-2` Stillplume Planetary Ballet | Warfeather Cut in Closing also heals every other living ally 6% (not scaled by Skill Power). |
+| `master-disciple-2` Concord Planet Thoughtforge | Once per action, an ally holding Attack Up from Disciple before acting uses a skill or Convergent Light: each other living ally 10 Luminosity. |
+| `master-razor-1` Unbroken Midnight Bastion | Unbroken Midnight spending Wounds: heal each other living ally 20% of the Wounds spent, up to 15% of their maximum Health. |
+| `master-razor-2` Eclipse Planet Watchtower | Eclipse Bastion's Shield on Razor: each other living ally a Shield of 40% of it, up to 45% of their maximum Health. |
+| `master-rosetta-1` Rose Beyond the Sun Orrery | Every 2 damaging actions by any ally that hit the Quarry (Health or Shield): each living ally 12 Luminosity. A new Quarry resets the count. |
+| `master-rosetta-2` Virtuous Planet Rosegarden | Crimson Skyfall on the Quarry heals Rosetta and each ally who hit it this turn 8%. |
+| `master-crinso-2` Duality Planet Flamewheel | Golden Edge right after Crimson Rupture: the living ally with the lowest Health percentage a Shield of 12%. |
+| `master-crinso-3` Crimson Beauty Pyre Requiem | Gaining Combo: heal the lowest-percentage ally 8%; at 3+ Combo, every living ally. |
+| `master-nerithe-3` Abyssal Surveyor Crown | Each Survey Ocean Beyond the Map spends: each living ally 4 Luminosity. |
+| `master-solenne-2` Quiet-Arc Shelter Projector | After Solenne's Skill 1 or Skill 2: the lowest-percentage ally a Shield of 20%. |
+| `master-myrthen-3` Reaping-Tide Recovery Dynamo | Once per turn, Myrthen's action directly defeats an enemy: each living squad member heals 6% and gains 5 Luminosity. |
+| `master-neralis-2` Blackwing Crossing Stabilizer | After Light the Next Station: its target a Shield of 20% × Skill Power. |
+| `master-neralis-3` Weirheart Recollection Dynamo | Once per ally per turn, Neralis's Skill 1 or Skill 2 heals an ally who was below 50%: that ally 10 Luminosity. |
+| `master-varkhel-2` Scarlet-Hinge Load Distributor | After Set the Warning Chain: each other living member a Shield of 16% × Skill Power. |
+| `master-seravelle-3` Braided-Signal Continuance Engine | After The Road Belongs to Everyone: each living member a Shield of 22% × Skill Power. |
+| `master-velmira-3` Open-Threshold Return Drive | Leave the Doorway Standing spending 3+ Crosscut: Velmira 25 Luminosity after its cost and a heal of 18%. |
+| `master-maerion-2` Crescent Rib Mercy Foundry | A Place on the Ferry's overheal (`offered - effective`) becomes a Shield for its target, up to 35%. |
+| `master-maerion-3` Ferrywake Remembrance Dynamo | Once per ally per turn, Maerion's Skill 1 or Skill 2 heals an ally from below 50% to 50% or more: that ally 15 Luminosity. |
+| `master-vespera-3` Unextinguished Relay Cathedral | Once per turn, another ally spends Vespera's Signal: that ally 10 Luminosity after the attack. |
+| `master-ilyss-2` Unbinding Mercy Worldlock | Once per ally per turn, Ilyss removes Weaken from an ally: that ally a Shield of 15%. |
+| `master-asteriel-2` Night-Library Germination Vault | Once per turn, after Lend the Quiet Seed (Shelter): heal the lowest-percentage ally 20%. |
+| `master-asteriel-3` Freely-Given Starseed Distributor | Once per turn, another ally holding Attack Up from Asteriel uses a damaging action: that ally 8 Luminosity after it. |
+
+**Saves (no version bump; loading never writes; no new RNG draws or events):**
+- New optional `quarryHits` (only `1`) on Rosetta's Quarry, on a living Quarry,
+  for the wearer of Rose Beyond the Sun Orrery.
+- New once-per-ally ledger keys (above).
+- `shield()` now returns the amount it created (no behavior change).
+
+**Implementation choices (owner may reverse):**
+- Rosetta-2 also heals Rosetta (Crimson Skyfall itself hits the Quarry).
+- Atmoso-2 counts Health removed, not Shield absorbed. A Cyclone that Cyclone
+  Weave replaces also releases and triggers both Atmoso rows.
+- Disciple-2 reads Attack Up held before the action, so Disciple counts when
+  she already held her own Attack Up.
+- Neralis-3, Maerion-3 and Solenne-2 count Skill 1/Skill 2 only, not
+  Convergent Light.
+- Asteriel-2 triggers on every Lend the Quiet Seed, even when already in
+  Shelter.
+- Myrthen-3 counts Normal Attack defeats too.
+- Disciple-2, Asteriel-3 and Vespera-3 need the giver alive.
+- Rosetta-1: the action that sets a new Quarry does not count; an action
+  that defeats the Quarry still counts toward a grant.
+
+**Validation:** `src/game/conduit-restoration-b5c2.test.ts` (20 tests) checks
+the 24 clause rows and tooltips, every trigger and its limit, forged Quarry
+counts and ledger keys, a settled journal reload and a mid-run load. The
+B5c1 content test now checks only B5c1 kinds.
+
+## Conduit restoration B5d: Master enemy-phase and special clauses (D-493, Battle Flurry Phase 4c)
+
+**Status:** implemented on `battle-flurry-phase3`, not released (single
+release after B5d with one enemy retune). Rows: the B5 table in the
+[phase 4 restoration](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md).
+This spec supersedes the "Restore as" cells of these 19 rows. Masters have
+no ranks. With B5d every live Master carries its restored effect.
+
+**Owner answers (Plan mode, 2026-11-22):**
+- B5d is built in one session.
+- `master-sprout-3`: the once-per-encounter Worldseed revive is used only
+  when at least one ally actually returns.
+- `master-thornia-1`: the Thorn Trap's Defense cut lasts the rest of that
+  enemy phase and the next player turn, and ends when that turn ends.
+
+**The `conduit` stream already existed.** `conduitSeed` (O11; Nullsong
+Transmission, Stasis Reliquary) gains `harvest-chance` and `ripen-health`.
+Encounters with Seedtrace Pursuit Distributor now carry a `conduitSeed`,
+derived from `chargeSeed` at creation (frozen-run rebuild still matches). Its
+draws never touch the charge, crit or other streams.
+
+**Rules shared by the rows:**
+- Master heals, Shields, Luminosity and strikes are credited to the Master,
+  skip Conduit healing/shielding bonuses and Skill Power, and never trigger
+  other Conduits or Masters (`masterEnemyPhase` reads native events only).
+- Each clause needs its wearer alive.
+- "Once per enemy phase" uses the turn ledger (`gearTriggered`, cleared when
+  the enemy phase ends) with `bearer:master`. Once per enemy per enemy phase
+  uses `bearer:master:enemy` (accepted only for Final Dawn Tribunal,
+  Merciful Eclipse Regulator, Thousand-Rose Planetary Aegis). Serapha-2
+  adds `ceasefire-mend` to the once-per-ally keys.
+- Burn rows count ticks of a Burn from an ally's ability (skill, Convergent
+  Light, passive or Normal Attack source), never a Conduit- or Master-applied
+  Burn, at the end of the enemy phase (once per phase).
+- "Lowest Health" and "most-wounded" mean the living ally with the lowest
+  Health percentage.
+- Defense Up clauses join the Defense Up category (strongest applies, 100%
+  cap). Enemy Defense cuts join the C14 80% cap and credit the Master.
+
+| Master | Clause |
+|---|---|
+| `master-ember-1` Helios Pyre Cathedral | After Infernis's Burn damages enemies in an enemy phase: heal the most-wounded ally 25% of that Health damage, up to 12% of their maximum Health. |
+| `master-sprout-3` Evergreen Continuance Crucible | Empowered Seed holders: Defense Up +25% until it heals them. Once per encounter, Worldseed revives defeated allies (C18) with 35% Health and 0 Luminosity, after its heal and Seeds (no Seed). |
+| `master-aurora-1` Final Dawn Tribunal | Enemies carrying Aurora's Weaken: 25% less Defense. Such an enemy attacking: the lowest ally a Shield of 15% (once per enemy per phase). |
+| `master-aurora-2` Prismseal Astral Judiciary | An enemy phase that ends with a living ally holding Final Dawn Verdict's Damage Reduction: each living ally 8 Luminosity. |
+| `master-aurora-3` Merciful Eclipse Regulator | An enemy carrying Aurora's Weaken attacks: heal every living ally 8% (once per enemy per phase). |
+| `master-bruno-1` Living Worldwall Atlas | Bruno: Defense Up +40% while his Cover is on a living ally. Damage redirected to him by Cover: the protected ally +30% Skill Power on their next skill or Convergent Light (next-action bonus `cover-power`). |
+| `master-thornia-1` Forbidden Garden Worldlock | An enemy triggers the Thorn Trap: 20% less Defense through the next player turn (`RadiantEnemy.trapCut`). |
+| `master-thornia-2` Thousand-Rose Planetary Aegis | First Empowered trap trigger per enemy per phase: each ally that enemy's attack hit a Shield of 12%. |
+| `master-thornia-3` Shadow Rose Sovereign Foundry | Enemies carrying her Trap: 15% less direct damage to every squad member (Thornia included). A trigger: Thornia +20% Skill Power on her next skill or Convergent Light (`trap-power`). |
+| `master-orvella-2` Deep Foundation Planetpress | 40% of Foundation-absorbed damage is stored (`foundationStored`); when the next turn begins it heals injured living allies, split equally, up to 12% each. |
+| `master-caldrex-2` Counterstroke Recoil Foundry | An enemy's direct attack damages Caldrex's Health or Shield: he strikes it for 90% of his Attack (can crit), once per enemy action. |
+| `master-caldrex-3` Cinderpulse Triage Converter | Once per enemy phase, an ability Burn damages an enemy: heal every living member 8%. |
+| `master-solenne-3` Cadence Differential Drive | Once per enemy phase, an enemy hit spends Stillness: each living member 7 Luminosity. The Last Reverberation: each other ally 3 Luminosity per Stillness spent. |
+| `master-myrthen-2` Seedtrace Pursuit Distributor | After a skill or Convergent Light that leaves her outside Harvest: one roll, below 10% enters Harvest. All That Ripens: one roll once the Luminosity is ready, below 5% costs 15% of maximum Health instead (Luminosity if the Health cost would defeat her). |
+| `master-seravelle-2` Convoy-Flame Distribution Crown | Once per enemy phase, an ability Burn damages an enemy: each other living member 5 Luminosity. |
+| `master-ozriel-1` Refusal Sovereign Heartdrive | Refusal keeps an ally at 1 Health: that ally a Shield of 20%. |
+| `master-caevren-3` Falling-Star Recoil Turbine | Once per enemy phase, an enemy's direct attack (redirected included) damages Caevren's Health or Shield: he strikes it for 100% of his Attack (can crit). |
+| `master-serapha-2` Articulated Mercy Fanforge | Once per ally per enemy phase, an enemy direct hit on an ally holding Serapha's Damage Reduction: heal that ally 12%. |
+| `master-serapha-3` Unstruck Verdict Concordance | Once per enemy phase, an enemy carrying Serapha's Weaken attacks: the lowest ally 10 Luminosity. |
+
+**Engine:**
+- `reviveMember` is the shared rescue core (Phoenix Reactor keeps its extra
+  Shields). Worldseed's revive runs in `masterAfterCast`.
+- Thornia's clauses run in `springThornTraps` (enemy triggers only, not
+  Shadow Rose Cleave). Thousand-Rose Dominion's traps are now flagged
+  `empowered` (kept when a skill trap merges into one).
+- Stillness and Foundation clauses run in `holdStillness` and
+  `foundationAbsorb`; the Cover bonus in the Cover redirect.
+- Other enemy-phase clauses run in `masterEnemyPhase` before
+  `processRadiantGear`. Weaken is read before the attack; Final Dawn
+  Verdict's Reduction is read before the clocks tick (`verdictHolders`).
+
+**Saves (no version bump; loading never writes):**
+- Optional `RadiantThornTrap.empowered` (only `true`), `RadiantEnemy.trapCut`
+  (`{ casterId }` of a squad Thornia with `trap-cut`; cleared on defeat and
+  when the next enemy phase begins) and `RadiantBearer.foundationStored`
+  (whole, at least 1, living wearer only; lost if Orvella falls).
+- `masterUsed` and the rescue ledger also accept `worldseed-revive`.
+- New signature ops `trap-cut`, `ripen-health`, `foundation-store`. When All
+  That Ripens is paid with Health, its `flare` event has no `cost`.
+- New token kinds `cover-power`, `trap-power`.
+
+**Presentation:** Master callout notes for the Trap cut and All That
+Ripens' Health cost (the Worldseed revive uses the existing revive note).
+Enemy tags "Thorn-cut" and "Final Dawn Tribunal · 25% less Defense".
+
+**Implementation choices (owner may reverse):**
+- Worldseed-revived allies act from the next turn.
+- Caldrex-2 strikes once per enemy action (the row states no limit).
+- Shadow Rose Sovereign Foundry's damage cut also protects Thornia.
+- Thousand-Rose Planetary Aegis shields every ally the attack offered damage
+  to, Shield-absorbed hits included.
+- Aurora-1, Aurora-3 and Serapha-3 trigger on any attack by an enemy that
+  held the Weaken when it attacked, even if every hit was absorbed.
+- Helios Pyre Cathedral counts Health damage only, not Shield-absorbed Burn.
+- Deep Foundation Planetpress: the share above the 12% cap is lost, and
+  nothing heals if no ally is injured.
+- Seedtrace: no Harvest roll when the cast leaves her in Harvest; the All
+  That Ripens roll is drawn even when the Health guard makes her pay
+  Luminosity.
+
+**Release note (joins the B5a open item):** an encounter saved mid-run
+before this release with Seedtrace Pursuit Distributor equipped has no
+`conduitSeed` and fails validation unless the frozen-run version is bumped
+(8 → 9). Resolved: the release bumps to 9, so such encounters retire.
+
+**Validation:** `src/game/conduit-restoration-b5d.test.ts` (27 tests) checks
+the 19 rows and tooltips, every clause and its limit, the
+non-trigger cases, forged `trapCut`, `foundationStored` and `masterUsed`, the
+shared rescue ledger, exact Conduit-stream outcomes (xorshift replay), a
+settled journal reload and a mid-run load. The B5c2 content test now checks
+only B5c2 kinds.

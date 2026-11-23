@@ -1,6 +1,6 @@
 import { characterName } from '../content/character-art';
 import { resolveRadiantStarterStats, radiantMasters } from '../content/combat-kits';
-import { radiantConduitPrimitives } from '../content/conduit-effects';
+import { radiantCalamiticRules, radiantConduitPrimitives } from '../content/conduit-effects';
 import { getConduit } from '../content/conduits';
 import { getMasterConduit } from '../content/master-conduits';
 import type { RadiantCombatEvent, RadiantGearSource } from '../game/combat-engine';
@@ -177,10 +177,10 @@ const calloutsPerBearer = 2, calloutsPerFrame = 4;
 /** Callouts for one impact frame: merged per Conduit, capped per bearer and per frame. Pure; never reads RNG. */
 export function radiantConduitCallouts(events: readonly RadiantCombatEvent[], run: FrozenRadiantRun): RadiantConduitCallout[] {
   const facts = new Map<string, { source: RadiantGearSource; damage: number; prevented: number; healing: number;
-    shields: number; luminosity: number; statuses: string[] }>();
+    shields: number; luminosity: number; statuses: string[]; notes: string[] }>();
   const at = (source: RadiantGearSource) => {
     let entry = facts.get(key(source));
-    if (!entry) facts.set(key(source), entry = { source, damage: 0, prevented: 0, healing: 0, shields: 0, luminosity: 0, statuses: [] });
+    if (!entry) facts.set(key(source), entry = { source, damage: 0, prevented: 0, healing: 0, shields: 0, luminosity: 0, statuses: [], notes: [] });
     return entry;
   };
   const boosted = (boosts: readonly { source: RadiantGearSource; amount: number }[] | undefined, whole: number,
@@ -200,6 +200,32 @@ export function radiantConduitCallouts(events: readonly RadiantCombatEvent[], ru
       boosted(event.boosts, event.amount, (entry, amount) => { entry.shields += amount; });
     } else if (event.type === 'charge' && event.gearSource && event.gained) {
       at(event.gearSource).luminosity += event.gained;
+    } else if (event.type === 'revive') {
+      // D-493 B3c: rescue and taunt moments lead their Conduit's callout.
+      at(event.source).notes.push(`Revived · ${number(event.amount)} Health`);
+    } else if (event.type === 'signature' && (event.op === 'accord-save' || event.op === 'taunt')) {
+      const conduitId = event.op === 'taunt' ? 'tectonic-atlas-bastion' : 'tranquilitic-accord-bastion';
+      at({ kind: 'gear', bearerId: event.bearerId, conduitId }).notes.push(event.op === 'taunt' ? 'Taunt · all enemies'
+        : `${characterLabel(run, event.holderId)} kept at 1 Health`);
+    } else if (event.type === 'signature' && (event.op === 'sunder' || event.op === 'refusal-restore')) {
+      // D-493 B5b Master moments: Seismic Hammerfall's sunder and The World Refuses restoring Refusal.
+      at({ kind: 'master', bearerId: event.bearerId }).notes.push(event.op === 'sunder'
+        ? "Seismic Hammerfall · target sundered" : `Refusal restored · ${characterLabel(run, event.holderId)}`);
+    } else if (event.type === 'signature' && (event.op === 'trap-cut' || event.op === 'ripen-health')) {
+      // D-493 B5d Master moments: Forbidden Garden Worldlock's Defense cut; All That Ripens paid with Health.
+      at({ kind: 'master', bearerId: event.bearerId }).notes.push(event.op === 'trap-cut'
+        ? 'Thorn Trap · trapped enemy loses Defense' : `All That Ripens paid with ${number(event.amount)} Health`);
+    } else if (event.type === 'signature' && event.op === 'borrowed') {
+      // D-493 B4: Throne of Borrowed Tomorrows names each ally granted a borrowed skill.
+      at({ kind: 'gear', bearerId: event.bearerId, conduitId: 'calamitic-throne-borrowed-tomorrows' })
+        .notes.push(`Borrowed Tomorrows · ${characterLabel(run, event.holderId)} may use one more skill`);
+    } else if (event.type === 'signature' && event.op === 'choir') {
+      // D-493 B4: Choir-Array of Branded Stars (its Luminosity follows from the charge events).
+      const wearer = run.state.bearers.find(unit => unit.loadout.id === event.bearerId);
+      const slot = wearer?.loadout.gear?.find(entry => entry?.id === 'calamitic-choir-array-of-branded-stars');
+      const power = slot ? radiantConduitPrimitives(slot).find(entry => entry.kind === 'mark-team-power')?.amount ?? 0 : 0;
+      at({ kind: 'gear', bearerId: event.bearerId, conduitId: 'calamitic-choir-array-of-branded-stars' })
+        .notes.push(`Squad +${number(Math.round(power * 1000) / 10)}% Skill Power this turn (${event.amount}/${radiantCalamiticRules.markTriggers})`);
     } else if (event.type === 'status' && !event.clockOnly && isGear(event.source)) {
       const label = radiantStatusLabel(event.status);
       const entry = at(event.source);
@@ -209,6 +235,7 @@ export function radiantConduitCallouts(events: readonly RadiantCombatEvent[], ru
   const perBearer = new Map<string, number>(), out: RadiantConduitCallout[] = [];
   for (const entry of facts.values()) {
     const parts = [
+      ...entry.notes,
       entry.damage > 0 ? `+${number(entry.damage)} damage` : '',
       entry.prevented > 0 ? `${number(entry.prevented)} damage prevented` : '',
       entry.healing > 0 ? `Heal +${number(entry.healing)}` : '',
@@ -233,4 +260,9 @@ function sourceName(source: RadiantGearSource, masterId: string | null): string 
   if (source.kind === 'leader') return 'Leader Skill';
   return masterId !== null && Object.hasOwn(radiantMasters, masterId)
     ? getMasterConduit(masterId as keyof typeof radiantMasters).name : 'Master Conduit';
+}
+/** A bearer's display name for callouts (falls back to "Ally"). */
+function characterLabel(run: FrozenRadiantRun, id: string | undefined): string {
+  const member = run.state.bearers.find(unit => unit.loadout.id === id);
+  return member ? characterName(member.loadout.starter) : 'Ally';
 }

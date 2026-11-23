@@ -183,7 +183,10 @@ describe('game-specific hub layouts', () => {
     }
     const overview = characterDetail(starter, 'overview');
     for (const label of ['HP', 'Attack', 'Defense', 'Recovery']) expect(overview).toContain(`<small>${label}</small>`);
-    for (const label of ['Critical Rate', 'Elemental Gauge Capacity']) expect(overview).not.toContain(label);
+    expect(overview).not.toContain('Elemental Gauge Capacity');
+    // D-493 crit step: critical hits are back, so the stats show Critical Rate and Critical Damage.
+    expect(overview).toContain('data-radiant-stat="crit-rate"');
+    expect(overview).toContain('data-radiant-stat="crit-damage"');
     expect(overview).toContain('Skill Power');
     expect(overview).toContain('Attunement · Equinox');
     expect(overview).toContain('Health, Attack, Defense and Recovery are unchanged. No personal Master equipped.');

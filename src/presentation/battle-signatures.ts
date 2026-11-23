@@ -1,4 +1,7 @@
-import { radiantBeat, radiantShurikenCount, radiantSignatureCaps, type RadiantCombatState } from '../game/combat-engine';
+import { radiantBeat, radiantShurikenCount, radiantSignatureCaps, radiantTokenRules, type RadiantCombatState, type RadiantToken } from '../game/combat-engine';
+import { getConduit } from '../content/conduits';
+import { getMasterConduit } from '../content/master-conduits';
+import { radiantEquipmentAmount, radiantSignatureCap } from '../content/combat-kits';
 import { characterName } from '../content/character-art';
 import { escapeDialogText as escape } from './game-dialog';
 
@@ -12,6 +15,8 @@ export interface RadiantSignatureView {
   owners: Record<string, string[]>;
   /** Tags per holding unit id (enemy or ally) for marks other bearers placed on it. */
   holders: Record<string, string[]>;
+  /** D-493 B3b: next-action bonuses per holding bearer id. */
+  bonuses: Record<string, string[]>;
 }
 
 const counterLabels = {
@@ -23,9 +28,29 @@ const beats = ['Tune', 'Rise', 'Crescendo'] as const;
 const pct = (value: number) => `${Number((value * 100).toFixed(1))}%`;
 const whole = (value: number) => Math.round(value).toLocaleString('en-US');
 const turns = (value: number) => `${value} ${value === 1 ? 'turn' : 'turns'}`;
+/** D-493 B3b next-action bonus labels: which action spends it, then the exact bonus. */
+const tokenScopes = { 'damaging-action': 'Next damaging action', skill: 'Next skill', skill12: 'Next Skill 1 or 2',
+  'damaging-skill': 'Next damaging skill', flare: 'Next Convergent Light', 'restore-skill': 'Next heal or Shield' } as const;
+/** The Conduit or (D-493 B5c1) Master that granted a bonus. */
+export function radiantTokenSourceName(token: RadiantToken): string {
+  return token.masterId !== undefined ? getMasterConduit(token.masterId).name : getConduit(token.conduitId!).name;
+}
+export function radiantTokenLabel(token: RadiantToken): string {
+  const rule = radiantTokenRules[token.kind];
+  const bonus = rule.stat === 'crit-rate' ? `+${Number((token.value * 100).toFixed(1))} Critical Rate`
+    : rule.stat === 'duration' ? `+${turns(token.value)} Skill Duration`
+    : `+${pct(token.value)} ${{ power: 'Skill Power', 'restore-power': 'Skill Power', efficiency: 'Skill Efficiency', attack: 'Attack',
+      'crit-damage': 'Critical Damage', direct: 'direct damage' }[rule.stat]}`;
+  const life = rule.life === 'spent' ? ' · until used' : rule.life === 'timed' ? ' · through next turn' : '';
+  const against = rule.on === 'giver-burn' ? " vs Infernis's Burn" : rule.on === 'giver-quarry' ? ' vs Quarry'
+    : rule.target ? ' vs marked enemy' : '';
+  const stored = rule.uses && (token.uses ?? 1) > 1 ? ` · ${token.uses} stored` : '';
+  const kept = rule.hold === 'giver-shield' ? ' · while Shielded' : '';
+  return `${radiantTokenSourceName(token)} · ${tokenScopes[rule.scope]} ${bonus}${against}${stored}${kept}${life}`;
+}
 
 export function radiantSignatureView(state: RadiantCombatState): RadiantSignatureView {
-  const owners: Record<string, string[]> = {}, holders: Record<string, string[]> = {};
+  const owners: Record<string, string[]> = {}, holders: Record<string, string[]> = {}, bonuses: Record<string, string[]> = {};
   for (const unit of [...state.bearers, ...state.enemies]) holders['loadout' in unit ? unit.loadout.id : unit.id] = [];
   const tag = (id: string, text: string) => { holders[id]?.push(text); };
   const living = (id: string) => [...state.bearers, ...state.enemies].some(unit =>
@@ -41,6 +66,20 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
     if (member.seed && living(id)) tag(id, `Seed · heals ${pct(member.seed.value)} next turn`);
     if (member.cover) tag(id, `Cover · ${nameOf(member.cover.casterId)} takes ${pct(member.cover.share)} · ${turns(member.cover.remaining)}`);
     if (member.burnUp) chips.push(`Burn boost +${pct(member.burnUp.value)} · ${turns(member.burnUp.remaining)}`);
+    // D-493 B3b: next-action bonuses this bearer holds; a target-bound bonus also tags its enemy.
+    bonuses[id] = [];
+    for (const token of member.tokens ?? []) {
+      bonuses[id].push(radiantTokenLabel(token));
+      if (token.targetId) tag(token.targetId, `${radiantTokenSourceName(token)} target (${nameOf(id)})`);
+    }
+    // D-493 B3c: Accord held (gold bonus tag), a used Conduit rescue, and Atlas Bastion's taunt.
+    if (member.accord) bonuses[id].push(`${getConduit('tranquilitic-accord-bastion').name} · survives one fatal hit (${nameOf(member.accord)})`);
+    if (state.rescued?.includes(id)) tag(id, 'Conduit rescue used');
+    if (state.taunt === id) chips.push(`${getConduit('tectonic-atlas-bastion').name} · taunting all enemies`);
+    // D-493 B4: a borrowed skill (Throne of Borrowed Tomorrows) and Choir-Array Skill Power held this turn.
+    if (state.phase === 'player' && state.borrowed?.includes(id))
+      bonuses[id].push(`${getConduit('calamitic-throne-borrowed-tomorrows').name} · one extra Skill 1 or Skill 2 this turn`);
+    if (member.choirPower) bonuses[id].push(`${getConduit('calamitic-choir-array-of-branded-stars').name} · +${pct(member.choirPower)} Skill Power this turn`);
     const starter = member.loadout.starter;
     if (starter === 'vaelor') chips.push(`Beat · ${beats[radiantBeat(state.round)]}`);
     if (starter === 'bliss' && state.phase === 'player' && !state.acted.includes(id)) {
@@ -98,13 +137,42 @@ export function radiantSignatureView(state: RadiantCombatState): RadiantSignatur
         chips.push(`Signals ${own.signals.length}`);
         break;
       case 'path':
-        chips.push(`Promise ${own.count}/${radiantSignatureCaps.promise} · ${own.path === 'shelter' ? 'Shelter' : own.path === 'flourish' ? 'Flourish' : 'No path'}`);
+        chips.push(`Promise ${own.count}/${radiantSignatureCap(member.loadout, 'promise')} · ${own.path === 'shelter' ? 'Shelter' : own.path === 'flourish' ? 'Flourish' : 'No path'}`);
         break;
       default:
-        chips.push(`${counterLabels[own.kind]} ${own.count}/${radiantSignatureCaps[own.kind]}`);
+        chips.push(`${counterLabels[own.kind]} ${own.count}/${radiantSignatureCap(member.loadout, own.kind)}`);
     }
   }
-  return { owners, holders };
+  // D-493 B3a: Conduit marks and Burn bonuses carried by enemies.
+  for (const target of state.enemies) {
+    if (target.hp === 0) continue;
+    for (const mark of target.marks ?? []) tag(target.id, `Nightglass Mark (${nameOf(mark.casterId)}) · ${turns(mark.remaining)}`);
+    const amp = target.debuffs.find(effect => effect.category === 'burn')?.amp;
+    if (amp) tag(target.id, `Cinder Testament · Burn +${pct(amp)}`);
+    if (state.taunt && living(state.taunt)) tag(target.id, `Taunted · attacks ${nameOf(state.taunt)}`);
+    // D-493 B5b Worldforge Hammer Dominion: Seismic Hammerfall's Defense reduction.
+    if (target.sunder) {
+      const caster = state.bearers.find(unit => unit.loadout.id === target.sunder!.casterId);
+      const cut = caster && caster.hp > 0 ? radiantEquipmentAmount(caster.loadout, 'hammerfall-sunder') : 0;
+      if (cut > 0) tag(target.id, `Sundered · ${pct(cut)} less Defense · ${turns(target.sunder.remaining)}`);
+    }
+    // D-493 B5d Forbidden Garden Worldlock: a triggered Thorn Trap's Defense reduction (through the next player turn).
+    if (target.trapCut) {
+      const caster = state.bearers.find(unit => unit.loadout.id === target.trapCut!.casterId);
+      const cut = caster && caster.hp > 0 ? radiantEquipmentAmount(caster.loadout, 'trap-cut') : 0;
+      if (cut > 0) tag(target.id, `Thorn-cut · ${pct(cut)} less Defense · this turn`);
+    }
+    // D-493 B4 Ruinmark Censer: this enemy carries a living wearer's Weaken.
+    const weaken = target.debuffs.find(effect => effect.category === 'weaken');
+    const wearer = weaken && weaken.source.kind !== 'enemy' ? state.bearers.find(unit => unit.hp > 0 &&
+      unit.loadout.id === (weaken.source as { bearerId: string }).bearerId) : undefined;
+    const ruin = wearer ? radiantEquipmentAmount(wearer.loadout, 'weaken-vulnerability') : 0;
+    if (ruin > 0) tag(target.id, `${getConduit('calamitic-ruinmark-censer').name} · +${pct(ruin)} damage taken`);
+    // D-493 B5d Final Dawn Tribunal: Aurora's Weaken also lowers Defense while she lives.
+    const tribunal = wearer ? radiantEquipmentAmount(wearer.loadout, 'weaken-cut') : 0;
+    if (tribunal > 0) tag(target.id, `Final Dawn Tribunal · ${pct(tribunal)} less Defense`);
+  }
+  return { owners, holders, bonuses };
 }
 
 export function radiantSignatureChips(chips: readonly string[]): string {
@@ -112,4 +180,8 @@ export function radiantSignatureChips(chips: readonly string[]): string {
 }
 export function radiantSignatureTags(tags: readonly string[]): string {
   return tags.map(text => `<span class="radiant-signature-tag">${escape(text)}</span>`).join('');
+}
+/** D-493 B3b: next-action bonus tags; `fresh` ones were just granted and play one finite sheen (static under Reduce motion). */
+export function radiantBonusTags(tags: readonly string[], fresh: ReadonlySet<string> = new Set()): string {
+  return tags.map(text => `<span class="radiant-signature-tag radiant-bonus-tag${fresh.has(text) ? ' is-fresh' : ''}">${escape(text)}</span>`).join('');
 }

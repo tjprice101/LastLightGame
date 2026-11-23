@@ -1,9 +1,9 @@
-import { radiantBearerKits, radiantTankTargetWeight, type RadiantLoadout } from '../content/combat-kits';
+import { radiantBearerKits, radiantKitSkill, radiantTankTargetWeight, type RadiantLoadout } from '../content/combat-kits';
 import { radiantSkillAcceptsTarget, type RadiantSkillDef, type RadiantSkillSlot } from '../content/radiant-kits';
 import { scheduledEnemySkill } from '../content/enemy-skills';
-import { applyRadiantCombatAction, createRadiantCombat, radiantSkillStats, type RadiantBearer, type RadiantCombatState,
+import { applyRadiantCombatAction, createRadiantCombat, radiantActionEfficiency, radiantFlareReady, radiantPendingActors, type RadiantBearer, type RadiantCombatState,
   type RadiantCombatEvent, type RadiantCombatAction } from './combat-engine';
-import { personalChargeMaximum, personalChargeUnit, radiantFlareCost, readyFlare, readySkill } from './combat-gauge';
+import { personalChargeMaximum, personalChargeUnit, readySkill } from './combat-gauge';
 import type { RadiantPressureEnemy } from './enemy-pressure-encounters';
 
 /** `flare-saving` (Step 4 retune study): holds Luminosity for the Flare, still protects, spends only at capacity. */
@@ -29,8 +29,15 @@ export function chooseRadiantPressureAction(
   const actor = state.bearers.find(member => member.loadout.id === id)!;
   const target = state.enemies.filter(member => member.hp > 0).sort((a, b) => a.hp - b.hp || a.id.localeCompare(b.id))[0];
   const normal: RadiantCombatAction = { type: 'normal', bearerId: id, targetId: target.id };
+  // D-493 B5b: skills as this loadout casts them (Master clauses can change a target set).
+  const kit = { skill1: radiantKitSkill(actor.loadout, 1), skill2: radiantKitSkill(actor.loadout, 2), flare: radiantKitSkill(actor.loadout, 'flare') };
+  // D-493 B4 (G12): a bearer who already acted can only use its borrowed Skill 1 or Skill 2 (Skill 2 first when affordable).
+  if (state.acted.includes(id)) {
+    const slot = ([2, 1] as const).find(choice => readySkill(state.gauge, id, choice, radiantActionEfficiency(state, id, choice)));
+    if (slot === undefined) return { type: 'end-turn' };
+    return { type: 'skill', bearerId: id, slot, ...(radiantSkillAcceptsTarget(slotDef(kit, slot)) ? { targetId: target.id } : {}) };
+  }
   if (policy === 'normal-only') return normal;
-  const kit = radiantBearerKits[actor.loadout.starter].kit;
   const wounded = state.bearers.some(member => member.hp > 0 && member.hp < member.stats.hp * .8);
   const unshielded = state.bearers.some(member => member.hp > 0 && !member.shields.length);
   const endangered = actor.hp < actor.stats.hp * .25 && actor.shields.length === 0;
@@ -42,9 +49,9 @@ export function chooseRadiantPressureAction(
       ['attack-up', 'defense-up', 'reduction', 'gain-up', 'fill', 'signature'].includes(effect.kind));
   const allowed = (def: RadiantSkillDef) => (policy !== 'support-only' || supportive(def)) && useful(def);
   const targeted = (def: RadiantSkillDef) => radiantSkillAcceptsTarget(def) ? { targetId: target.id } : {};
-  if (readyFlare(state.gauge, id) && allowed(kit.flare)) return { type: 'flare', bearerId: id, ...targeted(kit.flare) };
+  if (radiantFlareReady(state, id) && allowed(kit.flare)) return { type: 'flare', bearerId: id, ...targeted(kit.flare) };
   const options = ([2, 1] as const).filter(slot => readySkill(state.gauge, id, slot,
-    radiantSkillStats(state, id, slot).skillEfficiency) && allowed(slotDef(kit, slot)));
+    radiantActionEfficiency(state, id, slot)) && allowed(slotDef(kit, slot)));
   if (policy === 'flare-saving') {
     const member = state.gauge.members.find(entry => entry.id === id)!;
     const capped = member.charge >= personalChargeMaximum(member) - radiantChargeHeadroom;
@@ -82,7 +89,10 @@ export function radiantPressureEnemyAction(
     (a.hp / a.stats.hp - b.hp / b.stats.hp) || a.loadout.id.localeCompare(b.loadout.id));
   const random = targetRandom();
   if (!Number.isFinite(random) || random < 0 || random >= 1) throw new Error('Invalid target seed output.');
-  const target = targeting ? targets[0] : weightedTarget(targets, random);
+  // D-493 B3c Atlas Bastion: a living taunter draws every enemy attack, Calamity targeting included (the roll is still drawn
+  // above so the target stream stays aligned).
+  const taunter = state.taunt === undefined ? undefined : targets.find(member => member.loadout.id === state.taunt);
+  const target = taunter ?? (targeting ? targets[0] : weightedTarget(targets, random));
   const pattern = enemy.pattern;
   const actor = state.enemies.find(member => member.id === enemy.id)!;
   return { type: 'enemy-attack', enemyId: enemy.id, targetIds: [target.loadout.id],
@@ -138,15 +148,11 @@ export function runRadiantPressure(
   const apply = (action: RadiantCombatAction) => {
     const beforePersonal = personal();
     let spent = 0;
-    if (action.type === 'flare') {
-      const member = state.gauge.members.find(member => member.id === action.bearerId)!;
-
-      if (!readyFlare(state.gauge, member.id)) throw new Error('Pressure Convergent Light is not ready.');
-      spent = radiantFlareCost(member);
-    }
+    if (action.type === 'flare' && !radiantFlareReady(state, action.bearerId))
+      throw new Error('Pressure Convergent Light is not ready.');
     const result = applyRadiantCombatAction(state, action);
     state = result.state; result.events.forEach(record);
-    for (const event of result.events) if (event.type === 'skill') spent += event.cost;
+    for (const event of result.events) if (event.type === 'skill' || event.type === 'flare') spent += event.cost ?? 0;
     metrics.personalSpent += spent;
     metrics.personalGranted = Math.round((metrics.personalGranted + personal() - beforePersonal + spent) *
       personalChargeUnit) / personalChargeUnit;
@@ -162,6 +168,9 @@ export function runRadiantPressure(
       if (member.hp > 0 && !state.acted.includes(member.loadout.id))
         apply(chooseRadiantPressureAction(state, member.loadout.id, policy));
     }
+    // D-493 B4 (G12): borrowed skills granted by Throne of Borrowed Tomorrows, then the enemy phase.
+    for (let pending = radiantPendingActors(state); state.phase === 'player' && pending.length; pending = radiantPendingActors(state))
+      apply(chooseRadiantPressureAction(state, pending[0], policy));
     if (state.phase === 'enemy') {
       for (const enemy of enemies) {
         if (state.phase !== 'enemy') break;

@@ -1,5 +1,213 @@
 # Decision log
 
+## Battle Flurry Phase 4b approved: Conduit restoration (D-493, 2026-11-19)
+
+- **Owner-approved (2026-11-19), in full:** the
+  [restoration proposal](Future%20Plans/battle-flurry-reference/phase4-conduit-restoration.md)
+  as written: shared rules, mapping rules M1-M14, number sheet C1-C18, every
+  recommended answer O1-O14 and all five batches B1-B5 (195 live rows).
+- **Key answers:** no critical hits (deterministic C9/C10 conversion, D-473 O4
+  stands); Luminosity capacity above the Convergent Light cost (C8); ×0.2
+  rescale for always-on Health/Defense/Attack only (C1); the five D-480
+  reworks revert to their pre-Radiant effects (O5); distinct-design test
+  allows up to 6 primitives with unique (kind, amount) lists (O6); the 18
+  Sunshade Masters stay untouched (O7); a separate `conduit` RNG stream (O11);
+  Radiant-era Conduit designs are replaced wholesale (O14).
+- **Delivery (4c):** batch by batch, B1 first; each batch is coded, tested,
+  pressure-checked (O4: fallback proposal if an ordinary band moves more than
+  5 points) and released with a matching `game-operation` deploy before the
+  next. Saved holdings, ranks, loadouts and stable IDs are untouched.
+- **Supersedes:** D-480 for Starvein Conductor, Horizon Heartcase, Duplex
+  Heart, Reserve Torque Crank and Fieldbrace Coupler, once their batch ships.
+- **Release plan (owner choice, 2026-11-19, after the B1 study):** hold
+  releases; build B1-B5 on `battle-flurry-phase3`, then release once with a
+  single enemy retune measured on the final Conduit set. Reason: the B1 study
+  (`--retune`, balanced player, `radiant-trio-v1`) raised Calamity EX+1/2/3
+  from 85.2/52.8/33.3% to 91.7/60.6/45.8% and inactive Sunshade 101-140 from
+  92-94% to 100%; ordinary overall 96.9% to 98.0%, other bands under 5
+  points. The O4 Skill Power cap would not bind (B1 Skill Power is far below
+  +200%), so it is not a fix.
+- **B1 implemented (unreleased):** the 25 Common/Rare rows as approved;
+  the D-480 `shield-break` kind is removed (no remaining wearer).
+- **B2 implemented (unreleased):** the 15 Legendary rows; `skill-leech`
+  removed. Implementation choice: Horizon Heartcase keeps Health above the
+  normal maximum until damage (no event-less Health loss). B1+B2 study:
+  Calamity EX+1/2/3 94.9/73.6/62.5%, ordinary 98.1%.
+- **B3 split (2026-11-20):** B3a (29 Omnic rows that need no new system),
+  B3b (next-action tokens, 13 rows), B3c (rescue ledger, revive, Accord,
+  taunt, 3 rows). G12 (extra skill after Convergent Light) belongs to B4
+  (Throne of Borrowed Tomorrows).
+- **B3a implemented (unreleased).** Implementation choices (owner may
+  reverse): squad auras multiply separately from the gear pool; Health above
+  a maximum lowered by a fallen aura wearer stays until damage; Worldtree
+  Heart raises its existing Shield to the new amount instead of replacing it;
+  Conduit effects that act on other allies need their wearer alive. Open item:
+  Shared Tide Lifesea Engine (Oceanic) only triggers on a skill that Shields
+  exactly one ally, and no released Oceanic kit has one.
+- **Critical hits return (owner decision, 2026-11-20).** Reverses D-473 O4
+  and replaces the C9/C10 deterministic conversion (O1). Owner answers: base
+  Critical Rate and Critical Damage use the pre-Radiant values (rate about
+  10-25% by bearer, damage 1.5x); enemies can land critical hits again; Critical
+  Up comes back in place of Exposure (kits and Conduits that apply or read
+  Exposure are redesigned around Critical Up). Restored crit rows take their
+  old crit stats and triggers verbatim. Sequencing: a planned crit step runs
+  before B3b and also converts the about 20 already-built conversion rows (B1,
+  B2, B3a). Open for that plan: crit RNG stream (separate, must not perturb
+  other streams), which hits can crit (Normal Attacks, skills, Convergent
+  Light; Burn and Conduit-generated strikes), presentation, and the exact
+  Exposure-to-Critical-Up kit translations.
+- **Crit step plan answers (owner, 2026-11-20, Plan mode):** Critical Up stays
+  an enemy mark (hits on it gain Critical Rate); pre-Radiant crit scope
+  (Normal Attacks, skills, Convergent Light, kit signature strikes and kit Burn
+  ticks; Conduit-generated damage never; one roll per target per action);
+  every enemy 10% / 1.5x; Elemental Crit restored (second roll above 100%,
+  x1.5).
+- **Crit step implemented (unreleased, 2026-11-20).** Separate `critSeed`
+  stream; 18 built rows converted to real crit stats and triggers
+  ([combat spec](combat.md#critical-hits-and-critical-up-d-493-crit-step-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): crit stats are fixed (no
+  level/form/rank growth); Critical Up converts at 2 points of Critical Rate
+  per old Exposure point (Golden Thorn Volley +30, Rose Beyond the Sun +60,
+  Denial of Fate +50, Reaper's Claim +24); encounters saved before the step
+  finish without crits under the old Exposure rule (no version bump, nothing
+  retired); no extra crit hit-stop (R2); the old x1.5 Last Flare crit-chance
+  bonus is not restored.
+- **Save compatibility is a standing acceptance check (owner, 2026-11-20).**
+  Every batch proves that saves and saved encounters written before it still
+  load and can start a battle (new event types and state fields must pass the
+  saved-event allowlist).
+- **B3b plan answers (owner, 2026-11-20, Plan mode):** Shared Tide Lifesea
+  Engine is adapted for Tide: when the wearer's skill or Convergent Light
+  Shields one or more allies, the most-wounded recipient gains an extra Shield
+  worth 50% of the Shield it received (closes the B3a open item). Tempest
+  Return Chronarch's Convergent Light bonus is kept until used instead of
+  expiring under C17.
+- **B3b implemented (unreleased, 2026-11-20).** The 13 next-action rows with
+  real crits, Undertide's Convergent Light discount and the flare event `cost`
+  ([combat spec](combat.md#conduit-restoration-b3b-next-action-bonuses-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): readiness and the fan ignore
+  target discounts; Dawn Witness is inert without crit rolls; Thunderbird's
+  "critical skill" includes Convergent Light; a newer Secondbeat or Sootwake
+  target replaces the earlier one; Triage's discount applies to a skill that
+  heals or Shields; Rosefault's once-per-turn trigger is used by the first
+  critical action even without a Shield.
+- **B3c plan answers (owner, 2026-11-20, Plan mode):** Atlas Bastion's taunt
+  overrides Calamity boss targeting too (matches the existing "unless taunted"
+  boss text). The `master-sprout-3` Worldseed revive waits for B5 and plugs
+  into the B3c rescue ledger.
+- **B3c implemented (unreleased, 2026-11-20).** Shared rescue ledger (C18),
+  Phoenix Reactor revive, Accord, Atlas Bastion taunt
+  ([combat spec](combat.md#conduit-restoration-b3c-rescue-limit-revive-accord-taunt-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): an Accord save uses a Phoenix
+  Reactor wearer's rescue (legacy order: Refusal, Accord, Phoenix); Accord goes
+  only to other allies, from the wearer's own heals and Shields, and needs the
+  giver alive at the save; a revival clears timed effects and held bonuses,
+  uses the frozen maximum Health and ends that attack's remaining hits on the
+  bearer; no Atlas Luminosity from an attack that defeats the taunter.
+- **B4 plan answers (owner, 2026-11-21, Plan mode):** Throne of Borrowed
+  Tomorrows holds the player turn open while any living ally can still pay for
+  its borrowed Skill 1 or Skill 2 (End Turn forfeits unused ones; if no holder
+  can pay, the turn ends as before). An ally who used Convergent Light earlier
+  that turn is eligible (O10 text as approved).
+- **B4 implemented (unreleased, 2026-11-21).** The 14 Calamitic rows and G12
+  ([combat spec](combat.md#conduit-restoration-b4-calamitic-and-the-borrowed-skill-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): Ruinmark Censer and Choir-Array
+  need their wearer alive (B3a rule); one Choir-Array trigger per action
+  however many marks land; Choir-Array Skill Power ends with the player turn;
+  the turn hold and readiness ignore target-bound discounts; a borrowed skill
+  is not a "first action" and Bliss reads it as Closing.
+- **B5 split (owner, 2026-11-21, Plan mode):** four parts by engine seam:
+  B5a (stat packages, plumbing), B5b (37 kit-modifier rows), B5c (39
+  player-turn trigger and next-action rows), B5d (19 enemy-phase and special
+  rows, including the `master-sprout-3` revive and `master-myrthen-2` rolls).
+- **B5a implemented (unreleased, 2026-11-21).** 93 Master stat packages
+  ([combat spec](combat.md#conduit-restoration-b5a-master-stat-packages-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): the three clause-only Masters
+  (`master-sprout-2`, `master-disciple-2`, `master-nerithe-3`) keep their
+  Radiant-era pair until their clause ships; the O6 distinct-design test lets
+  Masters of different bearers share a stat package (each still differs from
+  its bearer's other Masters and from every Conduit); squad Skill Efficiency
+  joins Convergent Light on top of the stored value; per-Master signature-cap
+  and clause hooks are left to B5b, which designs them against its rows.
+  Open release item: frozen encounters saved mid-run with a Conduit or Master
+  whose stats changed in B1-B5 fail validation after release; bump the run
+  version (retire with the existing notice, rewards kept) or not (owner).
+- **B5b owner answers (Plan mode, 2026-11-21):** Quarry Planet Gravitas
+  (`master-bruno-2`) uses the largest of Worldwall Ascendant's kit 40% of
+  maximum Health, 375% of current Defense and 37.5% of maximum Health (the
+  literal restore was usually lower than today). Cinderstar Genesis Engine
+  (`master-ember-2`) puts Dawnfire's Burn on the single target only (its
+  Attack Up still reaches all allies). Throne Beneath the World's next-skill
+  Skill Efficiency (`master-orvella-1`) moves to B5c with the Master-token
+  shape change; B5b builds its Foundation carry. Defaults accepted: Seismic
+  Hammerfall's sunder lasts through the end of the next enemy phase;
+  Elise-1, Nerithe-1 and Tide-3 need their bearer alive; Vaelor-2's Gain Up
+  and Ozriel-2's Weaken are fixed (not Skill Power scaled); Serapha-1 adds
+  +5% of maximum Health per Interval spent.
+- **B5b implemented (unreleased, 2026-11-22).** 37 Master kit modifiers
+  ([combat spec](combat.md#conduit-restoration-b5b-master-kit-modifiers-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): kit value replacements (Move as
+  One, Carry Them Back, Return the Strain's and Turn the Other Edge's
+  ignore, Covenant, Beacon, Mark counts, Disciple's duration) change the
+  skill as cast and are not credited separately in the D-492 summary; other
+  allies' Defense clauses and Cover/Foundation auras are credited to the
+  Master; Glass Meridian's ignore reads Incisions before the cast.
+- **B5c owner answers (Plan mode, 2026-11-22):** B5c is split into B5c1
+  (Master-token shape change, 16 next-action rows and 2 conditional rows) and
+  B5c2 (22 Luminosity, Shield and heal trigger rows), with a fresh session
+  between. Final Chord Celestial Resonator (`master-vaelor-1`) gives +60% when
+  Last Chord itself is cast on Crescendo, otherwise +30%.
+- **B5c1 implemented (unreleased, 2026-11-22).** 18 Master rows and
+  Master-given next-action bonuses
+  ([combat spec](combat.md#conduit-restoration-b5c1-master-next-action-bonuses-d-493-battle-flurry-phase-4c)).
+  Implementation choices (owner may reverse): Sprout-1 triggers on bloom even
+  at full Health; Atmoso-3's Gain Up lasts 2 turns; Disciple-3 reads the
+  current Attack Up source; Tide's own Shield counts for Tide-2; Elise-2's
+  bonuses expire like other bonuses even while the Shuriken stays lodged.
+- **B5c2 implemented (unreleased, 2026-11-22).** 22 Master Luminosity, Shield
+  and heal trigger rows plus Bliss-2's Closing heal and Rosetta-2's
+  contributor heal
+  ([combat spec](combat.md#conduit-restoration-b5c2-master-luminosity-shield-and-heal-triggers-d-493-battle-flurry-phase-4c)).
+  Approach as approved in the B5c plan. Implementation choices (owner may
+  reverse): Rosetta-2 also heals Rosetta; Atmoso-2 counts Health removed;
+  Disciple-2 reads Attack Up held before the action; Neralis-3, Maerion-3 and
+  Solenne-2 count skills only; Asteriel-2 triggers on every Shelter cast;
+  Myrthen-3 counts Normal defeats; givers must be alive.
+- **B5d owner answers (Plan mode, 2026-11-22):** one session; the
+  `master-sprout-3` Worldseed revive is used only when an ally actually
+  returns; the `master-thornia-1` Thorn Trap Defense cut lasts through the
+  next player turn. Myrthen-2 joins the existing `conduit` stream
+  (`conduitSeed`); no new stream.
+- **B5d implemented (unreleased, 2026-11-22).** 19 Master enemy-phase and
+  special rows, the Worldseed revive on the C18 ledger and Seedtrace's
+  Conduit-stream rolls
+  ([combat spec](combat.md#conduit-restoration-b5d-master-enemy-phase-and-special-clauses-d-493-battle-flurry-phase-4c)).
+  Every live Master now carries its restored effect. Implementation choices
+  (owner may reverse): revived allies act from the next turn; Caldrex-2
+  strikes once per enemy action; Shadow Rose's damage cut covers Thornia;
+  Weaken triggers read the Weaken held when the enemy attacked; the Foundation
+  heal's share above 12% is lost. Release note: pre-release mid-run saves
+  with Seedtrace equipped fail validation without the 8 → 9 bump (B5a open
+  item).
+- **Enemy retune `radiant-trio-v2` (owner-approved 2026-11-23; unreleased).**
+  The one retune on the final Conduit set
+  ([sheet](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#phase-4c-retune-sheet-radiant-trio-v2-proposal-2026-11-23-numbers-await-owner-approval)).
+  Owner choices: keep the D-481 targets (ordinary >= 95% per activity and
+  20-level band; Calamity EX+1/2/3 80/50/30%, balanced player); keep the
+  current study builds (no Calamitic Conduits, no Atlas Bastion); a new id so
+  encounters underway on `radiant-trio-v1` (and `authored-control`) may
+  finish. Enemy stat factors only. Result: ordinary 97.0%, Calamity
+  80.1/50.0/31.0% (v1 on B5d: 99.9%, 100/96.3/92.1%). Every encounter below
+  95% has reliable winning teams; **Fatebreaker Warden (2/12) is accepted as
+  challenge content and the D-481 source-fix item for it and Training 120 is
+  closed.**
+- **Release frozen-run bump (owner decision, 2026-11-23): bump 8 → 9.**
+  Combat-state and frozen-run schemas become 9; version-8 encounters saved
+  mid-run (any calibration) end read-only with the "Combat rules changed"
+  notice and keep saved rewards. Media type `radiant-continuation-v5`, so
+  pre-release clients get the refresh response. B1-B5d and `radiant-trio-v2`
+  ship in this single release with the matching `game-operation` deploy.
+
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 
 - **Owner-approved plan (2026-11-19).** Phase 4 round 1 = 4a build (on-field
