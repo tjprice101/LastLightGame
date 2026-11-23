@@ -716,3 +716,98 @@ reachable at the current costs, so **no Convergent Light cost change is proposed
      re-measure. Numbers await owner approval; not implemented.
 3. **Calamity offense trios:** accepted; they need a sustain member at EX tiers.
 
+
+## Phase 4c retune sheet: `radiant-trio-v2` (proposal, 2026-11-23; numbers await owner approval)
+
+**Status:** **approved 2026-11-23** and applied on `battle-flurry-phase3` as
+the live `radiant-trio-v2` (unreleased); see owner answers at the end. This is the one
+enemy retune on the final Conduit set (D-493, after B5d).
+
+**Owner choices (2026-11-23, Plan mode):** keep the D-481 targets (ordinary
+>= 95% per activity and 20-level band; Calamity EX+1/2/3 80/50/30%, balanced
+player); keep the current study builds (no Calamitic Conduits, no Atlas
+Bastion); a new id, so encounters underway on `radiant-trio-v1` still finish.
+Enemy stat factors only: formations, rewards, Convergent Light costs and
+Resonance are unchanged.
+
+### How it was measured
+
+- `node tools\run_pressure_study.mjs <out> --retune-fit` (B5d code, commit
+  `ab1457dd`), then `--retune` with `RETUNE_CANDIDATE` set to the fitted
+  calibration. Same D-404 preparation, teams, seeds and policies as the Step 4
+  sheet. Offline only.
+
+### Effective levels (an enemy of real level L fights like level E)
+
+| Real level | Ordinary v1 → v2 | Bosses v1 → v2 | Calamity v1 → v2 |
+|---|---|---|---|
+| 1-95 | same → same | same (to 90) → same (to 105) | - |
+| 100 | 95 → **100** | ~96 → **100** | - |
+| 105-120 | 95 → **100** | 99-100 → **105-112** | - |
+| 140 | 103 → **116** | 101 → **112** | - |
+| 145 (EX+1) | 103 → 116-117 | 104 → ~113 | 103 → **117** |
+| 150-160 | 103 → **117-119** | 105-107 → **116-125** | - |
+| 160 (EX+2) | 103 → 119 | 107 → ~125 | 109 → **144** |
+| 170 (EX+3) | 103 → 121 | 108 → 129 | 111 → **157** |
+| 185 | 108 → 126 | 113 → 134 | 111 + tail → 157 + tail |
+
+Fit notes: at Lv.105-120 (ordinary) and Lv.120-140 (bosses) some band already
+misses 95% with enemies held flat, so the fit held those points flat (marked
+`shortfall`). Those are the challenge spots listed below.
+
+### Exact factor table (Health / Attack / Defense on authored stats)
+
+Interpolated linearly between points; all points not listed are 1/1/1.
+- Ordinary: 100: 1/1/1; 105: .7169/.8113/.8025; 110: .5185/.6829/.6694;
+  115: .3924/.5931/.5768; 120: .3189/.5252/.5079; 140: .4665/.6852/.6465;
+  150: .3229/.5573/.4949; 155: .2795/.533/.4482; 160: .2235/.4727/.384;
+  170: .153/.4225/.3004; 180: .098/.3096/.2178; 185: .0918/.2877/.2036.
+- Boss: 105: 1/1/1; 115: .8522/.9217/.9173; 120: .6926/.8162/.8078;
+  125: .5901/.7455/.7303; 135: .4402/.6687/.6338; 140: .379/.6157/.5775;
+  150: .3087/.5436/.4823; 165: .245/.5115/.3989; 175: .1568/.4058/.2933;
+  180: .1255/.3474/.2498; 185: .116/.3128/.2277.
+- Calamity: 80: 1/1/1; 145: .4041/.6309/.5784; 160: .4891/.6946/.612;
+  170: .5595/.7891/.6784; 185: .5603/.6677/.6588.
+
+### Results (balanced player; flare-saving in brackets)
+
+| Scope | v1 today | **v2 proposal** | Target |
+|---|---|---|---|
+| Ordinary, all fights | 99.9% (99.9%) | **97.0%** (98.6%) | 95% per band |
+| Calamity EX+1 | 100% (100%) | **80.1%** (93.1%) | 80% |
+| Calamity EX+2 | 96.3% (100%) | **50.0%** (67.1%) | 50% |
+| Calamity EX+3 | 92.1% (99.5%) | **31.0%** (34.3%) | 30% |
+
+- Levels 1-100: 100% everywhere, as today.
+- Bands below 95% under v2: Dungeon 101-120 91.7%; Infusion abyss/heavens/
+  machines 101-120 94.4%; Sunshade 121-140 88.9% (inactive event); War 121-140
+  93.7%; Oblivion 141-160 87.5%, 161-180 50.0%; Training 101-120 83.3%. For
+  comparison, the D-481 sheet had Dungeon 91.7%, War 94.3%, Oblivion 77.1/54.8%,
+  Training 50%.
+- Fight length: ordinary 9.6 rounds on average (v1 4.6); Calamity 13.4 (v1 6.5).
+- Calamity per team (balanced): Bliss/Razor/Aurora 100%; Ember/Tide/Sprout 73%;
+  Rosetta/Thornia/Sprout 71%; Crinso/Rosetta/Disciple 41%; Elise/Bruno/Sprout
+  35%; Nerithe/Orvella/Vaelor 2% (offense trio; D-481 accepted that these need
+  a sustain member).
+
+### D-481 challenge rule check
+
+Every v2 encounter below 95% has at least two of the 12 team x policy
+combinations that win every seed, so none needs a source fix under the D-481
+rule. The weakest: Fatebreaker Warden Lv.177 (2/12; 17% overall),
+Oblivion final (3/12), Annihilation Colossus Fragment, Oblivion mid and
+Training 120 (5/12 each). Training 120 improves on D-481 (0/12 perfect then).
+
+### Owner questions
+
+1. Approve these numbers as `radiant-trio-v2` (live for new encounters;
+   `radiant-trio-v1` and `authored-control` encounters underway may finish)?
+2. Fatebreaker Warden at 2/12: accept as the hardest challenge spot, or keep
+   the D-481 source-fix item open for it? Training 120 now has reliable
+   winners; close its source-fix item?
+
+### Owner answers (2026-11-23)
+
+1. **Approved** as `radiant-trio-v2`.
+2. **Fatebreaker Warden:** accepted as challenge content. The D-481 source-fix
+   item for the Warden and Training 120 is closed.

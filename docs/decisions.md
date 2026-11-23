@@ -189,6 +189,18 @@
   heal's share above 12% is lost. Release note: pre-release mid-run saves
   with Seedtrace equipped fail validation without the 8 → 9 bump (B5a open
   item).
+- **Enemy retune `radiant-trio-v2` (owner-approved 2026-11-23; unreleased).**
+  The one retune on the final Conduit set
+  ([sheet](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#phase-4c-retune-sheet-radiant-trio-v2-proposal-2026-11-23-numbers-await-owner-approval)).
+  Owner choices: keep the D-481 targets (ordinary >= 95% per activity and
+  20-level band; Calamity EX+1/2/3 80/50/30%, balanced player); keep the
+  current study builds (no Calamitic Conduits, no Atlas Bastion); a new id so
+  encounters underway on `radiant-trio-v1` (and `authored-control`) may
+  finish. Enemy stat factors only. Result: ordinary 97.0%, Calamity
+  80.1/50.0/31.0% (v1 on B5d: 99.9%, 100/96.3/92.1%). Every encounter below
+  95% has reliable winning teams; **Fatebreaker Warden (2/12) is accepted as
+  challenge content and the D-481 source-fix item for it and Training 120 is
+  closed.**
 
 ## Battle Flurry Phase 4a: Conduit callouts and contribution (D-492, 2026-11-19)
 

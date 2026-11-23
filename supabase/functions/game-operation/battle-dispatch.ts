@@ -4,7 +4,7 @@ import { executeRadiantRun, RadiantRunError, validateRadiantRunRequest, validate
   validateRadiantRunSnapshot, validateRadiantCheckpoint, radiantRpcRepositoryFor,
   type FrozenRadiantRun, type RadiantRunAuthority } from '../../../src/online/battle-run';
 import { executeRadiantPreparation, validateRadiantPreparationRequest } from '../../../src/online/battle-preparation';
-import { isRadiantCalibrationId, liveRadiantCalibrationId, previousLiveRadiantCalibrationId } from '../../../src/content/enemy-calibration';
+import { isRadiantCalibrationId, liveRadiantCalibrationId, previousLiveRadiantCalibrationIds } from '../../../src/content/enemy-calibration';
 
 export interface RadiantServerConfig {
   enabled?: string;
@@ -69,11 +69,11 @@ export async function handleRadiantRequest(value: object, user: string,
       if (error) throw new RadiantRunError('unavailable', 'Online account storage unavailable.');
       const snapshot = validateRadiantRunSnapshot(data);
       requireCompatibleRun(snapshot.state.radiantStudy);
-      // An encounter underway on the previous live calibration may still finish (D-481); new
-      // encounters must start on the enabled one.
+      // An encounter underway on an earlier live calibration may still finish (D-481, D-493 retune);
+      // new encounters must start on the enabled one.
       const saved = snapshot.state.radiantStudy?.calibration;
       if (saved !== undefined && saved !== (config.calibration ?? liveRadiantCalibrationId) &&
-        saved !== previousLiveRadiantCalibrationId)
+        !previousLiveRadiantCalibrationIds.includes(saved))
         throw new RadiantRunError('unavailable', 'The saved encounter calibration is not enabled by the authority.');
       return snapshot;
     };

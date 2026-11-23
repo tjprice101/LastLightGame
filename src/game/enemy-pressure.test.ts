@@ -86,14 +86,15 @@ describe('radiant authored pressure adapter', () => {
     expect(() => radiantEnemyFactors(1, 'boss', { ...pressureRadiantCalibration,
       points: [{ level: 1, hp: NaN, attack: 1, defense: 1 }, { level: 185, hp: 1, attack: 1, defense: 1 }] })).toThrow();
   });
-  it('makes radiant-trio-v1 live: unchanged to Lv.95, never meaningfully weaker as level rises (D-481)', () => {
-    expect(liveRadiantCalibrationId).toBe('radiant-trio-v1');
+  it('makes radiant-trio-v2 live: unchanged to Lv.100, never meaningfully weaker as level rises (D-493 retune)', () => {
+    expect(liveRadiantCalibrationId).toBe('radiant-trio-v2');
     expect(liveRadiantCalibration.id).toBe(liveRadiantCalibrationId);
     for (const id of radiantCalibrationIds) expect(radiantCalibration(id).id).toBe(id);
     expect(isRadiantCalibrationId('radiant-trio-v1')).toBe(true);
+    expect(isRadiantCalibrationId('radiant-trio-v2')).toBe(true);
     expect(isRadiantCalibrationId('client-choice')).toBe(false);
     for (const category of ['ordinary', 'boss', 'calamity'] as const) {
-      const unchangedTo = category === 'ordinary' ? 95 : category === 'boss' ? 90 : 80;
+      const unchangedTo = category === 'ordinary' ? 100 : category === 'boss' ? 105 : 80;
       for (let level = 1; level <= unchangedTo; level++)
         expect(radiantEnemyFactors(level, category, liveRadiantCalibration)).toEqual({ hp: 1, attack: 1, defense: 1 });
       // Calibration points never decrease; between points, factors interpolate linearly while the base curve
@@ -114,9 +115,14 @@ describe('radiant authored pressure adapter', () => {
     const close = (actual: { hp: number; attack: number; defense: number }, hp: number, attack: number, defense: number) => {
       expect(actual.hp).toBeCloseTo(hp, 10); expect(actual.attack).toBeCloseTo(attack, 10); expect(actual.defense).toBeCloseTo(defense, 10);
     };
-    close(radiantEnemyFactors(105, 'ordinary', liveRadiantCalibration), .5005, .6457, .6275);
-    close(radiantEnemyFactors(145, 'calamity', liveRadiantCalibration), .1762, .4053, .3629);
-    expect(radiantEnemyFactors(160, 'boss', liveRadiantCalibration).hp).toBeCloseTo(.1611 + (.1004 - .1611) * 10 / 15);
+    close(radiantEnemyFactors(105, 'ordinary', liveRadiantCalibration), .7169, .8113, .8025);
+    close(radiantEnemyFactors(145, 'calamity', liveRadiantCalibration), .4041, .6309, .5784);
+    expect(radiantEnemyFactors(160, 'boss', liveRadiantCalibration).hp).toBeCloseTo(.3087 + (.245 - .3087) * 10 / 15);
+    // radiant-trio-v1 stays frozen for encounters already underway on it (D-481 table).
+    const v1 = radiantCalibration('radiant-trio-v1');
+    close(radiantEnemyFactors(105, 'ordinary', v1), .5005, .6457, .6275);
+    close(radiantEnemyFactors(145, 'calamity', v1), .1762, .4053, .3629);
+    expect(radiantEnemyFactors(160, 'boss', v1).hp).toBeCloseTo(.1611 + (.1004 - .1611) * 10 / 15);
   });
   it('keeps actual stage, level, normal-clear, Calamitic-ownership and event-window gates', () => {
     const account = emptyAccount(), before = JSON.stringify(account);

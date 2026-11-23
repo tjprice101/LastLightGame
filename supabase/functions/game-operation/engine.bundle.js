@@ -16560,9 +16560,9 @@ function atTrainingWave(state, wave) {
 
 // src/content/enemy-calibration.ts
 var unity = { hp: 1, attack: 1, defense: 1 };
-var radiantCalibrationIds = ["authored-control", "radiant-pressure-v2", "radiant-trio-v1"];
-var liveRadiantCalibrationId = "radiant-trio-v1";
-var previousLiveRadiantCalibrationId = "authored-control";
+var radiantCalibrationIds = ["authored-control", "radiant-pressure-v2", "radiant-trio-v1", "radiant-trio-v2"];
+var liveRadiantCalibrationId = "radiant-trio-v2";
+var previousLiveRadiantCalibrationIds = ["authored-control", "radiant-trio-v1"];
 var authoredRadiantCalibration = {
   id: "authored-control",
   points: [{ level: 1, ...unity }, { level: 185, ...unity }],
@@ -16627,10 +16627,54 @@ var radiantTrioCalibration = {
   },
   categories: { ordinary: unity, boss: unity, calamity: unity }
 };
+var radiantTrioV2Calibration = {
+  id: "radiant-trio-v2",
+  points: [
+    { level: 1, hp: 1, attack: 1, defense: 1 },
+    { level: 100, hp: 1, attack: 1, defense: 1 },
+    { level: 105, hp: 0.7169, attack: 0.8113, defense: 0.8025 },
+    { level: 110, hp: 0.5185, attack: 0.6829, defense: 0.6694 },
+    { level: 115, hp: 0.3924, attack: 0.5931, defense: 0.5768 },
+    { level: 120, hp: 0.3189, attack: 0.5252, defense: 0.5079 },
+    { level: 140, hp: 0.4665, attack: 0.6852, defense: 0.6465 },
+    { level: 150, hp: 0.3229, attack: 0.5573, defense: 0.4949 },
+    { level: 155, hp: 0.2795, attack: 0.533, defense: 0.4482 },
+    { level: 160, hp: 0.2235, attack: 0.4727, defense: 0.384 },
+    { level: 170, hp: 0.153, attack: 0.4225, defense: 0.3004 },
+    { level: 180, hp: 0.098, attack: 0.3096, defense: 0.2178 },
+    { level: 185, hp: 0.0918, attack: 0.2877, defense: 0.2036 }
+  ],
+  categoryPoints: {
+    boss: [
+      { level: 1, hp: 1, attack: 1, defense: 1 },
+      { level: 105, hp: 1, attack: 1, defense: 1 },
+      { level: 115, hp: 0.8522, attack: 0.9217, defense: 0.9173 },
+      { level: 120, hp: 0.6926, attack: 0.8162, defense: 0.8078 },
+      { level: 125, hp: 0.5901, attack: 0.7455, defense: 0.7303 },
+      { level: 135, hp: 0.4402, attack: 0.6687, defense: 0.6338 },
+      { level: 140, hp: 0.379, attack: 0.6157, defense: 0.5775 },
+      { level: 150, hp: 0.3087, attack: 0.5436, defense: 0.4823 },
+      { level: 165, hp: 0.245, attack: 0.5115, defense: 0.3989 },
+      { level: 175, hp: 0.1568, attack: 0.4058, defense: 0.2933 },
+      { level: 180, hp: 0.1255, attack: 0.3474, defense: 0.2498 },
+      { level: 185, hp: 0.116, attack: 0.3128, defense: 0.2277 }
+    ],
+    calamity: [
+      { level: 1, hp: 1, attack: 1, defense: 1 },
+      { level: 80, hp: 1, attack: 1, defense: 1 },
+      { level: 145, hp: 0.4041, attack: 0.6309, defense: 0.5784 },
+      { level: 160, hp: 0.4891, attack: 0.6946, defense: 0.612 },
+      { level: 170, hp: 0.5595, attack: 0.7891, defense: 0.6784 },
+      { level: 185, hp: 0.5603, attack: 0.6677, defense: 0.6588 }
+    ]
+  },
+  categories: { ordinary: unity, boss: unity, calamity: unity }
+};
 var calibrationsById = {
   "authored-control": authoredRadiantCalibration,
   "radiant-pressure-v2": pressureRadiantCalibration,
-  "radiant-trio-v1": radiantTrioCalibration
+  "radiant-trio-v1": radiantTrioCalibration,
+  "radiant-trio-v2": radiantTrioV2Calibration
 };
 function isRadiantCalibrationId(value2) {
   return typeof value2 === "string" && radiantCalibrationIds.includes(value2);
@@ -22571,7 +22615,7 @@ async function handleRadiantRequest(value2, user, admin, config, identityOf, sup
       const snapshot = validateRadiantRunSnapshot(data);
       requireCompatibleRun(snapshot.state.radiantStudy);
       const saved = snapshot.state.radiantStudy?.calibration;
-      if (saved !== void 0 && saved !== (config.calibration ?? liveRadiantCalibrationId) && saved !== previousLiveRadiantCalibrationId)
+      if (saved !== void 0 && saved !== (config.calibration ?? liveRadiantCalibrationId) && !previousLiveRadiantCalibrationIds.includes(saved))
         throw new RadiantRunError("unavailable", "The saved encounter calibration is not enabled by the authority.");
       return snapshot;
     };

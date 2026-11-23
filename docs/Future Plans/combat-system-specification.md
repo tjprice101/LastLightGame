@@ -3,7 +3,7 @@
 ## Live implementation and continuation compatibility (2026-11-10)
 
 Radiant is the actual online and local battle system for every activity, not a
-separate preview. The current live calibration is `radiant-trio-v1` (D-481); older
+separate preview. The current live calibration is `radiant-trio-v2` (D-493 retune); older
 preview-only and disabled-authority statements below are historical. Squads
 use one to six owned, released Element-Bearers. Captured Elemental-Devourers
 remain in the collection but cannot join a Radiant squad. Existing saved
@@ -1265,10 +1265,10 @@ shared bundle, preserving the existing client/server resolver foundation.
 stable across retries. Domain-separated HMAC-SHA256 of authenticated user/
 request ID derives UUIDv4 and independent encounter/charge/target seeds.
 No client seed/outcome/HP/budget authority or missing-secret random fallback.
-`RADIANT_STUDY_CALIBRATION` defaults to the live `radiant-trio-v1` (D-481);
-`authored-control` and experimental `radiant-pressure-v2` require explicit
-server opt-in for new starts, while runs already underway on
-`authored-control` may finish. Never infer tuning
+`RADIANT_STUDY_CALIBRATION` defaults to the live `radiant-trio-v2` (D-493
+retune); `authored-control`, `radiant-trio-v1` and experimental
+`radiant-pressure-v2` require explicit server opt-in for new starts, while runs
+already underway on `authored-control` or `radiant-trio-v1` may finish. Never infer tuning
 approval from that available capability.
 
 Typed [radiant transport](../../src/online/battle-transport.ts) validates

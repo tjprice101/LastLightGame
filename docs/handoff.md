@@ -1,5 +1,62 @@
 # Current state and handoff
 
+## Battle Flurry Phase 4c retune: live calibration `radiant-trio-v2` (D-493, 2026-11-23)
+
+**Implemented on `battle-flurry-phase3`, not released.** This is the one enemy
+retune on the final Conduit set (B1-B5d). Sheet:
+[Phase 4c retune sheet](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#phase-4c-retune-sheet-radiant-trio-v2-proposal-2026-11-23-numbers-await-owner-approval).
+
+**Owner answers (Plan mode):**
+- Keep the D-481 targets: ordinary at least 95% per band, Calamity EX+1/2/3
+  80/50/30%.
+- Keep the current study builds.
+- Approve the fitted numbers.
+- Accept Fatebreaker Warden as challenge content. The Warden/Training 120
+  source-fix item is closed.
+
+**What changed:**
+- New calibration `radiant-trio-v2` (`radiantTrioV2Calibration`) is live for
+  new encounters. `radiant-trio-v1` stays frozen.
+- `previousLiveRadiantCalibrationId` became the list
+  `previousLiveRadiantCalibrationIds` (`authored-control`, `radiant-trio-v1`).
+  The authority lets encounters underway on either finish, and refuses new
+  starts on them.
+- Updated: smoke scripts, the server README, `tools/retune-fit.ts` (fitted id),
+  tests, decisions, combat docs and Future Plans.
+
+**Results** (balanced player; flare-saving in brackets):
+- ordinary 97.0% (98.6%);
+- Calamity EX+1/2/3 80.1/50.0/31.0% (93.1/67.1/34.3%);
+- v1 on B5d was 99.9% and 100/96.3/92.1%.
+
+**Verified:**
+- `node tools\run_pressure_study.mjs <out> --retune-fit` on B5d (`ab1457dd`),
+  then `--retune` with `RETUNE_CANDIDATE` set to the fitted table. The numbers
+  above come from that run.
+- Every encounter below 95% has at least 2 of 12 team/policy combinations
+  that win every seed.
+- `npx tsc --noEmit`: 0 errors.
+- Targeted tests 477 of 477 (`enemy-pressure`, `battle-dispatch` with a new
+  v1-underway settle test, `enemy-strength`).
+- Full `npx vitest run`: 11,104 of 11,106. The two failures
+  (`acquisition-surfaces`, `archives-controls`) were timeouts under load and
+  pass alone (8 of 8).
+- `npx vite build`: succeeded (chunk advisory).
+- `node tools\bundle_server_game.mjs`: rebuilt; **not deployed**.
+
+**Not verified:** in-game feel. Fights now last about 10 rounds on average
+(was 5), and Calamity about 13 (was 6).
+
+**Release notes (next session):**
+- Client and server must deploy together. The new authority rejects a
+  `radiant-trio-v1` start from an old client ("refresh" message).
+- `RADIANT_STUDY_CALIBRATION` must stay unset (check names only).
+- The 8 → 9 frozen-run bump decision is still open (B5a/B5d entries).
+
+**Next:** the single D-493 release (Sonnet): the 8 → 9 decision, merge to
+`main` and `overhaul/radiant-foundation`, push, bundle and deploy
+`game-operation` (owner approval), then the hosted check.
+
 ## Battle Flurry Phase 4c B5d: Master enemy-phase and special clauses (D-493, 2026-11-22)
 
 **Implemented on `battle-flurry-phase3`, not released** (single release with
