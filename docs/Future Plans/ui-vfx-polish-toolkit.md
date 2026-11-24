@@ -2,7 +2,9 @@
 
 **Status:** Phase 1 (shader foundation and battle) approved 2026-11-23 (D-494)
 and released 2026-11-23. Phases 2 (summons) and 3 (menus) approved 2026-11-24
-(D-495, plan in §9); step S1 implemented, unreleased. Sound remains proposed, not approved.
+(D-495, plan in §9); step S1 implemented, unreleased. Living scenes framework
+approved 2026-11-24 (D-496, §10); **complete menu rebuild approved 2026-11-24
+(D-497, §11), which sets the current step order.** Sound remains proposed, not approved.
 
 **Timing:** pick up **after** the current Battle Flurry work: B3c, B4, B5, the
 single enemy retune and that release (D-493).
@@ -214,13 +216,101 @@ gold frames, element accents, neutral text, Reduce motion, WebGL 1, no GSAP.
 |---|---|---|---|
 | R0 | Fable | Reference captures of REBORN | Done 2026-11-24 |
 | R1 | Fable | `src/scene/`: shader library, ten scenes, engine, backdrop replaced, tests, `tools/capture_scenes.mjs` | Implemented 2026-11-24, unreleased |
-| R2 | Opus | Interface accent channel (`@property`, 600 ms), per-activity scenes, frame-time check (release) | Not started |
-| R3 | Opus | Glass tokens, `src/styles/luxury.css`, shell and dialogs, `arrival.ts`, `ui-fx.ts` action feedback with `kick` (release) | Not started |
-| R4 | Opus | Battle atmosphere layer over the arena art; hit pulse by tier (release) | Not started |
-| R5 | Fable, then Opus and Sonnet | Summons S2 to S6 (section 9), over the astral scene | Not started |
-| R6 | Sonnet | Per-screen passes (former M3 to M8), most-used first | Not started |
-| R7 | Sonnet | Performance, dead CSS cleanup, full validation | Not started |
+| R2 | Opus | Interface accent channel (`@property`, 600 ms), frame-time check | Becomes K1 (section 11) |
+| R3 | Opus | Glass tokens, shell and dialogs, arrival, action feedback with `kick` | Becomes K2 to K4 in `src/ui-kit/` (section 11) |
+| R4 | Opus | Battle atmosphere layer over the arena art; hit pulse by tier (release) | Not started; after the menu rebuild (D-497) |
+| R5 | Fable, then Opus and Sonnet | Summons S2 to S6 (section 9), over the astral scene | Not started; after R4 |
+| R6 | Sonnet | Per-screen passes (former M3 to M8), most-used first | Becomes G1 to G5 (section 11) |
+| R7 | Sonnet | Performance, dead CSS cleanup, full validation | Becomes K-final (section 11) |
 
 This replaces Phase 3 steps M1 and M2 in section 9 (R1 to R3 cover them) and
 moves the summon steps after R4. Scene details:
 [menus spec](../menus-and-inventory.md#living-scene-backdrop-d-496-2026-11-24).
+
+## 11. Complete menu rebuild (approved 2026-11-24, D-497)
+
+**Why:** an audit of both games (2026-11-24) found that REBORN looks clean
+because it is small and strict (about 1,900 lines: one glass panel, one
+accent, one screen template). Last Light's menus are ten theme layers that
+override each other: 16,687 lines of CSS in 89 files, 6,819 `!important`,
+1,144 `:not(#_)` guards, four dialog families and three button systems. The
+R1 scene is also hidden on every signed-in menu by the opaque shell
+background in `src/presentation/menu-reference.css`.
+
+**Owner decisions (D-497):** clean rebuild on one new design system, with old
+stylesheets deleted as screens move over; layouts redesigned too; menus
+before battle atmosphere and summons; staged releases; feedback only on
+saved success (no burst on every click); header and dock collapse toggles
+removed; menus follow the device's reduce-motion setting as well as the
+in-game one.
+
+### Isolation rule
+
+Cascade layers cannot protect new styles from legacy `!important`, so new
+markup never uses a legacy class name.
+
+- New root `.lk-shell` replaces `.shell.sanctuary-shell` in `frame()`
+  (`src/main.ts`). All new markup uses the `lk-` prefix. Kit CSS is
+  unlayered, with no `!important` and no `:not(#_)`.
+- A screen that has not been rebuilt renders inside a legacy host,
+  `<div class="shell sanctuary-shell lk-legacy">`, so its old CSS still
+  matches. A `migratedPages` set in `renderMenu()` picks the wrapper.
+- Header and dock are re-emitted as `lk-topbar` and `lk-dock`, keeping every
+  `data-page`, `data-menu-back`, `#open-settings`, `#sanctuary-help` and
+  balance id. The dock keeps its six destinations.
+- Kit imports go after the last legacy import. Legacy import lines keep their
+  place and order until their files are deleted (tests pin the order).
+
+### The kit: `src/ui-kit/`
+
+| File | Contents |
+|---|---|
+| `kit.css` | Glass panel, card and its states, stat, screen head, grid, divider, filigree |
+| `controls.css` | Buttons, icon button, chip, segmented control, bar, input, select |
+| `shell.css` | Shell, top bar, dock, stage |
+| `overlay.css` | Dialog, drawer, toast, tooltip |
+| `motion.css` | Arrival and feedback keyframes; the one reduced-motion block |
+| `legacy-host.css` | Temporary bridge; deleted in K-final |
+| `html.ts` | String helpers: `screen`, `panel`, `card`, `grid`, `statRow`, `stat`, `button`, `iconButton`, `segmented`, `chip`, `bar`, `divider`, `dialogFrame` |
+| `motion.ts` | `motionAllowed()`: in-game setting or device setting; writes `html[data-motion-effective]` |
+| `accent.ts` | Interface accent channel fed by the scene palette |
+| `fx.ts` | `actionFx` (ring, sparks, exact number, scene `kick`) and `countUp` |
+
+Tokens stay in `src/interface.css`. Every rebuilt screen uses one template:
+Cinzel title, one flavour line, actions top right, a stat row, then card
+grids with element accents, a glow on actionable items and dimmed locked
+items. Blur is used on the top bar, dock, panels and dialogs only.
+
+### Steps
+
+| Step | Was | Model | Work | Status |
+|---|---|---|---|---|
+| K0 | none | Sonnet | This section, D-497, handoff | Done 2026-11-24 |
+| K1 | R2 | Opus | Glass and accent tokens, `@property` accent, `accent.ts`, `motion.ts`, `accentFor` | Not started |
+| K2 | R3 | Opus | Kit CSS and `html.ts`; kit contract test; legacy `!important` ratchet test | Not started |
+| K3 | R3 | Opus | Shell swap, scene visible behind menus, glass bridge for legacy interiors, compact mode, collapse toggles removed, click burst and pop entrances removed, CSS arrival, `fx.ts` with `kick` | Not started |
+| K4 | R3 | Sonnet | One dialog, drawer and toast frame | Not started |
+| Release 1 | | Sonnet | Scene, glass and new shell on every screen (also ships S1 and R1) | Not started |
+| G1 | R6 | Opus | Home and Play (one activity group at a time). Release 2 | Not started |
+| G2 | R6 | Opus | Team hub, Element-Bearer detail and upgrade, squad, loadouts, Conduits, captured Devourers. Release 3 | Not started |
+| G3 | R6 | Sonnet | Summon hub (not the sequence) and Inventory. Release 4 | Not started |
+| G4 | R6 | Sonnet | Stores, Conduit Store and Upgrade, Collections, Glossary, Codex | Not started |
+| G5 | R6 | Sonnet | Profile, Social, Settings, opening screens. Release 5 with G4 | Not started |
+| K-final | R7 | Sonnet | Delete the remaining legacy layers, performance pass. Release 6 | Not started |
+| then | R4, R5 | Opus; Fable for GLSL | Battle atmosphere, then summons S2 to S6 | Not started |
+
+Each group deletes its own stylesheets and luster helpers after a class-name
+search confirms nothing else uses them, and updates the tests that read CSS
+text in the same commit. Per-screen intents come from the committed sections
+7.1 to 7.20 of the [audit plan](living-world-ui-audit-plan.md).
+
+**Validation per step:** `npx tsc --noEmit`; `npx vitest run src/ui-kit src/scene`
+plus the navigation and settings tests; `tools/capture_scenes.mjs --ui` (also
+`--reduced`, `--low`) to see the scene behind signed-in menus;
+`tools/capture_frames.mjs` to confirm arrival settles under 250 ms with input
+live at once. Full `npm test` and build before each release. The owner's feel
+review of the hosted game gates the next group.
+
+**Open:** blur and accent-fade cost is unmeasured (K3 measures it; no blur is
+the fallback); no phone or low-end GPU check; the 960px minimum width
+(D-463) and a graphics-quality option remain owner decisions.

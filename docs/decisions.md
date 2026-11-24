@@ -1,5 +1,34 @@
 # Decision log
 
+## Complete menu rebuild on one design system (D-497, 2026-11-24)
+
+- **Owner direction (2026-11-24):** a complete overhaul of every UI screen so
+  Last Light's menus are as polished, clean, vibrant and dynamic as Magnum
+  Opus REBORN's. Audit and plan:
+  [overhaul plan, section 11](Future%20Plans/ui-vfx-polish-toolkit.md#11-complete-menu-rebuild-approved-2026-11-24-d-497).
+- **Owner answers:**
+  - Clean rebuild: one new small design system (`src/ui-kit/`, `lk-` class
+    prefix). Each screen is rebuilt on it and its old stylesheets are deleted.
+  - Layouts are redesigned too: title, flavour line, stat row, card grids.
+    The navigation contract, Back behaviour and exact mechanics text stay.
+  - Menus first. Battle atmosphere (R4) and summons S2 to S6 (R5) follow
+    (reorders D-496).
+  - Staged releases: the first puts the scene, glass and the new shell on
+    every screen; rebuilt screens then ship in groups for feel review.
+  - Feedback follows REBORN: the burst on every click and the pop entrances
+    are removed. Buttons lift, glow and press. A ring, sparks, the exact
+    number and a pulse through the scene answer saved successes only.
+  - The header and dock collapse toggles are removed; small screens get an
+    automatic compact mode.
+  - Menus reduce motion when either the in-game setting or the device's
+    reduce-motion setting asks for it (changes the earlier in-game-only rule).
+- **Unchanged:** D-496 framework, D-495 navigation rule (the destination
+  renders and accepts input at once; panels settle in under 250 ms), D-461
+  colour rules, D-467 fonts, 44px targets, artwork-backed buttons, economy
+  and receipt rules, WebGL 1, no GSAP, no paid tools, live-first. The dock
+  keeps six destinations.
+- **Status:** plan filed (step K0). No code changed yet.
+
 ## Living scenes framework: REBORN's approach applied to Last Light (D-496, 2026-11-24)
 
 - **Owner direction (2026-11-24):** the owner's other game, Magnum Opus

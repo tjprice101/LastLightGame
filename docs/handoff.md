@@ -1,5 +1,34 @@
 # Current state and handoff
 
+## Complete menu rebuild, step K0: plan and decisions (D-497, 2026-11-24)
+
+**Docs only; no code changed.** Branch `ui-vfx-shader-kit`.
+
+**Owner direction (2026-11-24):** completely overhaul every UI screen to
+match Magnum Opus REBORN's polish. Answers: clean rebuild on one design
+system; layouts redesigned; menus before battle atmosphere and summons;
+staged releases; feedback only on saved success; collapse toggles removed;
+menus follow the device's reduce-motion setting.
+[Plan](Future%20Plans/ui-vfx-polish-toolkit.md#11-complete-menu-rebuild-approved-2026-11-24-d-497), D-497.
+
+**Audit findings (read-only, 2026-11-24):**
+- Menu CSS: 16,687 lines in 89 files, 6,819 `!important`, 1,144 `:not(#_)`
+  guards, ten theme layers, four dialog families, three button systems.
+- The R1 scene is hidden on every signed-in menu by the opaque
+  `.sanctuary-shell` background in `src/presentation/menu-reference.css`
+  (read from the CSS; not yet captured in a browser).
+- Eleven `body.reduced-motion` rules never apply (no code sets that class).
+  The scene's motion only follows the setting after a Settings save.
+
+**What changed:** section 11 added to the overhaul plan; the R2 to R7 rows
+there now point to K1 to K-final; D-497 recorded; Future Plans row updated.
+
+**Not done:** everything from K1 on.
+
+**Next:** K1 (Opus): glass and accent tokens, `@property` accent channel,
+`src/ui-kit/accent.ts` and `motion.ts`, `accentFor` in
+`src/scene/scene-palettes.ts`. Then K2 to K4 and Release 1.
+
 ## Living scenes framework, step R1: scene engine and backdrop (D-496, 2026-11-24)
 
 **Implemented on branch `ui-vfx-shader-kit`, committed locally; not pushed or
