@@ -2,8 +2,11 @@
 
 ## UI and VFX overhaul Phase 1, step 4: finisher tuning (D-494, 2026-11-23)
 
-**Implemented on branch `ui-vfx-shader-kit`, committed locally; not pushed or
-released.** Client only; no authority change.
+**Released 2026-11-23** (steps 2 to 4, commit `377c7385`, client only; no
+authority deploy). `main` and `overhaul/radiant-foundation` are both at
+`377c7385` and pushed; the Deploy workflow succeeded and the hosted bundle
+contains the step 4 values (flash 30% with the kit, Ultimate edge bloom 0.85,
+fixed cut-in sweep). Owner in-game feel review still pending.
 
 **What changed:**
 - `src/vfx/spectacle-scene.ts`: with the shader kit on, the full flash draws
@@ -41,9 +44,7 @@ released.** Client only; no authority change.
 **Not done:**
 - Not captured: critical-hit ring and Conduit callout pulse in motion (unit
   tests only; the preview has no way to force a crit or callout).
-- Owner in-game feel review.
-- Step 5: release (push `main` and `overhaul/radiant-foundation`, verify the
-  hosted build). Needs owner go-ahead.
+- Owner in-game feel review of the released build; tuning follows from it.
 
 ## UI and VFX overhaul Phase 1, step 3: overlays wired into battle beats (D-494, 2026-11-23)
 

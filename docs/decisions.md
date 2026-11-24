@@ -21,8 +21,8 @@
   Full edge blooms share the flat flashes' WCAG budget (R6).
 - **Status:** step 2 (the kit, with bloom enabled) and step 3 (overlays wired
   into the battle beats) are implemented on branch `ui-vfx-shader-kit`, **not
-  released**. Step 4 (tuning) is implemented; step 5 releases after the
-  owner's in-game feel review.
+  released**. Steps 2 to 4 (kit, wiring, tuning) **released 2026-11-23**
+  (client only, commit `377c7385`); the owner's in-game feel review follows.
 - **Step 4 tuning (2026-11-23):** with the shader kit on, the flat full flash
   drops from 55% to 30% (kit off keeps 55%); the Ultimate edge bloom drops to
   0.85 with a 60 ms hold and its god rays to 0.9. The D-490 cut-in glint sweep
