@@ -289,7 +289,7 @@ items. Blur is used on the top bar, dock, panels and dialogs only.
 | K1 | R2 | Opus | Glass and accent tokens, `@property` accent, `accent.ts`, `motion.ts`, `accentFor` | Implemented 2026-11-24, unreleased |
 | K2 | R3 | Opus | Kit CSS and `html.ts`; kit contract test; legacy `!important` ratchet test | Implemented 2026-11-24, unreleased |
 | K3 | R3 | Opus | Shell swap, scene visible behind menus, glass bridge for legacy interiors, compact mode, collapse toggles removed, click burst and pop entrances removed, CSS arrival, `fx.ts` with `kick` | Implemented 2026-11-24, unreleased. Old screens keep their own entrances until rebuilt; frame time not measured |
-| K4 | R3 | Sonnet | One dialog, drawer and toast frame | Not started |
+| K4 | R3 | Sonnet | One dialog, drawer and toast frame | Implemented 2026-11-24 (`overlay.css`; toast on the same glass tokens); not checked in a browser |
 | Release 1 | | Sonnet | Scene, glass and new shell on every screen (also ships S1 and R1) | Not started |
 | G1 | R6 | Opus | Home and Play (one activity group at a time). Release 2 | Not started |
 | G2 | R6 | Opus | Team hub, Element-Bearer detail and upgrade, squad, loadouts, Conduits, captured Devourers. Release 3 | Not started |

@@ -32,7 +32,7 @@ export function classifyButton(
 
 /** Interface-kit controls (D-497) own their surfaces. A legacy screen hosted inside the kit shell is still tagged. */
 function kitControl(element: HTMLElement): boolean {
-  return element.matches('[class^="lk-"], [class*=" lk-"]') || (!!element.closest('.lk-shell, .lk-dialog') && !element.closest('.lk-legacy'));
+  return element.matches('[class^="lk-"], [class*=" lk-"]') || (!!element.closest('.lk-shell') && !element.closest('.lk-legacy'));
 }
 
 function tag(element: HTMLElement): void {

@@ -1,0 +1,38 @@
+/*
+ * Interface kit overlays (D-497, K4): the one frame for every dialog and drawer. A dialog is a glass panel
+ * floating over the scene with a gold edge; a drawer is the same panel docked to the right edge. Content
+ * keeps its own layout. Toast frame uses the same tokens (`status-toast.css`, until Stores moves to the kit).
+ * Tag a `<dialog>` with `lk-dialog`, and a docked one also with `lk-drawer`.
+ */
+@keyframes lk-dialog-in { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes lk-drawer-in { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+
+.lk-dialog[open] {
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--glass-top), var(--glass-bottom)), var(--surface-base);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-glass), 0 0 60px color-mix(in srgb, var(--accent) 14%, transparent), 0 30px 90px var(--surface-inset);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+.lk-dialog::backdrop {
+  background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--accent) 10%, var(--surface-inset)), var(--surface-inset));
+  opacity: .82;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.lk-drawer[open] {
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  border-right: 0;
+}
+:root[data-motion-effective="full"] .lk-dialog[open] { animation: lk-dialog-in var(--motion-arrive) var(--ease-out) both; }
+:root[data-motion-effective="full"] .lk-drawer[open] { animation: lk-drawer-in var(--motion-arrive) var(--ease-out) both; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lk-dialog[open] { background: var(--glass-strong); }
+}
+:root[data-scene-quality="low"] .lk-dialog[open] {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--glass-strong);
+}

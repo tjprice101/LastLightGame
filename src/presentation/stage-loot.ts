@@ -185,7 +185,7 @@ export function stageLootSourceOf(select: HTMLSelectElement): string | null {
 /** Opens for Detailed Loot buttons inside `host` and inside the shared stage picker dialog. */
 export function bindStageLoot(host: HTMLElement, getAccount: () => Account | null): () => void {
   const dialog = document.createElement('dialog');
-  dialog.className = 'information-modal stage-loot-modal';
+  dialog.className = 'information-modal stage-loot-modal lk-dialog';
   dialog.setAttribute('aria-labelledby', 'stage-loot-heading');
   document.body.append(dialog);
   let opener: HTMLElement | null = null;

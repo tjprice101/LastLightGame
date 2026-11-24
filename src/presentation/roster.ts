@@ -153,7 +153,7 @@ export function squadHub(account: Account | null): string {
           ${owned.map((option) => `<option value="${option}" ${id === option ? 'selected' : ''}>${ownedCompanion(account, option).label}</option>`).join('')}</select></section>`;
     }).join('')}</div>
       <p id="squad-result" role="status">${matchesSaved ? 'Draft matches the saved squad.' : 'Unsaved squad draft. Save squad to apply it.'}</p></form>
-    <dialog class="information-modal squad-picker" id="squad-picker" aria-labelledby="squad-picker-heading">
+    <dialog class="information-modal lk-dialog squad-picker" id="squad-picker" aria-labelledby="squad-picker-heading">
       <header class="drawer-heading"><h2 id="squad-picker-heading">Choose leader</h2><button type="button" class="drawer-close" data-squad-close aria-label="Close member picker">&times;</button></header>
       <div class="squad-picker-tools"><div class="squad-picker-filters" role="group" aria-label="Filter squad members">
         <button type="button" data-squad-filter="all" aria-pressed="true">Element-Bearers · ${owned.length}</button></div>

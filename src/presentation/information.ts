@@ -4,7 +4,7 @@ import { staggerIn } from './luster';
 
 export function information(id: string, title: string, content: string, label = 'Information', triggerContent = label): string {
   return `<button type="button" class="text-button" data-information="${id}" aria-haspopup="dialog">${triggerContent}</button>
-    <dialog class="information-modal" id="${id}" aria-labelledby="${id}-heading">
+    <dialog class="information-modal lk-dialog" id="${id}" aria-labelledby="${id}-heading">
       <header class="drawer-heading"><h2 id="${id}-heading">${title}</h2>
         <button type="button" class="drawer-close" data-close-information aria-label="Close ${escapeDialogText(label)}">&times;</button></header>
       <div class="information-content">${bracketReferences(content)}</div>

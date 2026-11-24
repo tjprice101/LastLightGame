@@ -11,7 +11,7 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
   let sequence = 0;
   let active: SelectionControl | null = null;
   const dialog = document.createElement('dialog');
-  dialog.className = 'information-modal selection-modal';
+  dialog.className = 'information-modal selection-modal lk-dialog';
   dialog.setAttribute('aria-labelledby', 'selection-panel-heading');
   document.body.append(dialog);
   const restore = (control: SelectionControl): void => {

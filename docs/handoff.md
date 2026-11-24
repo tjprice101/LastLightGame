@@ -41,7 +41,19 @@ menus follow the device's reduce-motion setting.
   loadout successes. Removed from `bubble-ui.ts`: the burst on every click,
   the pop entrances and the Home zoom.
 
+- **K4.** `src/ui-kit/overlay.css`: one glass frame for dialogs (`lk-dialog`)
+  and docked drawers (`lk-drawer`): gold edge, blur, arrival, solid fallback
+  without blur or on low quality. Tagged: confirm/choice, information,
+  selection, stage-loot, inventory, squad picker, Help, Settings drawer.
+  Legacy frame rules (`bubble-ui.css`, `activity-hub.css`) skip `lk-dialog`.
+  Reward, summon, profile-picture and calamitic dialogs keep their own
+  frames. Toast frame uses the glass tokens. `button-style.ts` no longer
+  skips legacy buttons inside dialogs.
+
 **Verified:**
+- K4: `npx tsc --noEmit` 0 errors; full `npx vitest run` 11,248 of 11,252
+  (`acquisition-surfaces` load timeout, passes alone; three roster tests
+  updated for the new class); `npm run build` succeeds.
 - `npx tsc --noEmit`: 0 errors.
 - `npx vitest run src/ui-kit src/scene src/presentation src/ui`: 2,370 of
   2,371. The one failure is the known `acquisition-surfaces` timeout under
@@ -58,7 +70,8 @@ menus follow the device's reduce-motion setting.
   effect removes itself.
 
 **Not done:**
-- K4 (one dialog, drawer and toast frame) and Release 1.
+- Release 1 (K4 is done, below).
+- K4 dialog frames not yet looked at in a browser.
 - No screen is rebuilt yet: interiors are the old screens over glass.
 - `actionFx` has no caller yet; purchases get it when Stores is rebuilt (G4).
   `html.ts` helpers have no screen using them yet.

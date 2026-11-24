@@ -158,6 +158,7 @@ import './ui-kit/kit.css';
 import './ui-kit/controls.css';
 import './ui-kit/shell.css';
 import './ui-kit/motion.css';
+import './ui-kit/overlay.css';
 import './ui-kit/legacy-host.css';
 
 const gameStorage = menuWorkspace ? createMenuWorkspaceStorage() : new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
@@ -964,12 +965,12 @@ function renderMenu(firstArrival = false): void {
   </section>${sanctuaryHelpDialog(menuPage)}`;
   frame(`${menuPage === 'battle' ? `${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     <div id="battle-root"></div>` : sanctuary}
-    <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-heading">
+    <dialog id="settings-drawer" class="settings-drawer lk-dialog lk-drawer" aria-labelledby="settings-heading">
     ${settingsPanel(motionPreference, bindings, speed, musicPreferences)}
     ${menuPage === 'battle' ? `<p class="currency-reward">${currencyIcon('fractalis')}<span>Prismatica <strong id="fractalis-balance">${fractalis ?? 'Unavailable'}</strong></span></p>` : ''}
     <p id="settings-error" class="status" role="alert"></p>
   </dialog>
-  ${menuPage === 'battle' ? '' : '<dialog id="max-level-dialog" class="information-modal" aria-labelledby="max-level-heading"><header class="drawer-heading"><button class="drawer-close" type="button" data-close-information aria-label="Close Max Level">&times;</button></header><div data-max-level-content></div><p data-max-level-error role="alert"></p></dialog>'}`, menuPage === 'battle', menuPage !== 'battle', chrome);
+  ${menuPage === 'battle' ? '' : '<dialog id="max-level-dialog" class="information-modal lk-dialog" aria-labelledby="max-level-heading"><header class="drawer-heading"><button class="drawer-close" type="button" data-close-information aria-label="Close Max Level">&times;</button></header><div data-max-level-content></div><p data-max-level-error role="alert"></p></dialog>'}`, menuPage === 'battle', menuPage !== 'battle', chrome);
   pendingMaxLevel = null;
   if (menuPage === 'home') bindHomeCarousel(app);
   bindSquadLoadouts(app);

@@ -11,7 +11,7 @@ export function createGameDialog(title: string): { dialog: HTMLDialogElement; di
   if (active) throw new Error('Another game dialog is already open.');
   const previousFocus = document.activeElement;
   const dialog = document.createElement('dialog');
-  dialog.className = 'game-dialog';
+  dialog.className = 'game-dialog lk-dialog';
   dialog.setAttribute('aria-label', title);
   document.body.append(dialog);
   active = true;

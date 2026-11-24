@@ -130,7 +130,7 @@ describe('roster, squad and summon screens', () => {
     expect(picker).toContain('data-squad-assign="0"');
     expect(picker).toContain('data-squad-remove="2"');
     expect(picker).not.toContain('data-owned-character');
-    expect(picker).toContain('<dialog class="information-modal squad-picker" id="squad-picker"');
+    expect(picker).toContain('<dialog class="information-modal lk-dialog squad-picker" id="squad-picker"');
     expect(picker).not.toContain('data-squad-filter="creatures"');
     expect(picker).toContain('data-squad-search-input');
     expect(picker).toContain('data-squad-open="0"');
@@ -180,8 +180,8 @@ describe('roster, squad and summon screens', () => {
   it('uses compact bearer portraits only in the picker while formation keeps full figures', () => {
     const before = structuredClone(account);
     const html = squadHub(account);
-    const formation = html.slice(0, html.indexOf('<dialog class="information-modal squad-picker"'));
-    const picker = html.slice(html.indexOf('<dialog class="information-modal squad-picker"'));
+    const formation = html.slice(0, html.indexOf('<dialog class="information-modal lk-dialog squad-picker"'));
+    const picker = html.slice(html.indexOf('<dialog class="information-modal lk-dialog squad-picker"'));
     expect(formation).toContain(`characters/${characterArt('tide', 1).art}.png`);
     expect(picker).toContain(`character-faces/${characterArt('tide', 1).art}.png`);
     expect(picker).toContain(`character-faces/${characterArt('ember', 2).art}.png`);

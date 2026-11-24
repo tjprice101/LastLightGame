@@ -102,8 +102,8 @@ html body :is(.sanctuary-shell, .shell, .game-dialog, .reward-screen) :is(.prima
 html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is(.primary-button, .game-confirm-button, .enter-button) :is(.ui-icon, svg) { color: inherit; }
 
 /* ---------- Dialogs and drawers: floating glass bubbles ---------- */
-html body :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer, .online-account)[open] { border-radius: var(--surface-radius) !important; border: 1px solid var(--bubble-line) !important; background: var(--surface-dialog) !important; box-shadow: inset 0 1px #ffffff1c, 0 0 60px color-mix(in srgb, var(--accent) 14%, transparent), 0 30px 90px #000c !important; animation: bubble-dialog-in .32s cubic-bezier(.2,.8,.3,1) both; }
-html body :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer, .online-account)::backdrop { background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--accent) 10%, #0009), #000c); backdrop-filter: blur(4px); }
+html body :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer, .online-account):not(.lk-dialog)[open] { border-radius: var(--surface-radius) !important; border: 1px solid var(--bubble-line) !important; background: var(--surface-dialog) !important; box-shadow: inset 0 1px #ffffff1c, 0 0 60px color-mix(in srgb, var(--accent) 14%, transparent), 0 30px 90px #000c !important; animation: bubble-dialog-in .32s cubic-bezier(.2,.8,.3,1) both; }
+html body :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer, .online-account):not(.lk-dialog)::backdrop { background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--accent) 10%, #0009), #000c); backdrop-filter: blur(4px); }
 html body :is(.information-modal, .settings-drawer, .selection-modal) .drawer-close { width: 44px; height: 44px; border-radius: 50% !important; }
 
 /* ---------- Interaction effects ---------- */

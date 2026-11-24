@@ -191,7 +191,7 @@
     color: #fff4f1 !important;
     box-shadow: inset 0 1px 0 #ffd2c933, 0 6px 18px #5a0f1a66 !important;
   }
-  html body dialog.game-dialog:not(#_):not(#_):not(#_):not(#_) {
+  html body dialog.game-dialog:not(.lk-dialog):not(#_):not(#_):not(#_):not(#_) {
     border-color: var(--gild-line) !important;
     background: radial-gradient(ellipse at 100% 0%, #f7e3a112, transparent 55%), linear-gradient(170deg, var(--surface-raised), var(--surface-base) 75%) !important;
     box-shadow: var(--gild-inner), 0 32px 80px #0009 !important;

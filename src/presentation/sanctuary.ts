@@ -59,7 +59,7 @@ export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycali
 /** The Help dialog the top bar opens. It is legacy dialog markup, so it renders with the legacy screen. */
 export function sanctuaryHelpDialog(page: MenuPage): string {
   const [, title] = headings[sanctuaryDestination(page)];
-  return `<dialog class="information-modal sanctuary-help-drawer" id="sanctuary-help" aria-labelledby="sanctuary-help-heading"><header class="drawer-heading"><h2 id="sanctuary-help-heading">${title}</h2><button type="button" class="drawer-close" data-close-information aria-label="Close Help">&times;</button></header><div class="information-content">${informationTopics('sanctuary-help', [
+  return `<dialog class="information-modal lk-dialog lk-drawer sanctuary-help-drawer" id="sanctuary-help" aria-labelledby="sanctuary-help-heading"><header class="drawer-heading"><h2 id="sanctuary-help-heading">${title}</h2><button type="button" class="drawer-close" data-close-information aria-label="Close Help">&times;</button></header><div class="information-content">${informationTopics('sanctuary-help', [
     { id: 'screen', title: `${title} help`, summary: 'Controls and game rules', content: sanctuaryHelp(page) },
     { id: 'origins', title: 'Let and Rise', summary: 'Origins of the world and the creators\' souls', content: worldLore() },
   ])}</div></dialog>`;

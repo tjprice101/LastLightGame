@@ -53,7 +53,7 @@ function inventoryInspectionTemplate(id: string, name: string, art: string, badg
 }
 
 function inventoryInspectionDialog(): string {
-  return `<dialog class="information-modal inventory-inspection" id="inventory-item-inspection" aria-labelledby="inventory-inspection-heading">
+  return `<dialog class="information-modal lk-dialog inventory-inspection" id="inventory-item-inspection" aria-labelledby="inventory-inspection-heading">
     <header class="drawer-heading"><h2 id="inventory-inspection-heading" tabindex="-1"></h2><button type="button" class="drawer-close" data-close-information aria-label="Close item details">&times;</button></header>
     <div class="inventory-inspection-content" aria-live="polite"></div>
     <nav class="inventory-inspection-nav" aria-label="Owned item details">
