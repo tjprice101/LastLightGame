@@ -80,6 +80,19 @@
   --shadow-glass: 0 18px 44px #02030c99, var(--glass-highlight);
   --ui-accent-glow: color-mix(in srgb, var(--ui-accent) 42%, transparent);
   --glow-selected: var(--glow-gild);
+  /* Meaning colours: gains and losses only (D-461). Disabled controls are gray and opaque (D-224). */
+  --tone-gain: #9fe3a8;
+  --tone-gain-line: #7fd18a66;
+  --tone-loss: #ff9c9c;
+  --tone-loss-line: #ff8a8a66;
+  --danger-fill: linear-gradient(180deg, #7a1f2a, #4d121b);
+  --danger-ink: #ffe9e9;
+  --danger-glow: 0 6px 20px #ff5a5a40;
+  --disabled-fill: #3a3c46;
+  --disabled-line: #8b8e9866;
+  --tile-tint: #ffffff0a;
+  --tile-shade: #0000002b;
+  --well: #00000040;
   --motion-arrive: 220ms;
   --motion-retint: 600ms;
   --topbar-h: 64px;

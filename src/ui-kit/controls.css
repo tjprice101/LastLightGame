@@ -1,0 +1,154 @@
+/* Interface kit controls (D-497). Every interactive control is at least 44px tall. See kit.css for the rules. */
+
+.lk-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 var(--space-6);
+  border: 1px solid var(--gild-line);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(180deg, var(--tile-tint), var(--tile-shade));
+  box-shadow: var(--glass-highlight);
+  color: var(--text-primary);
+  font-family: var(--ui-font);
+  font-size: var(--ui-label);
+  font-weight: 700;
+  letter-spacing: .06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--motion-press) var(--ease-out), box-shadow var(--motion-nav) ease, border-color var(--motion-nav) ease, filter var(--motion-nav) ease;
+}
+.lk-button:not(:disabled):hover {
+  transform: translateY(-1px);
+  border-color: var(--gild-mid);
+  box-shadow: var(--glass-highlight), 0 6px 20px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.lk-button:not(:disabled):active { transform: translateY(1px) scale(.98); }
+.lk-button:focus-visible, .lk-icon-button:focus-visible, .lk-seg button:focus-visible, .lk-input:focus-visible, .lk-select:focus-visible {
+  outline: 2px solid var(--gild-light);
+  outline-offset: 2px;
+}
+.lk-button[data-variant="primary"] {
+  border-color: var(--gild-core);
+  background: var(--gild-fill);
+  box-shadow: var(--gild-inner), 0 4px 14px color-mix(in srgb, var(--gild-core) 25%, transparent);
+  color: var(--gild-ink);
+}
+.lk-button[data-variant="primary"]:not(:disabled):hover { filter: brightness(1.06); box-shadow: var(--gild-inner), 0 8px 24px color-mix(in srgb, var(--gild-light) 35%, transparent); }
+.lk-button[data-variant="quiet"] { border-color: transparent; background: none; box-shadow: none; color: var(--text-secondary); }
+.lk-button[data-variant="quiet"]:not(:disabled):hover { border-color: var(--gild-hairline); background: var(--tile-tint); color: var(--text-primary); }
+.lk-button[data-variant="danger"] { border-color: var(--tone-loss-line); background: var(--danger-fill); color: var(--danger-ink); }
+.lk-button[data-variant="danger"]:not(:disabled):hover { box-shadow: var(--glass-highlight), var(--danger-glow); }
+/* Disabled is gray and fully opaque (D-224): readable, clearly inert, never a faded primary. */
+.lk-button:disabled, .lk-icon-button:disabled, .lk-seg button:disabled {
+  border-color: var(--disabled-line);
+  background: var(--disabled-fill);
+  box-shadow: none;
+  color: var(--text-disabled);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Icon button: round, and only ever for an icon. Text buttons use .lk-button. */
+.lk-icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--gild-hairline);
+  border-radius: 50%;
+  background: var(--tile-shade);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: transform var(--motion-press) var(--ease-out), border-color var(--motion-nav) ease, box-shadow var(--motion-nav) ease;
+}
+.lk-icon-button:not(:disabled):hover { border-color: var(--gild-mid); box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 30%, transparent); }
+.lk-icon-button:not(:disabled):active { transform: scale(.94); }
+
+/* Chip: a short state or tag. Not interactive. */
+.lk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 26px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--gild-hairline);
+  border-radius: var(--radius-pill);
+  background: var(--tile-shade);
+  font-size: var(--ui-caption);
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.lk-chip[data-on] {
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  color: var(--text-primary);
+}
+.lk-chip[data-tone="gain"] { border-color: var(--tone-gain-line); color: var(--tone-gain); }
+.lk-chip[data-tone="loss"] { border-color: var(--tone-loss-line); color: var(--tone-loss); }
+
+/* Segmented control: tabs, filters and pickers. The selected option is gold (D-461). */
+.lk-seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  max-width: 100%;
+  padding: var(--space-1);
+  border: 1px solid var(--gild-hairline);
+  border-radius: var(--radius-lg);
+  background: var(--well);
+}
+.lk-seg button {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--text-secondary);
+  font-family: var(--ui-font);
+  font-size: var(--ui-label);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--motion-nav) ease, border-color var(--motion-nav) ease, color var(--motion-nav) ease;
+}
+.lk-seg button:not(:disabled):hover { background: var(--tile-tint); color: var(--text-primary); }
+.lk-seg button[aria-pressed="true"], .lk-seg button[aria-selected="true"], .lk-seg button[aria-current="true"] {
+  border-color: var(--gild-mid);
+  background: color-mix(in srgb, var(--gild-mid) 14%, transparent);
+  box-shadow: var(--gild-inner);
+  color: var(--gild-light);
+}
+
+/* Bar: progress toward a known maximum, filled in the accent. */
+.lk-bar { display: grid; gap: var(--space-1); min-width: 0; }
+.lk-bar-label { display: flex; justify-content: space-between; gap: var(--space-2); font-size: var(--ui-caption); color: var(--text-muted); font-variant-numeric: tabular-nums lining-nums; }
+.lk-bar-track { height: 8px; border-radius: var(--radius-pill); background: var(--well); box-shadow: inset 0 1px 2px var(--surface-inset); overflow: hidden; }
+.lk-bar-fill {
+  display: block;
+  width: calc(var(--lk-fill, 0) * 100%);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 55%, var(--surface-raised)), var(--accent));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: width var(--motion-reveal) var(--ease-out);
+}
+
+.lk-input, .lk-select {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--gild-line);
+  border-radius: var(--radius-pill);
+  background: var(--surface-inset);
+  color: var(--text-primary);
+  font-family: var(--ui-font);
+  font-size: var(--ui-body);
+  font-weight: 600;
+}
+.lk-input::placeholder { color: var(--text-muted); }

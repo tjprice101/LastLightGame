@@ -1,0 +1,207 @@
+/*
+ * Last Light interface kit (D-497): the one set of surfaces every rebuilt screen is made of.
+ * Rules: `lk-` classes only, unlayered, no `!important`, no specificity guards, tokens from `interface.css`.
+ * A legacy stylesheet must never match this markup, and this file must never match legacy markup.
+ */
+
+/* Accent: a card or panel may carry its own; everything inside follows it. */
+.lk-shell, .lk-dialog { --accent: var(--ui-accent); }
+[data-accent="infernic"] { --accent: var(--element-infernic); }
+[data-accent="oceanic"] { --accent: var(--element-oceanic); }
+[data-accent="atmospheric"] { --accent: var(--element-atmospheric); }
+[data-accent="botanic"] { --accent: var(--element-botanic); }
+[data-accent="tranquilitic"] { --accent: var(--element-tranquilitic); }
+[data-accent="chaotic"] { --accent: var(--element-chaotic); }
+[data-accent="gild"] { --accent: var(--gild-mid); }
+
+/* Screen: title, flavour line, actions; then a body that scrolls on its own. */
+.lk-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  padding: var(--space-4) var(--screen-pad) 0;
+  color: var(--text-primary);
+  animation: none;
+}
+.lk-screen-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+}
+.lk-screen-heading { min-width: 0; }
+.lk-title {
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: var(--ui-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--gild-light);
+  text-shadow: 0 0 22px color-mix(in srgb, var(--accent) 45%, transparent), 0 2px 0 var(--surface-inset);
+}
+.lk-title:focus { outline: none; }
+.lk-flavour {
+  margin: var(--space-1) 0 0;
+  font-size: var(--ui-body);
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+.lk-screen-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.lk-screen-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex: 1;
+  min-height: 0;
+  padding-bottom: var(--space-6);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gild-line) transparent;
+}
+
+/* Glass panel: the single surface. Blur lives here and on the shell, never on cards. */
+.lk-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--glass-top), var(--glass-bottom));
+  box-shadow: var(--shadow-glass);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lk-panel { background: var(--glass-strong); }
+}
+:root[data-scene-quality="low"] .lk-panel {
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.lk-panel[data-filigree]::before, .lk-panel[data-filigree]::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--gild-mid);
+  opacity: .7;
+  pointer-events: none;
+}
+.lk-panel[data-filigree]::before { top: 6px; left: 6px; border-right: 0; border-bottom: 0; border-top-left-radius: 6px; }
+.lk-panel[data-filigree]::after { right: 6px; bottom: 6px; border-left: 0; border-top: 0; border-bottom-right-radius: 6px; }
+.lk-panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+.lk-panel-title, .lk-section-title {
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: var(--ui-section);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gild-light);
+}
+.lk-panel-aside { font-size: var(--ui-label); color: var(--text-muted); }
+.lk-divider {
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--gild-line) 18%, var(--gild-line) 82%, transparent);
+}
+
+/* Card: a tile inside a panel or grid. Hairline and tint only; its state is carried by light. */
+.lk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--lk-min, 280px), 100%), 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lk-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  padding: var(--card-padding);
+  border: 1px solid var(--gild-hairline);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, var(--tile-tint)), var(--tile-shade));
+  box-shadow: var(--glass-highlight);
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  transition: transform var(--motion-press) var(--ease-out), border-color var(--motion-nav) ease, box-shadow var(--motion-nav) ease;
+}
+.lk-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
+.lk-card-title {
+  margin: 0;
+  font-size: var(--ui-section);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+.lk-card-aside { font-size: var(--ui-label); color: color-mix(in srgb, var(--accent) 70%, var(--text-primary)); white-space: nowrap; }
+.lk-card-body { min-width: 0; font-size: var(--ui-label); line-height: 1.45; color: var(--text-secondary); }
+.lk-card[data-state="actionable"] {
+  border-color: color-mix(in srgb, var(--accent) 62%, transparent);
+  box-shadow: var(--glass-highlight), 0 0 26px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.lk-card[data-state="selected"] { border-color: var(--gild-mid); box-shadow: var(--glass-highlight), var(--glow-selected); }
+.lk-card[data-state="locked"] { filter: saturate(.45) brightness(.8); }
+.lk-card[data-state="locked"] .lk-card-title { color: var(--text-muted); }
+button.lk-card, a.lk-card { min-height: 44px; cursor: pointer; text-decoration: none; }
+button.lk-card:not(:disabled):hover, a.lk-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--gild-light));
+  box-shadow: var(--glass-highlight), 0 10px 28px color-mix(in srgb, var(--accent) 26%, transparent);
+}
+button.lk-card:not(:disabled):active, a.lk-card:active { transform: scale(.985); }
+button.lk-card:focus-visible, a.lk-card:focus-visible { outline: 2px solid var(--gild-light); outline-offset: 2px; }
+button.lk-card:disabled { cursor: not-allowed; opacity: 1; filter: grayscale(1) brightness(.75); }
+/* Artwork-backed tiles keep their art: the kit frames them and never paints over them. */
+.lk-card[data-art] { padding: 0; overflow: hidden; }
+
+/* Stat: a small engraved label over an exact value. */
+.lk-stats { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); margin: 0; padding: 0; }
+.lk-stat {
+  display: grid;
+  gap: 2px;
+  min-width: 112px;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--gild-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--tile-shade);
+}
+.lk-stat-label {
+  font-family: var(--display-font);
+  font-size: var(--ui-caption);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.lk-stat-value { margin: 0; font-size: var(--ui-title); font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums lining-nums; color: var(--text-primary); }
+.lk-stat-sub { font-size: var(--ui-caption); color: var(--text-muted); }
+.lk-stat[data-tone="accent"] .lk-stat-value { color: color-mix(in srgb, var(--accent) 75%, var(--text-primary)); }
+.lk-stat[data-tone="gain"] .lk-stat-value { color: var(--tone-gain); }
+.lk-stat[data-tone="loss"] .lk-stat-value { color: var(--tone-loss); }
+
+@media (max-width: 720px) {
+  .lk-screen { padding-inline: var(--space-3); gap: var(--space-3); }
+  .lk-title { letter-spacing: .05em; }
+  .lk-stat { min-width: 96px; }
+}

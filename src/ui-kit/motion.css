@@ -1,0 +1,23 @@
+/*
+ * Interface kit motion (D-495, D-497). Arrival is CSS only: the destination is already rendered and
+ * accepting input; its panels settle in under 250 ms. Nothing here delays, blocks or moves focus.
+ */
+@keyframes lk-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+:root[data-motion-effective="full"] .lk-screen[data-arrive] > .lk-screen-head { animation: lk-rise var(--motion-arrive) var(--ease-out) both; }
+:root[data-motion-effective="full"] .lk-screen[data-arrive] > .lk-screen-body > * { animation: lk-rise var(--motion-arrive) var(--ease-out) both; }
+:root[data-motion-effective="full"] .lk-screen[data-arrive] > .lk-screen-body > :nth-child(2) { animation-delay: 30ms; }
+:root[data-motion-effective="full"] .lk-screen[data-arrive] > .lk-screen-body > :nth-child(3) { animation-delay: 60ms; }
+:root[data-motion-effective="full"] .lk-screen[data-arrive] > .lk-screen-body > :nth-child(4) { animation-delay: 90ms; }
+:root[data-motion-effective="full"] .lk-screen[data-arrive] > .lk-screen-body > :nth-child(5) { animation-delay: 120ms; }
+:root[data-motion-effective="full"] .lk-screen[data-arrive] > .lk-screen-body > :nth-child(n + 6) { animation-delay: 150ms; }
+
+/* One switch for the whole kit: the in-game setting or the device setting (`ui-kit/motion.ts`). */
+:root[data-motion-effective="reduced"] :is(.lk-shell, .lk-dialog),
+:root[data-motion-effective="reduced"] :is(.lk-shell, .lk-dialog) *,
+:root[data-motion-effective="reduced"] :is(.lk-shell, .lk-dialog) *::before,
+:root[data-motion-effective="reduced"] :is(.lk-shell, .lk-dialog) *::after {
+  animation-duration: 1ms;
+  animation-delay: 0s;
+  transition-duration: 1ms;
+}
