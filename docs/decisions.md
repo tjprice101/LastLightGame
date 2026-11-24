@@ -1,5 +1,30 @@
 # Decision log
 
+## Living scenes framework: REBORN's approach applied to Last Light (D-496, 2026-11-24)
+
+- **Owner direction (2026-11-24):** the owner's other game, Magnum Opus
+  REBORN, is the visual target. Apply its framework to Last Light's battle,
+  UI and animation visuals. Audit and plan:
+  [overhaul plan, section 10](Future%20Plans/ui-vfx-polish-toolkit.md#10-living-scenes-framework-approved-2026-11-24-d-496).
+- **The framework:** live shader scenes behind every screen; one three-colour
+  palette per context that feeds both the scene and the interface accent; one
+  frosted-glass surface for every panel; every successful action answered by
+  a ring, a burst, a number and a pulse through the scene; slow ambient motion.
+- **Owner answers:**
+  - Framework first; summon steps S2 to S6 follow (reorders D-495).
+  - Glass over living scenes replaces the solid jewel surfaces (amends D-461).
+    Gold frames, element accents, neutral text and Lora/Cinzel stay.
+  - Battles keep their painted arenas and gain a live shader atmosphere that
+    pulses on hits. Menus get full shader scenes.
+  - Same structure and generic helpers as REBORN; every scene is written new
+    for Last Light, with no musical motifs. This refines the 2026-11-20 rule
+    against porting the older MagnumOpus shaders, which still stands.
+- **Unchanged:** economy and receipt rules, Reduce motion, 44px targets,
+  artwork-backed buttons, live-first (no demo pages), WebGL 1 shaders, no
+  GSAP, no paid tools. Sound stays out of scope.
+- **Status:** step R1 (scene engine, ten scenes, backdrop replaced)
+  implemented 2026-11-24 on branch `ui-vfx-shader-kit`, unreleased.
+
 ## UI and VFX overhaul Phases 2 and 3 approved: summons and menus (D-495, 2026-11-24)
 
 - **Owner-approved scope (2026-11-24):** Phase 2 (summons) then Phase 3

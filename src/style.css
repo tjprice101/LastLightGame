@@ -14,8 +14,10 @@ button:disabled { cursor: not-allowed; opacity: .4; }
 button:focus-visible { outline: 2px solid #f6dda3; outline-offset: 6px; }
 h1:focus { outline: none; }
 [hidden] { display: none !important; }
-#backdrop { position: fixed; inset: 0; pointer-events: none; }
-#backdrop canvas { display: block; }
+/* Living scene backdrop (D-496). The gradient and the bubble backdrop are what show without WebGL. */
+#backdrop { position: fixed; inset: 0; pointer-events: none; background: var(--surface-backdrop); }
+#backdrop canvas { display: block; width: 100%; height: 100%; }
+html.scene-live .bubble-backdrop { display: none; }
 #app { position: relative; z-index: 1; }
 .shell { min-height: 100svh; max-width: 1440px; margin: auto; padding: 28px 5vw 20px; display: flex; flex-direction: column; }
 .masthead, footer { display: flex; align-items: center; gap: var(--space-3); font-size: 10px; letter-spacing: .2em; color: var(--muted); }

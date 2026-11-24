@@ -1,5 +1,59 @@
 # Current state and handoff
 
+## Living scenes framework, step R1: scene engine and backdrop (D-496, 2026-11-24)
+
+**Implemented on branch `ui-vfx-shader-kit`, committed locally; not pushed or
+released.** Client only; no authority change. Battles are unchanged.
+
+**Owner direction (2026-11-24):** apply Magnum Opus REBORN's visual framework
+to Last Light. Answers: framework first, summons after; glass over living
+scenes (amends D-461); battles keep painted arenas plus a live atmosphere;
+REBORN's structure with scenes written new for Last Light.
+[Plan](Future%20Plans/ui-vfx-polish-toolkit.md#10-living-scenes-framework-approved-2026-11-24-d-496), D-496.
+
+**What changed:**
+- `src/scene/scene-glsl.ts` (new): shared shader library and ten original
+  scenes. Sanctuary, astral, vault, expanse, and one per element (ember, tide,
+  gale, grove, stillness, rift). Each uses only a three-colour palette.
+- `src/scene/scene-engine.ts` (new): plain WebGL 1 engine. 1.4 s crossfade
+  between scenes, pulse (`kick`), intensity, pointer parallax. 30 frames a
+  second at reduced resolution; sleeps in battle and in a hidden tab; a
+  slow-frame guard lowers resolution, then holds a still frame. Reduce motion
+  draws one still frame per change.
+- `src/scene/scene-palettes.ts` (new): scene and palette per screen. Home
+  takes the leader's accent; Team screens take the leader's element scene.
+- `src/scene/scene-backdrop.ts` (new): mounts the engine in `#backdrop`.
+  Replaces `src/presentation/backdrop.ts` (removed; one fewer Phaser game).
+- Fallback without WebGL or on software rendering: a CSS gradient plus the
+  existing bubble backdrop. `html.scene-live` hides the bubble backdrop when
+  the scene runs.
+- `tools/capture_scenes.mjs` (new, dev only): captures every scene on the
+  real GPU and reports compile failures.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors. `npx vite build`: succeeded.
+- `npx vitest run src/scene`: 63 of 63 pass.
+- `npx vitest run src/scene src/vfx src/presentation`: 2,395 of 2,397.
+  One failure was a too-tight bound in a new palette test (fixed, passes).
+  The other was the known `acquisition-surfaces` timeout under load; it
+  passes alone. The full set was not rerun after the one-line test fix.
+- Real GPU (AMD Radeon integrated, Direct3D 11), `tools/capture_scenes.mjs`:
+  all ten scenes compile with no console errors and were reviewed as frames.
+  Also reviewed: title and starter-selection screens over the scene, phone
+  portrait (390x844), low quality, and Reduce motion (two captures 1.2 s
+  apart are identical).
+- Reference frames of REBORN were captured for comparison.
+
+**Not done:**
+- Not captured in motion: a scene crossfade and the signed-in menu screens
+  (unit tests cover the crossfade; the capture stops at starter selection).
+- No frame-time measurement yet; no phone or low-end GPU check.
+- `kick` is not called by any action yet (R3).
+- Full `npx vitest run` not run for this step (runs before the R2 release).
+- R2 (Opus): interface accent channel, per-activity scenes, release.
+  R3: glass surfaces, arrival, action feedback. R4: battle atmosphere.
+  R5: summons S2 to S6. R6 to R7: per-screen passes and cleanup.
+
 ## UI and VFX overhaul Phase 2, step S1: shared GPU layer (D-495, 2026-11-24)
 
 **Implemented on branch `ui-vfx-shader-kit`, committed locally; not pushed or

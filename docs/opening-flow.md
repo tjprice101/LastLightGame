@@ -73,7 +73,7 @@ now replaces SVG placeholder portraits in selection and Element-Bearer panels.
 - [Elemental reveals](../src/presentation/reveal.ts): bounded decorative effect markup.
 - [Reveal tests](../src/presentation/reveal.test.ts): lore completeness and effect budget.
 - [Portraits](../src/presentation/portrait.ts): runtime image paths using the deployment base.
-- [Backdrop](../src/presentation/backdrop.ts): ambient Phaser scene and tween budget.
+- [Backdrop](../src/scene/scene-backdrop.ts): living shader scene per screen (D-496); [scenes](../src/scene/scene-glsl.ts), [palettes](../src/scene/scene-palettes.ts).
 - [Screens](../src/main.ts): DOM rendering, inputs, errors, focus.
 - [Styles](../src/style.css): responsive layout and cinematic appearance.
 - [Journey transitions](../src/game/flow.ts): opening state machine.

@@ -187,3 +187,40 @@ no GSAP; most-used menus first; no paid tools; sound out of scope.
 Limits: shaders add light only and cannot draw over the top-layer reward
 dialog; the backdrop sleeps while a summon or battle owns the spectacle layer.
 Moon/Sunshade stay inactive; Story stays paused.
+
+## 10. Living scenes framework (approved 2026-11-24, D-496)
+
+The owner's other game, Magnum Opus REBORN, is the visual target. A read-only
+audit (2026-11-24) found five parts, all small:
+
+1. **Living scenes:** one full-screen shader per context, built as a shared
+   library plus a scene plus a shared finish (vignette, soft tonemap, grain).
+   Particles, mist and rays are drawn in the shader. No image art.
+2. **One palette per context:** three colours (deep, mid, accent) feed the
+   scene and the interface accent, which fades over 600 ms.
+3. **One glass surface:** translucent dark gradient, warm gold hairline,
+   14px blur, inner top highlight. Nested tiles use inset hairlines. State
+   drives glow (actionable, selected, locked).
+4. **The world reacts:** each action layers a ring, a burst, a number and a
+   decaying pulse through the scene.
+5. **Slow ambient motion** on focal objects; a short fade-and-rise on arrival.
+
+Owner answers: framework first, summons after; glass replaces solid jewel
+surfaces (amends D-461); battles keep painted arenas plus a live atmosphere;
+REBORN's structure with scenes written new for Last Light. Kept: Lora/Cinzel,
+gold frames, element accents, neutral text, Reduce motion, WebGL 1, no GSAP.
+
+| Step | Model | Work | Status |
+|---|---|---|---|
+| R0 | Fable | Reference captures of REBORN | Done 2026-11-24 |
+| R1 | Fable | `src/scene/`: shader library, ten scenes, engine, backdrop replaced, tests, `tools/capture_scenes.mjs` | Implemented 2026-11-24, unreleased |
+| R2 | Opus | Interface accent channel (`@property`, 600 ms), per-activity scenes, frame-time check (release) | Not started |
+| R3 | Opus | Glass tokens, `src/styles/luxury.css`, shell and dialogs, `arrival.ts`, `ui-fx.ts` action feedback with `kick` (release) | Not started |
+| R4 | Opus | Battle atmosphere layer over the arena art; hit pulse by tier (release) | Not started |
+| R5 | Fable, then Opus and Sonnet | Summons S2 to S6 (section 9), over the astral scene | Not started |
+| R6 | Sonnet | Per-screen passes (former M3 to M8), most-used first | Not started |
+| R7 | Sonnet | Performance, dead CSS cleanup, full validation | Not started |
+
+This replaces Phase 3 steps M1 and M2 in section 9 (R1 to R3 cover them) and
+moves the summon steps after R4. Scene details:
+[menus spec](../menus-and-inventory.md#living-scene-backdrop-d-496-2026-11-24).

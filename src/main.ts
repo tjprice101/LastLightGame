@@ -55,7 +55,7 @@ import { activityTransitionPending, transitionActivity } from './presentation/ac
 import { checkForUpdate } from './presentation/update-check';
 import { bindArtworkLoading } from './presentation/artwork-loading';
 import { detectAvif } from './presentation/image-format';
-import { createBackdrop } from './presentation/backdrop';
+import { createSceneBackdrop } from './scene/scene-backdrop';
 import { applyMotion, loadMotion, saveMotion, reducedMotion, type MotionPreference } from './presentation/settings';
 import { commands, defaultBindings, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession, type BattleAuthority, type BattleAuthorityResponse } from './presentation/battle-view';
@@ -638,7 +638,7 @@ try {
   speedError = `Battle speed could not be loaded. ${errorMessage(error)} 1x is active; choose a speed in battle to repair the saved value.`;
 }
 applyBattleSpeed(speed);
-const backdrop = createBackdrop();
+const backdrop = createSceneBackdrop(document.querySelector<HTMLElement>('#backdrop')!);
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'An unexpected error occurred.';
@@ -685,13 +685,14 @@ function frame(body: string, battle = false, sanctuary = false): void {
     chatUiState = { drafts: new Map(), query: '' };
   }
   unmountTitle();
-  applyLeaderTheme(document.documentElement, leaderElement(journey.profile ? account : null, battle ? battleSession?.state : undefined));
+  const leader = leaderElement(journey.profile ? account : null, battle ? battleSession?.state : undefined);
+  applyLeaderTheme(document.documentElement, leader);
   document.body.classList.toggle('in-battle', battle);
-  // The backdrop is hidden in battle; sleeping it frees the GPU for the battle effect layer (D-484).
-  if (battle && backdrop.loop.running) backdrop.loop.sleep(); else if (!battle && !backdrop.loop.running) backdrop.loop.wake();
   const backgroundScreen: AmbientScreen = battle ? 'battle' : !sanctuary
     ? journey.screen === 'selection' ? 'selection' : 'title'
     : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'special-banner-archive' ? 'summon' : menuPage === 'profile' ? 'home' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
+  // The living scene follows the screen and sleeps in battle, which frees the GPU for the battle effect layer (D-484, D-496).
+  backdrop.show(backgroundScreen, leader);
   app.innerHTML = battle ? `<div class="battle-screen">${body}${ambientBackground(backgroundScreen)}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
     ${ambientBackground(backgroundScreen)}
     ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L · L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}

@@ -188,6 +188,41 @@ Supersedes every earlier "six slots" statement below.
   headings; sections carry `data-loot-group` for static Conduit rarity
   edges; items stagger in on open (preview only: no sheen or count-up).
 
+## Living scene backdrop (D-496, 2026-11-24)
+
+Step R1 of the [living scenes framework](Future%20Plans/ui-vfx-polish-toolkit.md#10-living-scenes-framework-approved-2026-11-24-d-496).
+Implemented, unreleased.
+
+- **What shows:** one animated shader scene behind every menu screen, drawn
+  in `#backdrop` by `src/scene/`. No image art.
+- **Scene per screen (`scene-palettes.ts`):**
+
+  | Screens | Scene | Colours |
+  |---|---|---|
+  | Title, starter selection, Settings | Sanctuary | Gold on ink |
+  | Home | Sanctuary | Gold on ink, accent from the squad leader's element |
+  | Team (character, squad) | The leader's element scene | The element's palette |
+  | Summon | Astral | Violet |
+  | Inventory, Stores, Collections | Vault | Gold on slate |
+  | Play, Story, Events | Expanse | Teal on night blue |
+  | Battle | None | The backdrop sleeps |
+
+- **Element scenes:** Infernic ember, Oceanic tide, Atmospheric gale, Botanic
+  grove, Tranquilitic stillness, Chaotic rift.
+- **Behaviour:** scenes crossfade over 1.4 s. Home, Summon and the title run
+  brighter; working screens stay calm.
+- **Cost limits:** 30 frames a second, reduced internal resolution, asleep in
+  battle and in a hidden tab. Sustained slow frames lower the resolution,
+  then hold a still frame.
+- **Reduce motion:** one still frame per screen change; no crossfade.
+- **Fallback:** without WebGL, on software rendering, or if no scene
+  compiles, a CSS gradient and the bubble backdrop show instead.
+- **Validation:** `npx vitest run src/scene`; `node tools/capture_scenes.mjs
+  --out <dir>` (dev server running) for real-GPU frames of every scene, with
+  `--ui`, `--low`, `--reduced`, `--width`/`--height` options.
+- **Not yet:** the interface accent does not follow the scene palette (R2);
+  panels are not glass (R3, which amends the D-461 surfaces below).
+
 ## Jewel & Gold visual language (D-461, 2026-11-15)
 
 Supersedes the D-457 palette; D-457 layout, fit and pagination rules stay.
