@@ -65,25 +65,20 @@ function homeFormation(starter: Starter, account: Account) {
 }
 
 export function referenceHomeProfile(starter: Starter, account: Account | null): string {
-  if (!account) {
-    return `<div class="home-profile-card is-unavailable" role="status"><span class="home-profile-placeholder" aria-hidden="true">${uiIcon('squad')}</span>
-      <span class="home-profile-copy"><small>Current squad leader</small><b>Unavailable</b><small>Account data could not be loaded</small></span></div>`;
-  }
+  const empty = (name: string, detail: string) => `<span class="lk-leader-art" aria-hidden="true">${uiIcon('squad')}</span>
+      <span class="lk-leader-copy"><span class="lk-leader-name">${name}</span><span class="lk-leader-detail">${detail}</span></span>`;
+  if (!account) return `<div class="lk-leader" role="status">${empty('Squad leader unavailable', 'Account data could not be loaded')}</div>`;
   const leader = homeFormation(starter, account).leader;
   if (!leader) {
-    return `<button type="button" class="home-profile-card is-unavailable" data-page="team" data-team-area="squad">
-      <span class="home-profile-placeholder" aria-hidden="true">${uiIcon('squad')}</span>
-      <span class="home-profile-copy"><small>Current squad leader</small><b>No leader selected</b><small>Open Team to choose one</small></span></button>`;
+    return `<button type="button" class="lk-leader" data-page="team" data-team-area="squad">${empty('No leader selected', 'Open Team to choose one')}</button>`;
   }
-  const member = ownedCompanion(account, leader.starter);
   const bearer = getStarter(leader.starter);
   const name = characterName(leader.starter, leader.form, leader.ascension.stats === true);
-  return `<button type="button" class="home-profile-card" style="--member-accent:${member.color}"
+  return `<button type="button" class="lk-leader" data-accent="${bearer.elementId}"
       data-page="team" data-team-area="bearers" data-team-character="${leader.starter}" aria-label="Open squad leader ${escape(name)} in Team">
-    <span class="home-profile-art">${radiantAllyArt(leader)}</span>
-    <span class="home-profile-copy"><small>Leader · ${bearer.element}</small><b>${escape(bearer.name)}</b>
-      <small>Lv.${leader.level} · ${bearer.element}</small>
-      <span class="home-profile-attunement">${radiantAttunementChip(leader)}${radiantAttunementName(leader)}</span></span></button>`;
+    <span class="lk-leader-art">${radiantAllyArt(leader)}</span>
+    <span class="lk-leader-copy"><span class="lk-leader-name">${escape(bearer.name)}</span>
+      <span class="lk-leader-detail"><span>Leader · ${bearer.element} · Lv.${leader.level}</span>${radiantAttunementChip(leader)}</span></span></button>`;
 }
 
 export function referenceHome(starter: Starter, account: Account | null, online = false): string {

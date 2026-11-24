@@ -30,6 +30,11 @@ export function classifyButton(
   return text.length <= 2 || (height < 32 && width < height * 1.6) ? 'icon' : 'text';
 }
 
+/** Interface-kit controls (D-497) own their surfaces. A legacy screen hosted inside the kit shell is still tagged. */
+function kitControl(element: HTMLElement): boolean {
+  return element.matches('[class^="lk-"], [class*=" lk-"]') || (!!element.closest('.lk-shell, .lk-dialog') && !element.closest('.lk-legacy'));
+}
+
 function tag(element: HTMLElement): void {
   if (element.dataset.buttonSurface) return;
   const rect = element.getBoundingClientRect();
@@ -45,7 +50,7 @@ export function installButtonStyle(root: HTMLElement = document.body): () => voi
   const scan = (): void => {
     frame = 0;
     root.querySelectorAll<HTMLElement>(BUTTON_SELECTOR).forEach((element) => {
-      if (!element.closest('.battle-unit, .battle-field, .battle-units') && !element.matches(OWN_SURFACE)) tag(element);
+      if (!element.closest('.battle-unit, .battle-field, .battle-units') && !element.matches(OWN_SURFACE) && !kitControl(element)) tag(element);
     });
   };
   const schedule = (): void => {

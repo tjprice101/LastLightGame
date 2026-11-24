@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { emptyAccount } from '../game/account';
 import { bindInventory, inventorySections, inventoryFilters, inventoryView, isInventoryTab } from './inventory';
-import { sanctuaryHeader } from './sanctuary';
+import { sanctuaryHeader, sanctuaryHelpDialog } from './sanctuary';
 import { masterChest, masterConduits as allMasters } from '../content/master-conduits';
 import { characterReleased } from '../content/release-visibility';
 const masterConduits = allMasters.filter(master => characterReleased(master.character));
@@ -394,7 +394,7 @@ describe('reference Inventory layout', () => {
 
 describe('direct sanctuary utilities', () => {
   it('removes the Menu sidebar and keeps unique Settings, Collections and currency controls', () => {
-    const html = sanctuaryHeader('inventory', 12, 34);
+    const html = sanctuaryHeader('inventory', 12, 34) + sanctuaryHelpDialog('inventory');
     expect(html).not.toContain('sanctuary-menu');
     expect(html.match(/data-page="collections"/g)).toHaveLength(1);
     expect(html).toContain('aria-label="Open Collections"');

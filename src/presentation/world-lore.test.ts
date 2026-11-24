@@ -7,7 +7,7 @@ import { getStarter } from '../content/starters';
 import { machineOrigin, storyPurpose, worldHistory } from '../content/world-lore';
 import { worldLore } from './world-lore';
 import { storyCampaign } from './story';
-import { sanctuaryHeader } from './sanctuary';
+import { sanctuaryHeader, sanctuaryHelpDialog } from './sanctuary';
 import { gameplayHub } from './gameplay';
 import { referenceTeam } from './reference-team';
 import { archives } from './archives';
@@ -24,7 +24,7 @@ describe('canon across information and lore surfaces', { timeout: 30_000 }, () =
     const host = document.createElement('main');
     host.innerHTML = storyCampaign(account, 'ember');
     const prologues = [host.querySelector('#story-prologue-information'), host.querySelector('.story-prologue')];
-    for (const surface of [worldLore(), sanctuaryHeader('home', 0), gameplayHub(account),
+    for (const surface of [worldLore(), sanctuaryHelpDialog('home'), gameplayHub(account),
       ...prologues.map(prologue => prologue?.innerHTML ?? '')]) {
       for (const entry of worldHistory) expect(plain(surface).toLowerCase()).toContain(entry.text.toLowerCase());
       expect(plain(surface)).toContain(plain(bracketReferences(machineOrigin, false)));
@@ -81,7 +81,7 @@ describe('canon across information and lore surfaces', { timeout: 30_000 }, () =
 
   it('lets Help select and leave the shared origins topic without introducing another modal', () => {
     const host = document.createElement('main');
-    host.innerHTML = sanctuaryHeader('home', 0);
+    host.innerHTML = sanctuaryHeader('home', 0) + sanctuaryHelpDialog('home');
     bindInformation(host);
     host.querySelector<HTMLButtonElement>('[data-info-topic="origins"]')!.click();
     const panel = host.querySelector<HTMLElement>('[data-info-panel="origins"]')!;

@@ -9,38 +9,6 @@ import { bindMenuPagination } from './menu-pagination';
 import { information } from './information';
 import { readableEffect } from './effect-copy';
 
-const collapsedFrames = { header: false, dock: false };
-
-function bindMenuFrames(root: HTMLElement): void {
-  const shell = root.querySelector<HTMLElement>('.sanctuary-shell');
-  if (!shell) return;
-  const apply = (): void => {
-    shell.dataset.headerCollapsed = String(collapsedFrames.header);
-    shell.dataset.dockCollapsed = String(collapsedFrames.dock);
-    shell.querySelectorAll<HTMLButtonElement>('[data-menu-frame]').forEach(button => {
-      const frame = button.dataset.menuFrame;
-      if (frame !== 'header' && frame !== 'dock') throw new Error('Unknown menu frame.');
-      const collapsed = collapsedFrames[frame];
-      const label = `${collapsed ? 'Expand' : 'Collapse'} ${frame === 'header' ? 'top' : 'bottom'} bar`;
-      button.setAttribute('aria-expanded', String(!collapsed));
-      button.setAttribute('aria-label', label);
-      button.title = label;
-      button.innerHTML = frame === 'header' ? collapsed ? '&or;' : '&and;' : collapsed ? '&and;' : '&or;';
-    });
-  };
-  shell.querySelectorAll<HTMLButtonElement>('[data-menu-frame]').forEach(button => {
-    if (button.dataset.menuFrameBound) return;
-    button.dataset.menuFrameBound = 'true';
-    button.addEventListener('click', () => {
-      const frame = button.dataset.menuFrame;
-      if (frame !== 'header' && frame !== 'dock') throw new Error('Unknown menu frame.');
-      collapsedFrames[frame] = !collapsedFrames[frame];
-      apply();
-    });
-  });
-  apply();
-}
-
 export function workspaceUnitsMenu(account: Account | null = null): string {
   const squad = account ? equippedSquad(account) : [];
   const action = (view: string, label: string, description: string, icon: Parameters<typeof uiIcon>[0], tab = '') =>
@@ -63,19 +31,8 @@ export function workspaceUnitsMenu(account: Account | null = null): string {
 }
 
 export function formatMenuWorkspace(root: HTMLElement, account: Account | null = null): void {
-  bindMenuFrames(root);
   root.querySelectorAll<HTMLElement>('.exchange-catalog [data-market-material]').forEach(item => { item.dataset.menuPageItem = ''; });
   bindMenuPagination(root);
-  root.querySelectorAll<HTMLElement>('.sanctuary-dock [data-page="team"] .nav-copy > strong').forEach(label => {
-    label.textContent = 'Elemental-Bearers';
-  });
-  const profile = root.querySelector('.home-profile-copy');
-  const attunement = profile?.querySelector('.home-profile-attunement');
-  const level = profile?.querySelector('small:last-of-type');
-  if (attunement && level) {
-    Array.from(attunement.childNodes).filter(node => node.nodeType === Node.TEXT_NODE).forEach(node => node.remove());
-    level.append(attunement);
-  }
   const detail = root.querySelector<HTMLElement>('.ref-bearer-detail[data-acquisition-character]');
   const tab = detail?.querySelector('[data-character-tab][aria-pressed="true"]')?.getAttribute('data-character-tab');
   const loadout = detail && radiantCharacterLoadout(account, detail.dataset.acquisitionCharacter ?? '');

@@ -32,27 +32,37 @@ const headings: Record<MenuPage, readonly [string, string]> = {
   profile: ['PLAYER', 'Profile'],
 };
 
-export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycalis: number | null = null, homeProfile = ''): string {
-  const [eyebrow, title] = headings[sanctuaryDestination(page)];
+/**
+ * The top bar of the menu shell (D-497), in interface-kit markup: Back (or the emblem on Home), the
+ * wordmark, exact balances and the four utilities. `heading` is false once a rebuilt screen owns the
+ * page's `<h1>`; until then the bar carries it for screen readers and focus.
+ */
+export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycalis: number | null = null, homeProfile = '', heading = true): string {
+  const [, title] = headings[sanctuaryDestination(page)];
   const leading = page === 'home'
-    ? homeProfile || `<span class="sanctuary-home-emblem" aria-hidden="true">${uiIcon('home')}</span>`
-    : `<button type="button" class="text-button bubble-back" data-menu-back aria-label="Back"><span class="bubble-back-orb">${uiIcon('back')}</span><span>Back</span></button>`;
-  const profileButton = page === 'home' ? '' : `<button type="button" class="text-button sanctuary-profile-trigger" data-page="profile" aria-label="Open profile">${uiIcon('squad')}</button>`;
-  return `<header class="sanctuary-header${page === 'home' ? ' home-menu-header' : ''}" data-eyebrow="${eyebrow}">
-    ${leading}<h1 class="ref-sr-only" tabindex="-1">${title}</h1><span class="sanctuary-wordmark" aria-hidden="true">Last Light</span>
-    <div class="sanctuary-wallet"><div class="currency-strip" aria-label="Currencies">${currencies.map((currency) =>
-      `<button type="button" data-page="inventory" aria-label="View ${currency.name} in Inventory">${currencyIcon(currency.id)}<strong><span id="${currency.id}-balance">${(currency.id === 'fractalis' ? fractalis : lycalis) ?? 'Unavailable'}</span><small>${currency.name}</small></strong></button>`).join('')}</div>
-      <button type="button" class="text-button sanctuary-help-trigger" data-information="sanctuary-help" aria-label="Help for ${title}" aria-haspopup="dialog" aria-controls="sanctuary-help">?</button>
-      <button type="button" class="text-button" data-page="collections" aria-label="Open Collections">${uiIcon('story')}</button>
-      <button id="open-settings" type="button" class="text-button" aria-label="Open Settings" aria-haspopup="dialog" aria-controls="settings-drawer">${uiIcon('settings')}</button>
-      ${profileButton}
-      <dialog class="information-modal sanctuary-help-drawer" id="sanctuary-help" aria-labelledby="sanctuary-help-heading"><header class="drawer-heading"><h2 id="sanctuary-help-heading">${title}</h2><button type="button" class="drawer-close" data-close-information aria-label="Close Help">&times;</button></header><div class="information-content">${informationTopics('sanctuary-help', [
-        { id: 'screen', title: `${title} help`, summary: 'Controls and game rules', content: sanctuaryHelp(page) },
-        { id: 'origins', title: 'Let and Rise', summary: 'Origins of the world and the creators\' souls', content: worldLore() },
-      ])}</div></dialog>
-      </div>
-    <button type="button" class="menu-frame-toggle menu-header-toggle" data-menu-frame="header" aria-expanded="true" aria-label="Collapse top bar" title="Collapse top bar">&and;</button>
+    ? homeProfile || `<span class="lk-emblem" aria-hidden="true">${uiIcon('home')}</span>`
+    : `<button type="button" class="lk-button" data-variant="quiet" data-menu-back aria-label="Back">${uiIcon('back')}<span class="lk-back-label">Back</span></button>`;
+  const tool = (attrs: string, label: string, icon: string, popup = '') => `<button type="button" class="lk-icon-button" ${attrs} aria-label="${label}"${popup}>${icon}</button>`;
+  return `<header class="lk-topbar">
+    <div class="lk-topbar-lead">${leading}${heading ? `<h1 class="lk-sr-only" tabindex="-1">${title}</h1>` : ''}</div>
+    <span class="lk-wordmark" aria-hidden="true">Last Light</span>
+    <div class="lk-topbar-tools"><div class="lk-wallet" role="group" aria-label="Currencies">${currencies.map((currency) =>
+      `<button type="button" class="lk-coin" data-page="inventory" aria-label="View ${currency.name} in Inventory">${currencyIcon(currency.id)}<span class="lk-coin-copy"><span class="lk-coin-value" id="${currency.id}-balance">${(currency.id === 'fractalis' ? fractalis : lycalis) ?? 'Unavailable'}</span><span class="lk-coin-name">${currency.name}</span></span></button>`).join('')}</div>
+      ${tool('data-information="sanctuary-help"', `Help for ${title}`, '<span aria-hidden="true">?</span>', ' aria-haspopup="dialog" aria-controls="sanctuary-help"')}
+      ${tool('data-page="collections"', 'Open Collections', uiIcon('story'))}
+      ${tool('id="open-settings"', 'Open Settings', uiIcon('settings'), ' aria-haspopup="dialog" aria-controls="settings-drawer"')}
+      ${page === 'home' ? '' : tool('data-page="profile"', 'Open profile', uiIcon('squad'))}
+    </div>
   </header>`;
+}
+
+/** The Help dialog the top bar opens. It is legacy dialog markup, so it renders with the legacy screen. */
+export function sanctuaryHelpDialog(page: MenuPage): string {
+  const [, title] = headings[sanctuaryDestination(page)];
+  return `<dialog class="information-modal sanctuary-help-drawer" id="sanctuary-help" aria-labelledby="sanctuary-help-heading"><header class="drawer-heading"><h2 id="sanctuary-help-heading">${title}</h2><button type="button" class="drawer-close" data-close-information aria-label="Close Help">&times;</button></header><div class="information-content">${informationTopics('sanctuary-help', [
+    { id: 'screen', title: `${title} help`, summary: 'Controls and game rules', content: sanctuaryHelp(page) },
+    { id: 'origins', title: 'Let and Rise', summary: 'Origins of the world and the creators\' souls', content: worldLore() },
+  ])}</div></dialog>`;
 }
 
 const primaryDestinations = [
@@ -76,10 +86,8 @@ function primaryDestination(page: MenuPage): MenuPage | null {
 
 export function sanctuaryDock(page: MenuPage): string {
   const active = primaryDestination(page);
-  return `<nav class="sanctuary-dock" aria-label="Primary navigation"><button type="button" class="menu-frame-toggle menu-dock-toggle" data-menu-frame="dock" aria-expanded="true" aria-label="Collapse bottom bar" title="Collapse bottom bar">&or;</button>${primaryDestinations.map(([destination, label, icon, detail]) =>
-    `<button type="button" data-page="${destination}" aria-label="${detail}" aria-current="${active === destination ? 'page' : 'false'}">
-      <span class="nav-symbol" aria-hidden="true">${uiIcon(icon)}</span><span class="nav-copy"><strong>${label}</strong><span>${detail}</span></span>
-    </button>`).join('')}</nav>`;
+  return `<nav class="lk-dock" aria-label="Primary navigation">${primaryDestinations.map(([destination, label, icon, detail]) =>
+    `<button type="button" data-page="${destination}" aria-label="${detail}" aria-current="${active === destination ? 'page' : 'false'}">${uiIcon(icon)}<span class="lk-dock-label">${label}</span></button>`).join('')}</nav>`;
 }
 
 export function sanctuaryContext(page: MenuPage, area: TeamArea = 'squad'): string {

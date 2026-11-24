@@ -86,7 +86,7 @@ import { storyCampaign, bindStoryNavigation } from './presentation/story';
 import { storyEncounter, storyRules } from './content/story';
 import { unlockedStoryStage } from './game/account';
 import { roseEvent } from './presentation/rose-event';
-import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDestination, sanctuaryDock, type MenuPage, type TeamArea } from './presentation/sanctuary';
+import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDestination, sanctuaryDock, sanctuaryHelpDialog, type MenuPage, type TeamArea } from './presentation/sanctuary';
 import { MenuHistory } from './presentation/menu-history';
 import { gameChoose, gameConfirm, gameDialogPending, escapeDialogText } from './presentation/game-dialog';
 import { bindCreatureBulkSale } from './presentation/creature-bulk-sale';
@@ -155,6 +155,7 @@ import './presentation/activity-hub.css';
 // Interface kit (D-497): after every legacy stylesheet. New screens use only these; legacy-host.css is the temporary bridge.
 import './ui-kit/kit.css';
 import './ui-kit/controls.css';
+import './ui-kit/shell.css';
 import './ui-kit/motion.css';
 import './ui-kit/legacy-host.css';
 
@@ -461,7 +462,7 @@ function currentAccount(): Account {
 
 function updateProfileAvatar(): void {
   if (!playerProfile || !account) return;
-  const avatar = app.querySelector<HTMLButtonElement>('.sanctuary-header [data-page="profile"]');
+  const avatar = app.querySelector<HTMLButtonElement>('.lk-topbar [data-page="profile"]');
   if (!avatar) return;
   const preview = document.createElement('span');
   preview.className = 'profile-frame-preview online-header-avatar';
@@ -681,7 +682,7 @@ function showError(message: string, tone: ToastTone = 'error'): void {
   }
 }
 
-function frame(body: string, battle = false, sanctuary = false): void {
+function frame(body: string, battle = false, sanctuary = false, chrome: { top: string; dock: string } | null = null): void {
   disposeFriendChat?.();
   disposeFriendChat = null;
   disposeSocialCalendar?.();
@@ -703,7 +704,17 @@ function frame(body: string, battle = false, sanctuary = false): void {
   // The living scene follows the screen and sleeps in battle, which frees the GPU for the battle effect layer (D-484, D-496).
   backdrop.show(backgroundScreen, leader);
   applyAccent(document.documentElement, accentFor(backgroundScreen, leader));
-  app.innerHTML = battle ? `<div class="battle-screen">${body}${ambientBackground(backgroundScreen)}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
+  // Menu shell (D-497): kit top bar and dock around the stage. A screen not yet rebuilt renders in the legacy host,
+  // where its old stylesheets still match; nothing outside `.lk-legacy` uses a legacy class.
+  app.innerHTML = battle ? `<div class="battle-screen">${body}${ambientBackground(backgroundScreen)}<p id="status" class="status" role="alert"></p></div>` : sanctuary && chrome ? `<div class="lk-shell" data-lk-page="${menuPage}">
+    ${chrome.top}
+    <div class="lk-stage"><div class="shell sanctuary-shell lk-legacy">
+      ${ambientBackground(backgroundScreen)}
+      ${body}
+      <p id="status" class="status" role="alert"></p>
+    </div></div>
+    ${chrome.dock}
+  </div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
     ${ambientBackground(backgroundScreen)}
     ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L · L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}
     ${body}
@@ -943,10 +954,11 @@ function renderMenu(firstArrival = false): void {
   const homeLeader = account && menuPage === 'home' ? account.squad?.[0] ?? starter.id : starter.id;
   const informationPage = ['team', 'character', 'squad', 'inventory', 'stores', 'conduit-store', 'conduit-upgrade', 'collections', 'archives', 'glossary', 'summon', 'special-banner-archive'].includes(menuPage);
   const homeProfile = menuPage === 'home' ? referenceHomeProfile(starter, account) : '';
-  const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null, homeProfile)}<section class="menu-screen sanctuary-content${informationPage ? ' info-surface' : ''}${menuPage === 'home' ? ' home-shell' : ''}" data-menu-screen="${menuPage}">
+  const chrome = menuPage === 'battle' ? null : { top: sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null, homeProfile), dock: sanctuaryDock(menuPage) };
+  const sanctuary = `<section class="menu-screen sanctuary-content${informationPage ? ' info-surface' : ''}${menuPage === 'home' ? ' home-shell' : ''}" data-menu-screen="${menuPage}">
     ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     ${menuPage !== 'home' ? menuContent(menuPage) : referenceHome(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, account, playMode === 'online' && !!playerProfile)}
-  </section>${sanctuaryDock(menuPage)}`;
+  </section>${sanctuaryHelpDialog(menuPage)}`;
   frame(`${menuPage === 'battle' ? `${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     <div id="battle-root"></div>` : sanctuary}
     <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-heading">
@@ -954,7 +966,7 @@ function renderMenu(firstArrival = false): void {
     ${menuPage === 'battle' ? `<p class="currency-reward">${currencyIcon('fractalis')}<span>Prismatica <strong id="fractalis-balance">${fractalis ?? 'Unavailable'}</strong></span></p>` : ''}
     <p id="settings-error" class="status" role="alert"></p>
   </dialog>
-  ${menuPage === 'battle' ? '' : '<dialog id="max-level-dialog" class="information-modal" aria-labelledby="max-level-heading"><header class="drawer-heading"><button class="drawer-close" type="button" data-close-information aria-label="Close Max Level">&times;</button></header><div data-max-level-content></div><p data-max-level-error role="alert"></p></dialog>'}`, menuPage === 'battle', menuPage !== 'battle');
+  ${menuPage === 'battle' ? '' : '<dialog id="max-level-dialog" class="information-modal" aria-labelledby="max-level-heading"><header class="drawer-heading"><button class="drawer-close" type="button" data-close-information aria-label="Close Max Level">&times;</button></header><div data-max-level-content></div><p data-max-level-error role="alert"></p></dialog>'}`, menuPage === 'battle', menuPage !== 'battle', chrome);
   pendingMaxLevel = null;
   if (menuPage === 'home') bindHomeCarousel(app);
   bindSquadLoadouts(app);

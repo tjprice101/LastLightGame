@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sanctuaryDock, sanctuaryHeader, sanctuaryContext, sanctuaryPages, isMenuPage, sanctuaryDestination } from './sanctuary';
+import { sanctuaryDock, sanctuaryHeader, sanctuaryHelpDialog, sanctuaryContext, sanctuaryPages, isMenuPage, sanctuaryDestination } from './sanctuary';
 import { inventoryHub } from './hub';
 import { gameplayHub } from './gameplay';
 import { elements, infusionModes } from '../content/activities';
@@ -22,6 +22,8 @@ describe('full sanctuary UI', () => {
       if (page !== 'home') expect(html).toContain('data-page="profile"');
       expect(html).not.toContain('class="sanctuary-home"');
       expect(html).not.toContain('class="sanctuary-dock"');
+      // Kit markup only (D-497): nothing in the top bar or dock may match a legacy stylesheet, and the collapse toggles are gone.
+      expect(html + sanctuaryDock(page)).not.toMatch(/class="(?!lk-|ui-icon|currency-icon)|data-menu-frame/);
     }
     for (const page of ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'story', 'battle', 'profile']) {
       expect(isMenuPage(page)).toBe(true);
@@ -51,7 +53,8 @@ describe('full sanctuary UI', () => {
     }
     const header = sanctuaryHeader('team', Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
     expect(header).toContain('Help for Elemental-Bearers');
-    expect(header).toContain('id="sanctuary-help"');
+    expect(header).toContain('aria-controls="sanctuary-help"');
+    expect(sanctuaryHelpDialog('team')).toContain('id="sanctuary-help"');
     expect(header.match(/data-page="inventory"/g)).toHaveLength(2);
     expect(header).toContain('id="fractalis-balance">9007199254740991');
     expect(header).toContain('id="lycalis-balance">9007199254740991');
@@ -68,7 +71,8 @@ describe('full sanctuary UI', () => {
   });
   it('exposes Profile as a reachable menu page with a contextual header', () => {
     const html = sanctuaryHeader('profile', 0, 0);
-    expect(html).toContain('<h1 class="ref-sr-only" tabindex="-1">Profile</h1>');
+    expect(html).toContain('<h1 class="lk-sr-only" tabindex="-1">Profile</h1>');
+    expect(sanctuaryHeader('profile', 0, 0, '', false)).not.toContain('<h1');
     expect(html).toContain('data-page="profile"');
     expect(sanctuaryDestination('profile')).toBe('profile');
   });
@@ -85,13 +89,13 @@ describe('full sanctuary UI', () => {
   });
   it('uses a Last Light home emblem and one Back control on every non-Home screen', () => {
     expect(sanctuaryHeader('home', 0, 0)).not.toContain('data-menu-back');
-    expect(sanctuaryHeader('home', 0, 0)).toContain('sanctuary-home-emblem');
-    expect(sanctuaryHeader('home', 0, 0)).toContain('sanctuary-wordmark');
+    expect(sanctuaryHeader('home', 0, 0)).toContain('lk-emblem');
+    expect(sanctuaryHeader('home', 0, 0)).toContain('lk-wordmark');
     for (const page of sanctuaryPages.filter(page => page !== 'battle' && page !== 'home')) {
       const header = sanctuaryHeader(page, 0, 0);
       expect(header.match(/data-menu-back/g)).toHaveLength(1);
       expect(header).toContain('aria-label="Back"');
-      expect(header).toContain('aria-label="Close Help"');
+      expect(sanctuaryHelpDialog(page)).toContain('aria-label="Close Help"');
       expect(header).not.toContain('aria-label="Close Menu"');
     }
   });

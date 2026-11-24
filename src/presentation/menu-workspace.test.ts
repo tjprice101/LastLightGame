@@ -20,22 +20,13 @@ describe('live redesigned menus', () => {
     expect(root.querySelector('.ref-exchange [data-menu-page-status]')!.textContent).toBe('2 / 2');
     expect(root.querySelector('.ref-team-collection')!.getAttribute('data-menu-current-page')).toBe('0');
   });
-  it('collapses either frame once after repeated formatting and retains state across navigation without save writes', () => {
+  it('leaves the shell alone: the collapse toggles are gone and nothing is patched onto it (D-497)', () => {
     const root = document.createElement('div');
-    const markup = '<div class="sanctuary-shell"><button data-menu-frame="header"></button><button data-menu-frame="dock"></button></div>';
+    const markup = '<div class="lk-shell"><header class="lk-topbar"></header><nav class="lk-dock"><button data-page="team"><span class="lk-dock-label">Elemental-Bearers</span></button></nav></div>';
     root.innerHTML = markup;
     formatMenuWorkspace(root);
     formatMenuWorkspace(root);
-    root.querySelector<HTMLButtonElement>('[data-menu-frame="header"]')!.click();
-    expect(root.querySelector('.sanctuary-shell')!.getAttribute('data-header-collapsed')).toBe('true');
-    root.innerHTML = markup;
-    formatMenuWorkspace(root);
-    expect(root.querySelector('[data-menu-frame="header"]')!.getAttribute('aria-expanded')).toBe('false');
-    root.querySelector<HTMLButtonElement>('[data-menu-frame="header"]')!.click();
-    root.querySelector<HTMLButtonElement>('[data-menu-frame="dock"]')!.click();
-    expect(root.querySelector('.sanctuary-shell')!.getAttribute('data-dock-collapsed')).toBe('true');
-    root.querySelector<HTMLButtonElement>('[data-menu-frame="dock"]')!.click();
-    expect(root.querySelector('[data-menu-frame="dock"]')!.getAttribute('aria-label')).toBe('Collapse bottom bar');
+    expect(root.innerHTML).toBe(markup);
   });
   it('uses the production presentation without enabling the isolated test account', () => {
     const main = readFileSync(join(process.cwd(), 'src', 'main.ts'), 'utf8');
@@ -89,12 +80,5 @@ describe('live redesigned menus', () => {
     const effects = root.querySelector('.information-content')!.textContent!.replace(/[[\]]/g, '');
     expect(effects).toContain('Boosts Normal Attack damage of Infernic allies (+20%)');
     expect(effects).toContain('boosts Burn damage of Infernic allies (+15%)');
-  });
-  it('keeps level and attunement together without repeating the subtype', () => {
-    const root = document.createElement('div');
-    root.innerHTML = '<div class="home-profile-copy"><small>Leader</small><b>Name</b><small>Lv.15</small><span class="home-profile-attunement"><span class="radiant-attunement-chip">Equinox</span>Equinox</span></div>';
-    formatMenuWorkspace(root);
-    expect(root.querySelector('small:last-of-type')?.textContent).toBe('Lv.15Equinox');
-    expect(root.textContent?.match(/Equinox/g)).toHaveLength(1);
   });
 });

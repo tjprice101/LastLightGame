@@ -1,0 +1,205 @@
+/*
+ * Interface kit shell (D-497): top bar, stage and dock around every menu screen. See kit.css for the rules.
+ * The stage holds either a rebuilt `.lk-screen` or, until its turn comes, a legacy screen in `.lk-legacy`.
+ */
+.lk-shell {
+  position: relative;
+  display: grid;
+  grid-template-rows: var(--topbar-h) minmax(0, 1fr) var(--dock-h);
+  box-sizing: border-box;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+}
+/* The isolated-profile banner is fixed at the top of the page; the shell starts below it. */
+#app:has(.debug-profile-banner) .lk-shell { padding-top: 34px; }
+.lk-stage { position: relative; min-width: 0; min-height: 0; }
+.lk-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Top bar: where you came from, the wordmark, what you hold, and the four utilities. */
+.lk-topbar {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 var(--screen-pad);
+  background: linear-gradient(180deg, var(--glass-bottom), var(--glass-top));
+  box-shadow: 0 10px 30px var(--well);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+.lk-topbar::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gild-line) 14%, var(--gild-mid) 50%, var(--gild-line) 86%, transparent);
+  pointer-events: none;
+}
+.lk-topbar-lead { display: flex; align-items: center; gap: var(--space-3); min-width: 0; justify-self: start; }
+.lk-topbar-tools { display: flex; align-items: center; gap: var(--space-2); min-width: 0; justify-self: end; }
+.lk-wordmark {
+  font-family: var(--display-font);
+  font-size: var(--ui-section);
+  font-weight: 700;
+  letter-spacing: .36em;
+  text-indent: .36em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  justify-self: center;
+  max-width: 100%;
+  overflow: hidden;
+  color: transparent;
+  background: linear-gradient(100deg, var(--gild-mid) 0%, var(--gild-light) 40%, var(--text-primary) 50%, var(--gild-light) 60%, var(--gild-mid) 100%) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.lk-emblem {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--gild-line);
+  border-radius: 50%;
+  color: var(--gild-light);
+  box-shadow: var(--gild-inner), 0 0 18px var(--ui-accent-glow);
+}
+.lk-emblem svg, .lk-icon-button svg, .lk-button svg, .lk-dock svg { width: 22px; height: 22px; flex: none; }
+.lk-topbar .lk-icon-button, .lk-topbar .lk-button, .lk-coin, .lk-leader, .lk-dock button { position: relative; }
+/* A player picture set on the profile button fills the round button. */
+.lk-icon-button > .profile-frame-preview { box-sizing: border-box; width: 100%; height: 100%; margin: 0; padding: 0; border-radius: 50%; overflow: hidden; }
+
+/* Wallet: exact balances, each a shortcut to Inventory. */
+.lk-wallet { display: flex; align-items: center; gap: var(--space-2); min-width: 0; margin: 0; }
+.lk-coin {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-4) 0 var(--space-2);
+  border: 1px solid var(--gild-hairline);
+  border-radius: var(--radius-pill);
+  background: var(--tile-shade);
+  color: var(--text-primary);
+  font-family: var(--ui-font);
+  cursor: pointer;
+  transition: border-color var(--motion-nav) ease, box-shadow var(--motion-nav) ease;
+}
+.lk-coin:hover { border-color: var(--gild-mid); box-shadow: 0 0 16px color-mix(in srgb, var(--gild-mid) 26%, transparent); }
+.lk-coin:focus-visible, .lk-leader:focus-visible, .lk-dock button:focus-visible { outline: 2px solid var(--gild-light); outline-offset: 2px; }
+.lk-coin img { width: 28px; height: 28px; object-fit: contain; }
+.lk-coin-copy { display: grid; justify-items: start; line-height: 1.15; text-align: left; white-space: nowrap; }
+.lk-coin-value { font-size: var(--ui-label); font-weight: 700; font-variant-numeric: tabular-nums lining-nums; }
+.lk-coin-name { font-size: var(--ui-caption); font-weight: 600; color: var(--text-muted); }
+
+/* Squad leader, on Home: a shortcut to their page. */
+.lk-leader {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  max-width: 100%;
+  padding: 2px var(--space-4) 2px 2px;
+  border: 1px solid var(--gild-line);
+  border-radius: var(--radius-pill);
+  background: var(--tile-shade);
+  box-shadow: var(--gild-inner);
+  color: var(--text-primary);
+  font-family: var(--ui-font);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--motion-nav) ease, box-shadow var(--motion-nav) ease;
+}
+button.lk-leader:hover { border-color: var(--gild-mid); box-shadow: var(--gild-inner), 0 0 18px var(--ui-accent-glow); }
+.lk-leader-art {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent) 45%, transparent), var(--surface-inset));
+}
+.lk-leader-art img, .lk-leader-art svg { width: 100%; height: 100%; object-fit: contain; }
+.lk-leader-copy { display: grid; min-width: 0; line-height: 1.2; }
+.lk-leader-name { font-size: var(--ui-body); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lk-leader-detail { display: flex; align-items: center; gap: var(--space-2); font-size: var(--ui-caption); color: var(--text-muted); white-space: nowrap; }
+
+/* Dock: the six places, always in the same order, with the current one lit. */
+.lk-dock {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  gap: var(--space-1);
+  max-width: calc(100% - var(--space-6));
+  padding: var(--space-1);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(180deg, var(--glass-top), var(--glass-bottom));
+  box-shadow: var(--shadow-glass);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+.lk-dock button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--text-muted);
+  font-family: var(--ui-font);
+  font-size: var(--ui-label);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--motion-nav) ease, background-color var(--motion-nav) ease, border-color var(--motion-nav) ease, box-shadow var(--motion-nav) ease, transform var(--motion-press) var(--ease-out);
+}
+.lk-dock button:hover { background: var(--tile-tint); color: var(--text-primary); }
+.lk-dock button:active { transform: scale(.97); }
+.lk-dock button[aria-current="page"] {
+  border-color: var(--gild-line);
+  background: color-mix(in srgb, var(--gild-mid) 15%, transparent);
+  box-shadow: var(--gild-inner), 0 0 20px var(--ui-accent-glow);
+  color: var(--gild-light);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lk-topbar, .lk-dock { background: var(--glass-strong); }
+}
+:root[data-scene-quality="low"] :is(.lk-topbar, .lk-dock) {
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Compact mode: narrow screens drop the words and keep the icons, exact balances and every control. */
+@media (max-width: 1100px) {
+  .lk-wordmark { display: none; }
+  .lk-topbar { grid-template-columns: minmax(0, 1fr) auto; }
+  .lk-coin-name { display: none; }
+}
+@media (max-width: 860px) {
+  .lk-topbar { gap: var(--space-2); padding-inline: var(--space-3); }
+  .lk-dock button { padding: 0 var(--space-3); }
+  .lk-dock-label, .lk-back-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .lk-leader-detail { display: none; }
+}

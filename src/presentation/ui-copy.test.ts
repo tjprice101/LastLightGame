@@ -21,7 +21,7 @@ import { battleResults } from './battle-results';
 import { unitReadout } from './unit-readout';
 import { inventoryView } from './inventory';
 import { itemShowcase } from './item-showcase';
-import { sanctuaryHeader } from './sanctuary';
+import { sanctuaryHeader, sanctuaryHelpDialog } from './sanctuary';
 import { loadAccount, ACCOUNT_KEY, summonCharacter } from '../game/account';
 import { SAVE_KEY } from '../game/profile';
 import { elementLabel } from './element-label';
@@ -63,8 +63,8 @@ describe('visible UI copy', () => {
       ['profile', 'View Story progress, collection totals'],
       ['battle', 'Training starts at wave 1'],
     ] as const) {
-      expect(plain(sanctuaryHeader(page, 0, 0))).toContain(phrase);
-      expect(sanctuaryHeader(page, 0, 0)).not.toContain('viewing never spends anything');
+      expect(plain(sanctuaryHelpDialog(page))).toContain(phrase);
+      expect(sanctuaryHelpDialog(page)).not.toContain('viewing never spends anything');
     }
   });
   it('uses player-facing language in activity, loot, Inventory and summon descriptions', () => {
@@ -97,7 +97,7 @@ describe('visible UI copy', () => {
       ...battle.allies.map(unit => unitReadout(unit)),
       ...starters.map(starter => characterHub(starter, 'overview', account)),
       ...['home', 'team', 'inventory', 'gameplay', 'collections', 'stores', 'summon', 'profile'].map(page =>
-        sanctuaryHeader(page as Parameters<typeof sanctuaryHeader>[0], 0, 0)),
+        sanctuaryHeader(page as Parameters<typeof sanctuaryHeader>[0], 0, 0) + sanctuaryHelpDialog(page as Parameters<typeof sanctuaryHeader>[0])),
     ];
     const banned = /D-\d{3}|\b(?:RNG|atomic(?:ally)?|server-validated|first pass|not yet implemented|saved once)\b|independent (?:recruitment|weighted bundle|random stream)|before upgrading skills|unlocks after|you(?:'|’)ll later|harness the power|a testament to|seamlessly|embark|unleash|delve into(?! the Abyss)|until artwork is delivered/i;
     for (const html of surfaces) {
@@ -207,8 +207,8 @@ describe('visible UI copy', () => {
     expect(summon).toContain('Rates & Information');
     expect(summon).toContain('Pity guarantees');
     expect(summon).toContain('<dt>Per draw</dt><dd><span><strong>10</strong> Null-Prismatica');
-    expect(primary(sanctuaryHeader('inventory', 10000, 100))).not.toContain('Prelude 0.1');
-    expect(primary(sanctuaryHeader('inventory', 10000, 100))).not.toContain('Each Adventure entry starts a new run.');
+    expect(primary(sanctuaryHeader('inventory', 10000, 100) + sanctuaryHelpDialog('inventory'))).not.toContain('Prelude 0.1');
+    expect(primary(sanctuaryHeader('inventory', 10000, 100) + sanctuaryHelpDialog('inventory'))).not.toContain('Each Adventure entry starts a new run.');
     expect(account).toEqual(before);
   });
   it('renames both currencies without changing legacy balances, assets or rejected draw behavior', () => {
@@ -229,7 +229,7 @@ describe('visible UI copy', () => {
     expect(() => summonCharacter(storage, () => 0)).toThrow('10 Null-Prismatica');
     expect(storage.setItem).not.toHaveBeenCalled();
     const surfaces = [
-      sanctuaryHeader('home', account.fractalis, account.lycalis),
+      sanctuaryHeader('home', account.fractalis, account.lycalis), sanctuaryHelpDialog('home'),
       inventoryView(account),
       homeHub(openingStarters[0], false, account),
       characterHub(openingStarters[0], 'upgrade-0', account),
