@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## UI and VFX overhaul Phase 2, step S1: shared GPU layer (D-495, 2026-11-24)
+
+**Implemented on branch `ui-vfx-shader-kit`, committed locally; not pushed or
+released.** Client only; no authority change. Battles look and time the same.
+
+**Owner answers (2026-11-24):** Phases 2 (summons) and 3 (menus) approved in
+full; WebGL summon sequence replaces the DOM cinematic for summons; test-only
+capture harness; Fable for new GLSL only; non-blocking menu arrival (refines
+D-406); shader menu backdrop; no GSAP; most-used menus first.
+[Approved plan](Future%20Plans/ui-vfx-polish-toolkit.md#9-phases-2-and-3-plan-approved-2026-11-24-d-495), D-495.
+
+**What changed:**
+- `src/vfx/spectacle-runtime.ts` (new): boots the shared Phaser GPU layer once
+  and lends it to one owner at a time (`claimSpectacle`, `ownsSpectacle`,
+  `releaseSpectacle`). A new owner cancels the previous owner's effects.
+- `src/vfx/gpu-effects.ts`: battle effects claim the layer through it (boot
+  code moved, behaviour unchanged).
+- `src/vfx/spectacle-scene.ts`: `setClock('battle' | 'ui')`. The UI clock runs
+  at 1 and ignores battle speed (for summons).
+- `src/presentation/battle-screen.css`: a summon owner lifts the layer to
+  z-index 1001 (above the sequence backdrop, below its text and Skip).
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- `npx vitest run src/vfx src/presentation/battle-screen.test.ts
+  src/presentation/battle-cutin-radiant.test.ts`: 182 of 182 pass, including
+  7 new runtime and clock tests (`src/vfx/spectacle-runtime.test.ts`).
+- `npx vite build`: succeeded.
+- Real GPU capture (`--battle skill2 --stream --gpu`): slash, bloomed burst,
+  field-edge light and clean decay, as before.
+- Full `npx vitest run` not run for this step (runs before the Phase 2 release).
+
+**Not done:** S2 (Fable: portal and shockwave GLSL), S3 (sequence), S4 (cards),
+S5 (capture harness), S6 (release). Nothing summon-facing changed yet.
+
 ## UI and VFX overhaul Phase 1, step 4: finisher tuning (D-494, 2026-11-23)
 
 **Released 2026-11-23** (steps 2 to 4, commit `377c7385`, client only; no

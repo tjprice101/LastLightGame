@@ -1,8 +1,8 @@
 # UI and VFX visual overhaul (filed 2026-11-20)
 
-**Status:** Phase 1 (shader foundation and battle) approved 2026-11-23 (D-494);
-steps 2 and 3 implemented on branch `ui-vfx-shader-kit`, not released. Phases 2
-(summons) and 3 (menus) and sound remain proposed, not approved.
+**Status:** Phase 1 (shader foundation and battle) approved 2026-11-23 (D-494)
+and released 2026-11-23. Phases 2 (summons) and 3 (menus) approved 2026-11-24
+(D-495, plan in §9); step S1 implemented, unreleased. Sound remains proposed, not approved.
 
 **Timing:** pick up **after** the current Battle Flurry work: B3c, B4, B5, the
 single enemy retune and that release (D-493).
@@ -151,3 +151,39 @@ no GSAP yet; the Spectacle steps 2-7 feel review is folded in; no paid tools.
 
 Details: [combat spec](../combat.md#battle-spectacle-shader-kit-d-494-overhaul-phase-1).
 Limit: shaders add light over the DOM cutouts; they cannot warp them.
+
+## 9. Phases 2 and 3 plan (approved 2026-11-24, D-495)
+
+Owner answers: both phases planned in full, summons first; the WebGL sequence
+replaces the DOM cinematic for summons; a test-only capture harness; Fable for
+new GLSL only; non-blocking menu arrival (refines D-406); a shader backdrop;
+no GSAP; most-used menus first; no paid tools; sound out of scope.
+
+**Phase 2: Summons**
+
+| Step | Model | Work | Status |
+|---|---|---|---|
+| S1 | Opus | Share the spectacle runtime outside battle: `src/vfx/spectacle-runtime.ts` owner claiming, a UI clock (no battle speed), a full-screen frame, layering above the sequence backdrop; DOM cinematic fallback | Implemented 2026-11-24, unreleased |
+| S2 | Fable | Summon GLSL: `portal` vortex and `shockwave` ring in the kit; tier palettes from existing tokens | Not started |
+| S3 | Opus | `summon-sequence.ts` and `summon-cinematic.ts`: charge, escalation, burst, then the revealed dialog; skip, inert, Reduce motion, fallback | Not started |
+| S4 | Sonnet | Result cards in the dialog: card rise and flip in the wave, element edge glow and shine on 5★, 6★ and bonus cards | Not started |
+| S5 | Sonnet | `tools/capture_summon.mjs` with fixture receipts (dev server only) | Not started |
+| S6 | Sonnet | Tune, docs, commit, push both branches, hosted check (client only) | Not started |
+
+**Phase 3: Menus**
+
+| Step | Model | Work | Status |
+|---|---|---|---|
+| M1 | Opus | Foundation: semantic tokens, `src/styles/luxury.css` (jewel panel, gold frame, edge glow, shine), `src/presentation/arrival.ts` | Not started |
+| M2 | Fable + Opus | Shader backdrop replacing `backdrop.ts`; per-screen palettes; sleeps in battle and when hidden; 30 fps; CSS fallback (release) | Not started |
+| M3 | Sonnet | Home and dock | Not started |
+| M4 | Sonnet | Summon hub and banner showcase (release) | Not started |
+| M5 | Sonnet | Team, character, squad, Conduits | Not started |
+| M6 | Sonnet | Play: activities, events, Calamity, Rose (release) | Not started |
+| M7 | Sonnet | Inventory, Stores, Collections | Not started |
+| M8 | Sonnet | Profile, Social, Settings, dialogs, receipts | Not started |
+| M9 | Sonnet | Performance, proven-dead CSS cleanup, full validation (release) | Not started |
+
+Limits: shaders add light only and cannot draw over the top-layer reward
+dialog; the backdrop sleeps while a summon or battle owns the spectacle layer.
+Moon/Sunshade stay inactive; Story stays paused.

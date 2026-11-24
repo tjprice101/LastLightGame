@@ -286,6 +286,8 @@ html[data-motion="reduced"] .radiant-fx-layer > :not(.radiant-static-ring):not(.
 /* Battle Spectacle GPU layer (D-484): pointer-transparent, between the field and the DOM effects. */
 .radiant-gpu-layer { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
 .radiant-gpu-layer canvas { display: block; pointer-events: none; }
+/* D-495 S1: a summon sequence lifts the shared layer over its dark backdrop (z-index 1000), under its text and Skip. */
+.radiant-gpu-layer[data-spectacle-owner="summon"] { z-index: 1001; }
 .radiant-battle .radiant-field .radiant-enemy:disabled, .radiant-battle .radiant-face:disabled { opacity: 1; }
 .radiant-battle .radiant-member.has-acted .radiant-face, .radiant-battle .radiant-member.is-defeated .radiant-face { opacity: .55; }
 /* D-493 B4 (G12): a member holding a borrowed skill keeps a gold frame until it is used or the turn ends. */

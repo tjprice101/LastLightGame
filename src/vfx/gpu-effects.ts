@@ -19,63 +19,9 @@ import { enemyBursts, enemyPower, type EnemyActionCue } from './enemy-cues';
 import type { FlareTier } from '../game/combat-gauge';
 import { elementStyle, type ElementStyle } from './element-styles';
 import { bearerElementStyle } from './bearer-signatures';
-import type { BurstKind, Point, SpectacleScene, SpectacleStats } from './spectacle-scene';
+import type { BurstKind, Point, SpectacleScene } from './spectacle-scene';
 import { veilMode, type EdgeStrength } from './shaders/spectacle-fx';
-import type Phaser from 'phaser';
-
-interface SpectacleRuntime { game: Phaser.Game; scene: SpectacleScene; host: HTMLElement }
-let shared: Promise<SpectacleRuntime | null> | null = null;
-let owner: GpuBattleEffects | null = null;
-
-function webglAvailable(): boolean {
-  try {
-    const canvas = document.createElement('canvas');
-    return !!(canvas.getContext('webgl2') ?? canvas.getContext('webgl'));
-  } catch { return false; }
-}
-/** Boots the shared layer once per page; null when WebGL is unavailable. */
-function spectacleRuntime(): Promise<SpectacleRuntime | null> {
-  shared ??= (async () => {
-    if (!webglAvailable()) return null;
-    const [{ default: PhaserRuntime }, { SpectacleScene }] = await Promise.all([import('phaser'), import('./spectacle-scene')]);
-    const host = document.createElement('div');
-    host.className = 'radiant-gpu-layer';
-    host.setAttribute('aria-hidden', 'true');
-    document.body.append(host);
-    return new Promise<SpectacleRuntime | null>(resolve => {
-      const scene = new SpectacleScene();
-      let game: Phaser.Game;
-      scene.onReady = () => {
-        const runtime = { game, scene, host };
-        scene.onActivity = active => {
-          if (active) game.loop.wake(); else game.loop.sleep();
-        };
-        game.loop.sleep();
-        exposeStats(scene.stats);
-        if (import.meta.env.DEV) (window as Window & { lastLightSpectacle?: SpectacleRuntime }).lastLightSpectacle = runtime;
-        resolve(runtime);
-      };
-      try {
-        game = new PhaserRuntime.Game({
-          type: PhaserRuntime.WEBGL, parent: host, transparent: true, scene, banner: false,
-          scale: { mode: PhaserRuntime.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
-          render: { antialias: true, powerPreference: 'high-performance' },
-          // No delta smoothing: GPU beats stay on the wall clock with the DOM animations after a stall.
-          fps: { target: 60, smoothStep: false }, audio: { noAudio: true },
-        });
-      } catch (error) {
-        console.error('Battle effects could not start the GPU layer; static rings are shown instead.', error);
-        host.remove(); resolve(null);
-      }
-    });
-  })();
-  return shared;
-}
-/** Development and `?spectacle-stats` builds expose frame timing for the GPU check. */
-function exposeStats(stats: SpectacleStats): void {
-  if (import.meta.env.DEV || new URLSearchParams(location.search).has('spectacle-stats'))
-    (window as Window & { lastLightSpectacleStats?: SpectacleStats }).lastLightSpectacleStats = stats;
-}
+import { claimSpectacle, ownsSpectacle, releaseSpectacle, spectacleRuntime, type SpectacleRuntime } from './spectacle-runtime';
 
 type Packet = Extract<RadiantCombatEvent, { type: 'damage' | 'heal' | 'shield' | 'status' }>;
 const meleeMotions = new Set(['slash', 'thrust', 'hammer', 'twin', 'guard']);
@@ -139,15 +85,12 @@ export class GpuBattleEffects implements RadiantBattleEffects {
   /** The latest mounted battle owns the shared layer. */
   private claim(): void {
     if (!this.runtime) return;
-    owner = this;
-    this.runtime.host.style.visibility = '';
-    this.runtime.scene.attach(() => this.host.querySelector<HTMLElement>('.radiant-field'));
-    this.runtime.scene.setPaused(this.paused);
-    this.runtime.scene.shareFlashGovernor(this.governor);
+    claimSpectacle(this.runtime, this, { kind: 'battle', frame: () => this.host.querySelector<HTMLElement>('.radiant-field'),
+      paused: this.paused, governor: this.governor });
   }
   private scene(): SpectacleScene | null {
     if (!this.runtime || this.disposed) return null;
-    if (owner !== this) this.claim();
+    if (!ownsSpectacle(this)) this.claim();
     return this.runtime.scene.ready ? this.runtime.scene : null;
   }
   private anchor(id: string): DOMRect | null {
@@ -418,22 +361,17 @@ export class GpuBattleEffects implements RadiantBattleEffects {
   }
   pause(paused: boolean): void {
     this.paused = paused;
-    if (owner === this) this.runtime?.scene.setPaused(paused);
+    if (ownsSpectacle(this)) this.runtime?.scene.setPaused(paused);
   }
   cancel(): void {
     this.generation++;
     for (const entry of [...this.fallbacks]) entry.finish();
-    if (owner === this) this.runtime?.scene.cancelAll();
+    if (ownsSpectacle(this)) this.runtime?.scene.cancelAll();
   }
   dispose(): void {
     if (this.disposed) return;
     this.cancel();
     this.disposed = true;
-    if (owner === this && this.runtime) {
-      owner = null;
-      this.runtime.host.style.visibility = 'hidden';
-      this.runtime.scene.attach(null);
-      this.runtime.scene.setPaused(false);
-    }
+    if (this.runtime) releaseSpectacle(this.runtime, this);
   }
 }

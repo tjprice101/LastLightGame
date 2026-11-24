@@ -82,7 +82,7 @@ describe('GpuBattleEffects without WebGL (owner choice: static rings)', () => {
 describe('GpuBattleEffects on the GPU layer', () => {
   const scene = {
     ready: true, stats: {}, onReady: null as null | (() => void), onActivity: null,
-    attach: vi.fn(), setPaused: vi.fn(), shareFlashGovernor: vi.fn(), freeze: vi.fn(), chargeAura: vi.fn(), projectile: vi.fn(), slash: vi.fn(),
+    attach: vi.fn(), setPaused: vi.fn(), setClock: vi.fn(), shareFlashGovernor: vi.fn(), freeze: vi.fn(), chargeAura: vi.fn(), projectile: vi.fn(), slash: vi.fn(),
     pulse: vi.fn(), burst: vi.fn(), flash: vi.fn(), dim: vi.fn(), cancelAll: vi.fn(),
     converge: vi.fn(), pillar: vi.fn(), shockwave: vi.fn(), lensFlare: vi.fn(), focus: vi.fn(),
     edgeBloom: vi.fn(), godRays: vi.fn(), critFlash: vi.fn(), veil: vi.fn(),

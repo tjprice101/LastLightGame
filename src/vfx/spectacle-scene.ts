@@ -17,6 +17,8 @@ import { kitSlowFrameLimit, kitSlowFrameMs, softwareRenderer, SpectacleFxState, 
   type GodRaysOptions, type VeilOptions } from './shaders/spectacle-fx';
 import { SpectacleFxPipeline, spectaclePipelineKey } from './shaders/spectacle-pipeline';
 
+/** Which clock drives the scene's tweens, timers and overlays (D-495 S1). */
+export type SpectacleClock = 'battle' | 'ui';
 export interface Point { x: number; y: number }
 export type { BurstKind } from './element-styles';
 export type Quality = 'high' | 'low';
@@ -81,6 +83,7 @@ export class SpectacleScene extends Phaser.Scene {
   /** Shader kit (D-494): bloom and light overlays drawn by one camera post pass. */
   private readonly fx = new SpectacleFxState();
   private shaderKit = false;
+  private clock: SpectacleClock = 'battle';
   private kitSlowFrames = 0;
   readonly stats: SpectacleStats;
   private readonly speedChange = () => this.applyTimeScale();
@@ -194,14 +197,21 @@ export class SpectacleScene extends Phaser.Scene {
   }
   attach(field: (() => HTMLElement | null) | null): void { this.field = field; }
   setPaused(paused: boolean): void { this.paused = paused; this.applyTimeScale(); }
+  /** D-495 S1: `battle` follows the battle speed setting; `ui` (summons) always runs at 1 (audit §6.5). */
+  setClock(clock: SpectacleClock): void {
+    if (this.clock === clock) return;
+    this.clock = clock;
+    this.applyTimeScale();
+  }
+  private speed(): number { return this.clock === 'battle' ? battleSpeed() : 1; }
   /** Hit-stop (R2): freezes every GPU clock; overlapping requests take the longest, never the sum. */
   freeze(ms: number): void {
     if (ms <= 0) return;
-    this.frozenUntil = Math.max(this.frozenUntil, performance.now() + ms / battleSpeed());
+    this.frozenUntil = Math.max(this.frozenUntil, performance.now() + ms / this.speed());
     this.applyTimeScale();
   }
   private applyTimeScale(): void {
-    const scale = this.paused || performance.now() < this.frozenUntil ? 0 : battleSpeed();
+    const scale = this.paused || performance.now() < this.frozenUntil ? 0 : this.speed();
     this.time.timeScale = scale;
     this.tweens.timeScale = scale;
     for (const emitter of this.emitters.values()) emitter.timeScale = scale;

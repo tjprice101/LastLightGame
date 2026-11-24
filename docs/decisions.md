@@ -1,5 +1,31 @@
 # Decision log
 
+## UI and VFX overhaul Phases 2 and 3 approved: summons and menus (D-495, 2026-11-24)
+
+- **Owner-approved scope (2026-11-24):** Phase 2 (summons) then Phase 3
+  (menus) of the [UI and VFX overhaul](Future%20Plans/ui-vfx-polish-toolkit.md#9-phases-2-and-3-plan-approved-2026-11-24-d-495),
+  reusing the D-494 shader kit. Fable writes the new GLSL only (summon portal
+  and shockwave passes, menu backdrop); Opus wires shader work; Sonnet does UI
+  screens, docs and releases. No GSAP, no paid tools. Sound stays out of scope.
+- **Summons:** a full-screen WebGL sequence (portal charge, light shafts,
+  rarity escalation, burst) replaces the DOM cinematic for summons only, after
+  the save as today. The top-layer result dialog stays; its cards get HTML/CSS
+  choreography. No WebGL, a software renderer or Reduce motion keep today's
+  behaviour. Escalation is presentational and read from the saved receipt.
+  Summon light runs on a UI clock, never the battle speed.
+- **Validation:** a test-only capture harness (`tools/capture_summon.mjs`)
+  plays the real presentation with fixture receipts in an automated browser.
+  Never shipped; no save, no economy call, no URL flag.
+- **Menus:** most-used screens first after a shared foundation (jewel panels,
+  gold frames that animate only on hover, focus or selection, edge glow,
+  shine). An original shader backdrop replaces the grey Phaser backdrop, with
+  the CSS ambient layer as fallback.
+- **Navigation (refines D-406):** non-blocking arrival. The destination renders
+  and accepts input immediately; panel wrappers settle in under 250 ms. No
+  curtain, no wait, no focus or scroll change; skipped under Reduce motion.
+- **Status:** step S1 (the shared GPU layer with a UI clock) implemented
+  2026-11-24 on branch `ui-vfx-shader-kit`, unreleased; battles look unchanged.
+
 ## UI and VFX overhaul Phase 1: battle shader kit (D-494, 2026-11-23)
 
 - **Owner-approved scope (2026-11-23):** the
