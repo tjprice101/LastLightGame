@@ -113,7 +113,7 @@ describe('roster, squad and summon screens', () => {
     expect(html).toContain('data-rate-stars="6"');
     expect(html).toContain('aria-label="80-pull pity progress"');
     expect(html).not.toContain('aria-label="Unowned highest-star pity progress"');
-    const dialogStart = html.indexOf('<dialog class="information-modal" id="summon-information"');
+    const dialogStart = html.indexOf('<dialog class="information-modal lk-dialog" id="summon-information"');
     const dialog = html.slice(dialogStart, html.indexOf('</dialog>', dialogStart));
     expect(dialog).toContain('<table');
     expect(html.replace(dialog, '')).not.toContain('<table');
