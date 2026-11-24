@@ -286,9 +286,9 @@ items. Blur is used on the top bar, dock, panels and dialogs only.
 | Step | Was | Model | Work | Status |
 |---|---|---|---|---|
 | K0 | none | Sonnet | This section, D-497, handoff | Done 2026-11-24 |
-| K1 | R2 | Opus | Glass and accent tokens, `@property` accent, `accent.ts`, `motion.ts`, `accentFor` | Not started |
-| K2 | R3 | Opus | Kit CSS and `html.ts`; kit contract test; legacy `!important` ratchet test | Not started |
-| K3 | R3 | Opus | Shell swap, scene visible behind menus, glass bridge for legacy interiors, compact mode, collapse toggles removed, click burst and pop entrances removed, CSS arrival, `fx.ts` with `kick` | Not started |
+| K1 | R2 | Opus | Glass and accent tokens, `@property` accent, `accent.ts`, `motion.ts`, `accentFor` | Implemented 2026-11-24, unreleased |
+| K2 | R3 | Opus | Kit CSS and `html.ts`; kit contract test; legacy `!important` ratchet test | Implemented 2026-11-24, unreleased |
+| K3 | R3 | Opus | Shell swap, scene visible behind menus, glass bridge for legacy interiors, compact mode, collapse toggles removed, click burst and pop entrances removed, CSS arrival, `fx.ts` with `kick` | Implemented 2026-11-24, unreleased. Old screens keep their own entrances until rebuilt; frame time not measured |
 | K4 | R3 | Sonnet | One dialog, drawer and toast frame | Not started |
 | Release 1 | | Sonnet | Scene, glass and new shell on every screen (also ships S1 and R1) | Not started |
 | G1 | R6 | Opus | Home and Play (one activity group at a time). Release 2 | Not started |

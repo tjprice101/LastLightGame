@@ -188,6 +188,38 @@ Supersedes every earlier "six slots" statement below.
   headings; sections carry `data-loot-group` for static Conduit rarity
   edges; items stagger in on open (preview only: no sheen or count-up).
 
+## Menu shell and interface kit (D-497, 2026-11-24)
+
+Implemented on branch `ui-vfx-shader-kit`, unreleased. Supersedes earlier
+statements about the header, dock, collapse toggles and click feedback below.
+
+- **Shell:** `.lk-shell` holds a top bar, a stage and a dock. Markup and
+  styles come from `src/ui-kit/` and use only `lk-` classes.
+- **Top bar:** Back on every screen but Home (Home shows the squad leader
+  chip, or the emblem); the wordmark; both balances, exact, each opening
+  Inventory; Help, Collections, Settings, and Profile off Home. No collapse
+  toggle.
+- **Dock:** Home, Elemental-Bearers, Play, Shop, Summon, Social. The current
+  destination is gold. No collapse toggle.
+- **Compact mode:** automatic by width. Under 1100px the wordmark and
+  currency names hide; under 860px dock and Back labels hide (their
+  accessible names stay). Balances are never abbreviated.
+- **Stage:** a rebuilt screen is a `.lk-screen` built with
+  `src/ui-kit/html.ts` and owns the page's `<h1>`. A screen not yet rebuilt
+  renders inside `.shell.sanctuary-shell.lk-legacy`, and the top bar carries
+  a screen-reader `<h1>` for it. No screen is rebuilt yet.
+- **Accent:** `--ui-accent` is the accent of the scene behind the screen and
+  fades over 600 ms. Selection stays gold.
+- **Feedback:** an ordinary click has no effect beyond hover, glow and
+  press. A saved success pulses the scene; `actionFx` adds a ring, sparks
+  and the exact number. Nothing plays for a failed or cancelled action.
+- **Motion:** reduced when the in-game setting or the device asks
+  (`motionAllowed()` in `src/ui-kit/motion.ts`). Arrival is a CSS rise of
+  220 ms on rebuilt screens; the destination accepts input at once.
+- **Rules for new work:** no `!important`, no specificity guards, no literal
+  colours or font families in `src/ui-kit/`; legacy stylesheets may only
+  shrink (`src/ui-kit/kit.test.ts`, `legacy-budget.test.ts`).
+
 ## Living scene backdrop (D-496, 2026-11-24)
 
 Step R1 of the [living scenes framework](Future%20Plans/ui-vfx-polish-toolkit.md#10-living-scenes-framework-approved-2026-11-24-d-496).

@@ -27,7 +27,8 @@
   colour rules, D-467 fonts, 44px targets, artwork-backed buttons, economy
   and receipt rules, WebGL 1, no GSAP, no paid tools, live-first. The dock
   keeps six destinations.
-- **Status:** plan filed (step K0). No code changed yet.
+- **Status:** steps K0 to K3 implemented 2026-11-24 on branch
+  `ui-vfx-shader-kit`, unreleased. No screen is rebuilt yet.
 
 ## Living scenes framework: REBORN's approach applied to Last Light (D-496, 2026-11-24)
 

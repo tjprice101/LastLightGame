@@ -1,8 +1,9 @@
 # Current state and handoff
 
-## Complete menu rebuild, step K0: plan and decisions (D-497, 2026-11-24)
+## Complete menu rebuild, steps K0 to K3: kit, new shell, scene visible (D-497, 2026-11-24)
 
-**Docs only; no code changed.** Branch `ui-vfx-shader-kit`.
+**Implemented on branch `ui-vfx-shader-kit`, committed locally; not pushed or
+released.** Client only; no authority change. Battles are unchanged.
 
 **Owner direction (2026-11-24):** completely overhaul every UI screen to
 match Magnum Opus REBORN's polish. Answers: clean rebuild on one design
@@ -11,23 +12,67 @@ staged releases; feedback only on saved success; collapse toggles removed;
 menus follow the device's reduce-motion setting.
 [Plan](Future%20Plans/ui-vfx-polish-toolkit.md#11-complete-menu-rebuild-approved-2026-11-24-d-497), D-497.
 
-**Audit findings (read-only, 2026-11-24):**
-- Menu CSS: 16,687 lines in 89 files, 6,819 `!important`, 1,144 `:not(#_)`
-  guards, ten theme layers, four dialog families, three button systems.
-- The R1 scene is hidden on every signed-in menu by the opaque
-  `.sanctuary-shell` background in `src/presentation/menu-reference.css`
-  (read from the CSS; not yet captured in a browser).
-- Eleven `body.reduced-motion` rules never apply (no code sets that class).
-  The scene's motion only follows the setting after a Settings save.
+**What changed:**
+- **K1.** `src/interface.css`: glass, tone and layout tokens; `--ui-accent`
+  registered with `@property` and faded over 600 ms. `src/ui-kit/accent.ts`
+  and `accentFor` in `src/scene/scene-palettes.ts`: the interface accent is
+  the accent of the scene behind the screen (battle keeps the leader's).
+  `src/ui-kit/motion.ts`: `motionAllowed()` is the in-game setting or the
+  device setting; it writes `html[data-motion-effective]`. The scene backdrop
+  uses it.
+- **K2.** `src/ui-kit/`: `kit.css`, `controls.css`, `motion.css`, `html.ts`
+  (`screen`, `panel`, `card`, `grid`, `stat`, `statRow`, `button`,
+  `iconButton`, `segmented`, `chip`, `bar`, `divider`). `kit.test.ts` holds
+  the kit to its rules (no `!important`, no guards, tokens only, `lk-` only,
+  44px targets). `legacy-budget.test.ts` is a ratchet: legacy stylesheets,
+  `!important` and `:not(#_)` counts may only fall.
+- **K3a.** `src/ui-kit/legacy-host.css` (temporary): the living scene now
+  shows behind every signed-in menu.
+- **K3b.** New shell. `frame()` in `src/main.ts` renders `.lk-shell` with a
+  kit top bar and dock around a stage; a screen that has not been rebuilt
+  renders inside `.shell.sanctuary-shell.lk-legacy`. `sanctuaryHeader` and
+  `sanctuaryDock` emit kit markup; Help moved to `sanctuaryHelpDialog`. The
+  Home leader chip is kit markup. Collapse toggles and the DOM patches for
+  the old header and dock are removed. `button-style.ts` leaves kit controls
+  alone. Narrow windows get a compact top bar and dock.
+- **K3c.** `src/ui-kit/fx.ts`: `actionFx` (ring, sparks, exact number, scene
+  pulse; still highlight under reduced motion) and `sceneKick`. The scene
+  now pulses on saved level, evolve, Convergent Light, equip and squad
+  loadout successes. Removed from `bubble-ui.ts`: the burst on every click,
+  the pop entrances and the Home zoom.
 
-**What changed:** section 11 added to the overhaul plan; the R2 to R7 rows
-there now point to K1 to K-final; D-497 recorded; Future Plans row updated.
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- `npx vitest run src/ui-kit src/scene src/presentation src/ui`: 2,370 of
+  2,371. The one failure is the known `acquisition-surfaces` timeout under
+  load; it passes alone.
+- Real GPU, dev server, isolated menu workspace (`?workspace=menu`), frames
+  reviewed: Home, Element-Bearer detail, Play, Shop, Summon, Social,
+  Inventory and Collections show their scene behind the new shell with no
+  console errors and no horizontal overflow.
+- Clicked through in the browser: Help opens and closes, Settings opens,
+  wallet opens Inventory, Back returns to Home, dock navigation and its
+  current marker, the leader chip. No top bar or dock control is under 44px.
+  The compact layout at 1000px wide has no overflow.
+- `actionFx` played from a real control: ring and number render and the
+  effect removes itself.
 
-**Not done:** everything from K1 on.
+**Not done:**
+- K4 (one dialog, drawer and toast frame) and Release 1.
+- No screen is rebuilt yet: interiors are the old screens over glass.
+- `actionFx` has no caller yet; purchases get it when Stores is rebuilt (G4).
+  `html.ts` helpers have no screen using them yet.
+- Not run: full `npm test`, `npm run build`. Not checked: frame time with
+  blur over the scene, phone, low-end GPU, the online profile picture on the
+  new profile button, the CSS fallback without WebGL.
+- Motion judged from stills only; no timed capture of arrival or feedback.
+- Old screens keep their own entrance animations until each is rebuilt.
+- AGENTS.md still describes the old dock and a Menu drawer; update it with
+  the owner's approval at K-final.
 
-**Next:** K1 (Opus): glass and accent tokens, `@property` accent channel,
-`src/ui-kit/accent.ts` and `motion.ts`, `accentFor` in
-`src/scene/scene-palettes.ts`. Then K2 to K4 and Release 1.
+**Next:** K4 (Sonnet), then Release 1: full `npm test`, build, push `main`
+and `overhaul/radiant-foundation`, verify the hosted build. Then G1 (Opus):
+Home and Play rebuilt on the kit.
 
 ## Living scenes framework, step R1: scene engine and backdrop (D-496, 2026-11-24)
 
