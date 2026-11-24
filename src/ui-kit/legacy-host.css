@@ -1,0 +1,15 @@
+/*
+ * TEMPORARY bridge (D-497): lets the living scene show behind screens that have not been rebuilt on the
+ * kit yet, and gives their main surfaces the glass blur. Deleted in step K-final, once no legacy screen
+ * remains. It lives in the `menu-reference` layer because that is the only place that can outrank the
+ * layered `!important` shell background it replaces. Nothing new belongs here: rebuild the screen instead.
+ */
+@layer menu-reference {
+  /* Only while the scene is drawing; the CSS fallback keeps its opaque gradient. */
+  html.scene-live[data-menu-workspace] body #app .sanctuary-shell { background: transparent !important; }
+  html.scene-live[data-menu-workspace] body #app .sanctuary-shell .sanctuary-content { background: transparent !important; }
+  html.scene-live[data-menu-workspace] body #app .sanctuary-shell :is(.sanctuary-header, .sanctuary-dock) {
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    backdrop-filter: var(--glass-blur) !important;
+  }
+}

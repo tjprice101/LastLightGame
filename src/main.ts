@@ -152,6 +152,11 @@ import './presentation/menu-reference.css';
 import './presentation/menu-reference-rollout.css';
 import './presentation/unit-workshop.css';
 import './presentation/activity-hub.css';
+// Interface kit (D-497): after every legacy stylesheet. New screens use only these; legacy-host.css is the temporary bridge.
+import './ui-kit/kit.css';
+import './ui-kit/controls.css';
+import './ui-kit/motion.css';
+import './ui-kit/legacy-host.css';
 
 const gameStorage = menuWorkspace ? createMenuWorkspaceStorage() : new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
 const preferencesStorage = menuWorkspace ? gameStorage : window.localStorage;
