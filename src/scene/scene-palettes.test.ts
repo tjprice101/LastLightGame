@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { elements } from '../content/activities';
 import { ambientScreens } from '../presentation/ambient-background';
 import { sceneIds } from './scene-glsl';
-import { elementScenes, sanctuaryPalette, sceneFor, screenScenes } from './scene-palettes';
+import { elementAccents } from '../content/dungeon-art';
+import { accentFor, elementScenes, neutralAccent, sanctuaryPalette, sceneFor, screenScenes } from './scene-palettes';
 
 const luminance = ([r, g, b]: readonly number[]) => .2126 * r + .7152 * g + .0722 * b;
 
@@ -38,6 +39,23 @@ describe('scene palettes', () => {
     expect(home.palette.accent).toEqual(elementScenes.botanic.palette.accent);
     expect(home.palette.deep).toEqual(sanctuaryPalette.deep);
     expect(sceneFor('summon', 'botanic')!.scene).toBe('astral');
+  });
+  it('the interface accent is the accent of the scene behind the screen', () => {
+    expect(accentFor('title', null)).toBe('#e0b45a');
+    expect(accentFor('summon', 'botanic')).toBe('#c9b8ff');
+    expect(accentFor('inventory', 'infernic')).toBe('#e0b45a');
+    expect(accentFor('gameplay', null)).toBe('#a9dccb');
+    for (const element of elements) {
+      const accent = elementAccents[element.id].toLowerCase();
+      expect(accentFor('home', element.id)).toBe(accent);
+      expect(accentFor('character', element.id)).toBe(accent);
+      expect(accentFor('squad', element.id)).toBe(accent);
+    }
+    for (const screen of ambientScreens) expect(accentFor(screen, null)).toMatch(/^#[0-9a-f]{6}$/);
+  });
+  it('battle has no scene and keeps the leader accent', () => {
+    expect(accentFor('battle', 'oceanic')).toBe(elementAccents.oceanic);
+    expect(accentFor('battle', null)).toBe(neutralAccent);
   });
   it('showcase screens run brighter than working screens', () => {
     expect(sceneFor('home', null)!.intensity).toBeGreaterThan(sceneFor('inventory', null)!.intensity);

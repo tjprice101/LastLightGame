@@ -5,7 +5,7 @@
  */
 import { type ElementId } from '../content/activities';
 import { type AmbientScreen } from '../presentation/ambient-background';
-import { reducedMotion } from '../presentation/settings';
+import { motionAllowed } from '../ui-kit/motion';
 import { softwareRenderer } from '../vfx/shaders/spectacle-fx';
 import { SceneEngine, type SceneQuality } from './scene-engine';
 import { sceneFor } from './scene-palettes';
@@ -39,7 +39,7 @@ export function createSceneBackdrop(host: HTMLElement): SceneBackdrop {
     host.append(canvas);
     engine = new SceneEngine(canvas, {
       quality: deviceQuality(),
-      motionAllowed: () => !reducedMotion() && !systemMotion?.matches,
+      motionAllowed,
       onFail: () => { stop(); engine.dispose(); },
     });
   } catch (error) {

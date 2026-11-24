@@ -1,3 +1,6 @@
+/* Interface accent channel (D-496, D-497): one colour per context, shared with the living scene.
+   Registered as a colour so a change of screen fades it instead of snapping. */
+@property --ui-accent { syntax: '<color>'; inherits: true; initial-value: #f4f4f5; }
 :root {
   /* Type (D-467): Lora for all reading text and numbers (Georgia-like width, so fitted layouts hold);
      Cinzel, an engraved display capital, for screen and dialog titles only. Both self-hosted. */
@@ -66,8 +69,26 @@
   --element-botanic: #b6e3aa;
   --element-tranquilitic: #d3c4ff;
   --element-chaotic: #edbeff;
+  /* Glass over living scenes (D-496, D-497): the one panel surface of the rebuilt menus (`src/ui-kit`).
+     `--glass-strong` is the same panel with no blur, for low quality and browsers without backdrop-filter. */
+  --glass-top: #1c183a8f;
+  --glass-bottom: #0b0a1cb3;
+  --glass-strong: #100e24f2;
+  --glass-edge: #f7e3a129;
+  --glass-blur: blur(14px) saturate(1.2);
+  --glass-highlight: inset 0 1px 0 #fff3cc1f;
+  --shadow-glass: 0 18px 44px #02030c99, var(--glass-highlight);
+  --ui-accent-glow: color-mix(in srgb, var(--ui-accent) 42%, transparent);
+  --glow-selected: var(--glow-gild);
+  --motion-arrive: 220ms;
+  --motion-retint: 600ms;
+  --topbar-h: 64px;
+  --dock-h: 72px;
+  --screen-pad: var(--space-6);
+  transition: --ui-accent var(--motion-retint) ease;
   font-family: var(--ui-font);
 }
+:root[data-motion-effective="reduced"] { transition: none; }
 @media (max-width: 480px) {
   :root { --ui-display: 26px; --ui-title: 21px; --ui-section: 17px; --ui-body: 15px; --card-padding: var(--space-3); }
 }

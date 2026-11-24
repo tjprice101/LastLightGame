@@ -56,6 +56,7 @@ import { checkForUpdate } from './presentation/update-check';
 import { bindArtworkLoading } from './presentation/artwork-loading';
 import { detectAvif } from './presentation/image-format';
 import { createSceneBackdrop } from './scene/scene-backdrop';
+import { accentFor } from './scene/scene-palettes';
 import { applyMotion, loadMotion, saveMotion, reducedMotion, type MotionPreference } from './presentation/settings';
 import { commands, defaultBindings, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession, type BattleAuthority, type BattleAuthorityResponse } from './presentation/battle-view';
@@ -129,6 +130,8 @@ import './presentation/leader-theme.css';
 import './presentation/button-style.css';
 import { installButtonStyle } from './presentation/button-style';
 import { applyLeaderTheme, leaderElement } from './presentation/leader-theme';
+import { applyAccent } from './ui-kit/accent';
+import { installMotion } from './ui-kit/motion';
 import { mountTitle, mountPlayerInfo, mountStarterSelection, unmountTitle, type OnlineSaveRequest } from './ui/mount';
 import type { OfflineChange } from './ui/offline-save-panel';
 import { DebugProfileStorage, bindDebugPhrase } from './game/debug-profile';
@@ -631,6 +634,7 @@ try {
   hotkeyError = `Hotkeys could not be loaded. ${errorMessage(error)} Default keys are active; save new bindings in Settings to repair them.`;
 }
 applyMotion(motionPreference);
+installMotion();
 try {
   speed = loadBattleSpeed(gameStorage);
 } catch (error) {
@@ -693,6 +697,7 @@ function frame(body: string, battle = false, sanctuary = false): void {
     : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'special-banner-archive' ? 'summon' : menuPage === 'profile' ? 'home' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
   // The living scene follows the screen and sleeps in battle, which frees the GPU for the battle effect layer (D-484, D-496).
   backdrop.show(backgroundScreen, leader);
+  applyAccent(document.documentElement, accentFor(backgroundScreen, leader));
   app.innerHTML = battle ? `<div class="battle-screen">${body}${ambientBackground(backgroundScreen)}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
     ${ambientBackground(backgroundScreen)}
     ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L · L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}

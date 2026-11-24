@@ -1,11 +1,11 @@
 /**
  * Which living scene each screen shows, and in which three colours (D-496). One table feeds the shader;
- * the interface accent joins it in step R2. Accents reuse the element accents the menus already use.
+ * `accentFor` gives the interface the same accent (D-497). Accents reuse the element accents the menus already use.
  */
 import { type ElementId } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
 import { type AmbientScreen } from '../presentation/ambient-background';
-import { rgbFromHex, type ScenePalette } from './scene-engine';
+import { rgbFromHex, type Rgb, type ScenePalette } from './scene-engine';
 import { type SceneId } from './scene-glsl';
 
 function palette(deep: string, mid: string, accent: string): ScenePalette {
@@ -64,4 +64,20 @@ export function sceneFor(screen: AmbientScreen, leader: ElementId | null): Resol
   if (element && entry.leader === 'accent')
     return { scene: entry.scene, palette: { ...entry.palette, accent: element.palette.accent }, intensity: entry.intensity };
   return { scene: entry.scene, palette: entry.palette, intensity: entry.intensity };
+}
+
+/** Text white: the interface accent when no element is in play in battle. */
+export const neutralAccent = '#f4f4f5';
+
+function hexFromRgb(rgb: Rgb): string {
+  return `#${rgb.map(channel => Math.round(channel * 255).toString(16).padStart(2, '0')).join('')}`;
+}
+
+/**
+ * The interface accent for a screen: the accent of the scene behind it, so light and interface agree.
+ * Battle has no scene and keeps the squad leader's element accent.
+ */
+export function accentFor(screen: AmbientScreen, leader: ElementId | null): string {
+  if (screen === 'battle') return leader ? elementAccents[leader] : neutralAccent;
+  return hexFromRgb(sceneFor(screen, leader)!.palette.accent);
 }
