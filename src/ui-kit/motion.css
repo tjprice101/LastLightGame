@@ -21,3 +21,45 @@
   animation-delay: 0s;
   transition-duration: 1ms;
 }
+
+/* Action feedback (`ui-kit/fx.ts`): ring, sparks and the exact number, from the control that succeeded. */
+@keyframes lk-fx-ring { from { opacity: .9; transform: translate(-50%, -50%) scale(.2); } to { opacity: 0; transform: translate(-50%, -50%) scale(1); } }
+@keyframes lk-fx-spark { from { opacity: 1; transform: translate(-50%, -50%) scale(1); } to { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.3); } }
+@keyframes lk-fx-number { 0% { opacity: 0; transform: translate(-50%, -20%) scale(.8); } 18% { opacity: 1; transform: translate(-50%, -70%) scale(1.12); } 100% { opacity: 0; transform: translate(-50%, -190%) scale(1); } }
+.lk-fx { position: fixed; z-index: 1200; width: 0; height: 0; pointer-events: none; --accent: var(--ui-accent); }
+.lk-fx[data-tone="gain"] { --accent: var(--tone-gain); }
+.lk-fx-ring {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 60%, transparent), inset 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent);
+  animation: lk-fx-ring 520ms var(--ease-out) both;
+}
+.lk-fx-spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--text-primary), var(--accent) 45%, transparent 70%);
+  mix-blend-mode: screen;
+  animation: lk-fx-spark 620ms var(--ease-out) both;
+}
+.lk-fx-number {
+  position: absolute;
+  font-family: var(--display-font);
+  font-size: var(--ui-title);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+  text-shadow: 0 0 14px var(--accent), 0 2px 0 var(--surface-inset);
+  animation: lk-fx-number 900ms var(--ease-out) both;
+}
+/* Reduced motion: the control that succeeded holds a still highlight instead. */
+[data-lk-confirmed].lk-button, [data-lk-confirmed].lk-card, [data-lk-confirmed].lk-icon-button, .lk-shell [data-lk-confirmed], .lk-dialog [data-lk-confirmed] {
+  outline: 2px solid var(--gild-light);
+  outline-offset: 2px;
+  box-shadow: var(--glow-gild);
+}

@@ -43,35 +43,18 @@ describe('shared interaction feedback lifecycle', () => {
     return app;
   };
 
-  it('gives an ordinary click one neutral finite ring, without success sparkles or gameplay changes', () => {
-    install();
-    document.querySelector<HTMLButtonElement>('button')!.click();
-    expect(document.querySelectorAll('.click-ring')).toHaveLength(1);
-    expect(document.querySelectorAll('.fx-glyph, .fx-particle, .fx-banner')).toHaveLength(0);
-    expect(document.querySelector('.click-burst')?.getAttribute('aria-hidden')).toBe('true');
-    vi.advanceTimersByTime(550);
-    expect(document.querySelector('.click-burst')).toBeNull();
-    expect(cancelled).not.toHaveBeenCalled();
-  });
-
-  it('ignores native-disabled, aria-disabled and inert controls', () => {
+  it('adds no effect to an ordinary click: feedback is kept for saved successes (D-497)', () => {
     const app = install();
-    app.querySelector<HTMLButtonElement>('button')!.disabled = true;
     app.querySelectorAll<HTMLButtonElement>('button').forEach(button => button.click());
-    app.innerHTML = '<section inert><button>Hidden draft</button></section>';
-    app.querySelector<HTMLButtonElement>('button')!.click();
-    expect(document.querySelector('.click-burst')).toBeNull();
+    expect(document.querySelectorAll('.click-burst, .click-ring, .fx-glyph, .fx-particle, .fx-banner, .bubble-portal')).toHaveLength(0);
+    expect(HTMLElement.prototype.animate).not.toHaveBeenCalled();
   });
 
-  it('clears existing feedback on Reduce motion and keeps future interactions immediate and static', () => {
+  it('pauses the ambient backdrop on Reduce motion and resumes it afterwards', () => {
     install();
-    document.querySelector<HTMLButtonElement>('button')!.click();
     applyMotion('reduced');
-    expect(document.querySelector('.click-burst')).toBeNull();
     expect(document.querySelector<HTMLElement>('.bubble-backdrop')!.dataset.motionPaused).toBe('true');
-    document.querySelector<HTMLButtonElement>('button')!.click();
     expect(bubbleMotionAllowed()).toBe(false);
-    expect(document.querySelector('.click-burst')).toBeNull();
     applyMotion('system');
     expect(document.querySelector<HTMLElement>('.bubble-backdrop')!.dataset.motionPaused).toBe('false');
   });
@@ -161,7 +144,7 @@ describe('shared interaction feedback lifecycle', () => {
     dispose = undefined;
     install();
     app.querySelector<HTMLButtonElement>('button')!.click();
-    expect(document.querySelectorAll('.click-ring')).toHaveLength(1);
+    expect(document.querySelectorAll('.click-ring')).toHaveLength(0);
     expect(document.querySelectorAll('.bubble-backdrop')).toHaveLength(1);
   });
 });

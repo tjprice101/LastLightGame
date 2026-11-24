@@ -71,7 +71,7 @@ describe('interface tokens', () => {
   });
   it('defines every token the kit reads', () => {
     const used = new Set(kitCss.flatMap(name => [...read(name).matchAll(/var\((--[a-z0-9-]+)/g)].map(match => match[1]!)));
-    const local = new Set(['--accent', '--lk-min', '--lk-fill']);
+    const local = new Set(['--accent', '--lk-min', '--lk-fill', '--dx', '--dy']);
     for (const name of used)
       if (!local.has(name)) expect(tokens, name).toContain(name === '--ui-accent' ? '@property --ui-accent ' : `${name}:`);
   });

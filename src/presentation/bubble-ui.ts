@@ -11,7 +11,6 @@ import '../bubble-battle.css';
 const glyphs = ['\u2726', '\u2727', '\u2736', '\u273A', '\u00B7'];
 let effects: HTMLElement | null = null;
 let disposeInstalled: (() => void) | null = null;
-let lastScreen = '';
 const animations = new Set<Animation>();
 const decorations = new Map<HTMLElement, () => void>();
 const cinematics = new Set<() => void>();
@@ -82,25 +81,6 @@ export function glyphBurst(x: number, y: number, count: number, reach: number, h
       .addEventListener('finish', () => spark.remove(), { once: true });
     expire(spark, 2200);
   }
-}
-
-function pressFeedback(target: HTMLElement, event: MouseEvent): void {
-  if (!bubbleMotionAllowed()) return;
-  const rect = target.getBoundingClientRect();
-  const x = event.detail ? event.clientX : rect.x + rect.width / 2;
-  const y = event.detail ? event.clientY : rect.y + rect.height / 2;
-  const host = target.closest('dialog[open]') ?? layer();
-  const burst = document.createElement('div');
-  burst.className = 'click-burst';
-  burst.setAttribute('aria-hidden', 'true');
-  const bounds = host.getBoundingClientRect();
-  const dialog = host instanceof HTMLDialogElement;
-  burst.style.left = `${dialog ? x - bounds.left - host.clientLeft + host.scrollLeft : x}px`;
-  burst.style.top = `${dialog ? y - bounds.top - host.clientTop + host.scrollTop : y}px`;
-  burst.innerHTML = '<span class="click-ring"></span>';
-  host.append(burst);
-  burst.addEventListener('animationend', animation => { if (animation.target === burst) burst.remove(); });
-  expire(burst, 550);
 }
 
 /** Colour theme of the thing obtained: Calamitic is black/white/crimson, Omnic prismatic. */
@@ -277,66 +257,6 @@ export function cinematic(spec: CinematicSpec): Promise<void> {
   });
 }
 
-const entranceTargets = ['.bubble-page-heading', '.home-bubble', '.home-story', '.home-squad', '.ref-panel', '.ref-card', '.activity-card', '.activity-group',
-  '.inventory-card', '.item-tile', '.conduit-card', '.store-card', '.archive-card', '.story-stage', '.banner-card', '.summon-banner', '.reward-card',
-  '.section-navigation > button', '.team-member', '.roster-card', '.friend-row', '.profile-card'].join(',');
-
-// Compositor-only (transform/opacity) and capped so large grids never stall the first frames.
-function popEntrances(root: ParentNode): void {
-  if (!bubbleMotionAllowed()) return;
-  Array.from(root.querySelectorAll<HTMLElement>(entranceTargets)).filter(element => element.offsetParent !== null).slice(0, 36).forEach((element, index) => {
-    animate(element, [
-      { opacity: 0, transform: 'translateY(14px) scale(.82)' },
-      { opacity: 1, transform: 'translateY(-1px) scale(1.02)', offset: .65 },
-      { opacity: 1, transform: 'none' },
-    ], { duration: 520, delay: Math.min(index * 28, 560), easing: 'cubic-bezier(.2,1.2,.4,1)', fill: 'backwards' });
-  });
-}
-
-let screenZoom: { x: number; y: number; at: number; accent: string } | null = null;
-
-/** Home bubbles zoom into their destination: a portal bursts from the bubble and the new screen grows from it. */
-function homeZoomStart(target: HTMLElement): void {
-  if (!bubbleMotionAllowed()) return;
-  const rect = target.getBoundingClientRect();
-  const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
-  const accent = getComputedStyle(target).getPropertyValue('--accent').trim() || getComputedStyle(target).getPropertyValue('--ui-accent').trim();
-  screenZoom = { x, y, at: performance.now(), accent };
-  const portal = document.createElement('div');
-  portal.className = 'bubble-portal';
-  portal.setAttribute('aria-hidden', 'true');
-  portal.style.left = `${x}px`; portal.style.top = `${y}px`;
-  if (accent) portal.style.setProperty('--accent', accent);
-  layer().append(portal);
-  expire(portal, 700);
-}
-
-function homeZoomEnter(app: HTMLElement): void {
-  const zoom = screenZoom;
-  screenZoom = null;
-  if (!zoom || performance.now() - zoom.at > 900 || !bubbleMotionAllowed()) return;
-  const screen = app.querySelector<HTMLElement>('[data-menu-screen]') ?? app.firstElementChild as HTMLElement | null;
-  if (!screen) return;
-  const rect = screen.getBoundingClientRect();
-  screen.style.transformOrigin = `${zoom.x - rect.left}px ${zoom.y - rect.top}px`;
-  const animation = animate(screen, [
-    { opacity: 0, transform: 'scale(.4)' },
-    { opacity: 1, offset: .55 },
-    { opacity: 1, transform: 'none' },
-  ], { duration: 560, easing: 'cubic-bezier(.2,1.05,.3,1)' });
-  const reset = (): void => { screen.style.transformOrigin = ''; };
-  animation.addEventListener('finish', reset, { once: true });
-  animation.addEventListener('cancel', reset, { once: true });
-}
-
-/** Screen identity used to pop entrances only on navigation, not on in-page re-renders. */
-function screenIdentity(app: HTMLElement): string {
-  const screen = app.querySelector<HTMLElement>('[data-menu-screen]');
-  return [screen?.dataset.menuScreen ?? (app.querySelector('.battle-screen') ? 'battle' : 'opening'),
-    app.querySelector('h1')?.textContent?.trim() ?? '',
-    app.querySelector('[data-team-view]')?.getAttribute('data-team-view') ?? ''].join('|');
-}
-
 export function installBubbleUi(app: HTMLElement): () => void {
   if (disposeInstalled) return disposeInstalled;
   const backdrop = document.createElement('div');
@@ -345,18 +265,8 @@ export function installBubbleUi(app: HTMLElement): () => void {
   backdrop.innerHTML = bubbleBackdrop();
   document.body.prepend(backdrop);
   layer();
-  const press = (event: MouseEvent): void => {
-    const target = event.target instanceof Element ? event.target.closest<HTMLElement>('button, [role="button"], summary, a[href]') : null;
-    if (!target || target.matches(':disabled, [aria-disabled="true"]') || target.closest('[inert], .cine, .battle-field, .battle-units, #battle-root .battle-unit')) return;
-    pressFeedback(target, event);
-  };
-  document.addEventListener('click', press);
-  // Capture phase: record the zoom origin before the app re-renders the destination.
-  const zoom = (event: MouseEvent): void => {
-    const target = event.target instanceof Element ? event.target.closest<HTMLElement>('.bubble-home-orbit > button, button.ref-home-story') : null;
-    if (target && !target.matches(':disabled, [aria-disabled="true"]')) homeZoomStart(target);
-  };
-  document.addEventListener('click', zoom, true);
+  // An ordinary click has no effect of its own (D-497): controls answer with hover, glow and press in CSS, and
+  // arrival is the interface kit's CSS rise. Feedback is kept for saved successes (`ui-kit/fx.ts`, `celebrate`).
   const updateMotion = (): void => {
     const motionAllowed = bubbleMotionAllowed();
     backdrop.dataset.motionPaused = String(!motionAllowed);
@@ -365,15 +275,6 @@ export function installBubbleUi(app: HTMLElement): () => void {
   window.addEventListener('last-light-motion-change', updateMotion);
   document.addEventListener('visibilitychange', updateMotion);
   updateMotion();
-  const observer = new MutationObserver(() => {
-    const identity = screenIdentity(app);
-    if (identity === lastScreen) return;
-    lastScreen = identity;
-    const zooming = screenZoom !== null;
-    homeZoomEnter(app);
-    if (!zooming) popEntrances(app);
-  });
-  observer.observe(app, { childList: true });
   const battleObserver = new MutationObserver(() => {
     const battle = Boolean(app.querySelector('.battle-screen'));
     document.body.classList.toggle('bubble-battle', battle);
@@ -382,18 +283,13 @@ export function installBubbleUi(app: HTMLElement): () => void {
   });
   battleObserver.observe(app, { childList: true, subtree: true });
   const dispose = (): void => {
-    observer.disconnect();
     battleObserver.disconnect();
-    document.removeEventListener('click', press);
-    document.removeEventListener('click', zoom, true);
     window.removeEventListener('last-light-motion-change', updateMotion);
     document.removeEventListener('visibilitychange', updateMotion);
     clearMotion();
     backdrop.remove();
     effects?.remove();
     effects = null;
-    lastScreen = '';
-    screenZoom = null;
     disposeInstalled = null;
   };
   disposeInstalled = dispose;

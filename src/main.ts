@@ -132,6 +132,7 @@ import { installButtonStyle } from './presentation/button-style';
 import { applyLeaderTheme, leaderElement } from './presentation/leader-theme';
 import { applyAccent } from './ui-kit/accent';
 import { installMotion } from './ui-kit/motion';
+import { sceneKick, setSceneKick } from './ui-kit/fx';
 import { mountTitle, mountPlayerInfo, mountStarterSelection, unmountTitle, type OnlineSaveRequest } from './ui/mount';
 import type { OfflineChange } from './ui/offline-save-panel';
 import { DebugProfileStorage, bindDebugPhrase } from './game/debug-profile';
@@ -649,6 +650,8 @@ try {
 }
 applyBattleSpeed(speed);
 const backdrop = createSceneBackdrop(document.querySelector<HTMLElement>('#backdrop')!);
+// Saved successes pulse through the living scene (D-496).
+setSceneKick(amount => backdrop.kick(amount));
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'An unexpected error occurred.';
@@ -2294,6 +2297,7 @@ app.addEventListener('click', async (event) => {
     const updatedProgress = ownedProgress(updatedAccount, starter.id);
     const presentationKind = kind === 'convergence-max' ? 'convergence' : kind;
     celebrateUpgrade(app, starter, presentationKind, updatedProgress);
+    sceneKick(presentationKind === 'level' ? .6 : .9);
     const result = app.querySelector('#upgrade-result');
     const completion = kind === 'level' ? `reached Level ${progress.level}` : kind === 'evolve' ? 'evolved' : `raised Convergent Light to Rank ${progress.convergenceRank ?? 1}`;
     if (result) result.textContent = `${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)} ${completion}.`;
@@ -2391,6 +2395,7 @@ app.addEventListener('click', async (event) => {
         if (label) label.textContent = `Lv.${progress.level} · Evo.${displayEvolution(starter.id, progress.evolution)}`;
         currency.textContent = String(account.fractalis);
         celebrateUpgrade(app, starter, 'level', progress);
+        sceneKick(.6);
       } else renderMenu();
       app.querySelector<HTMLButtonElement>(`[data-max-level="${id}"]`)?.focus({ preventScroll: true });
       const result = app.querySelector('#upgrade-result') ?? app.querySelector('#character-lock-result');
@@ -2432,6 +2437,7 @@ app.addEventListener('click', async (event) => {
 /** Big equip banner in the Conduit's own palette, after the change has saved. */
 function equipBanner(name: string, rarity: string, master = false): void {
   celebrate(master ? 'Master equipped' : 'Equipped', { ...rarityPalette(rarity), subtitle: name });
+  sceneKick(master ? .8 : .5);
 }
 
 function performLocalLoadout(operation: SavedLoadoutOperation): Account {
@@ -2491,7 +2497,7 @@ app.addEventListener('click', async event => {
         if (operation.kind !== 'deleteSquadLoadout') rarityFeedback(host, 'Omnic', message);
       }
     }
-    if (operation.kind !== 'deleteSquadLoadout') celebrate(message, rarityPalette('Omnic'));
+    if (operation.kind !== 'deleteSquadLoadout') { celebrate(message, rarityPalette('Omnic')); sceneKick(.5); }
   } catch (error) {
     console.error('Saved loadout operation rejected', error);
     showError(`${persisted ? 'Loadout saved, but its display could not refresh.' : 'Could not complete the loadout change.'} ${errorMessage(error)}`);
